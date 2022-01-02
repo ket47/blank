@@ -1,6 +1,8 @@
 import { createApp } from 'vue'
 import App from './App.vue'
+import BaseLayout from './components/BaseLayout.vue'
 import router from './router';
+import store from './store';
 
 import { IonicVue } from '@ionic/vue';
 
@@ -20,13 +22,44 @@ import '@ionic/vue/css/text-transformation.css';
 import '@ionic/vue/css/flex-utils.css';
 import '@ionic/vue/css/display.css';
 
+
 /* Theme variables */
 import './theme/variables.css';
+import './theme/core.css';
+
+import User from './scripts/User.js'
+
+import jQuery from "jquery";
 
 const app = createApp(App)
   .use(IonicVue)
-  .use(router);
-  
-router.isReady().then(() => {
-  app.mount('#app');
+  .use(router)
+  .use(store);
+
+app.component('base-layout', BaseLayout);
+
+if(localStorage.sessionId){
+  jQuery.ajaxSetup({
+    beforeSend: function(xhr) {
+        xhr.setRequestHeader('x-sid',  localStorage.sessionId);
+    }
+  });
+}  
+
+User.get(function(result){
+  if(result.success && store.state.user.user_id != -1){
+      app.mount('#app');
+  } else {
+    if(localStorage.signInData){
+      User.signIn(JSON.parse(localStorage.signInData), function(){
+        User.get(function(){
+          app.mount('#app');
+        })
+      })
+    } else {
+      app.mount('#app');
+    }
+  }
 });
+
+  

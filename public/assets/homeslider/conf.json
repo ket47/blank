@@ -1,0 +1,32 @@
+{
+    "slides":[
+        {
+            "title":"Winterhold",
+            "description":"This is a very beautiful city of Skyrim. You should visit it",
+            "image":"./assets/homeslider/1.jpg",
+            "color":"#080036",
+            "link":""
+        },
+        {
+            "title":"Vivec",
+            "description":"This is a very beautiful city of Morrowind. You should visit it",
+            "image":"./assets/homeslider/2.png",
+            "color":"#7f4d58",
+            "link":""
+        },
+        {
+            "title":"Kwatch",
+            "description":"This is a very beautiful city of Cyradiil. You should visit it",
+            "image":"./assets/homeslider/3.jpg",
+            "color":"#313575",
+            "link":""
+        }, 
+        {
+            "title":"Balmora",
+            "description":"This is a very beautiful city of Morrowind. You should visit it",
+            "image":"./assets/homeslider/4.jpg",
+            "color":"#263e3e",
+            "link":""
+        }
+    ]
+}
