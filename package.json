@@ -22,7 +22,9 @@
     "swiper": "^7.4.1",
     "vue": "^3.2.21",
     "vue-router": "^4.0.12",
-    "vuex": "^4.0.2"
+    "vue-yandex-maps": "^0.12.2",
+    "vuex": "^4.0.2",
+    "ymaps": "^0.2.1"
   },
   "devDependencies": {
     "@capacitor/cli": "3.3.3",

@@ -1,9 +1,11 @@
 <template>
   <base-layout page-title="Home">
-      <order-slider></order-slider>
-      <home-slider></home-slider>
-      <user-address-picker></user-address-picker>
-      <store-list></store-list>
+    <ion-page ref="Home">
+        <order-slider></order-slider>
+        <home-slider></home-slider>
+        <user-address-picker></user-address-picker>
+        <store-list></store-list>
+    </ion-page>
   </base-layout>
 </template>
 
