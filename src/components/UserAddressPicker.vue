@@ -89,7 +89,7 @@ export default defineComponent({
         var myPlacemark;
         var myMap = new ymaps.Map('map', {
             center: self.mapCenter,
-            zoom: 16,
+            zoom: 17,
             controls: []
         });
         var suggestView = new ymaps.SuggestView('suggest',{boundedBy:self.mapBoundaries});

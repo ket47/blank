@@ -1,7 +1,7 @@
 <template>
       <swiper :modules="modules" :autoplay='{delay: 3000, disableOnInteraction: false}' :loop="true" effect="fade">
-        <swiper-slide class="home_slider" v-for="hslide in home_slides" :key="hslide.title" :style="`background-color:${hslide.color};`">
-          <img  :src="hslide.image" style="margin-right:0%;max-height:250px"/>
+        <swiper-slide v-for="hslide in home_slides" :key="hslide.title" :style="`background-color:${hslide.color};`">
+          <img :src="hslide.image" class="home_slide_img"/>
           <div class="home_slide">
             <h1 style="font-size:3em">{{hslide.title}}</h1>
             <p>{{hslide.description}}</p>
@@ -19,8 +19,10 @@
     text-align:left;
     text-shadow: 0px 0px 3px #000000;
   }
-  .home_slider{
-    text-align:right
+  .home_slide_img{
+    display: block;
+    margin-left: auto;
+    max-height:250px;
   }
 </style>
 

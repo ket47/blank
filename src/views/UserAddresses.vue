@@ -2,21 +2,20 @@
   <base-layout page-title="Мои адреса" page-default-back-link="/user-dashboard" :errorMessage="error">
     <ion-page ref="UserAddressPage">
       <ion-content :fullscreen="true">
-        <ion-list class="adresses-list">
-          <ion-item  v-for="location in locationList" :key="location.location_id">
-              <ion-img :src="`${$store.state.hostname}/image/get.php/${location.image_hash}.32.32.png`" />
-              <ion-label style="margin-left:5px;padding-left:5px;border-left:solid 1px black;white-space:normal">{{ location.location_address }}</ion-label>
-              <ion-thumbnail slot="end" @click="locationDelete(`${location.location_id}`)" style="font-size: 24px;cursor: pointer;padding:10px;color:#333">
-                <ion-icon :icon="trash" />
-              </ion-thumbnail>
+        <ion-list v-if="locationList.length" class="adresses-list" lines="full">
+          <ion-item v-for="location in locationList" :key="location.location_id">
+              <ion-img slot="start" :src="`${$store.state.hostname}/image/get.php/${location.image_hash}.32.32.png`" />
+              <ion-label @click="locationSetMain(`${location.location_id}`)" style="white-space:normal;cursor:pointer;">{{ location.location_address }}</ion-label>
+              <ion-icon :icon="trash" slot="end" @click="locationDelete(`${location.location_id}`)"></ion-icon>
           </ion-item>
         </ion-list>
+        <ion-note v-else>Пока адреса не добавлены</ion-note>
 
         <ion-list>
           <ion-list-header>
             <ion-label>Добавить адрес</ion-label>
           </ion-list-header>
-          <ion-item  v-for="location in locationGroupList" :key="location.group_id" @click="modalLocationCreate(`${location.group_id}`,`${location.group_name}`)">
+          <ion-item  v-for="location in locationGroupList" :key="location.group_id" @click="modalLocationCreate(`${location.group_id}`,`${location.group_name}`)" style="cursor:pointer">
               <ion-img :src="`${$store.state.hostname}/image/get.php/${location.image_hash}.32.32.png`" />
               <ion-label style="margin-left:5px;padding-left:5px;border-left:solid 1px black;white-space:normal">{{ location.group_name }}</ion-label>
           </ion-item>
@@ -104,6 +103,12 @@ export default{
         if( xhr.responseJSON && xhr.responseJSON.messages.error=='limit_exeeded' ){
           alert("Больше адресов добавить нельзя");
         }
+      });
+    },
+    locationSetMain( location_id ){
+      var self=this;
+      jQuery.post(store.state.hostname + "User/locationSetMain",{location_id}).done(function(response){
+        self.locationListGet();
       });
     },
     locationDelete( location_id ){
