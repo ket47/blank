@@ -2,11 +2,11 @@
   <base-layout page-title="Мои адреса" page-default-back-link="/user-dashboard" :errorMessage="error">
     <ion-page ref="UserAddressPage">
       <ion-content :fullscreen="true">
-        <ion-list v-if="locationList.length" class="adresses-list" lines="full">
-          <ion-item v-for="location in locationList" :key="location.location_id">
+        <ion-list v-if="locationList.length" lines="full">
+          <ion-item v-for="(location,i) in locationList" :key="location.location_id">
               <ion-img slot="start" :src="`${$store.state.hostname}/image/get.php/${location.image_hash}.32.32.png`" />
-              <ion-label @click="locationSetMain(`${location.location_id}`)" style="white-space:normal;cursor:pointer;">{{ location.location_address }}</ion-label>
-              <ion-icon :icon="trash" slot="end" @click="locationDelete(`${location.location_id}`)"></ion-icon>
+              <ion-label @click="locationSetMain(`${location.location_id}`,`${i}`)" style="white-space:normal;cursor:pointer;">{{ location.location_address }}</ion-label>
+              <ion-icon slot="end" :icon="trash" @click="locationDelete(`${location.location_id}`,`${i}`)"></ion-icon>
           </ion-item>
         </ion-list>
         <ion-note v-else>Пока адреса не добавлены</ion-note>
@@ -29,7 +29,6 @@
 <script>
 import {
   IonContent,
-  IonHeader,
   IonPage,
   modalController
 } from "@ionic/vue";
@@ -37,6 +36,7 @@ import router from '../router';
 import store from '../store';
 import jQuery from 'jquery';
 import UserAddressPicker from '@/components/UserAddressPicker.vue';
+
 import { IonIcon } from '@ionic/vue';
 import { trash } from 'ionicons/icons';
 
@@ -50,7 +50,7 @@ export default{
   setup(){
     return { trash };
   },
-  created() {
+  mounted(){
     this.locationListGet();
   },
   methods:{
@@ -82,6 +82,12 @@ export default{
       jQuery.get(store.state.hostname + "User/locationListGet",{includeGroupList:1}).done(function(response){
         self.locationList=response.location_list;
         self.locationGroupList=response.location_group_list;
+        if(self.locationList){
+          for(let loc of self.locationList){
+            if(loc.is_main!=1)continue;
+              store.state.user.location_main=loc;
+          }
+        }
       });
     },
     locationCreate(group_id,location){
@@ -105,14 +111,21 @@ export default{
         }
       });
     },
-    locationSetMain( location_id ){
+    locationSetMain( location_id, index ){
       var self=this;
-      jQuery.post(store.state.hostname + "User/locationSetMain",{location_id}).done(function(response){
-        self.locationListGet();
-      });
+      var loc=self.locationList[index];
+      store.state.user.location_main={
+        location_id:loc.location_id,
+        location_latitude:loc.location_latitude,
+        location_altitude:loc.location_altitude,
+        location_address:loc.location_address
+      };
+      jQuery.post(store.state.hostname + "User/locationSetMain",{location_id});
+      router.go(-1);
     },
-    locationDelete( location_id ){
+    locationDelete( location_id, index ){
       var self=this;
+      self.locationList.splice(index,1);
       jQuery.post(store.state.hostname + "User/locationDelete",{location_id}).done(function(response){
         self.locationListGet();
       });

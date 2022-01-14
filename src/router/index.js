@@ -55,6 +55,7 @@ const routes = [
   },
   {
     path: '/user-addresses',
+    name:'UserAddresses',
     component: () => import('@/views/UserAddresses.vue')
   },
   {
@@ -80,8 +81,8 @@ const routes = [
     props: true
   },
   {
-    path: '/user-payments',
-    component: () => import('@/views/UserPayments.vue')
+    path: '/user-payment-methods',
+    component: () => import('@/views/UserPaymentMethods.vue')
   },
   {
     path: '/user-notifications',

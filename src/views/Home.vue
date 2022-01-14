@@ -1,5 +1,5 @@
 <template>
-  <base-layout page-title="Home">
+  <base-layout>
     <ion-page ref="Home">
         <home-slider></home-slider>
         <user-address-widget></user-address-widget>

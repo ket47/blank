@@ -13,10 +13,7 @@
         ></ion-img>
         <component v-bind:is="cartComponent" slot="end"></component>
       </ion-toolbar>
-      <ion-title
-        style="height: 40px; text-align: center; color: var(--ion-color-medium)"
-        >{{ pageTitle }}</ion-title
-      >
+      <ion-title v-if="pageTitle" style="height: 40px; text-align: center; color: var(--ion-color-medium)">{{ pageTitle }}</ion-title>
     </ion-header>
     <ion-content
       :class="[pageClass]"

@@ -69,7 +69,7 @@
           </router-link>
         </ion-item>
         <ion-item lines="full" button detail>
-          <router-link class="section-button" to="/user-payments">
+          <router-link class="section-button" to="/user-payment-methods">
             <ion-icon :icon="card"></ion-icon>
             <ion-label>Методы оплаты</ion-label>
           </router-link>
