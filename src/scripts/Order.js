@@ -1,8 +1,155 @@
-
 import jQuery from "jquery";
 import store from '../store';
 
 const Order = {
+    isInited:false,
+    init(){
+        if(Order.isInited){
+            return false;
+        }
+        Order.cart.listSync();
+    },
+    api:{
+        itemCreate( request ){
+            return jQuery.post( store.state.hostname + "Order/itemCreate", request );
+        },
+        listCartGet(){
+            return jQuery.post( store.state.hostname + "Order/listCartGet" );
+        },
+        entryUpdate(entry){
+            return jQuery.post( store.state.hostname + "Entry/itemUpdate", JSON.stringify(entry) );
+        }
+    },
+    cart:{
+        listSyncUp(){
+            let promises=[];
+            if( store.state.cartList && store.state.cartList.length ){
+                for(let i in store.state.cartList){
+                    let delay=null;
+                    let cart=store.state.cartList[i];
+                    if( cart.order_id<=0 ){
+                        delay=Order.api.itemCreate(cart);
+                    } else {
+                        delay=Order.api.itemUpdate(cart);
+                    }
+                    promises.push(delay);
+                }
+            }
+            return promises;
+        },
+        listSyncDown(){
+            Order.api.listCartGet().done((cartList)=>{
+                store.commit('cartListStore',cartList);
+            });
+        },
+        listSync(){//shoul be called at user login
+            if( store.getters.userIsLogged ){
+                let upPromises=Order.cart.listSyncUp();
+                Promise.all(upPromises).then(()=>{
+                    Order.cart.listSyncDown();
+                });
+            }
+        },
+        listSave(){
+            store.commit('cartListStore',store.state.cartList);
+            Order.cart.listSync();
+        },
+
+
+
+
+        itemCreate(store_id,entries){
+            let cart={
+                order_store_id:store_id,
+                order_id:-store_id,
+                entries:entries||[]
+            };
+            store.state.cartList.push(cart);
+            store.commit('cartListStore',store.state.cartList);
+            return store_id;
+        },
+        entryQuantityGet(product_id){
+            let entry=this.entryGet(product_id);
+            if( !entry || !entry.data.product_quantity ){
+                return 0;
+            }
+            return parseFloat(entry.data.product_quantity)||0;
+        },
+        entryGet(product_id){
+            for(let i in store.state.cartList){
+                if( !store.state.cartList[i].entries ){
+                    return null;
+                }
+                for(let k in store.state.cartList[i].entries){
+                    if(store.state.cartList[i].entries[k].product_id==product_id){
+                        return {
+                            data:store.state.cartList[i].entries[k],
+                            order_index:i,
+                            entry_index:k
+                        };
+                    }
+                }
+            }
+            return null;
+        },
+        entrySave(store_id,product_id,product_quantity,productItem){
+            if( Order.cart.entryUpdate(product_id,product_quantity) ){
+                return true;
+            }
+            let entry={
+                product_id,
+                product_quantity,
+                product_price:productItem.product_price,
+                product_name:productItem.product_name
+            };
+            Order.cart.itemCreate(store_id,[entry]);
+            Order.cart.listSave();
+        },
+        entryUpdate(product_id,product_quantity){
+            let entry=Order.cart.entryGet(product_id);
+            if(entry){
+                store.state.cartList[entry.order_index].entries[entry.entry_index].product_quantity=product_quantity;
+                store.commit('cartListStore',store.state.cartList);
+                if( entry.entry_id ){
+                    Order.api.entryUpdate(entry);
+                }
+                return true;
+            }
+            return false;
+        }
+    },
+
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
     getUserOrders: function(mode){
         var group_ids = '';
         if(mode == 'cart'){
@@ -77,8 +224,7 @@ const Order = {
           .fail(function() {
               return callback(false);
         });
-      },
+      },*/
     
 }
-
 export default Order;

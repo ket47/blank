@@ -118,7 +118,8 @@ export default{
         location_id:loc.location_id,
         location_latitude:loc.location_latitude,
         location_altitude:loc.location_altitude,
-        location_address:loc.location_address
+        location_address:loc.location_address,
+        image_hash:loc.image_hash
       };
       jQuery.post(store.state.hostname + "User/locationSetMain",{location_id});
       router.go(-1);

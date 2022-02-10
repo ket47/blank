@@ -1,11 +1,7 @@
 <template>
     <ion-item v-if="isMainLocationSet" detail button @click="selectDeliveryAddress()">
-      <ion-icon
-        slot="start"
-        style="color: var(--ion-color-primary)"
-        :icon="location"
-      />
-      <ion-label> {{user.location_main.location_address}} </ion-label>
+      <ion-img slot="start" :src="$store.state.hostname + 'image/get.php/'+user.location_main.image_hash+'.24.24.webp'"/>
+      <ion-label>{{user.location_main.location_address}} </ion-label>
     </ion-item>
     <ion-item v-else detail button @click="selectDeliveryAddress()">
       <ion-icon

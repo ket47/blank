@@ -1,8 +1,8 @@
 <template>
     <ion-slides v-if="imageList"  pager="true" :options="slideOpts">
-        <ion-slide v-for="image in imageList" :key="image.image_hash">
-            <div class="slide">
-                <img  :src="$store.state.hostname + '/image/get.php/' + image.image_hash + '.950.950.webp'"/>
+        <ion-slide v-for="image in imageList" :key="image.image_hash" style="max-height:50vh">
+            <div :style="`width:100%;max-height:${maxHeight|200}px;overflow:hidden;display:flex;align-items:center`">
+                <ion-img  style="width:100%" :src="`${$store.state.hostname}image/get.php/${image.image_hash}.${imgWidth|300}.${imgHeight|300}.webp`"/>
             </div>
         </ion-slide>
     </ion-slides>
@@ -13,7 +13,7 @@ import { IonSlides, IonSlide } from '@ionic/vue';
 
 export default{
     components: { IonSlides, IonSlide },
-    props: ['imageList'],
+    props: ['imageList','imgHeight','imgWidth','maxHeight'],
     setup() {
         const slideOpts = {  
             slidesPerView: 1,
@@ -31,8 +31,3 @@ export default{
     }
 };
 </script>
-
-<style>
-
-
-</style>

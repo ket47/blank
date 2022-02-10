@@ -47,8 +47,12 @@ export default {
     },
     methods: {
         getStoreList(){
+            var main_address=store.state.user.location_main;
+            if(!main_address){
+                alert('what to do address not set!!!');
+            }
             var self = this;
-            jQuery.post( store.state.hostname + "Store/listGet")
+            jQuery.get( store.state.hostname + "Store/listNearGet",{location_id:main_address.location_id})
                 .done(function(response) {
                     self.storeList = self.prepareStoreList(response);
                 })

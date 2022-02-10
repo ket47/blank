@@ -91,7 +91,7 @@ import store from '../store';
 import '../theme/form.css';
 
 export default  {
-  
+  inject:['$Order'],
   setup() {
     onIonViewDidEnter(() => {
       if(store.state.user.user_id && store.state.user.user_id > -1){
@@ -140,14 +140,20 @@ export default  {
         if(result.success){
             self.getUserData();
         } else {
-            self.error = result.message;
-            if(result.message == 'user_phone_unverified'){
-              self.phoneVerify();
-            }
+          self.error = result.message;
+          if(result.message == 'user_phone_unverified'){
+            self.phoneVerify();
+          }
         }
       });
     },
     getUserData(){
+      
+      this.$Order.cart.listSync();
+
+
+
+
       var self = this;
       jQuery.post( store.state.hostname + "User/itemGet")
         .done(function(response, textStatus, request) {

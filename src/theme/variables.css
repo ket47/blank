@@ -4,17 +4,18 @@ http://ionicframework.com/docs/theming/ */
 /** Ionic CSS Variables **/
 :root {
   /** backgrounds **/
-  --ion-background-primary: linear-gradient(to left, #24CDD5, #256fe7);
+  --ion-background-primary: linear-gradient(to left, var(--ion-color-primary-shade), var(--ion-color-primary) );
   --ion-bacground-primary-dark: linear-gradient(to left, #0B86AC, #1a54b0);
-
+  --ion-background-shade:#f0f0f0;
+  --ion-background:#ffffff;
 
   /** primary **/
-  --ion-color-primary: #256fe7;
+  --ion-color-primary: #008888;
   --ion-color-primary-rgb: 56, 128, 255;
   --ion-color-primary-contrast: #ffffff;
   --ion-color-primary-contrast-rgb: 255, 255, 255;
-  --ion-color-primary-shade: #3171e0;
-  --ion-color-primary-tint: #4c8dff;
+  --ion-color-primary-shade: #00888880;
+  --ion-color-primary-tint: #0088882d;
 
   /** secondary **/
   --ion-color-secondary: #3dc2ff;

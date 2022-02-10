@@ -1,3 +1,13 @@
+<style scoped>
+  .product-actions{
+    position: relative;
+    flex-direction: row-reverse;
+    width: 80%;
+    margin: 1em auto;
+  }
+</style>
+
+
 <template>
     <div class="product-actions" v-if="productItem.product_quantity > 0">
       <ion-button @click="addToCart(productItem, 1)" size="small" color="light">

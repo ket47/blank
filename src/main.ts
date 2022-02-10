@@ -27,17 +27,18 @@ import '@ionic/vue/css/display.css';
 import './theme/variables.css';
 import './theme/core.css';
 
-import User from './scripts/User.js'
-
+import User from '@/scripts/User.js'
+import Order from '@/scripts/Order.js'
 import jQuery from "jquery";
 
 const app = createApp(App)
   .use(IonicVue)
   .use(router)
   .use(store);
+app.provide("$Order",Order);
+//app.config.globalProperties.$Order = Order;
 
 app.component('base-layout', BaseLayout);
-
 if(localStorage.sessionId){
   jQuery.ajaxSetup({
     beforeSend: function(xhr) {
@@ -61,5 +62,3 @@ User.get(function(result){
     }
   }
 });
-
-  

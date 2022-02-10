@@ -13,18 +13,28 @@ var cart = {
         total: 0
     }
 }
-if(localStorage.tezkelCart){
+if(localStorage.tezkelCart){//?????
     cart = JSON.parse(localStorage.tezkelCart);
 }
+// if(localStorage.cartList){//?????
+//     cartList = JSON.parse(localStorage.cartList);
+// }
 
 const store = createStore({
     state() {
         return {
-            hostname: "https://api.tezkel.com/",
+            hostname: "https://tezkel.local/",
+            app_title: "Тезкель",
             sessionId: sessionId,
             errorMessage: false,
             user: user,
-            cart: cart
+            cart: cart,//???
+            deliverySettings:{
+                courierVelocity:30000,// (30km/h),
+                deliveryTimeDelta:5,//5minutes
+                fee:120
+            },
+            currencySign:"₽"
         }
     }, 
     getters: {
@@ -37,8 +47,26 @@ const store = createStore({
         userIsLogged(state){
             return state.user.user_id > -1;
         },
-        cartGet(state){
+        cartGet(state){//?????
             return state.cart;
+        },
+        cartListRestore(){
+            const cartLastDays=3;
+            let date=new Date();
+            date.setDate(date.getDate()-cartLastDays)
+            let older=date.toISOString();
+            let cartList=[];
+            if(localStorage.cartList){
+                cartList = JSON.parse(localStorage.cartList);
+            }
+            if(cartList && cartList.length){
+                for(let order_id in cartList){
+                    if(cartList[order_id] && cartList[order_id].created_at<older ){
+                        delete cartList[order_id];
+                    }
+                }
+            }
+            return cartList;
         }
     },
     mutations: {
@@ -53,14 +81,18 @@ const store = createStore({
         setUser (state, userData) {
             state.user = userData;
         },
-        setcurrentStore (state, storeData) {
+        setCurrentStore (state, storeData) {
             state.currentStore = storeData;
         },
-        setCart (state, cart) {
+        setCart (state, cart) {//????
             state.cart = cart;
             localStorage.tezkelCart = JSON.stringify(cart);
+        },
+        cartListStore(state, cartList){
+            state.cartList=cartList;
+            localStorage.cartList = JSON.stringify(cartList);
         }
     }
 });
-
+store.state.cartList=store.getters.cartListRestore;
 export default store;

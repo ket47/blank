@@ -13,7 +13,7 @@ import { cart } from 'ionicons/icons';
 import { modalController } from '@ionic/vue';
 import CartBodyModal from '../components/CartBodyModal.vue'
 import store from '../store';
-import OrderScript from '../scripts/Order.js';
+//import OrderScript from '../scripts/Order.js';
 
 
 export default{
@@ -44,7 +44,7 @@ export default{
   },
   mounted(){
     if(store.state.user.user_id !== 0){
-      OrderScript.getUserOrders('cart');
+      //OrderScript.getUserOrders('cart');
     }
   }
 };

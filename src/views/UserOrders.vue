@@ -1,5 +1,12 @@
 <template>
   <base-layout page-title="Order" :page-default-back-link="'/user-dashboard'" page-class="orders-page">
+    
+        <order-slider></order-slider>
+
+
+
+
+
     <ion-segment  v-if="ordersEmptyCheck()">
         <ion-segment-button @click="segmentChanged($event)" :value="order_role" v-for="(order_list, order_role) in orderGroups" :key="order_role">
             <ion-label>{{ roleDef[order_role] }}</ion-label>
@@ -33,8 +40,12 @@
 <script>
 import jQuery from "jquery";
 
+  import OrderSlider from '../components/OrderSlider';
 
 export default{
+    components: {
+        OrderSlider
+    },
     data(){
         return {
             error: "",
@@ -47,9 +58,6 @@ export default{
                 'admin': 'Администратор'
             }
         }
-    },
-    computed:{
-        
     },
     methods: {
         segmentChanged($event){
