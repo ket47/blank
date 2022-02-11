@@ -10,8 +10,21 @@ const Order = {
         Order.cart.listSync();
     },
     api:{
-        itemCreate( request ){
-            return jQuery.post( store.state.hostname + "Order/itemCreate", request );
+        itemFilter(cart){
+            return {
+                order_id:cart.order_id,
+                order_store_id:cart.order_store_id,
+                order_description:cart.order_description,
+                entries:cart.entries
+            };
+        },
+        itemCreate( cart ){
+            let order=this.itemFilter(cart);
+            return jQuery.post( store.state.hostname + "Order/itemCreate", order );
+        },
+        itemUpdate( cart ){
+            let order=this.itemFilter(cart);
+            return jQuery.post( store.state.hostname + "Order/itemUpdate", JSON.stringify(order) );
         },
         listCartGet(){
             return jQuery.post( store.state.hostname + "Order/listCartGet" );
@@ -52,11 +65,8 @@ const Order = {
         },
         listSave(){
             store.commit('cartListStore',store.state.cartList);
-            Order.cart.listSync();
+            //Order.cart.listSync();
         },
-
-
-
 
         itemCreate(store_id,entries){
             let cart={
@@ -68,12 +78,37 @@ const Order = {
             store.commit('cartListStore',store.state.cartList);
             return store_id;
         },
+        itemSave(store_id,entries){
+            let existingOrder=this.itemGetByStoreId(store_id);
+
+            console.log('itemSave',existingOrder);
+
+
+            let cartList=store.state.cartList;
+            if( existingOrder ){
+                cartList[existingOrder.order_index].entries=existingOrder.data.entries.concat(entries||[]);
+                store.commit('cartListStore',cartList);
+                return true;
+            }
+            return this.itemCreate(store_id,entries);
+        },
+        itemGetByStoreId(store_id){
+            for(let i in store.state.cartList){
+                if( store.state.cartList[i].order_store_id==store_id ){
+                    return {
+                        data:store.state.cartList[i],
+                        order_index:i,
+                    };
+                }
+            }
+            return null;
+        },
         entryQuantityGet(product_id){
             let entry=this.entryGet(product_id);
-            if( !entry || !entry.data.product_quantity ){
+            if( !entry || !entry.data.entry_quantity ){
                 return 0;
             }
-            return parseFloat(entry.data.product_quantity)||0;
+            return parseFloat(entry.data.entry_quantity)||0;
         },
         entryGet(product_id){
             for(let i in store.state.cartList){
@@ -92,23 +127,18 @@ const Order = {
             }
             return null;
         },
-        entrySave(store_id,product_id,product_quantity,productItem){
-            if( Order.cart.entryUpdate(product_id,product_quantity) ){
+        entrySave(store_id,entry){
+            if( Order.cart.entryUpdate(entry) ){
                 return true;
             }
-            let entry={
-                product_id,
-                product_quantity,
-                product_price:productItem.product_price,
-                product_name:productItem.product_name
-            };
-            Order.cart.itemCreate(store_id,[entry]);
+            Order.cart.itemSave(store_id,[entry]);
             Order.cart.listSave();
         },
-        entryUpdate(product_id,product_quantity){
-            let entry=Order.cart.entryGet(product_id);
-            if(entry){
-                store.state.cartList[entry.order_index].entries[entry.entry_index].product_quantity=product_quantity;
+        entryUpdate(entry){
+            let entryOld=Order.cart.entryGet(entry.product_id);
+            if(entryOld){
+                entry=Object.assign(entryOld.data,entry);
+                store.state.cartList[entryOld.order_index].entries[entryOld.entry_index]=entry;
                 store.commit('cartListStore',store.state.cartList);
                 if( entry.entry_id ){
                     Order.api.entryUpdate(entry);
@@ -117,114 +147,6 @@ const Order = {
             }
             return false;
         }
-    },
-
-
-
-
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*
-    getUserOrders: function(mode){
-        var group_ids = '';
-        if(mode == 'cart'){
-            group_ids = '24,32';
-        }
-        var self = this;
-        jQuery.post( store.state.hostname + "Order/listGet", {order_group_id: group_ids} )
-            .done(function(order_list) {
-                for(var i in order_list){
-                    self.getOrderDetails(order_list[i].order_id);
-                }
-            })
-            .fail();
-    },
-    getOrderDetails: function(order_id){
-        jQuery.post( store.state.hostname + "Order/itemGet", {order_id: order_id})
-            .done(function(order) {
-                var order_index = Object.keys(store.state.cart.orders).find(key => store.state.cart.orders[key].order_store_id === order.order_store_id);
-                if(order_index && order_index !== false){
-                    store.state.cart.orders[order_index] = order;
-                    store.commit('setCart', store.state.cart);
-                } else {
-                    console.log(store.state.cart);
-                    store.state.cart.orders.push(order);
-                    store.commit('setCart', store.state.cart);
-                }
-                
-            })
-            .fail();
-    },
-    orderCreate(store_id, callback){
-        jQuery.post( store.state.hostname + "Order/itemCreate", {order_store_id: store_id})
-          .done(function(order_id) {
-              return callback(order_id);
-          })
-          .fail(function() {
-              return callback(false);
-        });
-      },
-      orderGet(order_id, callback){
-        jQuery.post( store.state.hostname + "Order/itemGet", {order_id: order_id})
-          .done(function(order) {
-              return callback(order);
-          })
-          .fail(function() {
-              return callback({});
-        });
-      },
-      orderProductCreate(order_id, product, callback){
-        jQuery.post( store.state.hostname + "Entry/itemCreate", {order_id: order_id, product_id: product.product_id, product_quantity: product.product_quantity})
-          .done(function(entry_id) {
-              return callback(entry_id);
-          })
-          .fail(function() {
-              return callback(false);
-        });
-      },
-      orderProductUpdate(product, callback){
-        jQuery.post( store.state.hostname + "Entry/itemUpdate", JSON.stringify(product))
-          .done(function(ok) {
-              return callback(ok);
-          })
-          .fail(function() {
-              return callback(false);
-        });
-      },
-      orderProductDelete(entry_id, callback){
-        jQuery.post( store.state.hostname + "Entry/itemDelete", {entry_id: entry_id})
-          .done(function(ok) {
-              return callback(ok);
-          })
-          .fail(function() {
-              return callback(false);
-        });
-      },*/
-    
+    }
 }
 export default Order;

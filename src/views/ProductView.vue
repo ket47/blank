@@ -5,10 +5,11 @@
 .product-footer{
   position: fixed;
   bottom: 0;
+  z-index: 2;
   width: 100%;
 }
 .product-footer-palceholder{
-  height: 60px;
+  height: 10px;
 }
 .product-footer-section{
   background-color:var(--ion-color-primary-tint);
@@ -23,7 +24,7 @@
 
 <template>
   <base-layout :page-default-back-link="'/store-'+productItem.store_id" page-class="product-page" :cartComponent="CartHeader">
-    <ion-content>
+
       <image-slider :imageList="productItem.images" :imgWidth="700" :imgHeight="500" :maxHeight="300" :key="sliderKey"/>
       <ion-card>
         <ion-card-header>
@@ -55,19 +56,20 @@
       </ion-card>
 
       <section class="product-footer-section" v-if="productItem.product_quantity > 0">
-        <ion-textarea placeholder="Заметка для продавца" rows="5"></ion-textarea>
+        <cart-item-comment :productId="productId"></cart-item-comment>
         <div class="product-footer-palceholder"></div>
       </section>
       <section class="product-footer" v-if="productItem.product_quantity > 0">
         <cart-item-subtotal :productId="productId" :productItem="productItem"></cart-item-subtotal>
       </section>
-    </ion-content>
+
   </base-layout>
 </template>
 
 <script>
 import imageSlider      from '@/components/imageSlider'
 import CartAddButtons   from '@/components/CartAddButtons'
+import CartItemComment  from '@/components/CartItemComment'
 import CartItemSubtotal from '@/components/CartItemSubtotal'
 import CartHeader       from '@/components/CartHeader'
 import jQuery           from "jquery";
@@ -78,6 +80,7 @@ export default  {
   components: { 
     imageSlider,
     CartAddButtons,
+    CartItemComment,
     CartItemSubtotal,
     CartHeader
   },

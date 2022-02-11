@@ -1,6 +1,7 @@
 
 import jQuery from "jquery";
 import store from '../store';
+import Order from '@/scripts/Order';
 
 const User = {
     get: function(callback){
@@ -14,6 +15,7 @@ const User = {
                     xhr.setRequestHeader('x-sid',  sid);
                 }
             })
+            Order.cart.listSync();
             return callback({success: true, message: ''});
         })
         .fail(function(err) {

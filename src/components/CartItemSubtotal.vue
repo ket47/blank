@@ -13,11 +13,11 @@ export default{
   computed:{
     cartEntry(){
       let productInCart=this.$Order.cart.entryGet(this.productId);
-      if( !productInCart || !productInCart.data.product_quantity ){
+      if( !productInCart || !productInCart.data.entry_quantity ){
         return null;
       }
-      let price=productInCart.data.product_price||0;
-      let quantity=productInCart.data.product_quantity||0;
+      let price=productInCart.data.entry_price||0;
+      let quantity=productInCart.data.entry_quantity||0;
       let sum=Math.round(price*quantity*100)/100;
       return {
         quantity,

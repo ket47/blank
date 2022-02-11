@@ -75,6 +75,7 @@ export default {
         var main_address=store.state.user.location_main;
         if(!main_address){
             console.log('what to do address not set!!!');
+            return ;
         }
         let self=this;
         return jQuery.get(store.state.hostname + "Store/primaryNearGet",{location_id:main_address.location_id})

@@ -72,7 +72,8 @@ export default{
   data() {
     let productQuantityInCart=this.$Order.cart.entryQuantityGet(this.productId);
     return { 
-      productQuantityInCart
+      productQuantityInCart,
+      clock:null
     };
   },
   mounted(){
@@ -116,9 +117,21 @@ export default{
         }
         let store_id=this.productItem.store_id;
         let product_id=this.productItem.product_id;
+        let entry={
+          product_id,
+          entry_quantity:newQuantity,
+          entry_price:this.productItem.product_final_price,
+          product_name:this.productItem.product_name,
+          product_unit:this.productItem.product_unit,
+        };
         this.productQuantityInCart=newQuantity;
-        this.$Order.cart.entrySave(store_id,product_id,this.productQuantityInCart,this.productItem);
         this.productListItemHighlight();
+
+        let self=this;
+        clearTimeout(self.clock);
+        self.clock=setTimeout(()=>{
+          self.$Order.cart.entrySave(store_id,entry);
+        },500);
         return true;
       }
       return false;

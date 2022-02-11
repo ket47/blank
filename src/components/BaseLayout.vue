@@ -3,14 +3,9 @@
     <ion-header :class="[pageClass]">
       <ion-toolbar>
         <ion-buttons slot="start">
-          <ion-back-button
-            :default-href="pageDefaultBackLink"
-          ></ion-back-button>
+          <ion-back-button :default-href="pageDefaultBackLink"></ion-back-button>
         </ion-buttons>
-        <ion-img
-          class="toolbar_logo"
-          src="./assets/icon/tezkel_logo.png"
-        ></ion-img>
+        <ion-img class="toolbar_logo" src="./assets/icon/tezkel_logo.png"></ion-img>
         <component v-bind:is="cartComponent" slot="end"></component>
       </ion-toolbar>
       <ion-title v-if="pageTitle" style="height: 40px; text-align: center; color: var(--ion-color-medium)">{{ pageTitle }}</ion-title>

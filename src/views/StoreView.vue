@@ -5,20 +5,6 @@
   background-color: var(--ion-background);
   position: relative;
 }
-.store-description-- {
-  visibility: visible;
-  color: #6f6e6e;
-  font-size: 15px;
-}
-.store-subinfo-- {
-  visibility: visible;
-  color: #979797;
-  font-size: 13px;
-  font-weight: bold;
-}
-.store-block-- {
-  position: relative;
-}
 
 .groups-container ion-chip {
   border-radius: 10px;
@@ -109,9 +95,6 @@
 .group-title {
   text-align: left;
 }
-.group-title label {
-}
-
 .group-fixed-block {
   position: fixed;
   top: 56px;
@@ -124,17 +107,17 @@
   display: none;
 }
 ion-segment {
-  --background: var(--ion-bacground-primary-dark);
+  --background: var(--ion-background-primary-dark);
 }
 ion-segment-button {
-  --color-checked: #ffc809;
+  --color-checked: var(--ion-color-secondary);
   --indicator-height: 3px;
 }
 ion-segment ion-label {
   color: white;
 }
-ion-chip.active-chip {
-  background-color: #256fe7;
+ion-chip .active-chip {
+  background-color: var(--ion-color-secondary);
   color: white;
   border: none;
 }
@@ -285,10 +268,6 @@ ion-chip.active-chip {
     </div>
   </base-layout>
 </template>
-
-
-
-
 <script>
 import { search, settingsSharp } from "ionicons/icons";
 import ImageSlider from "../components/imageSlider";
