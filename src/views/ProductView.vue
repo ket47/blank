@@ -1,32 +1,32 @@
 <style scoped>
-.product-title{
-  font-size: 2em;
-}
-.product-footer{
-  position: fixed;
-  bottom: 0;
-  z-index: 2;
-  width: 100%;
-}
-.product-footer-palceholder{
-  height: 10px;
-}
-.product-footer-section{
-  background-color:var(--ion-color-primary-tint);
-  border-top:1px solid var(--ion-color-primary-shade);
-  margin-top: 15px;
-  padding: 20px;
-}
-.product-footer-section ion-textarea{
-  border: 1px solid var(--ion-color-primary-shade);
-}
+  .product-title{
+    font-size: 2em;
+  }
+  .product-footer{
+    position: fixed;
+    bottom: 0;
+    z-index: 2;
+    width: 100%;
+  }
+  .product-footer-palceholder{
+    height: 10px;
+  }
+  .product-footer-section{
+    background-color:var(--ion-color-primary-tint);
+    border-top:1px solid var(--ion-color-primary-shade);
+    margin-top: 15px;
+    padding: 20px;
+  }
+  .product-footer-section ion-textarea{
+    border: 1px solid var(--ion-color-primary-shade);
+  }
 </style>
 
 <template>
   <base-layout :page-default-back-link="'/store-'+productItem.store_id" page-class="product-page" :cartComponent="CartHeader">
 
       <image-slider :imageList="productItem.images" :imgWidth="700" :imgHeight="500" :maxHeight="300" :key="sliderKey"/>
-      <ion-card>
+      <ion-card v-if="productItem.product_id">
         <ion-card-header>
           <ion-card-title>
           {{ productItem.product_name }}
@@ -38,17 +38,17 @@
           <div style="display:grid;grid-template-columns:1fr auto;height:50px">
             <div style="align-items:center">
               <span v-if="productItem.product_price!=productItem.product_final_price" style="color:var(--ion-color-danger)">
-                  <s>{{productItem.product_price}}{{$store.state.currencySign}}</s>&nbsp;&nbsp;
+                  <s>{{productItem.product_price}}{{$heap.state.currencySign}}</s>&nbsp;&nbsp;
               </span>
               <span style="color:var(--ion-color-primary)">
-                  {{productItem.product_final_price}}{{$store.state.currencySign}}
+                  {{productItem.product_final_price}}{{$heap.state.currencySign}}
               </span> / 
               <span style="color:var(--ion-color-medium)">
                   {{productItem.product_unit}}
               </span>
             </div>
             <div style="position:relative;width:110px;">
-              <cart-add-buttons buttonLayout="horizontal" :productId="productId" :productItem="productItem" :productQtyStep="productItem.product_quantity_min||1"></cart-add-buttons>
+              <cart-add-buttons buttonLayout="horizontal" :productItem="productItem" style="right:0px"></cart-add-buttons>
             </div>
           </div>
           <ion-note>{{productItem.product_description}}</ion-note>
@@ -73,7 +73,7 @@ import CartItemComment  from '@/components/CartItemComment'
 import CartItemSubtotal from '@/components/CartItemSubtotal'
 import CartHeader       from '@/components/CartHeader'
 import jQuery           from "jquery";
-import store            from '@/store';
+import heap            from '@/heap';
 
 export default  {
   inject:['$Order'],
@@ -96,7 +96,7 @@ export default  {
   methods: {
       getProduct(){
           var self = this;
-          jQuery.post( store.state.hostname + "Product/itemGet", { product_id: self.productId })
+          jQuery.post( heap.state.hostname + "Product/itemGet", { product_id: self.productId })
               .done(function(response) {
                   self.productItem = self.prepareProduct(response);
                   self.productId = response.product_id;

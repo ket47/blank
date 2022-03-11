@@ -15,7 +15,7 @@
           <ion-avatar>
             <img
               :src="
-                $store.state.hostname +
+                $heap.state.hostname +
                 'img/avatar/' +
                 user.user_avatar_name +
                 '.png'
@@ -117,7 +117,7 @@ import {
 
 import User from "../scripts/User.js";
 
-import store from "../store";
+import heap from "../heap";
 
 export default {
   name: "UserDashboard",
@@ -144,12 +144,12 @@ export default {
   data() {
     return {
       error: "",
-      user: store.state.user,
+      user: heap.state.user,
     };
   },
   computed: {
     isSignedIn() {
-      return store.state.user.user_id && store.state.user.user_id > -1;
+      return heap.state.user.user_id && heap.state.user.user_id > -1;
     },
   },
   methods: {
@@ -165,7 +165,7 @@ export default {
   watch: {
     $route(to, from) {
       if (to.path != from.path) {
-        this.user = store.state.user;
+        this.user = heap.state.user;
       }
     },
   },

@@ -1,15 +1,15 @@
 
 import jQuery from "jquery";
-import store from '../store';
+import heap from '../heap';
 import Order from '@/scripts/Order';
 
 const User = {
     get: function(callback){
-        jQuery.post( store.state.hostname + "User/itemGet")
+        jQuery.post( heap.state.hostname + "User/itemGet")
         .done(function(response, textStatus, request){
             var sid = request.getResponseHeader('x-sid');
-            store.commit('setSessionId', sid);
-            store.commit('setUser', response);
+            heap.commit('setSessionId', sid);
+            heap.commit('setUser', response);
             jQuery.ajaxSetup({ 
                 beforeSend: function(xhr) {
                     xhr.setRequestHeader('x-sid',  sid);
@@ -23,7 +23,7 @@ const User = {
         });
     },
     signIn: function(requestData, callback){
-        jQuery.post( store.state.hostname + "User/signIn", requestData)
+        jQuery.post( heap.state.hostname + "User/signIn", requestData)
         .done(function() {
             localStorage.signInData = JSON.stringify(requestData);
             return callback({success: true, message: ''});
@@ -33,11 +33,11 @@ const User = {
       });
     },
     signOut: function(callback){
-        jQuery.post( store.state.hostname + "User/signOut", {})
+        jQuery.post( heap.state.hostname + "User/signOut", {})
         .done(function() {
             localStorage.removeItem('signInData');
-            store.commit('setUser', {user_id: false});
-            store.commit('setSessionId', false);
+            heap.commit('setUser', {user_id: false});
+            heap.commit('setSessionId', false);
             return callback({success: true, message: ''});
         })
         .fail(function(err) {
@@ -45,13 +45,16 @@ const User = {
       });
     },
     signUp: function(requestData, callback){
-        jQuery.post( store.state.hostname + "User/signUp", requestData)
+        jQuery.post( heap.state.hostname + "User/signUp", requestData)
         .done(function() {
             return callback({success: true, message: ''});
         })
         .fail(function(err) {
             return callback({success: false, message: err});
       });
+    },
+    isOnline:function(){
+        return 1;//should check connection and login status
     }
 }
 

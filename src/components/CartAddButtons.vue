@@ -5,15 +5,21 @@
     align-items: center;
     justify-content: space-between;
     position: absolute;
-    left: 0;
-    top: 0;
+    left: 0px;
+    top: 0px;
 
-    background-color: var(--ion-color-light);
     border-radius: 10px;
-    box-shadow: 1px 1px 5px #00000036;
+    overflow: hidden;
     width: auto;
-    transition: all .3s ease;
+    transition: all 0.3s ease;
     font-weight: bold;
+  }
+  .product-actions  ion-button{
+    box-shadow: none;
+    height: 45px;
+    --border-radius: 10px;
+    --box-shadow: none;
+    margin: 0px;
   }
   .product-actions ion-label{
     cursor:pointer;
@@ -28,7 +34,8 @@
     flex-flow: row-reverse;
   }
   .incart{
-    border:1px solid var(--ion-color-primary);
+    -border:1px solid var(--ion-color-primary);
+    background-color: var(--ion-color-light);
   }
   .sold{
     display: none;
@@ -37,20 +44,19 @@
 </style>
 
 <template>
-    <div :class="`product-actions ${buttonLayout} ${productQuantityInCart>0?'incart':''} ${productItem.product_quantity>0?'':'sold'}`">
+    <div :class="`product-actions ${buttonLayout} ${this.currentQuantity>0?'incart':''} ${this.productData.product_quantity>0?'':'sold'}`">
       
-      <ion-button v-if="!productQuantityInCart" @click="addToCart(+productQtyStep)" size="small" color="primary">
+      <ion-button v-if="!this.currentQuantity" @click="addToOrder(+this.productData.product_quantity_min)" size="small" color="primary">
         <ion-icon :icon="add" color="light"></ion-icon>
       </ion-button>
       
-      
-      <ion-button v-if="productQuantityInCart>0" @click="addToCart(+productQtyStep)" size="small" color="light">
+      <ion-button v-if="this.currentQuantity>0" @click="addToOrder(+this.productData.product_quantity_min)" size="small" color="light">
         <ion-icon :icon="add" color="primary"></ion-icon>
       </ion-button>
-      <ion-label v-if="productQuantityInCart>0" color="primary" @click="setInCart()">{{ productQuantityInCart }}</ion-label>
-      <ion-button v-if="productQuantityInCart>0" @click="addToCart(-productQtyStep)" size="small" color="light">
-        <ion-icon :icon="remove" v-if="productQuantityInCart>productQtyStep" color="primary"></ion-icon>
-        <ion-icon :icon="trash" v-if="productQuantityInCart==productQtyStep" color="primary"></ion-icon>
+      <ion-label v-if="this.currentQuantity>0" color="primary" @click="setInOrder()">{{ this.currentQuantity }}</ion-label>
+      <ion-button v-if="this.currentQuantity>0" @click="addToOrder(-this.productData.product_quantity_min)" size="small" color="light">
+        <ion-icon :icon="remove" v-if="this.currentQuantity>this.productData.product_quantity_min" color="primary"></ion-icon>
+        <ion-icon :icon="trash" v-if="this.currentQuantity<=this.productData.product_quantity_min" color="primary"></ion-icon>
       </ion-button>
     </div>
 </template>
@@ -58,9 +64,10 @@
 <script>
 import { add, remove, trash, cart } from 'ionicons/icons';
 import { toastController } from '@ionic/vue';
+import heap from '@/heap';
 export default{
   inject:["$Order"],
-  props:['productId','productItem','productQtyStep','buttonLayout'],
+  props:['productItem','entry','orderData','buttonLayout'],
   setup() {
     return {
       add,
@@ -70,10 +77,20 @@ export default{
     }
   },
   data() {
-    let productQuantityInCart=this.$Order.cart.entryQuantityGet(this.productId);
+    let order_store_id=0;
+    let productData=(this.entry||this.productItem);
+    productData.product_quantity_min= productData.product_quantity_min | 1;
+
+    if( this.productItem ){
+      productData.entry_quantity=0;
+      order_store_id=this.productItem.store_id;
+    } else {
+      order_store_id=this.orderData.order_store_id;
+    }
+
     return { 
-      productQuantityInCart,
-      clock:null
+      order_store_id,
+      productData
     };
   },
   mounted(){
@@ -81,60 +98,56 @@ export default{
   },
   methods:{
     productListItemHighlight(){
-      let product_list_item=document.getElementById(`product_list_item${this.productItem.product_id}`);
+      let product_list_item=document.getElementById(`product_list_item${this.productData.product_id}`);
       if(!product_list_item){
         return;
       }
-      if(this.productQuantityInCart){
+      if(this.currentQuantity){
         product_list_item.classList.add("incart");
       } else {
         product_list_item.classList.remove("incart");
       }
-      
     },
-    addToCart(step){
-      let newQuantity=this.productQuantityInCart*1+step*1;
-      if( !this.productItem || (this.productQuantityInCart+step<0) ){
+    addToOrder(step){
+      let newQuantity=this.currentQuantity*1+step*1;
+      if( !this.productItem && !this.entry ){
         return;//haven't loaded yet or qty is negative
       }
-      return this.updateCart(newQuantity);
+      if(this.currentQuantity+step<0){
+        newQuantity=0;
+      }
+      return this.updateOrder(newQuantity);
     },
-    setInCart(){
-      let newQuantity=parseFloat( prompt("Введите количество",this.productQuantityInCart) );
+    setInOrder(){
+      let newQuantity=parseFloat( prompt("Введите количество",this.currentQuantity) );
       if(newQuantity==null || isNaN(newQuantity)){
         return;
       }
-      return this.updateCart(newQuantity);
+      return this.updateOrder(newQuantity);
     },
-    updateCart(newQuantity){
-      if(this.productItem && newQuantity>=0){
-        let product_quantity_min=this.productItem.product_quantity_min||1;
-        newQuantity=product_quantity_min*Math.round(newQuantity/product_quantity_min);
-
-        if( this.productItem.is_produced==0 && newQuantity>this.productItem.product_quantity ){
-          this.flash(`В наличии есть только ${this.productItem.product_quantity}${this.productItem.product_unit}`);
-          newQuantity=this.productItem.product_quantity;
-        }
-        let store_id=this.productItem.store_id;
-        let product_id=this.productItem.product_id;
-        let entry={
-          product_id,
-          entry_quantity:newQuantity,
-          entry_price:this.productItem.product_final_price,
-          product_name:this.productItem.product_name,
-          product_unit:this.productItem.product_unit,
-        };
-        this.productQuantityInCart=newQuantity;
-        this.productListItemHighlight();
-
-        let self=this;
-        clearTimeout(self.clock);
-        self.clock=setTimeout(()=>{
-          self.$Order.cart.entrySave(store_id,entry);
-        },500);
-        return true;
+    updateOrder(newQuantity){
+      if( newQuantity<0 || !newQuantity ){
+        newQuantity=0;
       }
-      return false;
+      newQuantity=this.productData.product_quantity_min*Math.round(newQuantity/this.productData.product_quantity_min);
+      if( this.productData.is_produced==0 && newQuantity>this.productData.product_quantity ){
+        this.flash(`В наличии есть только ${this.productData.product_quantity}${this.productData.product_unit}`);
+        newQuantity=this.productData.product_quantity;
+      }
+      let stock_product_quantity=this.productItem?this.productItem.product_quantity:this.productData.product_quantity;
+      let entry={
+        product_id:this.productData.product_id,
+        product_unit:this.productData.product_unit,
+        product_quantity:stock_product_quantity,
+        is_produced:this.productData.is_produced,
+        entry_quantity:newQuantity,
+        entry_price:this.productData.product_final_price||this.productData.entry_price,
+        entry_text:this.productData.product_name||this.productData.entry_text,
+        image_hash:this.productData.image_hash||''
+      };
+      this.productData.entry_quantity=newQuantity;
+      this.$Order.cart.entrySave(this.order_store_id,entry);
+      this.productListItemHighlight();
     },
     async flash( message ) {
       const toast = await toastController
@@ -144,7 +157,17 @@ export default{
           color:'dark'
         })
       return toast.present();
-    },
-  }
+    }
+  },
+  computed:{
+    currentQuantity(){
+      if( this.productItem ){
+        //If buttons are in storeview
+        return heap.state.cartProductWatchList[this.productData.product_id]||0;
+      }
+      //if buttons are in orderview or cartview
+      return this.productData.entry_quantity;
+    }
+  },
 }
 </script>

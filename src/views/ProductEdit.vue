@@ -108,7 +108,7 @@
 
 <script>
 import jQuery from "jquery";
-import store from '../store';
+import heap from '../heap';
 import imageSlider from '../components/imageSlider'
 
 import '../theme/form.css';
@@ -146,7 +146,7 @@ export default  {
       var requestData = {};
       requestData.product_id = this.productId;
       requestData[field_name] = field_value;
-      jQuery.post( store.state.hostname + "Product/itemUpdate", JSON.stringify(requestData))
+      jQuery.post( heap.state.hostname + "Product/itemUpdate", JSON.stringify(requestData))
         .done(function() {
             self.error = '';
             self.getProduct();
@@ -157,7 +157,7 @@ export default  {
     },
     getProduct(){
         var self = this;
-        jQuery.post( store.state.hostname + "Product/itemGet", { product_id: self.productId })
+        jQuery.post( heap.state.hostname + "Product/itemGet", { product_id: self.productId })
             .done(function(response) {
                 self.error = '';
                 self.fields = response;
@@ -169,7 +169,7 @@ export default  {
     },
     getStoreGroupTree(){
         var self = this;
-        jQuery.post( store.state.hostname + "Product/groupTreeGet", {store_id: self.fields.store_id})
+        jQuery.post( heap.state.hostname + "Product/groupTreeGet", {store_id: self.fields.store_id})
             .done(function(response) {
                 self.error = '';
                 self.storeGroups = response;
@@ -189,7 +189,7 @@ export default  {
       data.set("image_holder_id", this.storeId); 
       jQuery.ajax(
           {
-            url : store.state.hostname + "Product/fileUpload",
+            url : heap.state.hostname + "Product/fileUpload",
             type: "POST",
             data : data,
             processData: false,

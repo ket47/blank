@@ -8,14 +8,14 @@
               </ion-list-header>
               <ion-item>
                 <ion-thumbnail>
-                  <img :src="$store.state.hostname+'img/avatar/man.png'" />
+                  <img :src="$heap.state.hostname+'img/avatar/man.png'" />
                 </ion-thumbnail>
                 <ion-label>Муж.</ion-label>
                 <ion-radio value="man" @ionFocus="save('user_avatar_name', $event.target.value)"></ion-radio>
               </ion-item>
               <ion-item>
                 <ion-thumbnail>
-                  <img :src="$store.state.hostname+'img/avatar/woman.png'" />
+                  <img :src="$heap.state.hostname+'img/avatar/woman.png'" />
                 </ion-thumbnail>
                 <ion-label>Жен.</ion-label>
                 <ion-radio value="woman" @ionFocus="save('user_avatar_name', $event.target.value)"></ion-radio>
@@ -104,7 +104,7 @@
 <script>
 import router from '../router';
 import jQuery from "jquery";
-import store from '../store';
+import heap from '../heap';
 
 import '../theme/form.css';
 
@@ -117,7 +117,7 @@ export default  {
       config: {
         phoneMask: '+0(000)-000-00-00'
       },
-      fields: store.state.user,
+      fields: heap.state.user,
       modalOpen: false
     }
   },
@@ -137,9 +137,9 @@ export default  {
         field_value = field_value.replace(/\D/g,"");
       }
       var requestData = {};
-      requestData.user_id = store.state.user.user_id;
+      requestData.user_id = heap.state.user.user_id;
       requestData[field_name] = field_value;
-      jQuery.post( store.state.hostname + "User/itemUpdate", JSON.stringify(requestData))
+      jQuery.post( heap.state.hostname + "User/itemUpdate", JSON.stringify(requestData))
         .done(function(response) {
             console.log(response);
             self.getUserData();
@@ -150,9 +150,9 @@ export default  {
     },
     getUserData(){
       var self = this;
-      jQuery.post( store.state.hostname + "User/itemGet")
+      jQuery.post( heap.state.hostname + "User/itemGet")
         .done(function(response) {
-            store.commit('setUser', response);
+            heap.commit('setUser', response);
             self.fields = response;
         })
         .fail(function(err) {
@@ -161,7 +161,7 @@ export default  {
     },
     phoneVerify(){
       var self = this;
-      jQuery.post( store.state.hostname + "User/phoneVerificationSend", {user_phone: this.fields.user_phone.replace(/\D/g,"")})
+      jQuery.post( heap.state.hostname + "User/phoneVerificationSend", {user_phone: this.fields.user_phone.replace(/\D/g,"")})
         .done(function() {
             router.push({name: 'UserVerifyPhone', params: {phone: self.fields.user_phone.replace(/\D/g,"")}});
         })
@@ -196,7 +196,7 @@ export default  {
   watch: {
     '$route' (to, from) {
       if(to.path != from.path) { 
-        this.fields = store.state.user
+        this.fields = heap.state.user
       }
     }
   }

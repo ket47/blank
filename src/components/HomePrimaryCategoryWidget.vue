@@ -11,7 +11,7 @@
         <div id="hcat_widget_grid">
             <div v-for="group in productGroupList" :key="group.group_id">
                 <ion-thumbnail >
-                    <ion-img style="border-radius:10px;border:1px solid #ddd" :src="$store.state.hostname + 'image/get.php/'+group.image_hash+'.150.150.webp'"/>
+                    <ion-img style="border-radius:10px;border:1px solid #ddd" :src="$heap.state.hostname + 'image/get.php/'+group.image_hash+'.150.150.webp'"/>
                 </ion-thumbnail>
                 <ion-label style="height:2em;text-align:center">{{group.group_name}}</ion-label>
             </div>
@@ -53,7 +53,7 @@
 
 <script>
 //import { IonIcon } from "@ionic/vue";
-import store from "../store";
+import heap from "@/heap";
 import jQuery from "jquery";
 
 export default {
@@ -72,13 +72,13 @@ export default {
   },
   methods: {
     productGroupListGet() {
-        var main_address=store.state.user.location_main;
+        var main_address=heap.state.user.location_main;
         if(!main_address){
             console.log('what to do address not set!!!');
             return ;
         }
         let self=this;
-        return jQuery.get(store.state.hostname + "Store/primaryNearGet",{location_id:main_address.location_id})
+        return jQuery.get(heap.state.hostname + "Store/primaryNearGet",{location_id:main_address.location_id})
         .done(function(primaryStore){
             self.productGroupList=primaryStore.category_list;
             self.storeDataCalculate(primaryStore);
@@ -90,8 +90,8 @@ export default {
     },
     storeDataCalculateDeliveryTime(Store){
       var preparation=Store.store_time_preparation||0;
-      var delta=store.state.deliverySettings.deliveryTimeDelta;
-      var time=Math.round(Store.distance/store.state.deliverySettings.courierVelocity*60/5)*5+parseInt(preparation);
+      var delta=heap.state.deliverySettings.deliveryTimeDelta;
+      var time=Math.round(Store.distance/heap.state.deliverySettings.courierVelocity*60/5)*5+parseInt(preparation);
       var timeMin=time>delta?time-delta:time;
       var timeMax=timeMin+delta;
       Store.deliveryTime=time;
@@ -101,10 +101,10 @@ export default {
   },
   computed: {
     isSignedIn() {
-      return store.state.user.user_id && store.state.user.user_id > -1;
+      return heap.state.user.user_id && heap.state.user.user_id > -1;
     },
     isMainLocationSet() {
-      return store.state.user && store.state.user.location_main;
+      return heap.state.user && heap.state.user.location_main;
     },
   },
 };

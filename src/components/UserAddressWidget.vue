@@ -1,6 +1,6 @@
 <template>
     <ion-item v-if="isMainLocationSet" detail button @click="selectDeliveryAddress()">
-      <ion-img slot="start" :src="$store.state.hostname + 'image/get.php/'+user.location_main.image_hash+'.24.24.webp'"/>
+      <ion-img slot="start" :src="$heap.state.hostname + 'image/get.php/'+user.location_main.image_hash+'.24.24.webp'"/>
       <ion-label>{{user.location_main.location_address}} </ion-label>
     </ion-item>
     <ion-item v-else detail button @click="selectDeliveryAddress()">
@@ -16,7 +16,7 @@
 <script>
 import { IonIcon } from "@ionic/vue";
 import { location } from "ionicons/icons";
-import store from "../store";
+import heap from "../heap";
 import router from '../router';
 
 export default {
@@ -30,7 +30,7 @@ export default {
   data() {
     return {
       error: "",
-      user: store.state.user,
+      user: heap.state.user,
     };
   },
   methods: {
@@ -40,10 +40,10 @@ export default {
   },
   computed: {
     isSignedIn() {
-      return store.state.user.user_id && store.state.user.user_id > -1;
+      return heap.state.user.user_id && heap.state.user.user_id > -1;
     },
     isMainLocationSet(){
-        return store.state.user && store.state.user.location_main;
+        return heap.state.user && heap.state.user.location_main;
     }
   },
 };

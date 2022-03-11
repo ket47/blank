@@ -50,7 +50,7 @@
 
 import { search } from 'ionicons/icons';
 import jQuery from "jquery";
-import store from '../store';
+import heap from '../heap';
 import OrderScript from '../scripts/Order.js';
 import ProductAddButtons from '../components/ProductAddButtons'
 
@@ -72,14 +72,14 @@ export default  {
   methods: {
       getOrder(){
         var self = this;
-        jQuery.post( store.state.hostname + "Order/itemGet", {order_id: self.$route.params.id})
+        jQuery.post( heap.state.hostname + "Order/itemGet", {order_id: self.$route.params.id})
           .done(function(order) {
               self.order = order;
           });
       },
       stageCreate(new_stage){
         var self = this;
-        jQuery.post( store.state.hostname + "Order/itemStageCreate", {order_id: self.$route.params.id, new_stage: new_stage})
+        jQuery.post( heap.state.hostname + "Order/itemStageCreate", {order_id: self.$route.params.id, new_stage: new_stage})
           .done(function(success) {
             if(success){
               self.getOrder();
@@ -92,7 +92,7 @@ export default  {
       },
       entryRestore(entry_id){
         var self = this;
-        jQuery.post( store.state.hostname + "Entry/itemUnDelete", {entry_id: entry_id})
+        jQuery.post( heap.state.hostname + "Entry/itemUnDelete", {entry_id: entry_id})
           .done(function(success) {
             if(success){
               OrderScript.getUserOrders();

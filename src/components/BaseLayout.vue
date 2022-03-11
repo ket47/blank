@@ -2,11 +2,13 @@
   <ion-page>
     <ion-header :class="[pageClass]">
       <ion-toolbar>
-        <ion-buttons slot="start">
+        <ion-buttons slot="start" style="width:100px">
           <ion-back-button :default-href="pageDefaultBackLink"></ion-back-button>
         </ion-buttons>
         <ion-img class="toolbar_logo" src="./assets/icon/tezkel_logo.png"></ion-img>
-        <component v-bind:is="cartComponent" slot="end"></component>
+        <div slot="end" style="width:100px">
+          <cart-header slot="end"></cart-header>
+        </div>
       </ion-toolbar>
       <ion-title v-if="pageTitle" style="height: 40px; text-align: center; color: var(--ion-color-medium)">{{ pageTitle }}</ion-title>
     </ion-header>
@@ -16,7 +18,6 @@
       @ionScroll="contentOnScroll($event)"
     >
       <slot />
-      <ion-card></ion-card>
     </ion-content>
     <ion-footer>
       <ion-text color="danger">
@@ -36,6 +37,7 @@ import {
   IonBackButton,
   IonButtons,
 } from "@ionic/vue";
+import CartHeader from "@/components/CartHeader";
 
 export default {
   props: [
@@ -54,6 +56,7 @@ export default {
     IonContent,
     IonBackButton,
     IonButtons,
+    CartHeader
   },
 };
 </script>

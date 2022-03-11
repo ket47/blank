@@ -23,7 +23,7 @@
 <script>
 
 import { add, remove } from 'ionicons/icons';
-import store from '../store';
+import heap from '../heap';
 import OrderScript from '../scripts/Order.js';
 
 export default  {
@@ -66,9 +66,9 @@ export default  {
           entries: []
         };
         var self = this;
-        var order_index = Object.keys(store.state.cart.orders).find(key => store.state.cart.orders[key].order_store_id === store_id);
+        var order_index = Object.keys(heap.state.cart.orders).find(key => heap.state.cart.orders[key].order_store_id === store_id);
 
-        //var order_group_id = store.state.cart.orders[order_index].order_group_id;
+        //var order_group_id = heap.state.cart.orders[order_index].order_group_id;
         if(product.order_id){
           this.currentOrderId = product.order_id;
           return callback(true);
@@ -79,12 +79,12 @@ export default  {
               self.currentOrderId = order_id;
               order_object.order_id = order_id;
             } 
-            store.state.cart.orders.push(order_object);
-            store.commit('setCart', store.state.cart);
+            heap.state.cart.orders.push(order_object);
+            heap.commit('setCart', heap.state.cart);
             return callback(true);
           });
         } else {
-          this.currentOrderId = store.state.cart.orders[order_index].order_id;
+          this.currentOrderId = heap.state.cart.orders[order_index].order_id;
           return callback(false);
         }
       },
@@ -99,11 +99,11 @@ export default  {
           entry_quantity: quantity,
           entry_sum: product.product_final_price * quantity
         };
-        var store_index = Object.keys(store.state.cart.orders).find(key => store.state.cart.orders[key].order_store_id === product.store_id);
+        var store_index = Object.keys(heap.state.cart.orders).find(key => heap.state.cart.orders[key].order_store_id === product.store_id);
         if(!store_index){
-          store_index = Object.keys(store.state.cart.orders).find(key => store.state.cart.orders[key].order_id === product.order_id);
+          store_index = Object.keys(heap.state.cart.orders).find(key => heap.state.cart.orders[key].order_id === product.order_id);
         }
-        var order = store.state.cart.orders[store_index];
+        var order = heap.state.cart.orders[store_index];
         var product_index = Object.keys(order.entries).find(key => order.entries[key].product_id === product.product_id);
         if(order.entries[product_index]){
           entry = order.entries[product_index];
@@ -111,32 +111,32 @@ export default  {
           if(entry.entry_quantity <= 0){
             OrderScript.orderProductDelete(entry.entry_id, function(result){
               if(result){
-                delete store.state.cart.orders[store_index].entries[product_index];
-                store.commit('setCart', store.state.cart);
+                delete heap.state.cart.orders[store_index].entries[product_index];
+                heap.commit('setCart', heap.state.cart);
                 return callback(true);
               }
             });
           } else {
             OrderScript.orderProductUpdate(entry, function(result){
               if(result){
-                store.state.cart.orders[store_index].entries[product_index] = entry;
-                store.commit('setCart', store.state.cart);
+                heap.state.cart.orders[store_index].entries[product_index] = entry;
+                heap.commit('setCart', heap.state.cart);
                 return callback(true);
               } else {
                 entry.entry_quantity = entry.entry_quantity*1 - quantity;
-                store.state.cart.orders[store_index].entries[product_index] = entry;
-                store.commit('setCart', store.state.cart);
+                heap.state.cart.orders[store_index].entries[product_index] = entry;
+                heap.commit('setCart', heap.state.cart);
                 return callback(false);
               }
             });
           }
         } else {
-          entry.order_id = store.state.cart.orders[store_index].order_id;
-          OrderScript.orderProductCreate(store.state.cart.orders[store_index].order_id, entry, function(entry_id){
+          entry.order_id = heap.state.cart.orders[store_index].order_id;
+          OrderScript.orderProductCreate(heap.state.cart.orders[store_index].order_id, entry, function(entry_id){
             if(entry_id){
               entry.entry_id = entry_id;
-              store.state.cart.orders[store_index].entries.push(entry);
-              store.commit('setCart', store.state.cart);
+              heap.state.cart.orders[store_index].entries.push(entry);
+              heap.commit('setCart', heap.state.cart);
               return callback(true);
             } else {
               entry.entry_id = 0;
@@ -145,20 +145,20 @@ export default  {
         }
       },
       getCartProductQuantity(product){
-        if(!store.state.cart.orders || store.state.cart.orders.length == 0){
+        if(!heap.state.cart.orders || heap.state.cart.orders.length == 0){
           return 0;
         }
-        var store_index = Object.keys(store.state.cart.orders).find(key => store.state.cart.orders[key].order_store_id === product.store_id);
+        var store_index = Object.keys(heap.state.cart.orders).find(key => heap.state.cart.orders[key].order_store_id === product.store_id);
         if(!store_index){
-          store_index = Object.keys(store.state.cart.orders).find(key => store.state.cart.orders[key].order_id === product.order_id);
+          store_index = Object.keys(heap.state.cart.orders).find(key => heap.state.cart.orders[key].order_id === product.order_id);
         }
-        var order = store.state.cart.orders[store_index];
+        var order = heap.state.cart.orders[store_index];
         if(!order){
           return 0;
         }
         var product_index = Object.keys(order.entries).find(key => order.entries[key].product_id === product.product_id);
-        if(store.state.cart.orders[store_index] && store.state.cart.orders[store_index].entries[product_index]){
-          return store.state.cart.orders[store_index].entries[product_index].entry_quantity;
+        if(heap.state.cart.orders[store_index] && heap.state.cart.orders[store_index].entries[product_index]){
+          return heap.state.cart.orders[store_index].entries[product_index].entry_quantity;
         }
         return 0;
       }

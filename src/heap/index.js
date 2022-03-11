@@ -1,26 +1,10 @@
 import { createStore } from 'vuex'
-
-
-var user = {user_id: false};
-var sessionId = false;
+var user = {user_id: -1};
+var sessionId = null;
 if(localStorage.sessionId){
     sessionId = localStorage.sessionId;
 }
-var cart = {
-    orders: [],
-    totals: {
-        sum: 0,
-        total: 0
-    }
-}
-if(localStorage.tezkelCart){//?????
-    cart = JSON.parse(localStorage.tezkelCart);
-}
-// if(localStorage.cartList){//?????
-//     cartList = JSON.parse(localStorage.cartList);
-// }
-
-const store = createStore({
+const heap = createStore({
     state() {
         return {
             hostname: "https://tezkel.local/",
@@ -28,7 +12,6 @@ const store = createStore({
             sessionId: sessionId,
             errorMessage: false,
             user: user,
-            cart: cart,//???
             deliverySettings:{
                 courierVelocity:30000,// (30km/h),
                 deliveryTimeDelta:5,//5minutes
@@ -47,22 +30,24 @@ const store = createStore({
         userIsLogged(state){
             return state.user.user_id > -1;
         },
-        cartGet(state){//?????
-            return state.cart;
+        isOnline(state){
+            const isConnected=1;
+            return (state.user.user_id > -1) && isConnected;
         },
         cartListRestore(){
-            const cartLastDays=3;
+            const cartLastDays=30;
             let date=new Date();
             date.setDate(date.getDate()-cartLastDays)
-            let older=date.toISOString();
+            let older=date.toISOString().replace(/[T]/g,' ').replace(/.\d\d\dZ/,'');
             let cartList=[];
+            let cartListUnfiltered=[];
             if(localStorage.cartList){
-                cartList = JSON.parse(localStorage.cartList);
+                cartListUnfiltered = JSON.parse(localStorage.cartList);
             }
-            if(cartList && cartList.length){
-                for(let order_id in cartList){
-                    if(cartList[order_id] && cartList[order_id].created_at<older ){
-                        delete cartList[order_id];
+            if(cartListUnfiltered && cartListUnfiltered.length){
+                for(let cart of cartListUnfiltered){
+                    if( cart && cart.created_at>older && cart.order_store_id ){
+                        cartList.push(cart);
                     }
                 }
             }
@@ -84,15 +69,24 @@ const store = createStore({
         setCurrentStore (state, storeData) {
             state.currentStore = storeData;
         },
-        setCart (state, cart) {//????
-            state.cart = cart;
-            localStorage.tezkelCart = JSON.stringify(cart);
-        },
         cartListStore(state, cartList){
             state.cartList=cartList;
             localStorage.cartList = JSON.stringify(cartList);
+            this.commit('cartWathcerPrepare',cartList);
+        },
+        cartWathcerPrepare(state,cartList){
+            let watcher={};
+            for(let cart of cartList){
+                for(let entry of cart.entries){
+                    watcher[entry.product_id]=entry.entry_quantity;
+                }
+            }
+            state.cartProductWatchList=watcher;
         }
     }
 });
-store.state.cartList=store.getters.cartListRestore;
-export default store;
+heap.state.cartList=heap.getters.cartListRestore;
+//heap.state.cartProductWatchList={};
+
+heap.commit('cartWathcerPrepare',heap.state.cartList);
+export default heap;

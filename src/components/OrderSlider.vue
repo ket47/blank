@@ -82,7 +82,7 @@ export default{
     methods: {
         getOrderList(){
             var self = this;
-            jQuery.post( self.$store.state.hostname + "Order/listPreviewGet")
+            jQuery.post( self.$heap.state.hostname + "Order/listPreviewGet")
                 .done(function(response) {
                     self.orderGroups = response;
                 })

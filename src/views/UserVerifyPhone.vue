@@ -33,7 +33,7 @@
 <script>
 import jQuery from "jquery";
 import router from '../router';
-import store from '../store';
+import heap from '../heap';
 
 export default  {
   name: 'UserVerifyPhone',
@@ -67,18 +67,18 @@ export default  {
         user_pass: this.password,
         user_pass_confirm: this.password
       }
-      jQuery.post( store.state.hostname + "User/signIn", requestData)
+      jQuery.post( heap.state.hostname + "User/signIn", requestData)
         .done(function() {
             self.getUserData();
         })
     },
     getUserData(){
       var self = this;
-      jQuery.post( store.state.hostname + "User/itemGet")
+      jQuery.post( heap.state.hostname + "User/itemGet")
         .done(function(response, textStatus, request) {
           var sid=request.getResponseHeader('x-sid');
-          store.commit('setSessionId', sid);
-          store.commit('setUser', response);
+          heap.commit('setSessionId', sid);
+          heap.commit('setUser', response);
           jQuery.ajaxSetup({
             beforeSend: function(xhr) {
                 xhr.setRequestHeader('x-sid',  sid);
@@ -92,7 +92,7 @@ export default  {
     },
   },
   created(){
-    if(store.state.user.user_phone_verified && store.state.user.user_phone_verified !== '0'){
+    if(heap.state.user.user_phone_verified && heap.state.user.user_phone_verified !== '0'){
       return router.push('/user-dashboard');
     } 
   }

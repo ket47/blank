@@ -2,7 +2,7 @@
 </style>
 
 <template>
-    <ion-item lines="none" color="secondary" v-if="cartEntry">В корзине {{cartEntry.quantity}}{{cartEntry.unit}} на сумму {{cartEntry.sum}}{{$store.state.currencySign}}</ion-item>
+    <ion-item lines="none" color="secondary" v-if="cartEntry">В корзине {{cartEntry.quantity}}{{cartEntry.unit}} на сумму {{cartEntry.sum}}{{$heap.state.currencySign}}</ion-item>
     <ion-item lines="none" color="medium" v-else>Еще не заказан</ion-item>
 </template>
 

@@ -290,7 +290,7 @@
 
 <script>
 import jQuery from "jquery";
-import store from '../store';
+import heap from '../heap';
 import imageSlider from '../components/imageSlider'
 
 import '../theme/form.css';
@@ -335,7 +335,7 @@ export default  {
       var requestData = {};
       requestData.store_id = this.storeId;
       requestData[field_name] = field_value;
-      jQuery.post( store.state.hostname + "Store/itemUpdate", JSON.stringify(requestData))
+      jQuery.post( heap.state.hostname + "Store/itemUpdate", JSON.stringify(requestData))
         .done(function() {
             self.getStore();
         })
@@ -350,7 +350,7 @@ export default  {
         user_email: this.fields.user_email,
         user_name: this.fields.user_name,
       };
-      jQuery.post( store.state.hostname + "User/passwordReset", requestData)
+      jQuery.post( heap.state.hostname + "User/passwordReset", requestData)
         .done(function(response) {
             self.error = response;
         })
@@ -360,7 +360,7 @@ export default  {
     },
     getStore(){
         var self = this;
-        jQuery.post( store.state.hostname + "Store/itemGet", { store_id: self.storeId })
+        jQuery.post( heap.state.hostname + "Store/itemGet", { store_id: self.storeId })
             .done(function(response) {
                 self.fields = self.prepareStore(response);
                 self.storeId = response.store_id;
@@ -408,7 +408,7 @@ export default  {
       data.set("image_holder_id", this.storeId); 
       jQuery.ajax(
           {
-            url : store.state.hostname + "Store/fileUpload",
+            url : heap.state.hostname + "Store/fileUpload",
             type: "POST",
             data : data,
             processData: false,

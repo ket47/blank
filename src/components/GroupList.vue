@@ -2,7 +2,7 @@
     <div id="hcat_widget_grid">
         <div v-for="group in groupList" :key="group.group_id"  @click="() => {return onClick(group.group_id)}">
             <ion-thumbnail>
-                <ion-img style="border-radius:10px;border:1px solid #ddd" :src="$store.state.hostname + 'image/get.php/'+group.image_hash+'.100.100.webp'"/>
+                <ion-img style="border-radius:10px;border:1px solid #ddd" :src="$heap.state.hostname + 'image/get.php/'+group.image_hash+'.100.100.webp'"/>
             </ion-thumbnail>
             <ion-label style="height:2em;text-align:center">{{group.group_name}}</ion-label>
         </div>
@@ -10,26 +10,8 @@
 </template>
 
 <script>
-import { 
-    IonCol, 
-    IonGrid, 
-    IonRow, 
-    IonCard, 
-    IonCardHeader, 
-    IonCardTitle 
-} from '@ionic/vue';
-
 export default {
     props: ['groupList', 'onClick'],
-    components: { 
-        IonCol, 
-        IonGrid, 
-        IonRow, 
-        IonCard, 
-        IonCardHeader, 
-        IonCardTitle 
-    }
-  
 };
 </script>
 <style scoped>

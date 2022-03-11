@@ -123,19 +123,10 @@ ion-chip .active-chip {
 }
 </style>
 
-
-
-
-
-
-
-
-
 <template>
   <base-layout
     page-default-back-link="/home"
     page-class="store-page"
-    :cartComponent="CartHeader"
     :contentOnScroll="onScroll"
   >
   <div style="background-color:var(--ion-background-shade)">
@@ -147,7 +138,7 @@ ion-chip .active-chip {
             <ion-text color="primary" style="font-size:20px">{{ storeItem.store_name }}</ion-text>
           </ion-col>
           <ion-col style="text-align:right">
-            <router-link :to="'/store_edit-' + storeItem.store_id">
+            <router-link :to="'/store-edit-' + storeItem.store_id">
               <ion-icon :icon="settingsSharp" style="font-size:18px"></ion-icon>
             </router-link>
           </ion-col>
@@ -177,13 +168,13 @@ ion-chip .active-chip {
                 <ion-icon src="./assets/icon/box-delivery.svg" style="font-size:26px;color:var(--ion-color-primary)"></ion-icon> 
               </div>
               <div style="grid-column:2 / span 3;display: flex;align-items: center;">
-                <span> Доставит <b style="color:var(--ion-color-primary)">{{$store.state.app_title}}</b></span>
+                <span> Доставит <b style="color:var(--ion-color-primary)">{{$heap.state.app_title}}</b></span>
               </div>
               <div></div>
               <div v-if="storeItem.delivery" style="text-align:left">
                 {{storeItem.delivery.timeMin}}-{{storeItem.delivery.timeMax}} мин
               </div>
-              <div>доставка {{$store.state.deliverySettings.fee}}₽</div>
+              <div>доставка {{$heap.state.deliverySettings.fee}}₽</div>
               <div v-if="storeItem.store_minimal_order" style="text-align:right">
                 заказ от {{storeItem.store_minimal_order}}₽
               </div>
@@ -271,13 +262,12 @@ ion-chip .active-chip {
 <script>
 import { search, settingsSharp } from "ionicons/icons";
 import ImageSlider from "../components/imageSlider";
-import ProductAddButtons from "../components/ProductAddButtons";
 import CartHeader from "../components/CartHeader";
 import GroupList from "@/components/GroupList.vue";
 import ProductList from '@/components/ProductList.vue';
 import { IonSlides, IonSlide } from "@ionic/vue";
 import jQuery from "jquery";
-import store from "../store";
+import heap from "../heap";
 import Utils from "../scripts/Utils.js";
 
 
@@ -296,7 +286,6 @@ const slideOpts = {
 export default {
   components: {
     ImageSlider,
-    ProductAddButtons,
     IonSlides,
     IonSlide,
     GroupList,
@@ -306,7 +295,6 @@ export default {
     return {
       search,
       settingsSharp,
-      CartHeader,
       slideOpts
     };
   },
@@ -324,7 +312,7 @@ export default {
   },
   computed: {
     isSignedIn() {
-      return store.state.user.user_id && store.state.user.user_id > -1;
+      return heap.state.user.user_id && heap.state.user.user_id > -1;
     },
   },
   methods: {
@@ -356,15 +344,12 @@ export default {
     },
     getStore() {
       var self = this;
-      jQuery
-        .post(store.state.hostname + "Store/itemGet", {
-          store_id: self.storeId,
-          distance_include:1
-        })
+      jQuery.post(heap.state.hostname + "Store/itemGet", {store_id: self.storeId,distance_include:1})
         .done(function (response) {
           self.storeItem = self.prepareStore(response);
           self.storeId = response.store_id;
           self.getStoreGroupTree({ store_id: self.storeId });
+          heap.commit('setCurrentStore',self.storeItem);
         })
         .fail(function (err) {
           self.error = err.responseJSON.messages.error;
@@ -382,7 +367,7 @@ export default {
     getStoreGroupTree(filter) {
       var self = this;
       jQuery
-        .post(store.state.hostname + "Product/groupTreeGet", {
+        .post(heap.state.hostname + "Product/groupTreeGet", {
           store_id: filter.store_id,
         })
         .done(function (response) {
@@ -407,7 +392,7 @@ export default {
       }
       var self = this;
       jQuery
-        .post(store.state.hostname + "Product/listGet", filter)
+        .post(heap.state.hostname + "Product/listGet", filter)
         .done(function (response) {
           self.prepareProductList(response.product_list);
           var first_group_id = Object.keys(

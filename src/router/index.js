@@ -71,6 +71,10 @@ const routes = [
     component: () => import('@/views/UserOrders.vue')
   },
   {
+    path: '/cart-list',
+    component: () => import('@/views/CartList.vue')
+  },
+  {
     path: '/order-:id',
     component: () => import('@/views/UserOrderView.vue')
   },

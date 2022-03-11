@@ -4,7 +4,7 @@
             <ion-card>
                 <router-link :to="'store-'+store_item.store_id">
                     <div class="image-container">
-                        <img v-if="store_item.image_hash" :src="$store.state.hostname + '/image/get.php/' + store_item.image_hash + '.450.450.webp'" />
+                        <img v-if="store_item.image_hash" :src="$heap.state.hostname + '/image/get.php/' + store_item.image_hash + '.450.450.webp'" />
                     </div>
                     <ion-card-header>
                         <ion-card-title>{{ store_item.store_name }}</ion-card-title>
@@ -55,7 +55,7 @@ export default{
     methods: {
         getStoreList(){
             var self = this;
-            jQuery.post( store.state.hostname + "Store/listGet")
+            jQuery.post( heap.state.hostname + "Store/listGet")
                 .done(function(response) {
                     self.storeList = self.prepareStoreList(response);
                 })
