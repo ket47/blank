@@ -129,6 +129,7 @@ ion-chip .active-chip {
     page-class="store-page"
     :contentOnScroll="onScroll"
   >
+  <ion-page ref="Store">
   <div style="background-color:var(--ion-background-shade)">
     <div class="store-info">
       <image-slider :imageList="storeItem.images" :maxHeight="200" :maxWidth="700" :key="sliderKey" />
@@ -257,18 +258,19 @@ ion-chip .active-chip {
       </ion-slide>
     </ion-slides>
     </div>
+  </ion-page>
   </base-layout>
 </template>
 <script>
 import { search, settingsSharp } from "ionicons/icons";
-import ImageSlider from "../components/imageSlider";
-import CartHeader from "../components/CartHeader";
+import ImageSlider from "@/components/imageSlider";
+//import CartHeader from "../components/CartHeader";
 import GroupList from "@/components/GroupList.vue";
 import ProductList from '@/components/ProductList.vue';
 import { IonSlides, IonSlide } from "@ionic/vue";
 import jQuery from "jquery";
-import heap from "../heap";
-import Utils from "../scripts/Utils.js";
+import heap from "@/heap";
+import Utils from "@/scripts/Utils.js";
 
 
 

@@ -1,17 +1,10 @@
 import { createStore } from 'vuex'
-var user = {user_id: -1};
-var sessionId = null;
-if(localStorage.sessionId){
-    sessionId = localStorage.sessionId;
-}
 const heap = createStore({
     state() {
         return {
             hostname: "https://tezkel.local/",
             app_title: "Тезкель",
-            sessionId: sessionId,
-            errorMessage: false,
-            user: user,
+            user: {user_id: -1},
             deliverySettings:{
                 courierVelocity:30000,// (30km/h),
                 deliveryTimeDelta:5,//5minutes
@@ -21,9 +14,6 @@ const heap = createStore({
         }
     }, 
     getters: {
-        errorMessage(state){
-            return state.errorMessage;
-        },
         hostname(state){
             return state.hostname;
         },
@@ -55,14 +45,6 @@ const heap = createStore({
         }
     },
     mutations: {
-        setSessionId (state, sessionId) {
-            state.sessionId = sessionId;
-            if(!sessionId){
-                localStorage.removeItem('sessionId');
-                return;
-            }
-            localStorage.sessionId = sessionId;
-        },
         setUser (state, userData) {
             state.user = userData;
         },

@@ -4,9 +4,6 @@
       <home-slider></home-slider>
       <user-address-widget></user-address-widget>
       <home-primary-category-widget></home-primary-category-widget>
-
-
-
       <store-list></store-list>
     </ion-page>
   </base-layout>

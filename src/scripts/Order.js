@@ -1,5 +1,6 @@
 import jQuery from "jquery";
 import heap from '../heap';
+import Topic from "@/scripts/Topic";
 
 const Order = {
     isInited:false,
@@ -7,47 +8,56 @@ const Order = {
         if(Order.isInited){
             return false;
         }
-        if( heap.getters.userIsLogged ){
-            //Order.cart.listSync();
-        }
+        // if( heap.getters.userIsLogged ){
+        //     //Order.cart.listSync();
+        // }
         this.isInited=true;
     },
-    apiInteractionDelay:null,
-    apiDelayedExecute( job ){
-        clearTimeout(Order.apiInteractionDelay);
-        Order.apiInteractionDelay=setTimeout(job,500);
-    },
+    // apiInteractionDelay:null,
+    // apiDelayedExecute( job ){
+    //     clearTimeout(Order.apiInteractionDelay);
+    //     Order.apiInteractionDelay=setTimeout(job,500);
+    // },
     api:{
-        itemGet(order_id){
+        async itemGet(order_id){
             return jQuery.post( heap.state.hostname + "Order/itemGet",{order_id} );
         },
-        itemSave( cart ){
+        async itemSync( cart ){
             let order={
                 order_id:cart.order_id,
                 order_store_id:cart.order_store_id,
                 order_description:cart.order_description,
                 entries:cart.entries
             };
-            return jQuery.post( heap.state.hostname + "Order/itemSave", JSON.stringify(order) );
+            return jQuery.post( heap.state.hostname + "Order/itemSync", JSON.stringify(order) );
         },
         async itemStageCreate(order_id,new_stage){
             return jQuery.post( heap.state.hostname + "Order/itemStageCreate",{order_id,new_stage} );
         },
-
-
-
-
-
-        listCartGet(){
+        async listCartGet(){
             return jQuery.post( heap.state.hostname + "Order/listCartGet" );
         },
-        entrySave(entry,order_id){
+        async listLoad(order_group_type){
+            return jQuery.post( heap.state.hostname + "Order/listGet",{order_group_type} );
+        },
+        async listJobGet( courier_id ){
+            return jQuery.post( heap.state.hostname + "Courier/listJobGet", {courier_id} );
+        },
+        async itemJobGet( order_id ){
+            return jQuery.post( heap.state.hostname + "Courier/itemJobGet", {order_id} );
+        },
+        async itemJobStart( order_id,courier_id ){
+            return jQuery.post( heap.state.hostname + "Courier/itemJobStart", {order_id,courier_id} );
+        },
+
+
+        async entrySave(entry,order_id){
             if( entry.entry_id ){
                 return this.entryUpdate(entry);
             }
             return this.entryCreate(entry,order_id);
         },
-        entryCreate(entry,order_id){
+        async entryCreate(entry,order_id){
             let request={
                 order_id,
                 product_id:entry.product_id,
@@ -55,42 +65,29 @@ const Order = {
             };
             return jQuery.post( heap.state.hostname + "Entry/itemCreate", request );
         },
-        entryUpdate(entry){
+        async entryUpdate(entry){
             return jQuery.post( heap.state.hostname + "Entry/itemUpdate", JSON.stringify(entry) );
         },
-        entryDelete(entry_id){
+        async entryDelete(entry_id){
             return jQuery.post( heap.state.hostname + "Entry/itemDelete", {entry_id} );
         }
     },
-    cart:{//should be only offline functions
-        listSyncUp(){
-            let promises=[];
-            if( heap.state.cartList && heap.state.cartList.length ){
-                for(let cart of heap.state.cartList){
-                    if( !cart?.entries?.length ){
-                        continue;
-                    }
-                    let delay=null;
-                    delay=Order.api.itemSave(cart);
-                    promises.push(delay);
-                }
-            }
-            return promises;
-        },
-        listSyncDown(){
-            return Order.api.listCartGet().done((cartList)=>{
-               heap.commit('cartListStore',cartList);
-            });
-        },
-        async listSync(){//shoul be called at user login
-            let upPromises=Order.cart.listSyncUp();
-            return Promise.all(upPromises).then(()=>{
-                return Order.cart.listSyncDown();
-            });
-        },
-        listSave(){//only localstorageSave
+    cart:{
+        listSave(){
            heap.commit('cartListStore',heap.state.cartList);
-            //Order.cart.listSync();
+        },
+
+        async itemSync(order_id){
+            const order=Order.cart.itemGetById(order_id);
+            try{
+                const syncedOrder = await Order.api.itemSync(order.data);
+                heap.state.cartList[order.order_index]=syncedOrder;
+                Order.cart.listSave();
+                return syncedOrder;
+            }
+            catch( e ){
+                console.error('itemSync errrrror',e);
+            }
         },
 
         itemGetByStoreId(store_id){
@@ -204,19 +201,6 @@ const Order = {
         entryCreate(entry,existingOrder){
             heap.state.cartList[existingOrder.order_index].entries.push(entry);
             Order.cart.listSave();
-            if( heap.getters.userIsLogged && existingOrder.order_id>0 ){
-                Order.apiDelayedExecute(()=>{
-                    //User is online cart is on server
-                    Order.api.entryCreate(entry,existingOrder.data.order_id).done((resp)=>{
-                        if( resp>0 ){
-                            let entry_id=resp;
-                            let entryOld=Order.cart.entryGet(entry.product_id);
-                            heap.state.cartList[entryOld.order_index].entries[entryOld.entry_index].entry_id=entry_id;
-                            Order.cart.listSave();
-                        }
-                    });
-                });
-            }
             return true;
         },
         entryUpdate(entry){
@@ -227,13 +211,6 @@ const Order = {
             let entryNew=Object.assign(entryOld.data,entry);
             heap.state.cartList[entryOld.order_index].entries[entryOld.entry_index]=entryNew;
             Order.cart.listSave();
-            Order.apiDelayedExecute(()=>{
-                if( heap.getters.userIsLogged ){
-                    entry.entry_id=entryNew.entry_id;
-                    //User is online cart is on server
-                    Order.api.entryUpdate(entry);
-                }
-            });
             return entryNew;
         },
         entryDelete(product_id){
@@ -243,35 +220,34 @@ const Order = {
                 heap.state.cartList.splice(entryOld.order_index,1);
             }
             Order.cart.listSave();
-            Order.apiDelayedExecute(()=>{
-                if( heap.getters.userIsLogged && entryOld.data.entry_id ){
-                    //User is online cart is on server
-                    Order.api.entryDelete(entryOld.data.entry_id);
-                }
-            });
         }
     },
     async itemStageCreate(order_id,new_stage){
-        if(order_id<0){
-            alert("order_id is wrong"+order_id);
+        if(new_stage=='customer_purged'){
+            return Order.cart.itemDelete(order_id);
         }
-        const stateChangeResult=await Order.api.itemStageCreate(order_id,new_stage);
-        console.log(stateChangeResult);
-
-       /* return Order.api.itemStageCreate(order_id,new_stage)
-        .then(()=>{
-            if(new_stage=='customer_purged'){
-                return Order.cart.itemDelete(order_id);
+        try{
+            const syncedOrder=await Order.cart.itemSync(order_id);
+            const stateChangeResult=await Order.api.itemStageCreate(syncedOrder.order_id,new_stage);
+            
+            if(stateChangeResult=='ok' && new_stage!='customer_cart'){
+                console.log(stateChangeResult,new_stage);
+                Order.cart.itemDelete(syncedOrder.order_id);
             }
-            Order.api.itemGet(order_id)
-            .done((orderData)=>{
-                console.log('stageCreate',orderData);
-            })
-            .fail();
-        })
-        .catch((a,b,c)=>{
-            //console.log('stageCreateError',a,b,c);
-        });*/
+            //go to order view
+        } catch( err ){
+            console.error(err);
+        }
+
     }
 }
+
+
+
+Topic.on('userGet',(userData)=>{
+    //Order.cart.listSync();
+    //console.log(userData);
+});
+  
+  
 export default Order;

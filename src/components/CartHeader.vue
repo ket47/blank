@@ -11,6 +11,7 @@ import { modalController }  from '@ionic/vue';
 import heap                 from '@/heap';
 import router               from '@/router';
 import CartBodyModal        from '@/components/CartBodyModal.vue';
+import Topic                from '@/scripts/Topic.js';
 
 export default{
   inject:["$Order"],
@@ -46,10 +47,11 @@ export default{
       router.push({path: '/cart-list'});
     },
     async openCartList() {
-      const modal = await modalController
-        .create({
-          component: CartBodyModal
-        })
+      const modal = await modalController.create({component: CartBodyModal});
+      const dismissFn=function(){
+        modal.dismiss();
+      };
+      Topic.on('dismissModal',dismissFn);
       return modal.present();
     }
   }

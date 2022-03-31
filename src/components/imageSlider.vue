@@ -2,7 +2,7 @@
     <ion-slides v-if="imageList"  pager="true" :options="slideOpts">
         <ion-slide v-for="image in imageList" :key="image.image_hash" style="max-height:50vh">
             <div :style="`width:100%;max-height:${maxHeight|200}px;overflow:hidden;display:flex;align-items:center`">
-                <ion-img  style="width:100%" :src="`${$heap.state.hostname}image/get.php/${image.image_hash}.${imgWidth|300}.${imgHeight|300}.webp`"/>
+                <ion-img  style="width:100%" :src="`${$heap.state.hostname}image/get.php/${image.image_hash}.${imgWidth||300}.${imgHeight||300}.webp`"/>
             </div>
         </ion-slide>
     </ion-slides>

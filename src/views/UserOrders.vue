@@ -1,5 +1,5 @@
 <template>
-  <base-layout page-title="Order" :page-default-back-link="'/user-dashboard'" page-class="orders-page">
+  <base-layout page-title="" page-default-back-link="/home" page-class="orders-page">
     
         <order-slider></order-slider>
 
@@ -39,8 +39,7 @@
 
 <script>
 import jQuery from "jquery";
-
-  import OrderSlider from '../components/OrderSlider';
+import OrderSlider from '@/components/OrderSlider';
 
 export default{
     components: {
@@ -51,9 +50,8 @@ export default{
             error: "",
             orderGroups: {},
             roleDef: {
-                'guest': 'Гостевые заказы',
-                'customer': 'Заказы покупателя',
-                'courier': 'Заказы курьера',
+                'customer': 'Заказы',
+                'courier':  'Задания',
                 'supplier': 'Заказы поставщика',
                 'admin': 'Администратор'
             }
@@ -61,11 +59,11 @@ export default{
     },
     methods: {
         segmentChanged($event){
-            console.log($event.target._value);
+            console.log($event.target.value);
             for(var i in this.$refs){
                 this.$refs[i].hidden = true;
             }
-            this.$refs['tab-content-'+$event.target._value].hidden = false;
+            this.$refs['tab-content-'+$event.target.value].hidden = false;
             
         },
         getOrderList(){

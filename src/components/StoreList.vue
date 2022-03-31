@@ -49,7 +49,7 @@ export default {
         getStoreList(){
             var main_address=heap.state.user.location_main;
             if(!main_address){
-                alert('what to do address not set!!!');
+                console.log('what to do address not set!!!');
                 return;
             }
             var self = this;

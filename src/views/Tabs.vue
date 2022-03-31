@@ -3,6 +3,7 @@
     <ion-tabs>
       <ion-router-outlet></ion-router-outlet>
       <ion-tab-bar slot="bottom">
+
         <ion-tab-button tab="tab1" href="/home" routerDirection="backward">
           <ion-icon :icon="homeOutline" />
         </ion-tab-button>
@@ -11,21 +12,14 @@
           <ion-icon :icon="search" />
         </ion-tab-button>
 
-        <ion-tab-button
-          tab="tab3"
-          href="/user-orders"
-          routerDirection="backward"
-        >
-          <ion-icon :icon="cartOutline" />
+        <ion-tab-button tab="tab3" href="/order-list" routerDirection="backward">
+          <ion-icon src="./assets/icon/box-delivery.svg" style="font-size:30px;"/>
         </ion-tab-button>
 
-        <ion-tab-button
-          tab="tab4"
-          href="/user-dashboard"
-          routerDirection="backward"
-        >
+        <ion-tab-button tab="tab4" href="/user-dashboard" routerDirection="backward">
           <ion-icon :icon="personOutline" />
         </ion-tab-button>
+
       </ion-tab-bar>
     </ion-tabs>
   </ion-page>

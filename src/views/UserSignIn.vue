@@ -105,9 +105,9 @@ export default{
   inject:['$Order'],
   setup() {
     onIonViewDidEnter(() => {
-      if(heap.state.user.user_id && heap.state.user.user_id > -1){
-        return router.go(-1);
-      } 
+      // if(heap.state.user.user_id && heap.state.user.user_id > -1){
+      //   return router.go(-1);
+      // } 
     });
   },
   name: 'UserSignIn',
@@ -136,7 +136,7 @@ export default{
     }
   },
   methods:{
-    onSubmit() {
+    async onSubmit() {
       var self = this;
       this.submitted = true;
       if(!this.phoneValid || !this.passwordValid){
@@ -147,37 +147,36 @@ export default{
         user_pass: this.fields.password,
         user_pass_confirm: this.fields.password
       }
-      User.signIn(requestData, function(result){
-        if(result.success){
-            self.getUserData();
-        } else {
-          self.error = result.message;
-          if(result.message == 'user_phone_unverified'){
-            self.phoneVerify();
-          }
+      try{
+        await User.signIn(requestData);
+        this.getUserData();
+      } catch(err){
+        const exception=err.responseJSON;
+        const exception_code=exception.messages.error;
+        switch(exception_code){
+          case 'user_not_found':
+            this.$flash("Пользователь не найден. Пройдите регистрацию.");
+            break;
+          case 'user_pass_wrong':
+            this.$flash("Неверный пароль");
+            break;
+          case 'user_is_disabled':
+            this.$flash("Пользователь отключен. Обратитесь к администратору");
+            break;
+          case 'user_is_deleted':
+            this.$flash("Пользователь удален. Обратитесь к администратору");
+            break;
+          case 'user_phone_unverified':
+            this.$flash("Номер телефона не подтвержден");
+            this.phoneVerify();
+            break;
         }
-      });
+      }
     },
-    getUserData(){
-      var self = this;
-      jQuery.post( heap.state.hostname + "User/itemGet")
-        .done(function(response, textStatus, request) {
-          var sid=request.getResponseHeader('x-sid');
-          heap.commit('setSessionId', sid);
-          heap.commit('setUser', response);
-          jQuery.ajaxSetup({
-            beforeSend: function(xhr) {
-                xhr.setRequestHeader('x-sid',  sid);
-            }
-          })
-          router.go(-1);
-        })
-        .then(()=>{
-          self.$Order.cart.listSync();
-        })
-        .fail(function(err) {
-            self.error = err.responseJSON.messages.error;
-        });
+    async getUserData(){
+      const userData=await User.get();
+      heap.commit('setUser', userData);
+      router.go(-1);
     },
     phoneVerify(){
       var self = this;

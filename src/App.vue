@@ -8,7 +8,6 @@
 import { IonApp, IonRouterOutlet } from '@ionic/vue';
 
 export default {
-  name: 'TezkelExpress',
   components: {
     IonApp,
     IonRouterOutlet

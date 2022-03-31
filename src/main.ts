@@ -28,6 +28,7 @@ import BaseLayout           from '@/components/BaseLayout.vue';
 import router               from '@/router';
 import heap                 from '@/heap';
 
+import Topic                from '@/scripts/Topic.js';
 import User                 from '@/scripts/User.js'
 import Order                from '@/scripts/Order.js'
 import jQuery               from "jquery";
@@ -41,29 +42,10 @@ const flash= async ( message )=>{
     })
   return toast.present();
 }
-
-const app = createApp(App)
-  .use(IonicVue)
-  .use(router)
-  .use(heap);
-app.provide("$Order",Order);
-app.config.globalProperties.$heap = heap;
-app.config.globalProperties.$flash = flash;
-app.component('base-layout', BaseLayout);
-
-
-
-if(localStorage.sessionId){
-  jQuery.ajaxSetup({
-    beforeSend: function(xhr) {
-        xhr.setRequestHeader('x-sid',  localStorage.sessionId);
-    },
-  });
-}
 jQuery( document ).ajaxError(function( event, jqxhr, settings, thrownError ) {
   const status_code=jqxhr.status;
   if(status_code==403){
-    if( heap.state.userIsLogged ){
+    if( heap.getters.userIsLogged ){
       flash('К сожалению, нет прав для этого действия');
     } else {
       flash('Нужно выполнить вход, чтобы продолжить');
@@ -72,18 +54,16 @@ jQuery( document ).ajaxError(function( event, jqxhr, settings, thrownError ) {
   }
 });
 
-User.get(function(result){
-  if(result.success && heap.state.user.user_id != -1){
-      app.mount('#app');
-  } else {
-    if(localStorage.signInData){
-      User.signIn(JSON.parse(localStorage.signInData), function(){
-        User.get(function(){
-          app.mount('#app');
-        })
-      })
-    } else {
-      app.mount('#app');
-    }
-  }
+const app = createApp(App)
+  .use(IonicVue)
+  .use(router)
+  .use(heap);
+app.provide("$Order",Order);
+app.config.globalProperties.$heap = heap;
+app.config.globalProperties.$flash = flash;
+app.config.globalProperties.$topic = Topic;
+app.component('base-layout', BaseLayout);
+
+User.autoSignIn().then(function(){
+  app.mount('#app');
 });
