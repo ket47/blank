@@ -88,18 +88,28 @@ const User = {
     },
     courier:{
         data:{},
+        status:'notcourier',
         async get(){
-            return jQuery.post( heap.state.hostname + "Courier/itemGet").then((data)=>{
-                User.courier.data=data;
-                return data;
-            });
+            let data=await jQuery.post( heap.state.hostname + "Courier/itemGet")
+            User.courier.data=data;
+            User.courier.parseStatus();
+            return data;
         },
         async updateStatus(new_status){
             const request={
                 courier_id:User.courier.data.courier_id,
                 group_type:new_status
             };
-            return jQuery.post( heap.state.hostname + "Courier/itemUpdateStatus",request);
+            const result=await jQuery.post( heap.state.hostname + "Courier/itemUpdateStatus",request);
+            if( result=='ok' ){
+                User.courier.status=new_status;
+                Topic.publish('courierStatusChange',User.courier.status);
+            }
+            return result;
+        },
+        parseStatus(){
+            User.courier.status=User.courier.data?.member_of_groups?.group_types||"notcourier";
+            Topic.publish('courierStatusChange',User.courier.status);
         }
     },
     geo:{

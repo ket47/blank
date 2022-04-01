@@ -73,9 +73,18 @@
             </ion-label>           
         </ion-item>
 
-        <ion-item v-if="job">
-            <ion-button @click="deliveryStart()">Начать доставку</ion-button>       
-        </ion-item>
+        <ion-item-group v-if="job">
+            <ion-item>
+                <ion-title style="text-align:center">
+                    <ion-button @click="deliveryStart()">Начать доставку</ion-button>
+                </ion-title> 
+            </ion-item>
+            <ion-item>
+                <ion-text>
+                    Бонус {{job.order_sum_shipping}}
+                </ion-text>
+            </ion-item>
+        </ion-item-group>
     </ion-list>
 </template>
 <script>
@@ -102,20 +111,41 @@ export default({
     },
     computed:{
         start_finish_distance_km(){
+            if(!this.job?.start_finish_distance){
+                return '-';
+            }
             return Math.round(this.job?.start_finish_distance/1000)+'км';
         }
     },
     methods:{
         async jobGet(){
-            let job=await Order.api.itemJobGet(this.order.order_id);
-            job.finish_location_address=job.finish_location_address.split(',').reverse().join(',');
-            this.job=job;
+            try{
+                let job=await Order.api.itemJobGet(this.order.order_id);
+                job.finish_location_address=job.finish_location_address.split(',').reverse().join(',');
+                this.job=job;
+            } catch(err){
+                const message=err.responseJSON?.messages?.error;
+                if(message=='notfound'){
+                    this.$flash("Задание не найдено");
+                }
+                if(message=='notready'){
+                    this.$flash("Смена курьера не открыта");
+                }
+            }
         },
         async deliveryStart(){
             const courier_id=User.courier?.data?.courier_id;
-            let result=await Order.api.itemJobStart(this.order.order_id,courier_id);
-            if( result=='ok' ){
+            try{
+                let result=await Order.api.itemJobStart(this.order.order_id,courier_id);
                 router.push('order-'+this.order.order_id);
+            } catch(err){
+                const message=err.responseJSON?.messages?.error;
+                if(message=='notfound'){
+                    this.$flash("Задание не найдено");
+                }
+                if(message=='notready'){
+                    this.$flash("Смена курьера не открыта");
+                }
             }
         }
     }

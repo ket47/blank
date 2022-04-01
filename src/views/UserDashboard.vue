@@ -218,6 +218,7 @@ export default {
       const result=await User.courier.updateStatus(new_status);
       if( result=='ok' ){
         this.courierStatus=new_status;
+        User.courier.get();
       }
     },
     async courierStatusGet(){
