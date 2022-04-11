@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from '@ionic/vue-router';
+
 import Tabs from '@/views/Tabs.vue'
 
 const routes = [
@@ -97,12 +98,8 @@ const routes = [
         component: () => import('@/views/CartList.vue')
       },
       {
-        path: '/order-checkout-:id',
-        component: () => import('@/views/OrderCheckout.vue')
-      },
-      {
         path: '/order-:id',
-        component: () => import('@/views/OrderView.vue')
+        component: () => import('@/views/UserOrderView.vue')
       },
       {
         path: '/user-payment-methods',

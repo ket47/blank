@@ -121,6 +121,40 @@ ion-chip .active-chip {
   color: white;
   border: none;
 }
+
+
+
+.desktop-main-container .group-fixed-block{
+  top: 10%;
+  width: calc(1366px*0.24);
+  left: calc((100% - 1366px)/2);
+}
+.desktop-main-container .group-fixed-block ion-segment{
+  display: grid;
+  grid-template-columns: 100%;
+  --background: white;
+}
+.desktop-main-container .group-fixed-block ion-segment ion-segment-button{
+  width: 100%;
+  display: block;
+  text-align: left;
+  border-bottom: 1px solid lightgray;
+}
+.desktop-main-container .group-fixed-block ion-segment ion-label {
+  color: var(--ion-text-main);
+  text-transform: capitalize;
+  align-self: baseline;
+}
+.desktop-main-container .group-fixed-block .groups-container {
+  display: none;
+}
+
+@media only screen and (max-width: 1366px) {
+  .desktop-main-container .group-fixed-block{
+    left: 0;
+    width: 24%;
+  }
+}
 </style>
 
 <template>
@@ -128,6 +162,7 @@ ion-chip .active-chip {
     page-default-back-link="/home"
     page-class="store-page"
     :contentOnScroll="onScroll"
+    :page-title="'Магазин'"
   >
   <ion-page ref="Store">
   <div style="background-color:var(--ion-background-shade)">
@@ -443,7 +478,7 @@ export default {
     onScroll(event) {
       const offsetTop=document.querySelector(".product-list-slider").offsetTop;
       const offsetHeight=document.querySelector(".group-fixed-block").offsetHeight;
-
+      console.log(offsetTop);
       if (offsetTop - offsetHeight -100 < event.detail.scrollTop ) {
         document.querySelector(".group-fixed-block").className = "group-fixed-block";
         //document.querySelector(".product-list-slider").style.marginTop = '100px';

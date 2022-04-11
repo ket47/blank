@@ -18,7 +18,7 @@
   <ion-content>
     <div v-if="cartList.length">
       <div v-for="cart in cartList" :key="cart.order_id" class="order-segment">
-          <order-comp :orderData="cart" @stageCreate="onStageCreate"></order-comp>
+          <order-view :order="cart"></order-view>
       </div>
     </div>
     <div v-else style="display:flex;align-items:center;justify-content:center;height:100%">
@@ -35,13 +35,11 @@
 import heap              from '@/heap';
 import {closeCircle,sparklesOutline}      from 'ionicons/icons';
 import {modalController}  from "@ionic/vue";
-import Order              from '@/scripts/Order.js';
-import Topic              from '@/scripts/Topic.js';
-import OrderComp          from '@/components/OrderComp.vue';
-import router             from '@/router';
+import OrderView          from '@/components/OrderView.vue';
 
 export default{
-  components: { OrderComp },
+  inject:['$Order'],
+  components: { OrderView },
   setup() {
       const closeModal = function(){
           modalController.dismiss();
@@ -56,24 +54,6 @@ export default{
   methods: {
     clearCart(){
       this.closeModal();
-    },
-    async onStageCreate(order_id, new_stage){
-        const syncedOrder=await Order.cart.itemSync(order_id);
-        if(syncedOrder){
-            order_id=syncedOrder.order_id;
-        }
-        const stateChangeResult=await Order.api.itemStageCreate(order_id,new_stage);
-        if( stateChangeResult!=='ok' ){
-          return;
-        }
-        Topic.publish('dismissModal');
-
-        if( new_stage!='customer_cart'){
-            Order.cart.itemDelete(order_id);
-        }
-        if( new_stage=='customer_confirmed' ){
-          router.push(`order-${order_id}`);
-        }
     }
   }
 };

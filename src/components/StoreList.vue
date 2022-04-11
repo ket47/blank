@@ -15,7 +15,6 @@
                 </router-link>
         </ion-card>
     </ion-list>
-
     
 </template>
 

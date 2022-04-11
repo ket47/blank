@@ -9,6 +9,14 @@ http://ionicframework.com/docs/theming/ */
   --ion-background-shade:#f0f0f0;
   --ion-background:#ffffff;
 
+  --ion-item-background: white;
+  --background: white;
+  --ion-background-color: white;
+  --ion-main-container-background-color: #edeef0;
+  --ion-tab-bar-background: transparent;
+  --ion-tab-bar-color: var(--ion-text-color);
+  --color-selected: var(--ion-color-primary);
+
   /** primary **/
   --ion-color-primary: #008888;
   --ion-color-primary-rgb: 56, 128, 255;
@@ -118,3 +126,24 @@ http://ionicframework.com/docs/theming/ */
   --inner-padding-end: 35px;
   --ion-safe-area-right: 10px;
 }
+
+
+/*=========================*/
+/*=========DESKTOP=========*/
+/*=========================*/
+
+:root {
+  --breakpoints-width: 1366px;
+  --footer-background: #292929;
+}
+.desktop-main-container .ion-middle-column{
+  --padding-start: 25px;
+  --padding-end: 25px;
+  --ion-safe-area-left: 25px;
+  --inner-padding-end: 25px;
+  --ion-safe-area-right: 25px;
+}
+
+/*=========================*/
+/*========/DESKTOP=========*/
+/*=========================*/

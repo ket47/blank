@@ -22,9 +22,6 @@ const Order = {
         async itemGet(order_id){
             return jQuery.post( heap.state.hostname + "Order/itemGet",{order_id} );
         },
-        async itemUpdate(order){
-            return jQuery.post( heap.state.hostname + "Order/itemUpdate", JSON.stringify(order) );
-        },
         async itemSync( cart ){
             let order={
                 order_id:cart.order_id,
@@ -73,7 +70,7 @@ const Order = {
         },
         async entryDelete(entry_id){
             return jQuery.post( heap.state.hostname + "Entry/itemDelete", {entry_id} );
-        },
+        }
     },
     cart:{
         listSave(){
@@ -82,9 +79,6 @@ const Order = {
 
         async itemSync(order_id){
             const order=Order.cart.itemGetById(order_id);
-            if(!order){
-                return null;
-            }
             try{
                 const syncedOrder = await Order.api.itemSync(order.data);
                 heap.state.cartList[order.order_index]=syncedOrder;
@@ -92,7 +86,7 @@ const Order = {
                 return syncedOrder;
             }
             catch( e ){
-                console.error('itemSync',e);
+                console.error('itemSync errrrror',e);
             }
         },
 
@@ -140,9 +134,6 @@ const Order = {
                     "customer_confirmed": ["Подтвердить заказ"],
                     "customer_purged": ["Удалить","negative"]
                 },
-                stage_current_name:	"Корзина",
-                stage_current:'customer_cart',
-                user_role:'customer'
             };
             heap.state.cartList.push(cart);
             Order.cart.listSave();
@@ -232,11 +223,22 @@ const Order = {
         }
     },
     async itemStageCreate(order_id,new_stage){
-        try{
-            return await Order.api.itemStageCreate(order_id,new_stage);
-        } catch( err ){
-            console.error('itemStageCreate',err);
+        if(new_stage=='customer_purged'){
+            return Order.cart.itemDelete(order_id);
         }
+        try{
+            const syncedOrder=await Order.cart.itemSync(order_id);
+            const stateChangeResult=await Order.api.itemStageCreate(syncedOrder.order_id,new_stage);
+            
+            if(stateChangeResult=='ok' && new_stage!='customer_cart'){
+                console.log(stateChangeResult,new_stage);
+                Order.cart.itemDelete(syncedOrder.order_id);
+            }
+            //go to order view
+        } catch( err ){
+            console.error(err);
+        }
+
     }
 }
 

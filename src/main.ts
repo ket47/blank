@@ -20,18 +20,22 @@ import './theme/variables.css';
 import './theme/core.css';
 
 import { createApp }        from 'vue';
+import { isPlatform }       from '@ionic/vue';
 import { IonicVue }         from '@ionic/vue';
 import { toastController }  from '@ionic/vue';
 
 import App                  from '@/App.vue';
-import BaseLayout           from '@/components/BaseLayout.vue';
 import router               from '@/router';
 import heap                 from '@/heap';
+
+import BaseLayout           from '@/components/BaseLayout.vue';
+import BaseLayoutDesktop    from '@/components/BaseLayoutDesktop.vue';
 
 import Topic                from '@/scripts/Topic.js';
 import User                 from '@/scripts/User.js'
 import Order                from '@/scripts/Order.js'
 import jQuery               from "jquery";
+
 
 const flash= async ( message )=>{
   const toast = await toastController
@@ -62,7 +66,16 @@ app.provide("$Order",Order);
 app.config.globalProperties.$heap = heap;
 app.config.globalProperties.$flash = flash;
 app.config.globalProperties.$topic = Topic;
-app.component('base-layout', BaseLayout);
+
+
+if(isPlatform('mobile') || isPlatform('mobileweb')){
+  app.component('base-layout', BaseLayout);
+  require('./theme/base_layout.css');
+} else {
+  app.component('base-layout', BaseLayoutDesktop);
+  require('./theme/base_layout_desktop.css');
+}
+
 
 User.autoSignIn().then(function(){
   app.mount('#app');

@@ -3,7 +3,7 @@
     font-size: 2em;
   }
   .product-footer{
-    position: fixed;
+    /*position: fixed;*/
     bottom: 0;
     z-index: 2;
     width: 100%;
@@ -23,7 +23,11 @@
 </style>
 
 <template>
-  <base-layout :page-default-back-link="'/store-'+productItem.store_id" page-class="product-page" :cartComponent="CartHeader">
+  <base-layout 
+    :page-title="'Товар - '+productItem.product_name "
+    :page-default-back-link="'/store-'+productItem.store_id" 
+    page-class="product-page" 
+    :cartComponent="CartHeader">
 
       <image-slider :imageList="productItem.images" :imgWidth="700" :imgHeight="500" :maxHeight="300" :key="sliderKey"/>
       <ion-card v-if="productItem.product_id">

@@ -2,9 +2,8 @@
   <ion-page>
     <ion-tabs>
       <ion-router-outlet></ion-router-outlet>
-      <ion-tab-bar slot="bottom">
-
-        <ion-tab-button tab="tab1" href="/home" routerDirection="backward">
+      <ion-tab-bar class="bottom-bar" slot="bottom">
+        <ion-tab-button tab="tab1" href="/home" routerDirection="backward" selected>
           <ion-icon :icon="homeOutline" />
         </ion-tab-button>
 
@@ -19,7 +18,6 @@
         <ion-tab-button tab="tab4" href="/user-dashboard" routerDirection="backward">
           <ion-icon :icon="personOutline" />
         </ion-tab-button>
-
       </ion-tab-bar>
     </ion-tabs>
   </ion-page>

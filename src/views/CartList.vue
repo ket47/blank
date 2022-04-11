@@ -9,11 +9,11 @@
 </template>
 <script>
 import BaseLayout           from '@/components/BaseLayout.vue';
-import OrderComp            from '@/components/OrderComp.vue';
+import OrderView            from '@/components/OrderView.vue';
 import heap                from '@/heap';
 
 export default({
-  components: { BaseLayout, OrderComp },
+  components: { BaseLayout, OrderView },
     inject:['$Order'],
     data(){
         return {

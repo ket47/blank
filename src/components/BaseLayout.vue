@@ -3,22 +3,23 @@
     <ion-header :class="[pageClass]">
       <ion-toolbar>
         <ion-buttons slot="start" style="width:100px">
-          <ion-back-button :default-href="pageDefaultBackLink" color="dark"></ion-back-button>
+          <ion-back-button :default-href="pageDefaultBackLink"></ion-back-button>
         </ion-buttons>
-        <ion-title v-if="pageTitle">{{ pageTitle }}</ion-title>
+        <ion-img class="toolbar_logo" src="./assets/icon/tezkel_logo.png"></ion-img>
         <div slot="end" style="width:100px">
           <cart-header slot="end"></cart-header>
         </div>
-      </ion-toolbar>  
+      </ion-toolbar>
+      <ion-title v-if="pageTitle" style="height: 40px; text-align: center; color: var(--ion-color-medium)">{{ pageTitle }}</ion-title>
     </ion-header>
     <ion-content
-      :class="[pageClass]"
+      :class="['main-container', pageClass]"
       :scrollEvents="contentOnScroll ? 'true' : 'false'"
       @ionScroll="contentOnScroll($event)"
     >
       <slot />
     </ion-content>
-    <ion-footer>
+    <ion-footer collapse="fade">
       <ion-text color="danger">
         {{ errorMessage }}
       </ion-text>
@@ -27,6 +28,7 @@
 </template>
 
 <script>
+
 import {
   IonPage,
   IonHeader,
@@ -61,12 +63,13 @@ export default {
 </script>
 
 <style>
+
 ion-header ion-toolbar {
-  --background: var(--ion-background-primary);
-}
-.toolbar_logo {
-  width: auto;
-  height: 40px;
-  margin: 0 auto;
-}
+    --background: var(--ion-background-primary);
+  }
+  .toolbar_logo {
+    width: auto;
+    height: 40px;
+    margin: 0 auto;
+  }
 </style>
