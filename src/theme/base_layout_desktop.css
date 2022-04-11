@@ -108,6 +108,7 @@
   --border-color: transparent;
   --padding-start: 0px;
   --inner-padding-end: 0px;
+  border-radius: 5px;
 }
 .desktop-main-container .ion-middle-column ion-radio-group ion-list ion-item.item-radio-checked{
   --background: var(--ion-color-primary);
