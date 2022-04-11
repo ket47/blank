@@ -10,10 +10,10 @@
 </template>
 
 <script>
-import HomeSlider from "../components/HomeSlider";
-import StoreList from "../components/StoreList";
-import UserAddressWidget from "../components/UserAddressWidget";
-import HomePrimaryCategoryWidget from "../components/HomePrimaryCategoryWidget";
+import HomeSlider from "@/components/HomeSlider";
+import StoreList from "@/components/StoreList";
+import UserAddressWidget from "@/components/UserAddressWidget";
+import HomePrimaryCategoryWidget from "@/components/HomePrimaryCategoryWidget";
 
 export default {
   name: "HomePage",

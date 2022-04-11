@@ -35,13 +35,6 @@ export default{
       return total;
     }
   },
-  mounted(){
-    let self=this;
-    setTimeout(function(){
-      //self.openCartList();
-    },2000);
-    
-  },
   methods:{
     goToCartList(){
       router.push({path: '/cart-list'});

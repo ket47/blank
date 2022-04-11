@@ -13,8 +13,11 @@
 *{ 
     font-family:"Comfortaa" !important;
     font-weight: 500;
+    font-size: 14px;
 }
-
+ion-icon{
+    font-size:22px;
+}
 
 ion-toolbar {
     --background: var(--ion-color-primary);

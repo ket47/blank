@@ -97,8 +97,12 @@ const routes = [
         component: () => import('@/views/CartList.vue')
       },
       {
+        path: '/order-checkout-:id',
+        component: () => import('@/views/OrderCheckout.vue')
+      },
+      {
         path: '/order-:id',
-        component: () => import('@/views/UserOrderView.vue')
+        component: () => import('@/views/OrderView.vue')
       },
       {
         path: '/user-payment-methods',

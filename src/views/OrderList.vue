@@ -50,6 +50,7 @@ import {storefrontOutline,sparklesOutline,timeOutline}      from 'ionicons/icons
 import Order from '@/scripts/Order.js';
 import User  from '@/scripts/User.js';
 import Topic from '@/scripts/Topic.js';
+import router from '@/router';
 import { modalController }  from '@ionic/vue';
 import CourierJobPreview    from '@/components/CourierJobPreview.vue';
 
@@ -153,7 +154,7 @@ export default {
             this.itemOpen(order.order_id);
         },
         itemOpen(order_id){
-            console.log('itemOpen(order_id)');
+            router.push(`order-${order_id}`);
         }
     }
 }

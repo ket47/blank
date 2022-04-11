@@ -30,14 +30,16 @@
 import {
   IonContent,
   IonPage,
-  modalController
+  modalController,
+  IonIcon
 } from "@ionic/vue";
-import router from '../router';
-import heap from '../heap';
+
+import router from '@/router';
+import heap from '@/heap';
 import jQuery from 'jquery';
 import UserAddressPicker from '@/components/UserAddressPicker.vue';
+import User from '@/scripts/User.js';
 
-import { IonIcon } from '@ionic/vue';
 import { trash } from 'ionicons/icons';
 
 export default{
@@ -111,17 +113,19 @@ export default{
         }
       });
     },
-    locationSetMain( location_id, index ){
-      var self=this;
-      var loc=self.locationList[index];
-      heap.state.user.location_main={
+    async locationSetMain( location_id, index ){
+      let loc=this.locationList[index];
+      let new_location_main={
         location_id:loc.location_id,
         location_latitude:loc.location_latitude,
         location_altitude:loc.location_altitude,
         location_address:loc.location_address,
+        location_comment:loc.location_comment,
         image_hash:loc.image_hash
       };
-      jQuery.post(heap.state.hostname + "User/locationSetMain",{location_id});
+      await jQuery.post(heap.state.hostname + "User/locationSetMain",{location_id});
+      User.get();
+      //Topic.publish('userMainLocationChanged');
       router.go(-1);
     },
     locationDelete( location_id, index ){

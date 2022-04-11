@@ -92,6 +92,7 @@
 import {storefrontOutline,locationOutline,flagOutline}      from 'ionicons/icons';
 import User from '@/scripts/User.js';
 import Order from '@/scripts/Order.js';
+import Topic from '@/scripts/Topic.js';
 import router from '@/router';
 
 export default({
@@ -136,8 +137,9 @@ export default({
         async deliveryStart(){
             const courier_id=User.courier?.data?.courier_id;
             try{
-                let result=await Order.api.itemJobStart(this.order.order_id,courier_id);
+                await Order.api.itemJobStart(this.order.order_id,courier_id);
                 router.push('order-'+this.order.order_id);
+
             } catch(err){
                 const message=err.responseJSON?.messages?.error;
                 if(message=='notfound'){
@@ -146,7 +148,11 @@ export default({
                 if(message=='notready'){
                     this.$flash("Смена курьера не открыта");
                 }
+                if(message=='notsearching' || message=='idle'){
+                    this.$flash("Заданию уже назначен курьер");
+                }
             }
+            Topic.publish('dismissModal');
         }
     }
 })

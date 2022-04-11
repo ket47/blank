@@ -3,14 +3,13 @@
     <ion-header :class="[pageClass]">
       <ion-toolbar>
         <ion-buttons slot="start" style="width:100px">
-          <ion-back-button :default-href="pageDefaultBackLink"></ion-back-button>
+          <ion-back-button :default-href="pageDefaultBackLink" color="dark"></ion-back-button>
         </ion-buttons>
-        <ion-img class="toolbar_logo" src="./assets/icon/tezkel_logo.png"></ion-img>
+        <ion-title v-if="pageTitle">{{ pageTitle }}</ion-title>
         <div slot="end" style="width:100px">
           <cart-header slot="end"></cart-header>
         </div>
-      </ion-toolbar>
-      <ion-title v-if="pageTitle" style="height: 40px; text-align: center; color: var(--ion-color-medium)">{{ pageTitle }}</ion-title>
+      </ion-toolbar>  
     </ion-header>
     <ion-content
       :class="[pageClass]"
