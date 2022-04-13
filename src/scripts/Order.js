@@ -56,6 +56,9 @@ const Order = {
 
         async entrySave(entry,order_id){
             if( entry.entry_id ){
+                if( entry.entry_quantity==0 ){
+                    return this.entryDelete(entry.entry_id);
+                }
                 return this.entryUpdate(entry);
             }
             return this.entryCreate(entry,order_id);
@@ -75,6 +78,18 @@ const Order = {
             return jQuery.post( heap.state.hostname + "Entry/itemDelete", {entry_id} );
         },
     },
+    doc:{
+        entrySave( order_store_id, entry, order ){
+            //const cart_entry=Order.cart.entryGet(entry.product_id);
+            if(order?.order_id>0 && entry?.entry_id){
+                return Order.api.entrySave(entry,order.order_id);
+            }
+            return Order.cart.entrySave(order_store_id,entry);
+        },
+    },
+
+
+
     cart:{
         listSave(){
            heap.commit('cartListStore',heap.state.cartList);
@@ -212,7 +227,7 @@ const Order = {
             Order.cart.listSave();
             return true;
         },
-        entryUpdate(entry){
+        async entryUpdate(entry){
             let entryOld=Order.cart.entryGet(entry.product_id);
             if( !entryOld ){
                 return false;
@@ -220,6 +235,13 @@ const Order = {
             let entryNew=Object.assign(entryOld.data,entry);
             heap.state.cartList[entryOld.order_index].entries[entryOld.entry_index]=entryNew;
             Order.cart.listSave();
+            if(entryNew.entry_id){
+                try{
+                    await Order.api.entryUpdate(entry);
+                } catch(err){
+                    console.log('entryUpdate error',err);
+                }
+            }
             return entryNew;
         },
         entryDelete(product_id){

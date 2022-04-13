@@ -35,8 +35,12 @@ export default{
   },
   methods: {
     async postToIframe(){
-        const link=await jQuery.post(this.$heap.state.hostname+'UniPayments/paymentLinkGet',this.order_data);
-        this.paymentLink=link;
+        try{
+            this.paymentLink=await jQuery.post(this.$heap.state.hostname+'UniPayments/paymentLinkGet',this.order_data);
+        } catch(err){
+            this.$flash("Нет возможности принять оплату картой");
+            this.closeModal();
+        }
     }
   }
 };

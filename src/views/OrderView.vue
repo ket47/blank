@@ -9,6 +9,7 @@
                 </div>
             </div>
             <order-comp :orderData="order" @stageCreate="onStageCreate"></order-comp>
+            <image-tile-comp :images="order?.images" :image_holder_id="order?.order_id" controller="Order" ref="orderImgs"></image-tile-comp>
         </ion-content>
     </base-layout>
 </template>
@@ -16,11 +17,12 @@
 <script>
 import Order from '@/scripts/Order.js';
 import OrderComp from '@/components/OrderComp.vue';
+import ImageTileComp from '@/components/ImageTileComp.vue'
 import {sparklesOutline}      from 'ionicons/icons';
 import router from '@/router';
 
 export default({
-    components: { OrderComp },
+    components: { OrderComp,ImageTileComp },
     setup(){
         return {sparklesOutline};
     },
@@ -29,10 +31,6 @@ export default({
             order_id:0,
             order:null
         }
-    },
-    mounted(){
-        this.order_id=this.$route.params.id;
-        this.orderGet();
     },
     methods:{
         async orderGet(){
@@ -50,7 +48,8 @@ export default({
         },
         async onStageCreate(order_id, order_stage_code){
             if( order_stage_code.includes('action') ){
-                this[order_stage_code](order_id);
+                order_stage_code=order_stage_code.split('_').splice(1).join('_');
+                this[order_stage_code]?.(order_id);
                 return;
             }
             const stateChangeResult=await Order.itemStageCreate(order_id, order_stage_code);
@@ -67,7 +66,15 @@ export default({
         action_checkout(order_id){
             this.$heap.state.currentOrder=this.order;
             router.push('order-checkout-'+order_id);
-        }
+        },
+        action_take_photo(){
+            this.$refs.orderImgs.take_photo();
+        },
+        ionViewDidEnter() {
+            this.order_id=this.$route.params.id;
+            this.orderGet();
+        },
+
     }
 })
 </script>

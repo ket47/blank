@@ -107,7 +107,7 @@ export default({
             this.order_id=this.$route.params.id;
             this.order=this.$heap.state.currentOrder;
             if( !this.order ){
-                this.order=await Order.api.itemGet(this.order_id);
+                await this.orderGet();
             }
             if( this.order.stage_current!="customer_confirmed" ){
                 router.push('order-'+this.order.order_id);
@@ -115,7 +115,22 @@ export default({
             }
             const preparation=null;//use default prep time
             this.distance= await this.distanceGet();
-            this.deliveryTime=Utils.deliveryTimeCalculate(this.distance,preparation);
+            if(this.distance){
+                this.deliveryTime=Utils.deliveryTimeCalculate(this.distance,preparation);
+            }
+        },
+        async orderGet(){
+            try{
+                this.order=await Order.api.itemGet(this.order_id);
+            } catch(err) {
+                switch(err.status){
+                    case 404:
+                        this.$flash("Заказ не найден");
+                        this.order='notfound';
+                        router.go(-1);
+                        break;
+                }
+            }
         },
         async distanceGet(){
             const request={
@@ -124,7 +139,11 @@ export default({
                 finish_holder:'user',
                 finish_holder_id:this.order.owner_id
             };
-            return jQuery.post( this.$heap.state.hostname + "Location/distanceHolderGet", request );
+            try{
+                return await jQuery.post( this.$heap.state.hostname + "Location/distanceHolderGet", request );
+            } catch (err){
+                //
+            }
         },
         async orderDescriptionChanged(){
             const request={

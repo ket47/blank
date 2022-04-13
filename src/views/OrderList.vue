@@ -85,7 +85,7 @@ export default {
         }
     },
     mounted(){
-        this.listLoad('active');
+
         let self=this;
         Topic.on('courierStatusChange',function(){
             self.courierReadinessCheck();
@@ -136,6 +136,12 @@ export default {
                     self.listLoad(listType);
                 },timeout);
             }
+        },
+        ionViewDidEnter() {
+            this.listLoad('active');
+        },
+        ionViewDidLeave() {
+            clearTimeout(this.clock);
         },
         async itemClick(order){
             if( order.is_courier_job ){

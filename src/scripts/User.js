@@ -10,17 +10,17 @@ const User = {
         this.geo.trackingStart();
     },
     async get(){
-        return jQuery.post( heap.state.hostname + "User/itemGet")
+        const user=await jQuery.post( heap.state.hostname + "User/itemGet")
         .done(function(response, textStatus, request){
             const sid = request.getResponseHeader('x-sid');
             User.sessionIdUse(sid);
             heap.commit('setUser', response);
             Topic.publish('userGet',response);
-
-            if( User.isCourier() ){
-                User.courier.get();
-            }
         });
+        if( User.isCourier() ){
+            await User.courier.get();
+        }
+        return user;
     },
     async autoSignIn(){
         if(localStorage.sessionId){
@@ -87,13 +87,17 @@ const User = {
         return false;
     },
     courier:{
-        data:{},
+        data:null,
         status:'notcourier',
         async get(){
-            let data=await jQuery.post( heap.state.hostname + "Courier/itemGet")
-            User.courier.data=data;
-            User.courier.parseStatus();
-            return data;
+            try{
+                let data=await jQuery.post( heap.state.hostname + "Courier/itemGet")
+                User.courier.data=data;
+                User.courier.parseStatus();
+                return data;
+            }catch(err){
+                User.courier.data=false;
+            }
         },
         async updateStatus(new_status){
             const request={
@@ -138,7 +142,7 @@ const User = {
             return false;
         },
         async trackingStart(){
-            if(!User.courier.data.courier_id){
+            if(!User.courier.data?.courier_id){
                 return false;
             }
             await User.geo.permissionCheck();

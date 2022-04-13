@@ -13,10 +13,11 @@
     width: auto;
     transition: all 0.3s ease;
     font-weight: bold;
+    background-color:var(--ion-color-primary-tint);
   }
   .product-actions  ion-button{
     box-shadow: none;
-    height: 45px;
+    height: 35px;
     --border-radius: 10px;
     --box-shadow: none;
     margin: 0px;
@@ -35,7 +36,7 @@
   }
   .incart{
     -border:1px solid var(--ion-color-primary);
-    background-color: var(--ion-color-light);
+    -background-color: var(--ion-color-light);
   }
   .sold{
     display: none;
@@ -46,17 +47,17 @@
 <template>
     <div :class="`product-actions ${buttonLayout} ${this.currentQuantity>0?'incart':''} ${this.productData.product_quantity>0?'':'sold'}`">
       
-      <ion-button v-if="!this.currentQuantity" @click="addToOrder(+this.productData.product_quantity_min)" size="small" color="primary">
-        <ion-icon :icon="add" color="light"></ion-icon>
+      <ion-button v-if="!this.currentQuantity" @click="addToOrder(+this.productData.product_quantity_min)" color="primary">
+        <ion-icon :icon="add" color="light" size="small"></ion-icon>
       </ion-button>
       
       <ion-button v-if="this.currentQuantity>0" @click="addToOrder(+this.productData.product_quantity_min)" size="small" color="light">
-        <ion-icon :icon="add" color="primary"></ion-icon>
+        <ion-icon :icon="add" color="primary" size="small"></ion-icon>
       </ion-button>
       <ion-label v-if="this.currentQuantity>0" color="primary" @click="setInOrder()">{{ this.currentQuantity }}</ion-label>
-      <ion-button v-if="this.currentQuantity>0" @click="addToOrder(-this.productData.product_quantity_min)" size="small" color="light">
-        <ion-icon :icon="remove" v-if="this.currentQuantity>this.productData.product_quantity_min" color="primary"></ion-icon>
-        <ion-icon :icon="trash" v-if="this.currentQuantity<=this.productData.product_quantity_min" color="primary"></ion-icon>
+      <ion-button v-if="this.currentQuantity>0" @click="addToOrder(-this.productData.product_quantity_min)" color="light">
+        <ion-icon :icon="remove" v-if="this.currentQuantity>this.productData.product_quantity_min" color="primary" size="small"></ion-icon>
+        <ion-icon :icon="trash" v-if="this.currentQuantity<=this.productData.product_quantity_min" color="primary" size="small"></ion-icon>
       </ion-button>
     </div>
 </template>
@@ -136,6 +137,7 @@ export default{
       }
       let stock_product_quantity=this.productItem?this.productItem.product_quantity:this.productData.product_quantity;
       let entry={
+        entry_id:this.productData.entry_id,
         product_id:this.productData.product_id,
         product_unit:this.productData.product_unit,
         product_quantity:stock_product_quantity,
@@ -146,7 +148,7 @@ export default{
         image_hash:this.productData.image_hash||''
       };
       this.productData.entry_quantity=newQuantity;
-      this.$Order.cart.entrySave(this.order_store_id,entry);
+      this.$Order.doc.entrySave(this.order_store_id,entry,this.orderData);
       this.productListItemHighlight();
     },
     async flash( message ) {

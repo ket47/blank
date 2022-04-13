@@ -7,29 +7,32 @@
     <div v-if="orderData">
         <ion-item detail button @click="storeOpen()" lines="none">
             <ion-icon slot="start" :icon="storefrontOutline"></ion-icon>
-            <ion-title>{{orderData.store.store_name}}</ion-title>
+            <ion-title>{{orderData?.store?.store_name}}</ion-title>
         </ion-item>
 
         <ion-list>
             <ion-item>
                 <ion-text color="medium">
-                    Заказ <ion-text v-if="orderData.stage_current_name">({{orderData.stage_current_name}})</ion-text>
+                    Заказ #{{orderData.order_id}} <ion-text v-if="orderData.stage_current_name">({{orderData.stage_current_name}})</ion-text>
                 </ion-text>
             </ion-item>
             <ion-item v-for="entry in orderData?.entries"  :key="entry.product_id" :class="entry.deleted_at?'entry-deleted':''">
                 <ion-thumbnail slot="start" v-if="entry.image_hash" @click="productOpen(entry.product_id)">
                     <ion-img :src="`${$heap.state.hostname}image/get.php/${entry.image_hash}.150.150.webp`"/>
                 </ion-thumbnail>
-                <div style="display:grid;grid-template-columns:auto 125px;width:100%;gap:5px">
+                <div style="display:grid;grid-template-columns:auto 130px;width:100%;gap:5px">
                     <div style="grid-column: 1 / span 2">
                         {{ entry.entry_text }}
                     </div>
                     <div>
                         <ion-label color="primary">{{ entry.entry_price }}{{$heap.state.currencySign}}</ion-label>
                     </div>
-                    <div v-if="entry.product_id"  style="position:relative;min-height:48px">
+                    <div v-if="entry.product_id"  style="position:relative;min-height:38px">
                         <cart-add-buttons v-if="isEditable" buttonLayout="horizontal" :entry="entry" :orderData="orderData"></cart-add-buttons>
                         <ion-text v-else color="primary">x {{entry.entry_quantity}}{{entry.product_unit}}</ion-text>
+                    </div>
+                    <div v-if="entry.entry_comment" style="grid-column: 1 / span 2">
+                        <ion-note>{{ entry.entry_comment }}</ion-note>
                     </div>
                 </div>
             </ion-item>
@@ -52,6 +55,22 @@
                 </ion-col>
             </ion-row>
         </ion-grid>
+
+
+        <ion-accordion-group>
+            <ion-accordion>
+                <ion-item slot="header">
+                    <ion-label>История заказа</ion-label>
+                </ion-item>
+                <ion-list slot="content">
+                    <ion-item v-for="stage in orderData.stages" :key="stage.group_id">
+                        <ion-icon slot="start" :icon="checkmarkOutline" size="small" color="success"></ion-icon>
+                        <ion-text>{{stage.group_name}}</ion-text>
+                        <ion-note slot="end" style="width:80px">{{stage.created_at}}</ion-note>
+                    </ion-item>
+                </ion-list>
+            </ion-accordion>
+        </ion-accordion-group>
     </div>
     <div v-else>
         <ion-item detail button lines="none">
@@ -79,17 +98,22 @@
             </ion-row>
         </ion-grid>
     </div>
+
 </template>
 
 <script>
-import { add, remove, trash, storefrontOutline }   from 'ionicons/icons';
+import { add, remove, trash, storefrontOutline,checkmarkOutline }   from 'ionicons/icons';
 import router from '@/router';
 import CartAddButtons from '@/components/CartAddButtons.vue';
+
 
 export default({
     inject:['$Order'],
     props:['orderData'],
     components: {CartAddButtons},
+    setup() {
+        return { add, remove, trash, storefrontOutline, checkmarkOutline };
+    },
     data(){
         return {
         };
@@ -125,9 +149,6 @@ export default({
             return buttons;
         }
     },
-    setup() {
-        return {add, remove, trash, storefrontOutline };
-    },
     methods:{
         storeOpen(){
             router.push({path: `/store-${this.orderData.order_store_id}`});
@@ -144,7 +165,7 @@ export default({
         },
         stageCreate(order_id, order_stage_code){
             this.$emit('stageCreate',order_id, order_stage_code);
-        }
+        },
     }
 })
 </script>
