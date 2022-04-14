@@ -35,17 +35,6 @@ const User = {
         }
         return await User.get();
     },
-    async signIn(requestData){
-        return jQuery.post( heap.state.hostname + "User/signIn", requestData)
-        .done(function(response, textStatus, request){
-            localStorage.signInData = JSON.stringify(requestData);
-            const sid = request.getResponseHeader('x-sid');
-            User.sessionIdUse(sid);
-        })
-        .fail(function(){
-            localStorage.signInData = null;//user signin is failed shoul we reset localStorage.signInData????
-        });
-    },
     sessionIdUse(sid){
         localStorage.sessionId=sid;
         jQuery.ajaxSetup({ 
@@ -54,14 +43,29 @@ const User = {
             }
         });
     },
-    async signOut(callback){
-        return jQuery.post( heap.state.hostname + "User/signOut", {})
-        .then(function() {
+    async signIn(requestData){
+        return await jQuery.post( heap.state.hostname + "User/signIn", requestData)
+        .done(function(response, textStatus, request){
+            localStorage.signInData = JSON.stringify(requestData);
+            const sid = request.getResponseHeader('x-sid');
+            User.sessionIdUse(sid);
+        })
+        .fail(function(){
+            localStorage.signInData = null;//user signin is failed should we reset localStorage.signInData????
+        });
+    },
+    async signOut(){
+        try{
+            await User.courier.signOut();
+            await jQuery.post( heap.state.hostname + "User/signOut")
             localStorage.removeItem('signInData');
             heap.commit('setUser', {user_id: -1});
             User.sessionIdUse(null);
+            User.geo.trackingStop();
             return {user_id: -1};
-        });
+        } catch(err) {
+            console.log(err);
+        }
     },
     signUp(requestData, callback){
         return jQuery.post( heap.state.hostname + "User/signUp", requestData)
@@ -100,11 +104,31 @@ const User = {
             }
         },
         async updateStatus(new_status){
+            if( !User.courier.data?.courier_id ){
+                return 'ok';
+            }
             const request={
                 courier_id:User.courier.data.courier_id,
                 group_type:new_status
             };
-            return jQuery.post( heap.state.hostname + "Courier/itemUpdateStatus",request);
+            const result=await jQuery.post( heap.state.hostname + "Courier/itemUpdateStatus",request);
+            if(result=='ok'){
+                User.courier.status=new_status;
+                Topic.publish('courierStatusChange',User.courier.status);
+            }
+            return result;
+        },
+        parseStatus(){
+            User.courier.status=User.courier.data?.member_of_groups?.group_types||"notcourier";
+            Topic.publish('courierStatusChange',User.courier.status);
+        },
+        async signOut(){
+            const result=await User.courier.updateStatus('idle');
+            if( result=='ok' ){
+                User.courier.data=null;
+                Topic.publish('courierStatusChange','notcourier');
+            }
+            return result;
         }
     },
     geo:{

@@ -10,7 +10,7 @@ ion-text{
   color:black;
   padding:20px;
   border-radius:10px;
-  font-size: 14px;;
+  font-size: 12px;;
 }
 .disabled{
   background-color: var(--ion-color-light-shade);
@@ -24,7 +24,7 @@ ion-text{
 }
 </style>
 <template>
-  <base-layout page-title="Настройки курьера" page-default-back-link="/user-dashboard">
+  <base-layout page-title="Анкета курьера" page-default-back-link="/user-dashboard">
 
   <div v-if="courier===false">
     <ion-card>
@@ -39,17 +39,22 @@ ion-text{
   </div>
 
   <div v-if="courier">
+    <ion-card lines="none" v-if="message">
+      <ion-card-content :class="messageClass">
+        {{message}}
+      </ion-card-content>
+    </ion-card>
+    <ion-card lines="none" v-else>
+      <ion-card-content style="background-color: var(--ion-color-success-tint);">
+      Анкета активна
+      </ion-card-content>
+    </ion-card>
+    
     <form @change="updateCourier()">
         <ion-list>
-          <ion-item lines="none" v-if="message">
-            <ion-text :class="messageClass">{{message}}</ion-text>
-          </ion-item>
-          <ion-item lines="none" v-else>
-            <ion-text style="background-color: var(--ion-color-success-tint);width:100%">Анкета активна</ion-text>
-          </ion-item>
           <ion-item lines="full">
-            <ion-thumbnail v-if="courier.image" slot="start">
-              <ion-img style="border-radius:10px;" :class="imageClass" :src="$heap.state.hostname + 'image/get.php/'+courier.image.image_hash+'.100.100.webp'"/>
+            <ion-thumbnail v-if="courier?.images[0]" slot="start">
+              <ion-img style="border-radius:10px;" :class="imageClass" :src="$heap.state.hostname + 'image/get.php/'+courier.images[0].image_hash+'.100.100.webp'"/>
             </ion-thumbnail>
             <ion-button slot="end" @click="uploadImageTrigger()">Загрузить фото</ion-button>
             <input type="file" id="courier_foto_upload" accept="image/*" @change="uploadImage($event)" style="display:none">
@@ -57,34 +62,31 @@ ion-text{
 
           <ion-item lines="full">
             <ion-label position="stacked" color="primary">Транспорт</ion-label>
-            <input v-model="courier.courier_vehicle"/>
+            <ion-input v-model="courier.courier_vehicle"/>
           </ion-item>
 
           <ion-item lines="full">
             <ion-label position="stacked" color="primary">ИНН</ion-label>
-            <input v-model="courier.courier_tax_num"/>
+            <ion-input v-model="courier.courier_tax_num"/>
           </ion-item>
 
           <ion-item lines="full">
             <ion-label position="stacked" color="primary">Коментарий</ion-label>
-            <textarea v-model="courier.courier_comment"></textarea>
+            <ion-textarea v-model="courier.courier_comment"></ion-textarea>
           </ion-item>
           
-          <ion-item v-if="courier.deleted_at" lines="full">
-              <ion-button expand="full" @click="itemUnDelete()">Восстановить</ion-button>
+          <ion-item v-if="courier.deleted_at" lines="none">
+              <ion-button slot="end" @click="itemUnDelete()" color="success">Восстановить</ion-button>
           </ion-item>
-          <ion-item v-else lines="full">
-              <ion-title size="small" color="dark">Вы можете удалить анкету курьера</ion-title>
-              <ion-button slot="end" color="danger" @click="itemDelete()">Удалить</ion-button>
+          <ion-item v-else lines="none">
+              <ion-button slot="end" color="danger" @click="itemDelete()">Удалить анкету</ion-button>
           </ion-item>
 
-          <ion-item v-if="showDisable" lines="full">
-              <ion-title size="small" color="dark">Заблокировать анкету</ion-title>
-              <ion-button slot="end" @click="itemDisable()">Отключить</ion-button>
+          <ion-item v-if="showDisable" lines="none">
+              <ion-button slot="end" @click="itemDisable()" color="dark">Заблокировать анкету</ion-button>
           </ion-item>
-          <ion-item v-if="showEnable" lines="full">
-              <ion-title size="small" color="dark">Утвердить анкету</ion-title>
-              <ion-button slot="end" @click="itemEnable()">Включить</ion-button>
+          <ion-item v-if="showEnable" lines="none">
+              <ion-button slot="end" @click="itemEnable()" color="success">Утвердить анкету</ion-button>
           </ion-item>
         </ion-list>
     </form>
@@ -97,21 +99,12 @@ ion-text{
 import jQuery from "jquery";
 import heap from '@/heap';
 import User from '@/scripts/User.js';
-
-import '@/theme/form.css';
+import { IonTextarea,IonInput,IonCard,IonCardContent }          from "@ionic/vue";
 
 export default  {
+  components: { IonTextarea,IonInput,IonCard,IonCardContent },
   data(){
     return {
-      // courier:{
-      //   courier_id:0,
-      //   courier_vehicle:'',
-      //   courier_tax_num:'',
-      //   courier_comment:'',
-      //   image:{},
-      //   is_disabled:1,
-      //   deleted_at:false
-      // },
       courier:User.courier.data,
       isAdmin:User.isAdmin()
     }
@@ -139,7 +132,7 @@ export default  {
       return null;
     },
     imageClass(){
-      if(this.courier?.image?.is_disabled==1){
+      if(this.courier?.images[0]?.is_disabled==1){
         return 'image_disabled';
       }
       return '';
@@ -172,9 +165,7 @@ export default  {
   methods:{
     async load(){
       try{
-        let courier=await User.courier.get();
-        courier.image=courier.images[0];
-        this.courier=courier;
+        this.courier=await User.courier.get();
       } catch(err){
         const status=JSON.parse(err.responseJSON?.status);
         if(status=="404"){
@@ -186,9 +177,7 @@ export default  {
       try{
         await jQuery.post(heap.state.hostname + "Courier/itemCreate");
         await User.get();
-        let courier=User.courier.data;
-        courier.image=courier?.images?.[0];
-        this.courier=courier;
+        this.courier=User.courier.data;
       } catch(err){
         console.error(err);
         this.$flash("Не удалось зарегистрироваться как курьер")

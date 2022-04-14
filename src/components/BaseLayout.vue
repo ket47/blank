@@ -2,15 +2,14 @@
   <ion-page>
     <ion-header :class="[pageClass]">
       <ion-toolbar>
-        <ion-buttons slot="start" style="width:100px">
-          <ion-back-button :default-href="pageDefaultBackLink"></ion-back-button>
+        <ion-buttons slot="start">
+          <ion-back-button :default-href="pageDefaultBackLink" color="dark"></ion-back-button>
         </ion-buttons>
-        <ion-img class="toolbar_logo" src="./assets/icon/tezkel_logo.png"></ion-img>
-        <div slot="end" style="width:100px">
+        <ion-title v-if="pageTitle" size="small">{{ pageTitle }}</ion-title>
+        <div slot="end">
           <cart-header slot="end"></cart-header>
         </div>
-      </ion-toolbar>
-      <ion-title v-if="pageTitle" style="height: 40px; text-align: center; color: var(--ion-color-medium)">{{ pageTitle }}</ion-title>
+      </ion-toolbar>  
     </ion-header>
     <ion-content
       :class="['main-container', pageClass]"

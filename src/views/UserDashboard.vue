@@ -91,7 +91,7 @@
         </ion-item>
       </ion-item-group>
 
-      <ion-item-group>
+      <ion-item-group v-if="isSignedIn">
         <ion-item-divider>
           <ion-label>Курьер</ion-label>
         </ion-item-divider>
@@ -121,7 +121,7 @@
           </ion-text>
         </ion-item>
 
-        <ion-item v-if="courierStatus=='notcourier'" lines="full">
+        <ion-item v-if="courierStatus=='notcourier'" lines="full" detail button>
           <router-link class="section-button" to="/courier-dashboard">
             <ion-icon src="./assets/icon/delivery-man.svg" slot="start"></ion-icon>
             <ion-text>
@@ -167,8 +167,8 @@ import {
 } from "ionicons/icons";
 
 import User from "@/scripts/User.js";
+import Topic from '@/scripts/Topic.js';
 import heap from "@/heap";
-import router from "@/router";
 
 export default {
   name: "UserDashboard",
@@ -177,7 +177,6 @@ export default {
     IonAvatar,
   },
   setup() {
-    //User.get();
     return {
       settingsOutline,
       logIn,
@@ -195,14 +194,17 @@ export default {
     };
   },
   data() {
-    let courierStatus='pending';
     return {
       user: heap.state.user,
-      courierStatus
+      courierStatus:'notcourier'
     };
   },
-  mounted(){
-    this.courierStatusGet();
+  created(){
+    const self=this;
+    Topic.on('courierStatusChange',(status)=>{
+      self.courierStatus=status;
+      console.log(status);
+    });
   },
   computed: {
     isSignedIn() {
@@ -215,20 +217,23 @@ export default {
       User.get();
     },
     async courierStatusSet( new_status ){
-      const result=await User.courier.updateStatus(new_status);
-      if( result=='ok' ){
-        this.courierStatus=new_status;
+      try{
+        await User.courier.updateStatus(new_status);
+      }catch(err){
+        if( err.status==409 ){
+          this.$flash("Анкета удалена или не активна")
+        }
       }
     },
-    async courierStatusGet(){
-      const user_types=heap.state.user?.member_of_groups?.group_types||"";
-      if( user_types.indexOf('courier')==-1 ){
-        this.courierStatus='notcourier';
-        return;
-      }
-      const courierData=await User.courier.get();
-      this.courierStatus=courierData?.member_of_groups?.group_types||"idle";
-    }
+    // async courierStatusGet(){
+    //   const user_types=heap.state.user?.member_of_groups?.group_types||"";
+    //   if( user_types.indexOf('courier')==-1 ){
+    //     this.courierStatus='notcourier';
+    //     return;
+    //   }
+    //   await User.courier.get();
+    //   this.courierStatus=User.courier.status;
+    // }
   },
   watch: {
     $route(to, from) {

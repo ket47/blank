@@ -99,7 +99,7 @@ const routes = [
       },
       {
         path: '/order-:id',
-        component: () => import('@/views/UserOrderView.vue')
+        component: () => import('@/views/OrderView.vue')
       },
       {
         path: '/user-payment-methods',

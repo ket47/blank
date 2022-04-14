@@ -111,7 +111,7 @@ import jQuery from "jquery";
 import heap from '../heap';
 import imageSlider from '../components/imageSlider'
 
-import '../theme/form.css';
+
 
 
 export default  {

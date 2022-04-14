@@ -99,7 +99,6 @@ import router from '../router';
 import jQuery from "jquery";
 import heap from '../heap';
 
-import '../theme/form.css';
 
 export default{
   inject:['$Order'],

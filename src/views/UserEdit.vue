@@ -4,7 +4,7 @@
           <ion-item>
             <ion-label position="stacked" color="primary">Аватар</ion-label>
             <ion-radio-group :value="fields.user_avatar_name">
-              <ion-list>
+              <ion-list style="margin-top:5px">
                 <ion-item>
                   <ion-thumbnail>
                     <img :src="$heap.state.hostname+'img/avatar/man.png'" />
@@ -106,7 +106,7 @@ import router from '../router';
 import jQuery from "jquery";
 import heap from '../heap';
 
-import '../theme/form.css';
+
 
 export default  {
   name: 'SignIn',
