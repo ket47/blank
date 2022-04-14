@@ -104,16 +104,7 @@ const User = {
                 courier_id:User.courier.data.courier_id,
                 group_type:new_status
             };
-            const result=await jQuery.post( heap.state.hostname + "Courier/itemUpdateStatus",request);
-            if( result=='ok' ){
-                User.courier.status=new_status;
-                Topic.publish('courierStatusChange',User.courier.status);
-            }
-            return result;
-        },
-        parseStatus(){
-            User.courier.status=User.courier.data?.member_of_groups?.group_types||"notcourier";
-            Topic.publish('courierStatusChange',User.courier.status);
+            return jQuery.post( heap.state.hostname + "Courier/itemUpdateStatus",request);
         }
     },
     geo:{

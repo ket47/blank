@@ -2,24 +2,24 @@
   <base-layout page-title="Мой профиль"  page-default-back-link="/user-dashboard" :errorMessage="error">
         <ion-list>
           <ion-item>
+            <ion-label position="stacked" color="primary">Аватар</ion-label>
             <ion-radio-group :value="fields.user_avatar_name">
-              <ion-list-header>
-                <ion-label>Аватар</ion-label>
-              </ion-list-header>
-              <ion-item>
-                <ion-thumbnail>
-                  <img :src="$heap.state.hostname+'img/avatar/man.png'" />
-                </ion-thumbnail>
-                <ion-label>Муж.</ion-label>
-                <ion-radio value="man" @ionFocus="save('user_avatar_name', $event.target.value)"></ion-radio>
-              </ion-item>
-              <ion-item>
-                <ion-thumbnail>
-                  <img :src="$heap.state.hostname+'img/avatar/woman.png'" />
-                </ion-thumbnail>
-                <ion-label>Жен.</ion-label>
-                <ion-radio value="woman" @ionFocus="save('user_avatar_name', $event.target.value)"></ion-radio>
-              </ion-item>
+              <ion-list>
+                <ion-item>
+                  <ion-thumbnail>
+                    <img :src="$heap.state.hostname+'img/avatar/man.png'" />
+                  </ion-thumbnail>
+                  <ion-label>Муж.</ion-label>
+                  <ion-radio value="man" @ionFocus="save('user_avatar_name', $event.target.value)"></ion-radio>
+                </ion-item>
+                <ion-item>
+                  <ion-thumbnail>
+                    <img :src="$heap.state.hostname+'img/avatar/woman.png'" />
+                  </ion-thumbnail>
+                  <ion-label>Жен.</ion-label>
+                  <ion-radio value="woman" @ionFocus="save('user_avatar_name', $event.target.value)"></ion-radio>
+                </ion-item>
+              </ion-list>
             </ion-radio-group>
           </ion-item>
 

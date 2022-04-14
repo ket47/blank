@@ -8,8 +8,7 @@ const heap = createStore({
             deliverySettings:{
                 courierVelocity:30000,// (30km/h),
                 deliveryTimeDelta:5,//5minutes
-                fee:120,
-                defaultPreparationTime:15,//15 minutes
+                fee:120
             },
             currencySign:"₽"
         }
@@ -48,11 +47,6 @@ const heap = createStore({
     mutations: {
         setUser (state, userData) {
             state.user = userData;
-            state.location_main=userData.location_main;
-        },
-        setUserMainLocation(state,mainLocation){
-            state.user.location_main=mainLocation
-            state.location_main=mainLocation;
         },
         setCurrentStore (state, storeData) {
             state.currentStore = storeData;
@@ -70,8 +64,7 @@ const heap = createStore({
                 }
             }
             state.cartProductWatchList=watcher;
-        },
-
+        }
     }
 });
 heap.state.cartList=heap.getters.cartListRestore;

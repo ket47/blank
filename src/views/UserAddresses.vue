@@ -1,7 +1,5 @@
 <template>
-  <base-layout page-title="Мои адреса" page-default-back-link="/user-dashboard" :errorMessage="error">
-    <ion-page ref="UserAddressPage">
-      <ion-content :fullscreen="true">
+  <base-layout page-title="Мои адреса" page-default-back-link="/user-dashboard" :errorMessage="error"  ref="UserAddressPage">
         <ion-list v-if="locationList.length" lines="full">
           <ion-item v-for="(location,i) in locationList" :key="location.location_id">
               <ion-img slot="start" :src="`${$heap.state.hostname}/image/get.php/${location.image_hash}.32.32.png`" />
@@ -20,32 +18,26 @@
               <ion-label style="margin-left:5px;padding-left:5px;border-left:solid 1px black;white-space:normal">{{ location.group_name }}</ion-label>
           </ion-item>
         </ion-list>
-      </ion-content>
-    </ion-page>
   </base-layout>
 </template>
 
 
 <script>
 import {
-  IonContent,
   IonPage,
-  modalController,
-  IonIcon
+  modalController
 } from "@ionic/vue";
-
-import router from '@/router';
-import heap from '@/heap';
+import router from '../router';
+import heap from '../heap';
 import jQuery from 'jquery';
 import UserAddressPicker from '@/components/UserAddressPicker.vue';
-import User from '@/scripts/User.js';
 
+import { IonIcon } from '@ionic/vue';
 import { trash } from 'ionicons/icons';
 
 export default{
   name: 'UserAddresses',
   components: {
-    IonContent,
     IonPage,
     IonIcon
   },
@@ -113,19 +105,17 @@ export default{
         }
       });
     },
-    async locationSetMain( location_id, index ){
-      let loc=this.locationList[index];
-      let new_location_main={
+    locationSetMain( location_id, index ){
+      var self=this;
+      var loc=self.locationList[index];
+      heap.state.user.location_main={
         location_id:loc.location_id,
         location_latitude:loc.location_latitude,
         location_altitude:loc.location_altitude,
         location_address:loc.location_address,
-        location_comment:loc.location_comment,
         image_hash:loc.image_hash
       };
-      await jQuery.post(heap.state.hostname + "User/locationSetMain",{location_id});
-      User.get();
-      //Topic.publish('userMainLocationChanged');
+      jQuery.post(heap.state.hostname + "User/locationSetMain",{location_id});
       router.go(-1);
     },
     locationDelete( location_id, index ){

@@ -5,7 +5,7 @@
     }
 </style>
 <template>
-  <base-layout page-default-back-link="/home">
+  <base-layout page-default-back-link="/home"  page-title="Заказы">
         <ion-segment swipe-gesture="true" v-model="orderType" @ionChange="listTypeChanged($event)">
             <ion-segment-button value="jobs" v-if="courierJobsInclude">
                 Задания
@@ -18,7 +18,7 @@
             </ion-segment-button>
         </ion-segment>
         <ion-list v-if="orderList.length">
-            <ion-item v-for="order in orderListComputed" :key="order.order_id" @click="itemClick(order)" detail>
+            <ion-item v-for="order in orderListComputed" :key="order.order_id" @click="itemClick(order)">
                 <ion-avatar slot="start">
                     <ion-icon v-if="order.user_role=='customer'" src="./assets/icon/box-delivery.svg"/>
                     <ion-icon v-if="order.user_role=='courier'" src="./assets/icon/delivery_staying.svg"/>
@@ -50,9 +50,8 @@ import {storefrontOutline,sparklesOutline,timeOutline}      from 'ionicons/icons
 import Order from '@/scripts/Order.js';
 import User  from '@/scripts/User.js';
 import Topic from '@/scripts/Topic.js';
-import router from '@/router';
 import { modalController }  from '@ionic/vue';
-import CourierJobPreview    from '@/components/CourierJobPreview.vue';
+import CourierJobPreview        from '@/components/CourierJobPreview.vue';
 
 
 export default {
@@ -64,7 +63,7 @@ export default {
         return {
             orderList:[],
             orderType:'active',
-            courierJobsInclude:0,
+            courierJobsInclude:1,
             clock:null
         };
     },
@@ -109,23 +108,15 @@ export default {
             const listType=e.target.value;
             this.listLoad(listType);
         },
-        courierReadinessCheck(){
-            this.courierJobsInclude=User.courier.status=='ready'?1:0;
-            if(this.courierJobsInclude==0){
-                this.orderType='active';
-            }
-        },
         async listJobLoad(){
-            try{
-                const courier_id=User.courier?.data?.courier_id;
-                this.orderList=await Order.api.listJobGet(courier_id);
-            } catch(err){
-                const message=err.responseJSON?.messages?.error;
-                if(message=='notready'){
-                    User.courier.status='notready';
-                    this.courierReadinessCheck();
-                }
+            const courier_id=User.courier?.data?.courier_id;
+            if( !courier_id ){
+                this.$flash("Смена курьера не открыта");
+                this.orderList=[];
+                return;
             }
+            console.log(courier_id);
+            this.orderList=await Order.api.listJobGet(courier_id);
         },
         autoReload(listType){
             clearTimeout(this.clock);
@@ -160,7 +151,7 @@ export default {
             this.itemOpen(order.order_id);
         },
         itemOpen(order_id){
-            router.push(`order-${order_id}`);
+            console.log('itemOpen(order_id)');
         }
     }
 }

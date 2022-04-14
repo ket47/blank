@@ -1,5 +1,5 @@
 <template>
-  <ion-chip v-if="cartListTotal" @click="openCartList()" color="dark">
+  <ion-chip @click="openCartList()" color="dark">
     <ion-icon :icon="cart"></ion-icon>
     <ion-label>{{ cartListTotal }}{{$heap.state.currencySign}}</ion-label>
   </ion-chip>
@@ -34,6 +34,13 @@ export default{
       }
       return total;
     }
+  },
+  mounted(){
+    let self=this;
+    setTimeout(function(){
+      //self.openCartList();
+    },2000);
+    
   },
   methods:{
     goToCartList(){
