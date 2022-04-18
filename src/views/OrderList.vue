@@ -21,7 +21,7 @@
             <ion-item v-for="order in orderListComputed" :key="order.order_id" @click="itemClick(order)" detail>
                 <ion-avatar slot="start">
                     <ion-icon v-if="order.user_role=='customer'" src="./assets/icon/box-delivery.svg"/>
-                    <ion-icon v-if="order.user_role=='courier'" src="./assets/icon/delivery_staying.svg"/>
+                    <ion-icon v-if="order.user_role=='delivery'" src="./assets/icon/delivery_staying.svg"/>
                     <ion-icon v-if="order.user_role=='admin'" src="./assets/icon/crown.svg"/>
                     <ion-icon v-if="order.user_role=='supplier'" :icon="storefrontOutline" style="font-size:30px;"/>
                 </ion-avatar>

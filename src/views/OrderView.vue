@@ -52,7 +52,7 @@ export default({
                 this[order_stage_code]?.(order_id);
                 return;
             }
-            const stateChangeResult=await Order.itemStageCreate(order_id, order_stage_code);
+            const stateChangeResult=await Order.api.itemStageCreate(order_id, order_stage_code);
             if(stateChangeResult=='ok'){
                 if( order_stage_code=='customer_purged' ){
                     this.$flash("Заказ удален");

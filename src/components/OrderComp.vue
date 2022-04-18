@@ -10,13 +10,16 @@
             <ion-title>{{orderData?.store?.store_name}}</ion-title>
         </ion-item>
 
+
         <ion-list>
-            <ion-item>
-                <ion-text color="medium">
-                    Заказ #{{orderData.order_id}} <ion-text v-if="orderData.stage_current_name">({{orderData.stage_current_name}})</ion-text>
-                </ion-text>
+            <ion-item lines="full">
+                Заказ #{{orderData.order_id}} 
+
+                <ion-chip slot="end" v-if="orderData.stage_current_name">
+                    <ion-label color="primary">{{orderData.stage_current_name}}</ion-label>
+                </ion-chip>
             </ion-item>
-            <ion-item v-for="entry in orderData?.entries"  :key="entry.product_id" :class="entry.deleted_at?'entry-deleted':''">
+            <ion-item v-for="entry in orderData?.entries"  :key="entry.product_id" :class="entry.deleted_at?'entry-deleted':''" lines="full">
                 <ion-thumbnail slot="start" v-if="entry.image_hash" @click="productOpen(entry.product_id)">
                     <ion-img :src="`${$heap.state.hostname}image/get.php/${entry.image_hash}.150.150.webp`"/>
                 </ion-thumbnail>
@@ -37,9 +40,11 @@
                 </div>
             </ion-item>
             <ion-item lines="none">
-                <ion-text slot="end">Сумма заказа: {{ orderTotal }}{{$heap.state.currencySign}}</ion-text>
+                <ion-text slot="">Сумма заказа: </ion-text>
+                <ion-label slot="end" color="primary">{{ orderTotal }}{{$heap.state.currencySign}}</ion-label>
             </ion-item>
         </ion-list>
+
 
         <ion-grid>
             <ion-row>

@@ -244,7 +244,7 @@ const Order = {
             Order.cart.listSave();
         }
     },
-    async itemStageCreate(order_id,new_stage){
+    async itemStageCreate(order_id,new_stage){//ONLY FOR CART
         if(new_stage=='customer_purged'){
             return Order.cart.itemDelete(order_id);
         }
