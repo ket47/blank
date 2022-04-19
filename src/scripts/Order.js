@@ -198,7 +198,7 @@ const Order = {
             }
             return null;
         },
-        entrySave(store_id,entry){
+        async entrySave(store_id,entry){
             let existingOrder=Order.cart.itemGetByStoreId(store_id);
             if( !existingOrder ){
                 Order.cart.itemCreate(store_id,[entry]);
@@ -208,7 +208,7 @@ const Order = {
                 Order.cart.entryDelete(entry.product_id);
                 return true;
             }
-            if( Order.cart.entryUpdate(entry) ){
+            if( await Order.cart.entryUpdate(entry) ){
                 return true;
             }
             return Order.cart.entryCreate(entry,existingOrder);
@@ -243,24 +243,6 @@ const Order = {
             }
             Order.cart.listSave();
         }
-    },
-    async itemStageCreate(order_id,new_stage){//ONLY FOR CART
-        if(new_stage=='customer_purged'){
-            return Order.cart.itemDelete(order_id);
-        }
-        try{
-            const syncedOrder=await Order.cart.itemSync(order_id);
-            const stateChangeResult=await Order.api.itemStageCreate(syncedOrder.order_id,new_stage);
-            
-            if(stateChangeResult=='ok' && new_stage!='customer_cart'){
-                console.log(stateChangeResult,new_stage);
-                Order.cart.itemDelete(syncedOrder.order_id);
-            }
-            //go to order view
-        } catch( err ){
-            console.error(err);
-        }
-
     }
 }
 

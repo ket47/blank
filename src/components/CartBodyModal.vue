@@ -18,7 +18,7 @@
   <ion-content>
     <div v-if="cartList.length">
       <div v-for="cart in cartList" :key="cart.order_id" class="order-segment">
-          <order-view :order="cart"></order-view>
+          <order-comp :orderData="cart" @stageCreate="onStageCreate"></order-comp>
       </div>
     </div>
     <div v-else style="display:flex;align-items:center;justify-content:center;height:100%">
@@ -32,14 +32,19 @@
 </template>
 
 <script>
-import heap              from '@/heap';
-import {closeCircle,sparklesOutline}      from 'ionicons/icons';
+import 
+{
+  closeCircle,
+  sparklesOutline
+}                         from 'ionicons/icons';
+import heap               from '@/heap';
 import {modalController}  from "@ionic/vue";
-import OrderView          from '@/components/OrderView.vue';
+import OrderComp          from '@/components/OrderComp.vue';
+import Order              from '@/scripts/Order.js';
 
 export default{
   inject:['$Order'],
-  components: { OrderView },
+  components: { OrderComp },
   setup() {
       const closeModal = function(){
           modalController.dismiss();
@@ -54,7 +59,25 @@ export default{
   methods: {
     clearCart(){
       this.closeModal();
-    }
+    },
+    async onStageCreate(order_id, order_stage_code){
+        if(order_stage_code=='customer_purged'){
+            document.querySelectorAll('.incart').classList.remove("incart");
+            return Order.cart.itemDelete(order_id);
+        }
+        try{
+            const syncedOrder=await Order.cart.itemSync(order_id);
+            const stateChangeResult=await Order.api.itemStageCreate(syncedOrder.order_id,order_stage_code);
+            
+            if(stateChangeResult=='ok' && order_stage_code!='customer_cart'){
+                console.log(stateChangeResult,order_stage_code);
+                Order.cart.itemDelete(syncedOrder.order_id);
+            }
+            //go to order view
+        } catch( err ){
+            console.error(err);
+        }
+    },
   }
 };
 </script>

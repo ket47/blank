@@ -15,11 +15,11 @@
 </template>
 
 <script>
-import Order from '@/scripts/Order.js';
-import OrderComp from '@/components/OrderComp.vue';
-import ImageTileComp from '@/components/ImageTileComp.vue'
-import {sparklesOutline}      from 'ionicons/icons';
-import router from '@/router';
+import Order from               '@/scripts/Order.js';
+import OrderComp from           '@/components/OrderComp.vue';
+import ImageTileComp from       '@/components/ImageTileComp.vue'
+import {sparklesOutline} from   'ionicons/icons';
+import router from              '@/router';
 
 export default({
     components: { OrderComp,ImageTileComp },

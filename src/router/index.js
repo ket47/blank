@@ -93,10 +93,10 @@ const routes = [
         path: '/order-list',
         component: () => import('@/views/OrderList.vue')
       },
-      {
-        path: '/cart-list',
-        component: () => import('@/views/CartList.vue')
-      },
+      // {
+      //   path: '/cart-list',
+      //   component: () => import('@/views/CartList.vue')
+      // },
       {
         path: '/order-:id',
         component: () => import('@/views/OrderView.vue')
