@@ -17,7 +17,8 @@
   }
   .product-actions  ion-button{
     box-shadow: none;
-    height: 35px;
+    height: 40px;
+    -width:40px;
     --border-radius: 10px;
     --box-shadow: none;
     margin: 0px;
@@ -48,16 +49,16 @@
     <div :class="`product-actions ${buttonLayout} ${this.currentQuantity>0?'incart':''} ${this.productData.product_quantity>0?'':'sold'}`">
       
       <ion-button v-if="!this.currentQuantity" @click="addToOrder(+this.productData.product_quantity_min)" color="primary" size="small">
-        <ion-icon :icon="add" color="light" size="small"></ion-icon>
+        <ion-icon :icon="add"  color="light"></ion-icon>
       </ion-button>
       
-      <ion-button v-if="this.currentQuantity>0" @click="addToOrder(+this.productData.product_quantity_min)" size="small" color="light">
-        <ion-icon :icon="add" color="primary" size="small"></ion-icon>
+      <ion-button v-if="this.currentQuantity>0" @click="addToOrder(+this.productData.product_quantity_min)" color="light" size="small">
+        <ion-icon :icon="add" color="primary"></ion-icon>
       </ion-button>
-      <ion-label v-if="this.currentQuantity>0" color="primary" @click="setInOrder()">{{ this.currentQuantity }}</ion-label>
+      <ion-label v-if="this.currentQuantity>0" color="primary" size="small" @click="setInOrder()">{{ this.currentQuantity }}</ion-label>
       <ion-button v-if="this.currentQuantity>0" @click="addToOrder(-this.productData.product_quantity_min)" color="light" size="small">
-        <ion-icon :icon="remove" v-if="this.currentQuantity>this.productData.product_quantity_min" color="primary" size="small"></ion-icon>
-        <ion-icon :icon="trash" v-if="this.currentQuantity<=this.productData.product_quantity_min" color="primary" size="small"></ion-icon>
+        <ion-icon :icon="remove" v-if="this.currentQuantity>this.productData.product_quantity_min" color="primary"></ion-icon>
+        <ion-icon :icon="trash" v-if="this.currentQuantity<=this.productData.product_quantity_min" color="primary"></ion-icon>
       </ion-button>
     </div>
 </template>

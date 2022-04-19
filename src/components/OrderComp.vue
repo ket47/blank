@@ -7,13 +7,18 @@
     <div v-if="orderData">
         <ion-item detail button @click="storeOpen()" lines="none">
             <ion-icon slot="start" :icon="storefrontOutline"></ion-icon>
-            <ion-title>{{orderData?.store?.store_name}}</ion-title>
+            <ion-label>{{orderData?.store?.store_name}}</ion-label>
         </ion-item>
 
 
         <ion-list>
             <ion-item lines="full">
-                Заказ #{{orderData.order_id}} 
+                <ion-label v-if="orderData.order_id>0" color="medium">
+                Заказ #{{orderData.order_id}}
+                </ion-label>
+                <ion-label v-else color="medium">
+                Корзина
+                </ion-label>
 
                 <ion-chip slot="end" v-if="orderData.stage_current_name">
                     <ion-label color="primary">{{orderData.stage_current_name}}</ion-label>
@@ -23,14 +28,14 @@
                 <ion-thumbnail slot="start" v-if="entry.image_hash" @click="productOpen(entry.product_id)">
                     <ion-img :src="`${$heap.state.hostname}image/get.php/${entry.image_hash}.150.150.webp`"/>
                 </ion-thumbnail>
-                <div style="display:grid;grid-template-columns:auto 130px;width:100%;gap:5px">
+                <div style="display:grid;grid-template-columns:auto 130px;width:100%;gap:5px;margin:5px">
                     <div style="grid-column: 1 / span 2">
                         {{ entry.entry_text }}
                     </div>
                     <div>
                         <ion-label color="primary">{{ entry.entry_price }}{{$heap.state.currencySign}}</ion-label>
                     </div>
-                    <div v-if="entry.product_id"  style="position:relative;min-height:38px">
+                    <div v-if="entry.product_id"  style="position:relative;min-height:38px;text-align:right">
                         <cart-add-buttons v-if="isEditable" buttonLayout="horizontal" :entry="entry" :orderData="orderData"></cart-add-buttons>
                         <ion-text v-else color="primary">x {{entry.entry_quantity}}{{entry.product_unit}}</ion-text>
                     </div>
@@ -40,8 +45,8 @@
                 </div>
             </ion-item>
             <ion-item lines="none">
-                <ion-text slot="">Сумма заказа: </ion-text>
-                <ion-label slot="end" color="primary">{{ orderTotal }}{{$heap.state.currencySign}}</ion-label>
+                <ion-text color="medium">Сумма заказа: </ion-text>
+                <ion-label slot="end" color="primary"><b>{{ orderTotal }}{{$heap.state.currencySign}}</b></ion-label>
             </ion-item>
         </ion-list>
 
@@ -62,7 +67,7 @@
         </ion-grid>
 
 
-        <ion-accordion-group>
+        <ion-accordion-group v-if="orderData.stages">
             <ion-accordion>
                 <ion-item slot="header">
                     <ion-label>История заказа</ion-label>

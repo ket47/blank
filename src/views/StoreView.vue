@@ -300,7 +300,6 @@ ion-chip .active-chip {
 <script>
 import { search, settingsSharp } from "ionicons/icons";
 import ImageSlider from "@/components/imageSlider";
-//import CartHeader from "../components/CartHeader";
 import GroupList from "@/components/GroupList.vue";
 import ProductList from '@/components/ProductList.vue';
 import { IonSlides, IonSlide } from "@ionic/vue";
@@ -477,9 +476,9 @@ export default {
         .scrollTo({ top: elementPosition, behavior: "smooth" });
     },
     onScroll(event) {
-      const offsetTop=document.querySelector(".product-list-slider").offsetTop;
-      const offsetHeight=document.querySelector(".group-fixed-block").offsetHeight;
-      console.log(offsetTop);
+      const offsetTop=document.querySelector(".product-list-slider")?.offsetTop;
+      const offsetHeight=document.querySelector(".group-fixed-block")?.offsetHeight;
+      //console.log(offsetTop);
       if (offsetTop - offsetHeight -100 < event.detail.scrollTop ) {
         document.querySelector(".group-fixed-block").className = "group-fixed-block";
         //document.querySelector(".product-list-slider").style.marginTop = '100px';
