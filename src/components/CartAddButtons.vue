@@ -47,7 +47,7 @@
 <template>
     <div :class="`product-actions ${buttonLayout} ${this.currentQuantity>0?'incart':''} ${this.productData.product_quantity>0?'':'sold'}`">
       
-      <ion-button v-if="!this.currentQuantity" @click="addToOrder(+this.productData.product_quantity_min)" color="primary">
+      <ion-button v-if="!this.currentQuantity" @click="addToOrder(+this.productData.product_quantity_min)" color="primary" size="small">
         <ion-icon :icon="add" color="light" size="small"></ion-icon>
       </ion-button>
       
@@ -55,7 +55,7 @@
         <ion-icon :icon="add" color="primary" size="small"></ion-icon>
       </ion-button>
       <ion-label v-if="this.currentQuantity>0" color="primary" @click="setInOrder()">{{ this.currentQuantity }}</ion-label>
-      <ion-button v-if="this.currentQuantity>0" @click="addToOrder(-this.productData.product_quantity_min)" color="light">
+      <ion-button v-if="this.currentQuantity>0" @click="addToOrder(-this.productData.product_quantity_min)" color="light" size="small">
         <ion-icon :icon="remove" v-if="this.currentQuantity>this.productData.product_quantity_min" color="primary" size="small"></ion-icon>
         <ion-icon :icon="trash" v-if="this.currentQuantity<=this.productData.product_quantity_min" color="primary" size="small"></ion-icon>
       </ion-button>
