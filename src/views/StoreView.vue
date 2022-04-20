@@ -108,6 +108,7 @@
 }
 ion-segment {
   --background: var(--ion-background-primary-dark);
+  border-radius: 0;
 }
 ion-segment-button {
   --color-checked: var(--ion-color-secondary);

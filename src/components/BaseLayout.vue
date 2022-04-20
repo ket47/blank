@@ -64,11 +64,18 @@ export default {
 <style>
 
 ion-header ion-toolbar {
-    --background: var(--ion-background-primary);
-  }
-  .toolbar_logo {
-    width: auto;
-    height: 40px;
-    margin: 0 auto;
-  }
+  --min-height: 56px;
+  --background: var(--ion-background-primary);
+}
+ion-header ion-toolbar ion-title{
+  color: white;
+  text-align: left;
+  padding: 0 1em;
+  font-size: 16px;
+}
+.toolbar_logo {
+  width: auto;
+  height: 40px;
+  margin: 0 auto;
+}
 </style>
