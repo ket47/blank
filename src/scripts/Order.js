@@ -76,12 +76,12 @@ const Order = {
         }
     },
     doc:{
-        entrySave( order_store_id, entry, order ){
+        async entrySave( order_store_id, entry, order ){
             //const cart_entry=Order.cart.entryGet(entry.product_id);
             if(order?.order_id>0 && entry?.entry_id){
-                return Order.api.entrySave(entry,order.order_id);
+                return await Order.api.entrySave(entry,order.order_id);
             }
-            return Order.cart.entrySave(order_store_id,entry);
+            return await Order.cart.entrySave(order_store_id,entry);
         },
     },
 
@@ -149,6 +149,9 @@ const Order = {
                     "customer_confirmed": ["Подтвердить заказ"],
                     "customer_purged": ["Удалить","negative"]
                 },
+                stage_current:'customer_cart',
+                user_role:'customer',
+
             };
             heap.state.cartList.push(cart);
             Order.cart.listSave();

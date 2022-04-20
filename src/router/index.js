@@ -90,13 +90,13 @@ const routes = [
         component: () => import('@/views/UserFavourites.vue')
       },
       {
+        path: '/order-checkout-:id',
+        component: () => import('@/views/OrderCheckout.vue')
+      },
+      {
         path: '/order-list',
         component: () => import('@/views/OrderList.vue')
       },
-      // {
-      //   path: '/cart-list',
-      //   component: () => import('@/views/CartList.vue')
-      // },
       {
         path: '/order-:id',
         component: () => import('@/views/OrderView.vue')

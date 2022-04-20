@@ -127,7 +127,7 @@ export default{
       }
       return this.updateOrder(newQuantity);
     },
-    updateOrder(newQuantity){
+    async updateOrder(newQuantity){
       if( newQuantity<0 || !newQuantity ){
         newQuantity=0;
       }
@@ -149,7 +149,7 @@ export default{
         image_hash:this.productData.image_hash||''
       };
       this.productData.entry_quantity=newQuantity;
-      this.$Order.doc.entrySave(this.order_store_id,entry,this.orderData);
+      await this.$Order.doc.entrySave(this.order_store_id,entry,this.orderData);
       this.productListItemHighlight();
     },
     async flash( message ) {

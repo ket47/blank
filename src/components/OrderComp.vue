@@ -20,8 +20,9 @@
                 Корзина
                 </ion-label>
 
-                <ion-chip slot="end" v-if="orderData.stage_current_name">
-                    <ion-label color="primary">{{orderData.stage_current_name}}</ion-label>
+                <ion-chip color="primary" slot="end" v-if="orderData.stage_current_name">
+                    <ion-icon :icon="checkmarkOutline"></ion-icon>
+                    <ion-label color="dark">{{orderData.stage_current_name}}</ion-label>
                 </ion-chip>
             </ion-item>
             <ion-item v-for="entry in orderData?.entries"  :key="entry.product_id" :class="entry.deleted_at?'entry-deleted':''" lines="full">

@@ -57,23 +57,26 @@ export default{
     };
   },
   methods: {
-    clearCart(){
+    clearCart(order_id){
       this.closeModal();
+      this.clearHighlightedProducts();
+      return Order.cart.itemDelete(order_id);
+    },
+    clearHighlightedProducts(){
+      document.querySelectorAll('.incart').forEach(item=>item.classList.remove("incart"));
     },
     async onStageCreate(order_id, order_stage_code){
         if(order_stage_code=='customer_purged'){
-            document.querySelectorAll('.incart').classList.remove("incart");
-            return Order.cart.itemDelete(order_id);
+          return this.clearCart(order_id);
         }
         try{
             const syncedOrder=await Order.cart.itemSync(order_id);
             const stateChangeResult=await Order.api.itemStageCreate(syncedOrder.order_id,order_stage_code);
             
             if(stateChangeResult=='ok' && order_stage_code!='customer_cart'){
-                console.log(stateChangeResult,order_stage_code);
-                Order.cart.itemDelete(syncedOrder.order_id);
+                this.clearCart(syncedOrder.order_id);
             }
-            //go to order view
+            this.$router.push('order-'+syncedOrder.order_id);
         } catch( err ){
             console.error(err);
         }

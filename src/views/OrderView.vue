@@ -49,7 +49,11 @@ export default({
         async onStageCreate(order_id, order_stage_code){
             if( order_stage_code.includes('action') ){
                 order_stage_code=order_stage_code.split('_').splice(1).join('_');
-                this[order_stage_code]?.(order_id);
+                try{
+                    this[order_stage_code](order_id);
+                }catch(err){
+                    console.error(order_stage_code);
+                }
                 return;
             }
             const stateChangeResult=await Order.api.itemStageCreate(order_id, order_stage_code);
@@ -63,7 +67,8 @@ export default({
                 this.orderGet();
             }
         },
-        action_checkout(order_id){
+        async action_checkout(order_id){
+            await this.onStageCreate(order_id, 'customer_confirmed');
             this.$heap.state.currentOrder=this.order;
             router.push('order-checkout-'+order_id);
         },
