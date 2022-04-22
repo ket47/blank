@@ -200,14 +200,15 @@ ion-chip .active-chip {
         </ion-row>
         <ion-row>
           <ion-col style="font-size:12px">
-            <div style="display:grid;grid-template-columns:30px 1fr 1fr 1fr;gap:5px">
+            <div style="display:grid;grid-template-columns:30px 1fr;gap:5px">
               <div style="grid-row:1 / 2;align-items: flex-start;">
                 <ion-icon src="./assets/icon/box-delivery.svg" style="font-size:26px;color:var(--ion-color-primary)"></ion-icon> 
               </div>
               <div style="grid-column:2 / span 3;display: flex;align-items: center;">
                 <span> Доставит <b style="color:var(--ion-color-primary)">{{$heap.state.app_title}}</b></span>
               </div>
-              <div></div>
+            </div>
+            <div style="display:flex; justify-content: space-between;">
               <div v-if="storeItem.delivery" style="text-align:left">
                 {{storeItem.delivery.timeMin}}-{{storeItem.delivery.timeMax}} мин
               </div>
@@ -345,6 +346,7 @@ export default {
       storeGroups: [],
       activeGroup: { children: [] },
       activeParentGroupId: 0,
+      offsetModificator: 150
     };
   },
   computed: {
@@ -373,10 +375,11 @@ export default {
         var groud_id = Object.keys(self.storeGroups)[slideIndex];
         self.setActiveParentGroup(groud_id);
         self.$refs.segment.value = self.activeParentGroupId;
-
-        self.scrollTo(
-          Object.keys(self.storeGroups[self.activeParentGroupId].children)[0]
-        );
+        var first_group_id =  Object.keys(self.storeGroups[self.activeParentGroupId].children)[0];
+        console.log(first_group_id);
+        console.log(self.$refs);
+        self.setSubgroupActive(first_group_id);
+        self.scrollTo(first_group_id);
       });
     },
     getStore() {
@@ -457,19 +460,24 @@ export default {
         chip.classList.remove("active-chip");
       }
       if (
-        this.$refs["group-chip-" + groupId] &&
-        this.$refs["group-chip-" + groupId].classList
+        this.$refs["group-chip-" + groupId][0] &&
+        this.$refs["group-chip-" + groupId][0].classList
       ) {
-        this.$refs["group-chip-" + groupId].classList.add("active-chip");
+        this.$refs["group-chip-" + groupId][0].classList.add("active-chip");
       }
     },
     scrollTo(groupId) {
+      var chipList = document.querySelectorAll(".groups-container ion-chip");
       if (!this.$refs["group-" + groupId][0]) {
         return;
       }
       const offset=document.querySelector("ion-content").shadowRoot.querySelector("main").scrollTop;
       const anchor=this.$refs["group-" + groupId][0].getBoundingClientRect().top;
-      const elementPosition =offset+anchor-150;
+      var elementPosition = offset+anchor - this.offsetModificator - (window.innerHeight/4);
+      var first_group_id = Object.keys(this.storeGroups[this.activeParentGroupId].children)[0];
+      if(first_group_id == groupId){
+        elementPosition = offset+anchor - this.offsetModificator;
+      }
       document
         .querySelector("ion-content")
         .shadowRoot.querySelector("main")
@@ -478,18 +486,16 @@ export default {
     onScroll(event) {
       const offsetTop=document.querySelector(".product-list-slider")?.offsetTop;
       const offsetHeight=document.querySelector(".group-fixed-block")?.offsetHeight;
-      //console.log(offsetTop);
-      if (offsetTop - offsetHeight -100 < event.detail.scrollTop ) {
+      if (offsetTop - offsetHeight - 100 < event.detail.scrollTop ) {
         document.querySelector(".group-fixed-block").className = "group-fixed-block";
-        //document.querySelector(".product-list-slider").style.marginTop = '100px';
       } else {
         document.querySelector(".group-fixed-block").className = "group-fixed-block hidden-block";
-        //document.querySelector(".product-list-slider").style.marginTop = '0px';
       }
       var productGroupElementList = document.querySelectorAll(".swiper-slide-active .product-list ion-row");
       for (var row of productGroupElementList) {
         if (
-          row.getBoundingClientRect().bottom - 150 >= 0 &&
+          row.getBoundingClientRect().top - this.offsetModificator <= (window.innerHeight - window.innerHeight/4) &&
+          row.getBoundingClientRect().bottom + this.offsetModificator >= (window.innerHeight - window.innerHeight/4) &&
           row.dataset.group_id
         ) {
           this.setSubgroupActive(row.dataset.group_id);
