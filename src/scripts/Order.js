@@ -248,13 +248,4 @@ const Order = {
         }
     }
 }
-
-
-
-Topic.on('userGet',(userData)=>{
-    //Order.cart.listSync();
-    //console.log(userData);
-});
-  
-  
 export default Order;

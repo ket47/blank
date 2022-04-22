@@ -60,7 +60,7 @@
 
         <ion-grid>
             <ion-row>
-                <ion-col><ion-button expand="block" color="medium" @click="$router.go(-1)">Вернуться</ion-button></ion-col>
+                <ion-col><ion-button expand="block" color="medium" @click="cancel()">Вернуться</ion-button></ion-col>
                 <ion-col><ion-button expand="block" @click="proceed()">Продолжить</ion-button></ion-col>
             </ion-row>
         </ion-grid>
@@ -68,11 +68,11 @@
 </template>
 
 <script>
-import Order from '@/scripts/Order.js';
-import Utils from '@/scripts/Utils.js';
-import Topic from '@/scripts/Topic.js';
-import router from '@/router';
-import jQuery from 'jquery';
+import Order    from '@/scripts/Order.js';
+import Utils    from '@/scripts/Utils.js';
+import Topic    from '@/scripts/Topic.js';
+import router   from '@/router';
+import jQuery   from 'jquery';
 
 import { 
     cardOutline,
@@ -82,7 +82,10 @@ import {
     walletOutline,
     pieChartOutline
     }                           from 'ionicons/icons';
-import { IonTextarea,modalController }          from "@ionic/vue";
+import { 
+    IonTextarea,
+    modalController 
+}                               from "@ionic/vue";
 import UserAddressWidget        from '@/components/UserAddressWidget.vue';
 import PaymentCardModal         from '@/components/PaymentCardModal.vue';
 
@@ -163,6 +166,14 @@ export default({
                     user_id:this.order.owner_id
                 });
             }
+        },
+        async cancel(){
+            // try{
+            //     await Order.api.itemStageCreate(this.order.order_id, 'customer_cart');
+            // } catch(err){/* */}
+            
+            this.$router.push('order-'+this.order.order_id);
+            console.log('go')
         },
         async paymentFormOpen( order_data ) {
             const self=this;

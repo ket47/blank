@@ -41,7 +41,7 @@ export default({
                     case 404:
                         this.$flash("Заказ не найден");
                         this.order='notfound';
-                        router.go(-1);
+                        router.push('order-list');
                         break;
                 }
             }
@@ -56,15 +56,19 @@ export default({
                 }
                 return;
             }
-            const stateChangeResult=await Order.api.itemStageCreate(order_id, order_stage_code);
-            if(stateChangeResult=='ok'){
-                if( order_stage_code=='customer_purged' ){
-                    this.$flash("Заказ удален");
-                    this.order=null;
-                    router.go(-1);
-                    return;
+            try{
+                const stateChangeResult=await Order.api.itemStageCreate(order_id, order_stage_code);
+                if(stateChangeResult=='ok'){
+                    if( order_stage_code=='customer_purged' ){
+                        this.$flash("Заказ удален");
+                        this.order=null;
+                        router.go(-1);
+                        return;
+                    }
+                    this.orderGet();
                 }
-                this.orderGet();
+            }catch(err){
+                console.log(err);
             }
         },
         async action_checkout(order_id){

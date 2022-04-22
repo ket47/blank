@@ -2,14 +2,14 @@ import { createStore } from 'vuex'
 const heap = createStore({
     state() {
         return {
-            //hostname: "https://tezkel.local/",
-            hostname: "https://api.tezkel.com/",
+            hostname: "https://tezkel.local/",//"https://api.tezkel.com/",
             app_title: "Тезкель",
             user: {user_id: -1},
             deliverySettings:{
                 courierVelocity:30000,// (30km/h),
                 deliveryTimeDelta:5,//5minutes
-                fee:120
+                fee:120,
+                defaultPreparationTime:15,//15 minutes
             },
             currencySign:"₽"
         }
@@ -48,6 +48,11 @@ const heap = createStore({
     mutations: {
         setUser (state, userData) {
             state.user = userData;
+            state.location_main=userData.location_main;
+        },
+        setUserMainLocation(state,mainLocation){
+            state.user.location_main=mainLocation
+            state.location_main=mainLocation;
         },
         setCurrentStore (state, storeData) {
             state.currentStore = storeData;
@@ -65,7 +70,8 @@ const heap = createStore({
                 }
             }
             state.cartProductWatchList=watcher;
-        }
+        },
+
     }
 });
 heap.state.cartList=heap.getters.cartListRestore;

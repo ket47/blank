@@ -18,21 +18,23 @@
             </ion-segment-button>
         </ion-segment>
         <ion-list v-if="orderList.length">
-            <ion-item v-for="order in orderListComputed" :key="order.order_id" @click="itemClick(order)" detail>
-                <ion-avatar slot="start">
+            <ion-item v-for="order in orderListComputed" :key="order.order_id" @click="itemClick(order)" detail lines="full">
+                <ion-avatar slot1="start">
                     <ion-icon v-if="order.user_role=='customer'" src="./assets/icon/box-delivery.svg"/>
                     <ion-icon v-if="order.user_role=='delivery'" src="./assets/icon/delivery_staying.svg"/>
                     <ion-icon v-if="order.user_role=='admin'" src="./assets/icon/crown.svg"/>
-                    <ion-icon v-if="order.user_role=='supplier'" :icon="storefrontOutline" style="font-size:30px;"/>
+                    <ion-icon v-if="order.user_role=='supplier'" :icon="storefrontOutline" style="font-size:24px;"/>
                 </ion-avatar>
                 <ion-label>
                     <ion-text color="primary">{{order.store_name}} #{{order.order_id}} ({{order.order_sum_total}}{{$heap.state.currencySign}})</ion-text>
                     <p><b>{{order.distance_km}}</b>{{order.location_address}}</p>
                     <h4>{{order.stage_current_name}}</h4>
                 </ion-label>
+                <!--
                 <ion-thumbnail slot="end" v-if="order.image_hash">
                     <ion-img style="border-radius:10px;" :src="`${$heap.state.hostname}image/get.php/${order.image_hash}.150.150.webp`"/>
                 </ion-thumbnail>
+                -->
             </ion-item>
         </ion-list>
         <div v-else style="display:flex;align-items:center;justify-content:center;height:100%">
@@ -138,7 +140,11 @@ export default {
         },
         ionViewDidEnter() {
             this.courierReadinessCheck();
-            this.listLoad('active');
+            if(this.orderType=='active'){
+                this.listLoad('active');
+            } else {
+                this.orderType='active'
+            }
         },
         ionViewDidLeave() {
             clearTimeout(this.clock);

@@ -19,7 +19,7 @@
         </ion-tab-button>
 
         <ion-tab-button tab="tab4" href="/user-dashboard" routerDirection="backward">
-          <ion-icon src="./assets/icon/account.svg" style="font-size:30px;"/>
+          <ion-icon :icon="personIcon" style="font-size:30px;"/>
           <ion-label>Аккаунт</ion-label>
         </ion-tab-button>
         <div class="tab-indicator-container">
@@ -42,12 +42,8 @@ import {
   IonPage,
   IonRouterOutlet,
 } from "@ionic/vue";
-import {
-  personOutline,
-  cartOutline,
-  search,
-  homeOutline,
-} from "ionicons/icons";
+
+import personIcon from "@/assets/icons/account.svg";
 
 export default {
   name: "TabsPage",
@@ -61,10 +57,7 @@ export default {
   },
   setup() {
     return {
-      personOutline,
-      cartOutline,
-      search,
-      homeOutline,
+      personIcon
     };
   },
 };

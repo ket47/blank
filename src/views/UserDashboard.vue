@@ -1,3 +1,8 @@
+<style scoped>
+ion-icon{
+  font-size:24px;
+}
+</style>
 <template>
   <base-layout
     page-title="Личный кабинет"
@@ -18,11 +23,7 @@
           </ion-label>
         </ion-item>
         <ion-item v-if="user.user_phone" lines="full">
-          <ion-icon
-            slot="start"
-            style="color: var(--ion-color-primary)"
-            :icon="callOutline"
-          />
+          <ion-icon slot="start" :icon="callOutline" color="primary" />
           <ion-label>{{ user.user_phone }}</ion-label>
         </ion-item>
         <ion-item v-if="user.user_emailOutline && user.user_emailOutline !== ''">
@@ -39,31 +40,29 @@
         <ion-item-divider>
           <ion-label>Пользователь</ion-label>
         </ion-item-divider>
-        <ion-item v-if="!isSignedIn" lines="full" button detail>
-          <router-link class="section-button" to="/sign-in">
+        <ion-item v-if="!isSignedIn" lines="full" button detail @click="$router.push('sign-in')">
             <ion-icon :icon="logIn" slot="start"></ion-icon>
             <ion-label>Войти</ion-label>
-          </router-link>
         </ion-item>
-        <ion-item lines="full" button detail>
-          <router-link class="section-button" to="/user-addresses">
-            <ion-icon :icon="locationOutline"></ion-icon>
+        <ion-item lines="full" button detail @click="$router.push('user-addresses')">
+            <ion-icon :icon="locationOutline" slot="start" color="primary"></ion-icon>
             <ion-label>Мои адреса</ion-label>
-          </router-link>
         </ion-item>
+        <ion-item lines="full" button detail @click="$router.push('order-list')">
+            <ion-icon :icon="cartOutline" slot="start" color="primary"></ion-icon>
+            <ion-label>Мои заказы</ion-label>
+        </ion-item>
+        <ion-item v-if="isSignedIn" @click="signOut" lines="full" button detail>
+            <ion-icon :icon="exitOutline" slot="start" color="primary"></ion-icon>
+            <ion-label>Выйти</ion-label>
+        </ion-item>
+        <!--
         <ion-item lines="full" button detail>
           <router-link class="section-button" to="/user-favourites">
             <ion-icon :icon="heartOutline"></ion-icon>
             <ion-label>Избранные товары</ion-label>
           </router-link>
         </ion-item>
-        <ion-item lines="full" button detail>
-          <router-link class="section-button" to="/user-orders">
-            <ion-icon :icon="cartOutline"></ion-icon>
-            <ion-label>Мои заказы</ion-label>
-          </router-link>
-        </ion-item>
-        <!--
         <ion-item lines="full" button detail>
           <router-link class="section-button" to="/user-payment-methods">
             <ion-icon :icon="cardOutline"></ion-icon>
@@ -83,61 +82,69 @@
           </router-link>
         </ion-item>
         -->
-        <ion-item v-if="isSignedIn" @click="signOut" lines="full" button detail>
-          <router-link class="section-button" to="/user-dashboard">
-            <ion-icon :icon="exitOutline"></ion-icon>
-            <ion-label>Выйти</ion-label>
-          </router-link>
-        </ion-item>
       </ion-item-group>
 
       <ion-item-group v-if="isSignedIn">
         <ion-item-divider>
           <ion-label>Курьер</ion-label>
+
         </ion-item-divider>
-        <ion-item v-if="courierStatus=='ready'" lines="full" style="--background:var(--ion-color-success-tint)">
-          <ion-icon src="./assets/icon/delivery-man.svg" slot="start"></ion-icon>
-          <ion-text>
-            <ion-label>Смена активна</ion-label>
-            <ion-note>Вы можете брать задания на доставку</ion-note>
-          </ion-text>
-          <ion-button slot="end" color="primary" @click="courierStatusSet('idle')">Завершить</ion-button>
-        </ion-item>
 
-        <ion-item v-else-if="courierStatus=='idle'" lines="full" style="--background:var(--ion-color-warning-tint)">
-          <ion-icon src="./assets/icon/delivery-man.svg" slot="start"></ion-icon>
-          <ion-text>
-            <ion-label>Смена закрыта</ion-label>
-            <ion-note>Начните смену для начала работы</ion-note>
-          </ion-text>
-          <ion-button slot="end" @click="courierStatusSet('ready')" color="primary">Начать</ion-button>
-        </ion-item>
-
-        <ion-item v-else-if="courierStatus=='busy'" lines="full" style="--background:var(--ion-color-primary-tint)">
-          <ion-icon src="./assets/icon/delivery-man.svg" slot="start"></ion-icon>
-          <ion-text>
-            <ion-label>Выполняется задание</ion-label>
-            <ion-note>В процессе доставки заказа</ion-note>
-          </ion-text>
-        </ion-item>
-
-        <ion-item v-if="courierStatus=='notcourier'" lines="full" detail button>
-          <router-link class="section-button" to="/courier-dashboard">
+        <div v-if="courierStatus=='ready'">
+          <ion-item style="--background:var(--ion-color-success-tint)" lines="none">
+            <ion-text>
+              <ion-label>Смена активна</ion-label>
+              <ion-note>Вы можете брать задания на доставку</ion-note>
+            </ion-text>
+          </ion-item>
+          <ion-item style="--background:var(--ion-color-success-tint)" button lines="full" @click="courierStatusSet('idle')">
             <ion-icon src="./assets/icon/delivery-man.svg" slot="start"></ion-icon>
+            <ion-button slot="end">Завершить смену</ion-button>
+          </ion-item>
+        </div>
+
+        <div v-else-if="courierStatus=='idle'">
+          <ion-item style="--background:var(--ion-color-warning-tint)" lines="none">
+            <ion-text>
+              <ion-label>Смена закрыта</ion-label>
+              <ion-note>Начните смену для начала работы</ion-note>
+            </ion-text>
+          </ion-item>
+          <ion-item style="--background:var(--ion-color-warning-tint)" button lines="full" @click="courierStatusSet('ready')">
+            <ion-icon src="./assets/icon/delivery-man.svg" slot="start"></ion-icon>
+            <ion-button slot="end">Начать смену</ion-button>
+          </ion-item>
+        </div>
+
+        <div v-else-if="courierStatus=='busy'">
+          <ion-item style="--background:var(--ion-color-warning-tint)" lines="none">
+            <ion-text>
+              <ion-label>Выполняется задание</ion-label>
+              <ion-note>В процессе доставки заказа</ion-note>
+            </ion-text>
+          </ion-item>
+          <ion-item style="--background:var(--ion-color-warning-tint)" button lines="full">
+            <ion-icon src="./assets/icon/delivery-man.svg" slot="start"></ion-icon>
+          </ion-item>
+        </div>
+
+        <div v-if="courierStatus=='notcourier'">
+          <ion-item lines="none">
             <ion-text>
               <ion-label>Пока вы не курьер</ion-label>
               <ion-note>Подайте заявку, чтобы стать курьером</ion-note>
             </ion-text>
-          </router-link>
-        </ion-item>
+          </ion-item>
+          <ion-item button lines="full" @click="$router.push('courier-dashboard')">
+            <ion-icon src="./assets/icon/delivery-man.svg" slot="start"></ion-icon>
+            <ion-button slot="end" color="light">Заполнить анкету</ion-button>
+          </ion-item>
+        </div>
 
-        <ion-item v-else lines="full" button detail>
-          <router-link class="section-button" to="/courier-dashboard">
+
+        <ion-item v-else lines="full" button detail @click="$router.push('courier-dashboard')">
             <ion-icon :icon="documentTextOutline" slot="start" color="primary"></ion-icon>
-            <ion-label>
-              <h2>Анкета курьера</h2>
-            </ion-label>
-          </router-link>
+            <ion-label>Анкета курьера</ion-label>
         </ion-item>
 
       </ion-item-group>
@@ -196,7 +203,7 @@ export default {
   data() {
     return {
       user: heap.state.user,
-      courierStatus:'notcourier'
+      courierStatus:User.courier.status
     };
   },
   created(){
