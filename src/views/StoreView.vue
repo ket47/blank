@@ -16,9 +16,10 @@
 }
 
 .groups-container ion-chip.active-chip {
-  background-color: #256fe7;
+  background-color: var(--ion-color-primary);
   border: none;
 }
+
 .groups-container ion-chip.active-chip ion-label {
   color: white;
 }
@@ -112,8 +113,9 @@ ion-segment {
 }
 ion-segment-button {
   --color-checked: var(--ion-color-secondary);
-  --indicator-height: 3px;
+  --indicator-color: orange;
 }
+
 ion-segment ion-label {
   color: white;
 }
@@ -357,12 +359,13 @@ export default {
   methods: {
     setActiveParentGroup(parent_group_id) {
       this.activeParentGroupId = parent_group_id;
-      this.scrollTo(
-        Object.keys(this.storeGroups[this.activeParentGroupId].children)[0]
-      );
-      var slide_index = Object.keys(this.storeGroups).indexOf(
-        this.activeParentGroupId
-      );
+      var first_group_id =  Object.keys(this.storeGroups[this.activeParentGroupId].children)[0];
+      var self = this;
+      setTimeout(function(){
+        self.scrollTo(first_group_id);
+        self.setSubgroupActive(first_group_id);
+      }, 200);
+      var slide_index = Object.keys(this.storeGroups).indexOf(this.activeParentGroupId);
       if (this.$refs.slides) {
         this.$refs.slides.$el.slideTo(slide_index, false, function () {
           return false;
@@ -376,10 +379,10 @@ export default {
         self.setActiveParentGroup(groud_id);
         self.$refs.segment.value = self.activeParentGroupId;
         var first_group_id =  Object.keys(self.storeGroups[self.activeParentGroupId].children)[0];
-        console.log(first_group_id);
-        console.log(self.$refs);
-        self.setSubgroupActive(first_group_id);
-        self.scrollTo(first_group_id);
+        setTimeout(function(){
+          self.scrollTo(first_group_id);
+          self.setSubgroupActive(first_group_id);
+        }, 200);
       });
     },
     getStore() {
@@ -460,6 +463,7 @@ export default {
         chip.classList.remove("active-chip");
       }
       if (
+        this.$refs["group-chip-" + groupId] &&
         this.$refs["group-chip-" + groupId][0] &&
         this.$refs["group-chip-" + groupId][0].classList
       ) {
@@ -467,7 +471,6 @@ export default {
       }
     },
     scrollTo(groupId) {
-      var chipList = document.querySelectorAll(".groups-container ion-chip");
       if (!this.$refs["group-" + groupId][0]) {
         return;
       }
@@ -482,6 +485,10 @@ export default {
         .querySelector("ion-content")
         .shadowRoot.querySelector("main")
         .scrollTo({ top: elementPosition, behavior: "smooth" });
+      var self = this;  
+      setTimeout(function(){
+        self.setSubgroupActive(groupId);
+      }, 500);  
     },
     onScroll(event) {
       const offsetTop=document.querySelector(".product-list-slider")?.offsetTop;
