@@ -165,7 +165,7 @@ ion-chip .active-chip {
     page-default-back-link="/home"
     page-class="store-page"
     :contentOnScroll="onScroll"
-    :page-title="'Магазин'"
+    :page-title="pageTitle"
   >
   <ion-page ref="Store">
   <div style="background-color:var(--ion-background-shade)">
@@ -342,6 +342,7 @@ export default {
     return {
       storeId: this.$route.params.id,
       searchRequest: "",
+      pageTitle:'Магазин',
       error: "",
       storeItem: [],
       storeProducts: {},
@@ -385,18 +386,17 @@ export default {
         }, 200);
       });
     },
-    getStore() {
-      var self = this;
-      jQuery.post(heap.state.hostname + "Store/itemGet", {store_id: self.storeId,distance_include:1})
-        .done(function (response) {
-          self.storeItem = self.prepareStore(response);
-          self.storeId = response.store_id;
-          self.getStoreGroupTree({ store_id: self.storeId });
-          heap.commit('setCurrentStore',self.storeItem);
-        })
-        .fail(function (err) {
-          self.error = err.responseJSON.messages.error;
-        });
+    async getStore() {
+      try{
+        const store=await jQuery.post(heap.state.hostname + "Store/itemGet", {store_id: this.storeId,distance_include:1})
+        this.storeItem = this.prepareStore(store);
+        this.storeId = store.store_id;
+        this.pageTitle=store.store_name
+        this.getStoreGroupTree({ store_id: this.storeId });
+        heap.commit('setCurrentStore',this.storeItem);
+      } catch(err){
+        //
+      }
     },
     prepareStore(storeItem) {
       if (storeItem.member_of_groups.group_names) {
