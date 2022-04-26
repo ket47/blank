@@ -1,17 +1,16 @@
 <template>
     <div id="hcat_widget_wrapper" v-if="productGroupList">
-        <h4>
-          <router-link :to="'store-'+primaryStoreData.store_id">
-            {{primaryStoreData.store_name}}
-          </router-link>
-        </h4>
-        <ion-note>
-          Доставка за {{primaryStoreData.deliveryTimeMin}}-{{primaryStoreData.deliveryTimeMax}}мин
-          </ion-note>
+        <ion-item button detail lines="none" color="light" @click="this.$router.push('store-'+primaryStoreData.store_id)">
+          <h4>{{primaryStoreData.store_name}}</h4>
+          <ion-note slot="helper">
+            Доставка за {{deliveryTime.timeMin}}-{{deliveryTime.timeMax}}мин
+          </ion-note>    
+        </ion-item>
+
         <div id="hcat_widget_grid">
             <div v-for="group in productGroupList" :key="group.group_id">
-                <ion-thumbnail >
-                    <ion-img style="border-radius:10px;border:1px solid #ddd" :src="$heap.state.hostname + 'image/get.php/'+group.image_hash+'.150.150.webp'"/>
+                <ion-thumbnail>
+                    <ion-img :src="$heap.state.hostname + 'image/get.php/'+group.image_hash+'.100.100.webp'"/>
                 </ion-thumbnail>
                 <ion-label style="height:2em;text-align:center">{{group.group_name}}</ion-label>
             </div>
@@ -22,19 +21,28 @@
 <style scoped>
 #hcat_widget_grid {
     display: grid;
-    margin-top:10px;
+    margin:10px;
     gap:6px;
-    grid-template-columns: 1fr 1fr 1fr 1fr;
-    grid-template-rows: 100px;
+    grid-template-columns: repeat(3,1fr);
+    grid-template-rows: 140px;
+}
+ion-thumbnail{
+  border-radius:10px;
+  border:1px solid #ddd;
+  height:100px;
+  width:100px
+}
+ion-img{
+  border-radius:10px;
 }
 @media screen and (min-width: 600px) {
     #hcat_widget_grid {
-        grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
+        grid-template-columns: repeat(5,1fr);
     }
 }
 @media screen and (min-width: 1000px) {
     #hcat_widget_grid {
-        grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+        grid-template-columns: repeat(8,1fr);
     }
 }
 #hcat_widget_grid>div{
@@ -46,65 +54,48 @@
     justify-content: center;
 }
 #hcat_widget_wrapper{
-    background-color: #f5f5f5;
-    padding: 10px;
+    background-color: var(--ion-color-light);
 }
 </style>
 
 <script>
-//import { IonIcon } from "@ionic/vue";
-import heap from "@/heap";
-import jQuery from "jquery";
+import heap       from "@/heap";
+import jQuery     from "jquery";
+import Topic      from "@/scripts/Topic.js"
+import Utils      from "@/scripts/Utils.js"
 
 export default {
   name: "HomePrimaryCategoryWidget",
-  components: {
-    //IonIcon,
-  },
   data() {
     return {
       productGroupList: null,
-      primaryStoreData:null
+      primaryStoreData:null,
+      deliveryTime:{},
+      main_location_id:heap.state.user?.location_main?.location_id,
     };
   },
-  mounted(){
+  created(){
+    let self=this;
+    Topic.on('userMainLocationSet',mainloc=>{
+      self.main_location_id=mainloc.location_id;
+      self.productGroupListGet()
+    })
     this.productGroupListGet()
   },
   methods: {
-    productGroupListGet() {
-        var main_address=heap.state.user.location_main;
-        if(!main_address){
-            console.log('what to do address not set!!!');
+    async productGroupListGet() {
+        if(!this.main_location_id){
             return ;
         }
-        let self=this;
-        return jQuery.get(heap.state.hostname + "Store/primaryNearGet",{location_id:main_address.location_id})
-        .done(function(primaryStore){
-            self.productGroupList=primaryStore.category_list;
-            self.storeDataCalculate(primaryStore);
-        });
-    },
-    storeDataCalculate(primaryStore){
-      this.storeDataCalculateDeliveryTime(primaryStore);
-      this.primaryStoreData=primaryStore;
-    },
-    storeDataCalculateDeliveryTime(Store){
-      var preparation=Store.store_time_preparation||0;
-      var delta=heap.state.deliverySettings.deliveryTimeDelta;
-      var time=Math.round(Store.distance/heap.state.deliverySettings.courierVelocity*60/5)*5+parseInt(preparation);
-      var timeMin=time>delta?time-delta:time;
-      var timeMax=timeMin+delta;
-      Store.deliveryTime=time;
-      Store.deliveryTimeMin=timeMin;
-      Store.deliveryTimeMax=timeMax;
-    }
-  },
-  computed: {
-    isSignedIn() {
-      return heap.state.user.user_id && heap.state.user.user_id > -1;
-    },
-    isMainLocationSet() {
-      return heap.state.user && heap.state.user.location_main;
+        try{
+          const primaryStore=await jQuery.get(heap.state.hostname + "Store/primaryNearGet",{location_id:this.main_location_id})
+          this.productGroupList=primaryStore.category_list;
+          this.deliveryTime=Utils.deliveryTimeCalculate(primaryStore.distance,primaryStore.store_time_preparation)
+          this.primaryStoreData=primaryStore
+          this.$emit('deliveryTimeGet',this.deliveryTime)
+        } catch(err){
+          //
+        }
     },
   },
 };

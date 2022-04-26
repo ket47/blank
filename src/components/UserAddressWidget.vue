@@ -21,7 +21,7 @@
     background-color: var(--ion-color-secondary);
     height: 40px;
     box-shadow: 0px 0px 5px #ccc;
-    margin-bottom: 20px;
+    -margin-bottom: 20px;
   }
   ion-img{
     height: 24px;
@@ -65,7 +65,6 @@ import Topic                    from '@/scripts/Topic.js'
 import jQuery                   from 'jquery';
 
 export default {
-  name: "HomePage",
   props:['deliveryTime','showComment'],
   components: {
     IonIcon,IonTextarea

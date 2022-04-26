@@ -1,101 +1,96 @@
+<style scoped>
+.crop-to-fit {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  height: 180px;
+}
+
+.crop-to-fit ion-img {
+  flex-shrink:0;
+  min-width:100%;
+  min-height:100%
+}
+</style>
+
 <template>
-    <ion-list class="store-list">
-        <ion-card class="store-item" v-for="store_item in storeList" :key="store_item.store_id">
-                <router-link :to="'store-'+store_item.store_id">
-                    <ion-img class="store-image" v-if="store_item.image_hash" :src="$heap.state.hostname + '/image/get.php/' + store_item.image_hash + '.450.450.webp'" />
-                    <ion-card-header>
-                    <ion-card-title>{{ store_item.store_name }}</ion-card-title>
-                    </ion-card-header>
-                    <ion-card-content>{{ store_item.store_description }}</ion-card-content>
-                    <ion-card-subtitle>
-                        <ion-row  class="store-subinfo">
-                            <ion-col v-show="store_item.willBeClosedAt">Закроется в {{ store_item.willBeClosedAt }}:00</ion-col>
-                        </ion-row>
-                    </ion-card-subtitle>
-                </router-link>
-        </ion-card>
-    </ion-list>
-    
+  <ion-list class="store-list">
+    <ion-card v-for="store_item in storeList" :key="store_item.store_id" @click="$router.push('store-' + store_item.store_id)">
+        <div class="crop-to-fit">
+            <ion-img
+            v-if="store_item.image_hash" 
+            :src="$heap.state.hostname +'/image/get.php/' +store_item.image_hash +'.200.200.webp'"/>
+        </div>
+        <ion-chip v-if="store_item.is_opened" color="success">Открыт до {{ store_item.store_time_closes }}:00</ion-chip>
+        <ion-chip v-else color="danger">Закрыт до {{ store_item.store_time_opens }}:00</ion-chip>
+
+        <ion-item lines="none">
+            <h3>{{store_item.store_name}}</h3>
+            <ion-text slot="helper">{{ store_item.store_description }}</ion-text>
+        </ion-item>
+    </ion-card>
+  </ion-list>
 </template>
 
 <script>
-import { 
-    IonList,
-    IonCardContent, 
-    IonCardHeader, 
-    IonCardSubtitle, 
-    IonCardTitle 
-} from '@ionic/vue';
+import {
+  IonList,
+  IonCardContent,
+  IonCardHeader,
+  IonCardSubtitle,
+  IonCardTitle,
+} from "@ionic/vue";
 import jQuery from "jquery";
-import heap from '../heap';
-
+import heap from "../heap";
 
 export default {
-    components: { 
-        IonList,
-        IonCardContent, 
-        IonCardHeader, 
-        IonCardSubtitle, 
-        IonCardTitle 
+  components: {
+    IonList,
+    IonCardContent,
+    IonCardHeader,
+    IonCardSubtitle,
+    IonCardTitle,
+  },
+  data() {
+    return {
+      error: "",
+      storeList: [],
+    };
+  },
+  methods: {
+    getStoreList() {
+      var main_address = heap.state.user.location_main;
+      if (!main_address) {
+        console.log("what to do address not set!!!");
+        return;
+      }
+      var self = this;
+      jQuery
+        .post(heap.state.hostname + "Store/listNearGet", {
+          location_id: main_address.location_id,
+        })
+        .done(function (response) {
+          self.storeList = self.prepareStoreList(response);
+        })
+        .fail(function (err) {
+          self.error = err.responseJSON.messages.error;
+        });
     },
-    data(){
-        return {
-            error: "",
-            storeList: []
-        }
+    prepareStoreList(storeList) {
+      for (var index in storeList) {
+        var storeItem = storeList[index];
+        var date = new Date();
+        storeItem.willBeClosedAt =
+          storeItem["store_time_closes_" + date.getDay()];
+        storeList[index] = storeItem;
+      }
+      return storeList;
     },
-    methods: {
-        getStoreList(){
-            var main_address=heap.state.user.location_main;
-            if(!main_address){
-                console.log('what to do address not set!!!');
-                return;
-            }
-            var self = this;
-            jQuery.get( heap.state.hostname + "Store/listNearGet",{location_id:main_address.location_id})
-                .done(function(response) {
-                    self.storeList = self.prepareStoreList(response);
-                })
-                .fail(function(err) {
-                    self.error = err.responseJSON.messages.error;
-                });
-        },
-        prepareStoreList(storeList){
-            for(var index in storeList){
-                var storeItem = storeList[index];
-                var date = new Date();
-                storeItem.willBeClosedAt = storeItem['store_time_closes_'+date.getDay()];
-                storeList[index] = storeItem;
-            }
-            return storeList;
-        },
-    },
-    created(){
-        this.getStoreList();
-    }
-  
+  },
+  created() {
+    this.getStoreList();
+  },
 };
 </script>
 
-<style>
-
-.store-list a{
-    text-decoration: none;
-    color: inherit;
-}
-.store-item{
-    visibility: visible;
-    padding: 15px;
-    margin: 0;
-    box-shadow: none;
-}
-.store-item ion-card-header{
-    padding: 10px;
-}
-.store-item ion-card-subtitle{
-    padding: 0px 5px;
-}
-.store-image{
-    border-radius: 10px;
-}
-</style>

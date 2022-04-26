@@ -12,8 +12,10 @@
 }
 *{ 
     font-family:"Comfortaa" !important;
-    font-weight: 500;
-    font-size: 14px;
+}
+body ion-content {
+    -font-weight: 500;
+    -font-size: 14px;
 }
 
 
@@ -43,5 +45,5 @@ main {
     margin-left: 10px;
 }
 ion-card-title{
-    color: var(--ion-text-main);
+    -color: var(--ion-text-main);
 }
