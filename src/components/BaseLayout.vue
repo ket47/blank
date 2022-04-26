@@ -3,7 +3,7 @@
     <ion-header :class="[pageClass]">
       <ion-toolbar>
         <ion-buttons slot="start">
-          <ion-back-button :default-href="pageDefaultBackLink" color="dark"></ion-back-button>
+          <ion-back-button :default-href="pageDefaultBackLink" color="light" :text="''" style="padding:0px 10px"></ion-back-button>
         </ion-buttons>
         <ion-title v-if="pageTitle" size="small">{{ pageTitle }}</ion-title>
         <ion-img v-if="pageLogo" style="height:30px;width:auto" :src="pageLogo"/>
