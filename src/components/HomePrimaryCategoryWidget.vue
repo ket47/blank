@@ -1,10 +1,10 @@
 <template>
     <div id="hcat_widget_wrapper" v-if="productGroupList">
-        <ion-title>
+        <h4>
           <router-link :to="'store-'+primaryStoreData.store_id">
             {{primaryStoreData.store_name}}
           </router-link>
-        </ion-title>
+        </h4>
         <ion-note>
           Доставка за {{primaryStoreData.deliveryTimeMin}}-{{primaryStoreData.deliveryTimeMax}}мин
           </ion-note>
