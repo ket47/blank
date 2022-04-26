@@ -1,20 +1,24 @@
 
 <template>
   <ion-header>
-      <ion-toolbar>
-          <ion-title slot="start">Оплата картой</ion-title>
-          <ion-icon :icon="closeOutline" @click="closeModal();" slot="end"></ion-icon>
+      <ion-toolbar color="light">
+          <ion-title slot="start" style="color:black">Оплата картой</ion-title>
+          <ion-icon :icon="closeOutline" @click="closeModal();" slot="end" size="large"></ion-icon>
       </ion-toolbar>
   </ion-header>
   <ion-content>
-    <iframe :src="paymentLink" style="width: 100%; height: 600px;border:none"></iframe>
+    <iframe :src="paymentLink" id="paymentFrame1" style="width: 100%; height: 600px;border:none" @load="onLoad()"></iframe>
+    <div v-if="loadAnimation" style="position:fixed;top:200px;left:calc( 50% - 50px )">
+      <img :src="loading"/>
+    </div>
   </ion-content>
 </template>
 
 <script>
-import {closeOutline}      from 'ionicons/icons';
-import {modalController}  from "@ionic/vue";
-import jQuery from 'jquery';
+import {closeOutline}       from 'ionicons/icons';
+import loading              from '@/assets/icons/loading.svg';
+import {modalController}    from "@ionic/vue";
+import jQuery               from 'jquery';
 
 export default{
   components: {},
@@ -23,15 +27,17 @@ export default{
       const closeModal = function(){
           modalController.dismiss();
       };
-      return { closeModal, closeOutline };
+      return { closeModal, closeOutline,loading };
   },
   data(){
     return {
-      paymentLink:'about:blank'
+      paymentLink:null,
+      loadAnimation:1
     };
   },
   mounted(){
-      this.postToIframe();
+    this.listenFrame();
+    this.postToIframe();
   },
   methods: {
     async postToIframe(){
@@ -41,6 +47,17 @@ export default{
             this.$flash("Нет возможности принять оплату картой");
             this.closeModal();
         }
+    },
+    onLoad(){
+       this.loadAnimation=0;
+    },
+    listenFrame(){
+      let self=this;
+      window.addEventListener('message',event=>{
+        if( event.data=='paymentOk' || event.data=='paymentNo' ){
+          self.closeModal();
+        }
+      })
     }
   }
 };

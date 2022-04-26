@@ -57,7 +57,6 @@
                 <ion-textarea placeholder="комментарий к заказу" @change="orderDescriptionChanged()" v-model="order.order_description"></ion-textarea>
             </ion-item>
         </ion-list>
-
         <ion-grid>
             <ion-row>
                 <ion-col><ion-button expand="block" color="medium" @click="cancel()">Вернуться</ion-button></ion-col>

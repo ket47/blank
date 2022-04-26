@@ -146,8 +146,8 @@ const Order = {
                 entries:entries||[],
                 created_at:date.toISOString().replace(/[T]/g,' ').replace(/.\d\d\dZ/,''),
                 stage_next:{
-                    "customer_confirmed": ["Подтвердить заказ"],
-                    "customer_purged": ["Удалить","negative"]
+                    "customer_purged": ["Удалить","negative"],
+                    "customer_confirmed": ["Продолжить"],
                 },
                 stage_current:'customer_cart',
                 user_role:'customer',

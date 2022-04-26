@@ -76,6 +76,10 @@ export default{
             if(stateChangeResult=='ok' && order_stage_code!='customer_cart'){
                 this.clearCart(syncedOrder.order_id);
             }
+            if(stateChangeResult=='ok' && order_stage_code=='customer_confirmed'){
+                this.$router.push('order-checkout-'+syncedOrder.order_id);
+                return;
+            }
             this.$router.push('order-'+syncedOrder.order_id);
         } catch( err ){
             console.error(err);

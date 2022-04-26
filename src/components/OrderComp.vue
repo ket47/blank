@@ -29,14 +29,14 @@
                 <ion-thumbnail slot="start" v-if="entry.image_hash" @click="productOpen(entry.product_id)">
                     <ion-img :src="`${$heap.state.hostname}image/get.php/${entry.image_hash}.150.150.webp`"/>
                 </ion-thumbnail>
-                <div style="display:grid;grid-template-columns:auto 130px;width:100%;gap:5px;margin:5px">
+                <div style="display:grid;grid-template-columns:auto 113px;width:100%;gap:5px;">
                     <div style="grid-column: 1 / span 2">
                         {{ entry.entry_text }}
                     </div>
                     <div>
                         <ion-label color="primary">{{ entry.entry_price }}{{$heap.state.currencySign}}</ion-label>
                     </div>
-                    <div v-if="entry.product_id"  style="position:relative;min-height:38px;text-align:right">
+                    <div v-if="entry.product_id"  style="position:relative;min-height:38px;">
                         <cart-add-buttons v-if="isEditable" buttonLayout="horizontal" :entry="entry" :orderData="orderData"></cart-add-buttons>
                         <ion-text v-else color="primary">x {{entry.entry_quantity}}{{entry.product_unit}}</ion-text>
                     </div>

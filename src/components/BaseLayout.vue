@@ -6,6 +6,7 @@
           <ion-back-button :default-href="pageDefaultBackLink" color="dark"></ion-back-button>
         </ion-buttons>
         <ion-title v-if="pageTitle" size="small">{{ pageTitle }}</ion-title>
+        <ion-img v-if="pageLogo" style="height:30px;width:auto" :src="pageLogo"/>
         <div slot="end">
           <cart-header slot="end"></cart-header>
         </div>
@@ -42,6 +43,7 @@ import CartHeader from "@/components/CartHeader";
 export default {
   props: [
     "pageTitle",
+    "pageLogo",
     "pageDefaultBackLink",
     "errorMessage",
     "pageClass",

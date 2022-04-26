@@ -46,17 +46,17 @@
     <input type="file" id="foto_upload" accept="image/*" @change="uploadImage($event)" style="display:none">
 </template>
 <script>
-import ImagePreviewModal from '@/components/ImagePreviewModal.vue'
-import { modalController }  from '@ionic/vue';
-import jQuery from 'jquery'
-import Topic from '@/scripts/Topic.js'
 import {
     settingsOutline,
     settingsSharp,
     chevronBackCircleOutline,
     chevronForwardCircleOutline,
     trashBin
-}      from 'ionicons/icons';
+}                               from 'ionicons/icons';
+import ImagePreviewModal        from '@/components/ImagePreviewModal.vue'
+import { modalController }      from '@ionic/vue';
+import jQuery                   from 'jquery'
+import Topic                    from '@/scripts/Topic.js'
 
 export default {
     props:['images','image_holder_id','controller'],
@@ -64,7 +64,8 @@ export default {
         return {settingsOutline,settingsSharp,chevronBackCircleOutline,chevronForwardCircleOutline,trashBin}
     },
     created(){
-        this.imageList=this.images;
+        //this.imageList=this.images;
+        //console.log(this.imageList);
     },
     data(){
         return {

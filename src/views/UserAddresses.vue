@@ -26,14 +26,15 @@
 import {
   IonPage,
   modalController
-} from "@ionic/vue";
-import router from '../router';
-import heap from '../heap';
-import jQuery from 'jquery';
-import UserAddressPicker from '@/components/UserAddressPicker.vue';
+}                         from "@ionic/vue";
+import router             from '@/router';
+import heap               from '@/heap';
+import Topic              from '@/scripts/Topic.js'
+import jQuery             from 'jquery';
+import UserAddressPicker  from '@/components/UserAddressPicker.vue';
 
-import { IonIcon } from '@ionic/vue';
-import { trash } from 'ionicons/icons';
+import { IonIcon }        from '@ionic/vue';
+import { trash }          from 'ionicons/icons';
 
 export default{
   name: 'UserAddresses',
@@ -101,11 +102,11 @@ export default{
         self.locationListGet();
       }).fail(function(xhr){
         if( xhr.responseJSON && xhr.responseJSON.messages.error=='limit_exeeded' ){
-          alert("Больше адресов добавить нельзя");
+          self.$flash("Больше адресов добавить нельзя");
         }
       });
     },
-    locationSetMain( location_id, index ){
+    async locationSetMain( location_id, index ){
       var self=this;
       var loc=self.locationList[index];
       heap.state.user.location_main={
@@ -115,8 +116,9 @@ export default{
         location_address:loc.location_address,
         image_hash:loc.image_hash
       };
-      jQuery.post(heap.state.hostname + "User/locationSetMain",{location_id});
       router.go(-1);
+      await jQuery.post(heap.state.hostname + "User/locationSetMain",{location_id});
+      Topic.publish('userMainLocationSet',heap.state.user.location_main)
     },
     locationDelete( location_id, index ){
       var self=this;

@@ -82,10 +82,6 @@ const routes = [
         component: () => import('@/views/UserAddresses.vue')
       },
       {
-        path: '/user-addresses-add',
-        component: () => import('@/views/UserAddressesAdd.vue')
-      },
-      {
         path: '/user-favourites',
         component: () => import('@/views/UserFavourites.vue')
       },

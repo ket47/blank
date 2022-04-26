@@ -1,5 +1,5 @@
 <template>
-    <base-layout pageTitle="Заказ">
+    <base-layout pageTitle="Заказ" pageDefaultBackLink="order-list">
         <ion-content>
             <div v-if="order=='notfound'" style="display:flex;align-items:center;justify-content:center;height:100%">
                 <div style="width:max-content;text-align:center">
@@ -9,16 +9,16 @@
                 </div>
             </div>
             <order-comp :orderData="order" @stageCreate="onStageCreate"></order-comp>
-            <image-tile-comp :images="order?.images" :image_holder_id="order?.order_id" controller="Order" ref="orderImgs"></image-tile-comp>
+            <image-tile-comp v-if="order?.images.length" :images="order?.images" :image_holder_id="order?.order_id" controller="Order" ref="orderImgs"></image-tile-comp>
         </ion-content>
     </base-layout>
 </template>
 
 <script>
+import {sparklesOutline} from   'ionicons/icons';
 import Order from               '@/scripts/Order.js';
 import OrderComp from           '@/components/OrderComp.vue';
 import ImageTileComp from       '@/components/ImageTileComp.vue'
-import {sparklesOutline} from   'ionicons/icons';
 import router from              '@/router';
 
 export default({
@@ -62,7 +62,7 @@ export default({
                     if( order_stage_code=='customer_purged' ){
                         this.$flash("Заказ удален");
                         this.order=null;
-                        router.go(-1);
+                        router.push('order-list');
                         return;
                     }
                     this.orderGet();

@@ -11,6 +11,12 @@ const heap = createStore({
                 fee:120,
                 defaultPreparationTime:15,//15 minutes
             },
+            location:{
+                mapBoundaries:[[ 45.068047847988005, 33.8779092284851 ],[ 44.907247740163136, 34.16767363278196 ]],
+                mapCenter:[ 44.943863592382236, 34.094551210249215 ],//merkezi pazar amethansultan meydani
+                ymapApiKey:"12d851cb-5290-4946-bf15-817cce1f96df",
+                addressErase:"Россия, Республика Крым, "
+            },
             currencySign:"₽"
         }
     }, 
@@ -48,11 +54,9 @@ const heap = createStore({
     mutations: {
         setUser (state, userData) {
             state.user = userData;
-            state.location_main=userData.location_main;
         },
         setUserMainLocation(state,mainLocation){
             state.user.location_main=mainLocation
-            state.location_main=mainLocation;
         },
         setCurrentStore (state, storeData) {
             state.currentStore = storeData;

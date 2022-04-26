@@ -110,7 +110,6 @@ export default {
             this.listLoad(listType);
         },
         courierReadinessCheck(){
-            console.log(User.courier);
             this.courierJobsInclude=User.courier.status=='ready'?1:0;
             if(this.courierJobsInclude==0){
                 this.orderType='active';

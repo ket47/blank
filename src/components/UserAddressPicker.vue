@@ -16,14 +16,13 @@
 </template>
 
 <script>
-import { IonContent, IonToolbar, modalController } from "@ionic/vue";
-import { defineComponent } from "vue";
-import { loadYmap } from "vue-yandex-maps";
-import { IonIcon } from '@ionic/vue';
-import { locationOutline } from 'ionicons/icons';
+import { IonContent, IonToolbar, modalController }  from "@ionic/vue";
+import { loadYmap }                                 from "vue-yandex-maps";
+import { IonIcon }                                  from '@ionic/vue';
+import { locationOutline }                          from 'ionicons/icons';
+import heap                                         from '@/heap';
 
-export default defineComponent({
-    name: "AddressPicker",
+export default({
     components: { IonContent, IonToolbar, IonIcon },
     setup() {
         const closeModal = function(){
@@ -36,23 +35,17 @@ export default defineComponent({
         location_group_id: Number
     },
     data(){
-        var mapBoundaries=[[ 45.068047847988005, 33.8779092284851 ],[ 44.907247740163136, 34.16767363278196 ]];
-        var mapCenter=[ 44.943863592382236, 34.094551210249215 ];//merkezi pazar amethansultan meydani
-        var locationType=this.location_group_name_low+" адрес";
-        var ymapApiKey="12d851cb-5290-4946-bf15-817cce1f96df";
-        var addressErase="Россия, Республика Крым, ";
-        var selectedPlacemark=0;
-        var selectedAddress='';
-        var selectedCoords=[];
+        let locationType=this.location_group_name_low+" адрес"
+        let locSettings=heap.state.location;
         return {
-            mapBoundaries,
-            mapCenter,
+            mapBoundaries:locSettings.mapBoundaries,
+            mapCenter:locSettings.mapCenter,
             locationType,
-            ymapApiKey,
-            addressErase,
-            selectedPlacemark,
-            selectedAddress,
-            selectedCoords
+            ymapApiKey:locSettings.ymapApiKey,
+            addressErase:locSettings.addressErase,
+            selectedPlacemark:0,
+            selectedAddress:'',
+            selectedCoords:[]
         };
     },
     methods:{
@@ -81,9 +74,9 @@ export default defineComponent({
         var ymaps=window.ymaps;
 
 
-        /*ymaps.geolocation.get().then((res) => {
+        ymaps.geolocation.get().then((res) => {
             myMap.setCenter(res.geoObjects.position);
-        });*/
+        });
 
         
         var myPlacemark;

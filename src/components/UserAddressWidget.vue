@@ -33,7 +33,7 @@
     <div v-if="isMainLocationSet" @click="selectDeliveryAddress()" class="selector">
       <div class="center">
         <ion-img v-if="location_main.image_hash" :src="$heap.state.hostname + 'image/get.php/'+location_main.image_hash+'.32.32.webp'"/>
-        <ion-text style="margin:5px" color="primary">{{$heap.state.location_main.location_address}}</ion-text>
+        <ion-text style="margin:5px" color="primary">{{$heap.state.user.location_main.location_address}}</ion-text>
       </div>
       <div class="rightend" v-if="deliveryTime">
         <ion-text style="font-size:24px">{{deliveryTime.time}}</ion-text>
@@ -52,16 +52,17 @@
     </ion-item>
 
     <ion-item v-if="showComment">
-        <ion-textarea placeholder="комментарий к адресу" @change="locationCommentChanged()" v-model="$heap.state.location_main.location_comment"></ion-textarea>
+        <ion-textarea placeholder="комментарий к адресу" @change="locationCommentChanged()" v-model="$heap.state.user.location_main.location_comment"></ion-textarea>
     </ion-item>
 </template>
 
 <script>
-import { IonIcon,IonTextarea } from "@ionic/vue";
-import { location } from "ionicons/icons";
-import heap from "@/heap";
-import router from '@/router';
-import jQuery from 'jquery';
+import { IonIcon,IonTextarea }  from "@ionic/vue";
+import { location }             from "ionicons/icons";
+import heap                     from "@/heap";
+import router                   from '@/router';
+import Topic                    from '@/scripts/Topic.js'
+import jQuery                   from 'jquery';
 
 export default {
   name: "HomePage",
@@ -74,8 +75,14 @@ export default {
   },
   data() {
     return {
-      location_main: heap.state.location_main,
+      location_main: heap.state.user.location_main,
     };
+  },
+  created(){
+    let self=this;
+    Topic.on('userMainLocationSet',mainloc=>{
+      self.location_main=mainloc
+    })
   },
   methods: {
     selectDeliveryAddress() {
@@ -83,8 +90,8 @@ export default {
     },
     async locationCommentChanged(){
       const request={
-        location_id:heap.state.location_main.location_id,
-        location_comment:heap.state.location_main.location_comment
+        location_id:heap.state.user.location_main.location_id,
+        location_comment:heap.state.user.location_main.location_comment
       };
       jQuery.post( this.$heap.state.hostname + "Location/itemUpdate", JSON.stringify(request) );
     }
