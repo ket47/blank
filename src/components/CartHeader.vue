@@ -1,7 +1,7 @@
 <template>
-  <ion-chip @click="openCartList()" color="dark" v-if="cartListTotal">
-    <ion-icon :icon="cart"></ion-icon>
-    <ion-label>{{ cartListTotal }}{{$heap.state.currencySign}}</ion-label>
+  <ion-chip @click="openCartList()" color="dark" v-if="cartListTotal" style="background-color: var(--ion-color-primary);">
+    <ion-icon :icon="cart" style="font-weight: bold; color: white;"></ion-icon>
+    <ion-label style="font-weight: bold; color: white;">{{ cartListTotal }}{{$heap.state.currencySign}}</ion-label>
   </ion-chip>
 </template>
  
