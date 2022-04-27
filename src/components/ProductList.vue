@@ -34,9 +34,6 @@
     }
 }
 @media screen and (min-width: 1000px) {
-    .product_list_widget_grid {
-        grid-template-columns: 16% 16% 16% 16% 16% 16%;
-    }
 }
 .product_list_widget_grid>div{
     display: flex;

@@ -1,33 +1,41 @@
 <template>
-    <ion-slides v-if="imageList"  pager="true" :options="slideOpts">
-        <ion-slide v-for="image in imageList" :key="image.image_hash" style="max-height:50vh">
-            <div :style="`width:100%;max-height:${maxHeight|200}px;overflow:hidden;display:flex;align-items:center`">
-                <ion-img  style="width:100%" :src="`${$heap.state.hostname}image/get.php/${image.image_hash}.${imgWidth||300}.${imgHeight||300}.webp`"/>
-            </div>
-        </ion-slide>
-    </ion-slides>
+    <swiper :modules="modules" :autoplay='{delay: 3000, disableOnInteraction: false}' :loop="true" class="store-image-slider">
+        <swiper-slide v-for="image in imageList" :key="image.image_hash"  style="max-height:50vh">
+          <img  class="slide_img" style="width:100%" :src="`${$heap.state.hostname}image/get.php/${image.image_hash}.${imgWidth||300}.${imgHeight||300}.webp`"/>
+        </swiper-slide>
+      </swiper>
 </template>
 
-<script>
-import { IonSlides, IonSlide } from '@ionic/vue';
+<style>
+    .store-image-slider{
+        overflow: hidden;
+        max-height: 300px;
+        min-height: 250px;
+    }
+    .slide_img{
+        display: block;
+        margin-left: auto;
+        width: 100%;
+        height: auto;
+        min-height: 300px;
+    }
+</style>
 
-export default{
-    components: { IonSlides, IonSlide },
+<script>
+import { defineComponent } from 'vue';
+import { EffectFade, Autoplay } from 'swiper';
+import { Swiper, SwiperSlide } from 'swiper/vue';
+
+export default defineComponent({
+    components: { 
+      Swiper,
+      SwiperSlide
+    },
     props: ['imageList','imgHeight','imgWidth','maxHeight'],
     setup() {
-        const slideOpts = {  
-            slidesPerView: 1,
-            centeredSlides: true, 
-            initialSlide: 0,
-            speed: 400,
-            grabCursor: true,
-            touchStartForcePreventDefault: true,
-            navigation: {
-                nextEl: '.swiper-button-next',
-                prevEl: '.swiper-button-prev',
-            },
-        };
-        return { slideOpts }
-    }
-};
+      return {
+        modules: [Autoplay,EffectFade], 
+      };
+    },
+});
 </script>
