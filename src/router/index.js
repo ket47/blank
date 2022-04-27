@@ -34,20 +34,20 @@ const routes = [
         component:()=>import('@/views/CourierDashboard.vue')
       },
       {
+        path: '/product-edit-:id',
+        component: () => import('@/views/ProductEdit.vue')
+      },
+      {
         path: '/product-:id',
         component: () => import('@/views/ProductView.vue')
       },
       {
-        path: '/product_edit-:id',
-        component: () => import('@/views/ProductEdit.vue')
+        path: '/store-edit-:id',
+        component: () => import('@/views/StoreEdit.vue')
       },
       {
         path: '/store-:id',
         component: () => import('@/views/StoreView.vue')
-      },
-      {
-        path: '/store_edit-:id',
-        component: () => import('@/views/StoreEdit.vue')
       },
       {
         path: '/category-:id',

@@ -178,7 +178,7 @@ ion-chip .active-chip {
           </ion-col>
           <ion-col style="text-align:right">
             <router-link :to="'/store-edit-' + storeItem.store_id">
-              <ion-icon :icon="settingsSharp" style="font-size:18px"></ion-icon>
+              <ion-icon :icon="settingsOutline" style="font-size:24px"></ion-icon>
             </router-link>
           </ion-col>
         </ion-row>
@@ -259,7 +259,7 @@ ion-chip .active-chip {
       @input="
         getStoreProducts({
           name_query: $event.target.value,
-          name_query_fields: 'product_name,product_code,product_description',
+          name_query_fields: 'product_name,product_code',
         });
         searchRequest = $event.target.value;
       "
@@ -301,7 +301,7 @@ ion-chip .active-chip {
   </base-layout>
 </template>
 <script>
-import { search, settingsSharp } from "ionicons/icons";
+import { search, settingsOutline } from "ionicons/icons";
 import ImageSlider from "@/components/imageSlider";
 import GroupList from "@/components/GroupList.vue";
 import ProductList from '@/components/ProductList.vue';
@@ -334,7 +334,7 @@ export default {
   setup() {
     return {
       search,
-      settingsSharp,
+      settingsOutline,
       slideOpts
     };
   },

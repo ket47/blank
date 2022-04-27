@@ -123,7 +123,7 @@ export default {
         async load(){
             const request={
                 image_holder_id:this.image_holder_id,
-                image_holder:'order',
+                image_holder:this.controller,
                 is_disabled:1,
                 is_deleted:1,
                 is_active:1
