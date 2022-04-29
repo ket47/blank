@@ -225,6 +225,9 @@
 ion-header ion-toolbar {
   padding: 10px 20px !important;
 }
+ion-header ion-toolbar ion-title{
+  color: var(--ion-color-dark);
+}
 ion-header ion-tab-bar{
   --background: transparent;
 }
