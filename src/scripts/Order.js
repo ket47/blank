@@ -1,23 +1,7 @@
 import jQuery from "jquery";
-import heap from '../heap';
-import Topic from "@/scripts/Topic";
+import heap from '@/heap';
 
 const Order = {
-    isInited:false,
-    init(){
-        if(Order.isInited){
-            return false;
-        }
-        // if( heap.getters.userIsLogged ){
-        //     //Order.cart.listSync();
-        // }
-        this.isInited=true;
-    },
-    // apiInteractionDelay:null,
-    // apiDelayedExecute( job ){
-    //     clearTimeout(Order.apiInteractionDelay);
-    //     Order.apiInteractionDelay=setTimeout(job,500);
-    // },
     api:{
         async itemGet(order_id){
             return jQuery.post( heap.state.hostname + "Order/itemGet",{order_id} );
@@ -50,7 +34,6 @@ const Order = {
             return jQuery.post( heap.state.hostname + "Courier/itemJobStart", {order_id,courier_id} );
         },
 
-
         async entrySave(entry,order_id){
             if( entry.entry_id ){
                 if( entry.entry_quantity==0 ){
@@ -77,16 +60,12 @@ const Order = {
     },
     doc:{
         async entrySave( order_store_id, entry, order ){
-            //const cart_entry=Order.cart.entryGet(entry.product_id);
             if(order?.order_id>0 && entry?.entry_id){
                 return await Order.api.entrySave(entry,order.order_id);
             }
             return await Order.cart.entrySave(order_store_id,entry);
         },
     },
-
-
-
     cart:{
         listSave(){
            heap.commit('cartListStore',heap.state.cartList);

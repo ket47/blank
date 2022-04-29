@@ -37,15 +37,43 @@ import Order                from '@/scripts/Order.js'
 import jQuery               from "jquery";
 
 
-const flash= async ( message )=>{
-  const toast = await toastController
-    .create({
-      message: message,
-      duration: 2000,
-      color:'dark'
+const FlashNotice={
+  queue:([] as any),
+  idle:true,
+  push( message:string ){
+    this.queue.push(message);
+    this.next();
+  },
+  next(){
+    if( !this.idle ){
+      return;
+    }
+    const message=this.queue.shift()
+    if( message==undefined ){
+      return;
+    }
+    this.flash(message)
+  },
+  async flash(message){
+    this.idle=false;
+    const self=this;
+    const toast = await toastController
+      .create({
+        message: message,
+        duration: 2000,
+        color:'dark'
+      })
+    toast.present();
+    toast.onDidDismiss().then(()=>{
+      self.idle=true;
+      self.next();
     })
-  return toast.present();
+  }
 }
+const flash= ( message:string )=>{
+  FlashNotice.push(message);
+}
+
 jQuery( document ).ajaxError(function( event, jqxhr, settings, thrownError ) {
   const status_code=jqxhr.status;
   if(status_code==403){
@@ -55,6 +83,10 @@ jQuery( document ).ajaxError(function( event, jqxhr, settings, thrownError ) {
       flash('Нужно выполнить вход, чтобы продолжить');
       router.push({path: `/sign-in`});
     }
+  }
+  if(status_code==401){
+    flash('Нужно выполнить вход, чтобы продолжить');
+    router.push({path: `/sign-in`});
   }
 });
 

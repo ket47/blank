@@ -51,7 +51,7 @@ export default{
   methods:{
     async modalLocationCreate( location_group_id, location_group_name ) {
       if(!heap.state.user.user_id){
-        alert('Чтобы добавленные адреса сохранились, пожалуйста войдите в систему');
+        this.$flash('Чтобы добавленные адреса сохранились, пожалуйста войдите в систему');
         router.push({name: 'UserSignIn'});
         return;
       }
@@ -92,7 +92,7 @@ export default{
       let request={
         location_holder:'user',
         location_holder_id:heap.state.user.user_id,
-        location_type_id:group_id,
+        location_group_id:group_id,
         location_address:location.location_address,
         location_latitude:location.location_latitude,
         location_longitude:location.location_longitude

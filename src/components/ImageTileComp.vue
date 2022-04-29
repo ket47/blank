@@ -3,7 +3,8 @@
     display:grid;
     grid-template-columns:repeat(3,1fr);
     gap:10px;
-    width:100%
+    width:100%;
+    margin-bottom:10px;
 }
 .image_grid>div{
     display: flex;
