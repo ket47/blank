@@ -26,14 +26,21 @@
 }
 @media screen and (min-width: 620px) {
     .product_list_widget_grid {
+
+    }
+    .product_list_item_img{
+        width:130px;
+        height:130px;
+    }
+}
+@media screen and (min-width: 1200px) {
+    .product_list_widget_grid {
         grid-template-columns: 23% 23% 23% 23%;
     }
     .product_list_item_img{
         width:150px;
         height:150px;
     }
-}
-@media screen and (min-width: 1000px) {
 }
 .product_list_widget_grid>div{
     display: flex;
