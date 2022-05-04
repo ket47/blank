@@ -5,7 +5,7 @@
         <ion-buttons slot="start">
           <ion-back-button :default-href="pageDefaultBackLink" color="light" :text="''" style="padding:0px 10px"></ion-back-button>
         </ion-buttons>
-        <ion-title v-if="pageTitle" size="small">{{ pageTitle }}</ion-title>
+        <ion-title v-if="pageTitle" size="small"><div style="line-height: 1.5;max-height:3em;text-overflow: ellipsis;">{{ pageTitle }}</div></ion-title>
         <ion-img v-if="pageLogo" style="height:30px;width:auto" :src="pageLogo"/>
         <div slot="end">
           <cart-header slot="end"></cart-header>

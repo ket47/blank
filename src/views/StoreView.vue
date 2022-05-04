@@ -170,7 +170,7 @@ ion-chip .active-chip {
   <ion-page ref="Store">
   <div style="background-color:var(--ion-background-shade)">
     <div class="store-info">
-      <image-slider :imageList="storeItem.images" :maxHeight="200" :maxWidth="700"></image-slider>
+      <image-slider :imageList="storeItem.images" :imgHeight="200"></image-slider>
       <ion-grid style="margin:15px 5px 5px 5px;"> 
         <ion-row>
           <ion-col>

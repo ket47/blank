@@ -1,208 +1,310 @@
+<style scoped>
+  .schedule ion-item ion-label{
+    width:130px
+  }
+  .disabled{
+    background-color: var(--ion-color-medium-shade);
+  }
+  .deleted{
+    background-color: var(--ion-color-danger-tint);
+  }
+  .notworking{
+    background-color: var(--ion-color-light-shade);
+  }
+  .primary{
+    background-color: var(--ion-color-primary-shade);
+  }
+  .active{
+    background-color: var(--ion-color-success-shade);
+  }
+</style>
+
 <template>
-  <base-layout page-title="Мой магазин"  :page-default-back-link="'/store-'+this.storeId" :errorMessage="error" page-class="store-edit-page">
-        <ion-list>
-          
-          <image-slider :imageList="fields.images" :key="sliderKey"/>
-          <ion-item>
-            <ion-label position="stacked" color="primary">Загрузить изображение</ion-label>
-            <input type="file" accept="image/*" @change="uploadImage($event)" id="file-input">
-          </ion-item>
+  <base-layout :page-title="productItem?.product_name??'Товар'" :page-default-back-link="'/product-'+this.productId">
+    <ion-card v-if="message">
+      <ion-card-content :class="messageClass">
+        {{message}}
+      </ion-card-content>
+    </ion-card>
+
+    <ion-list v-if="productItem">
+      <ion-item>
+        <ion-icon :src="trashOutline" color="primary" slot="start"/>
+        Удалено
+        <ion-toggle slot="end" v-model="is_deleted" color="danger" @ionChange="itemDelete($event.target.checked?1:0)"></ion-toggle>
+      </ion-item>
+      <ion-item>
+        <ion-icon :src="searchOutline" color="primary" slot="start"/>
+        На модерации
+        <ion-toggle slot="end" v-model="is_disabled" @ionChange="itemDisable($event.target.checked?1:0)"></ion-toggle>
+      </ion-item>
+      <ion-item>
+        <ion-icon :src="pizzaOutline" color="primary" slot="start"/>
+        Производится
+        <ion-toggle slot="end" v-model="is_produced" @ionChange="save('is_produced',$event.target.checked?1:0)"/>
+      </ion-item>
+    </ion-list>
+
+    <form @change="saveForm" v-if="productItem">
+      <ion-list lines="full">
+        <ion-item-group>
+          <ion-item-divider>
+            <ion-label>Основные настройки</ion-label>
+          </ion-item-divider>
           <ion-item>
             <ion-label position="stacked" color="primary">Название</ion-label>
-            <ion-input 
-              v-model="fields.product_name" 
-              name="product_name" 
-              type="text" 
-              :value="fields.product_name"
-              @change="save('product_name', $event.target.value)" 
-              placeholder="Название"
-              required
-            ></ion-input>
+            <ion-textarea v-model="productItem.product_name" name="product_name"></ion-textarea>
           </ion-item>
-
-          <ion-item>
-            <ion-label position="stacked" color="primary">Код</ion-label>
-            <ion-input 
-              v-model="fields.product_code" 
-              name="product_code" 
-              type="text" 
-              :value="fields.product_code"
-              @change="save('product_code', $event.target.value)" 
-              placeholder="Код"
-            ></ion-input>
-          </ion-item>
-
           <ion-item>
             <ion-label position="stacked" color="primary">Описание</ion-label>
-            <ion-input 
-              v-model="fields.product_description" 
-              name="product_description" 
-              type="text" 
-              :value="fields.product_description"
-              @change="save('product_description', $event.target.value)" 
-              placeholder="Описание"
-            ></ion-input>
+            <ion-textarea v-model="productItem.product_description" name="product_description" rows="6"></ion-textarea>
           </ion-item>
-
           <ion-item>
-            <ion-label position="stacked" color="primary">Цена</ion-label>
-            <ion-input
-              v-model="fields.product_price"
-              name="product_price"
-              type="numeric"
-              :value="fields.product_price"
-              @change="save('product_price', $event.target.value)"
-              placeholder="Цена"
-              required
-            ></ion-input>
+            <ion-label color="primary">Артикул</ion-label>
+            <ion-input v-model="productItem.product_code" name="product_code" slot="end"/>
           </ion-item>
-
+          <ion-item v-if="!is_produced">
+            <ion-label color="primary">Остаток {{productItem.product_unit}}</ion-label>
+            <ion-input v-model="productItem.product_quantity" name="product_quantity" slot="end"/>
+          </ion-item>
           <ion-item>
-            <ion-label position="stacked" color="primary">Вес кг/единица</ion-label>
-            <ion-input
-              v-model="fields.product_weight"
-              name="product_weight"
-              type="numeric"
-              :value="fields.product_weight"
-              @change="save('product_weight', $event.target.value)"
-              placeholder="Вес кг/единица"
-              required
-            ></ion-input>
+            <ion-label color="primary">Единица</ion-label>
+            <ion-input v-model="productItem.product_unit" name="product_unit" slot="end"/>
           </ion-item>
-
           <ion-item>
-            <ion-label color="primary">Производится</ion-label>
-            <input  slot="end"
-              type="checkbox" 
-              @change="save('is_produced', $event.target.checked)"
-              :checked="fields.is_produced"
-            />
+            <ion-label color="primary">Мин. заказ</ion-label>
+            <ion-input v-model="productItem.product_quantity_min" name="product_quantity_min" slot="end"/>
           </ion-item>
-
           <ion-item>
-            <ion-label color="primary">Отключен</ion-label>
-            <input  slot="end"
-              type="checkbox" 
-              @change="save('is_disabled', $event.target.checked)"
-              :checked="fields.is_disabled*1"
-            />
+            <ion-label color="primary">Вес единицы (кг)</ion-label>
+            <ion-input v-model="productItem.product_weight" name="product_weight" slot="end"/>
           </ion-item>
+        </ion-item-group>
+      </ion-list>
 
-          <ion-item>
-            <ion-label position="stacked" color="primary">Остаток</ion-label>
-            <ion-input
-              v-model="fields.product_quantity"
-              name="product_quantity"
-              type="numeric"
-              :value="fields.product_quantity"
-              @change="save('product_quantity', $event.target.value)"
-              placeholder="Остаток"
-              required
-            ></ion-input>
-          </ion-item>
 
-        </ion-list>
+      <ion-list lines="full">
+        <ion-item-group>
+          <ion-item-divider>
+            <ion-label>Цена</ion-label>
+          </ion-item-divider>
+        </ion-item-group>
+        <ion-item>
+          <ion-label color="primary">Цена</ion-label>
+          <ion-input v-model="productItem.product_price" name="product_price" slot="end"/>
+        </ion-item>
+        <ion-item>
+          <ion-label color="primary">Цена акционная</ion-label>
+          <ion-input v-model="productItem.product_promo_price" name="product_promo_price" slot="end" color="success"/>
+        </ion-item>
+        <ion-item>
+          <ion-label color="primary">Начало акции</ion-label>
+          <ion-input type="date" v-model="productItem.product_promo_start" name="product_promo_start" slot="end"/>
+        </ion-item>
+        <ion-item>
+          <ion-label color="primary">Конец акции</ion-label>
+          <ion-input type="date" v-model="productItem.product_promo_finish" name="product_promo_finish" slot="end"/>
+        </ion-item>
+      </ion-list>
+    </form>
+    <ion-list v-if="productItem">
+      <ion-item-divider>
+        <ion-label>Слайдер</ion-label>
+      </ion-item-divider>
+      <image-tile-comp :images="productItem.images" :image_holder_id="productItem.product_id" controller="Product" ref="productImgs"></image-tile-comp>
+      <ion-button @click="$refs.productImgs.take_photo()" size="small" expand="full" color="medium">
+        <ion-icon :src="cameraOutline"/> Добавить
+      </ion-button>
+    </ion-list>
 
+    <ion-list>
+      <ion-item-divider>
+        <ion-label>Категория товара</ion-label>
+      </ion-item-divider>
+      <ion-item>
+        <ion-icon :src="compassOutline" color="primary" slot="start"/>
+        <ion-select>
+
+        </ion-select>
+      </ion-item>
+    </ion-list>
   </base-layout>
 </template>
 
 <script>
-import jQuery       from "jquery";
-import heap         from '@/heap';
-import imageSlider  from '@/components/imageSlider'
+import {
+  IonInput,
+  IonTextarea,
+  IonCard,
+  IonCardContent,
+  IonToggle,
+  IonCheckbox,
+  }                   from '@ionic/vue'
+import {
+  cameraOutline,
+  trashOutline,
+  searchOutline,
+  personOutline,
+  addOutline,
+  pizzaOutline,
+  compassOutline
+}                     from 'ionicons/icons'
+import imageTileComp  from '@/components/ImageTileComp.vue'
+import heap           from '@/heap';
+import jQuery         from "jquery";
 
 export default  {
-  components: { imageSlider },
+  components: { 
+    IonInput,
+    IonTextarea,
+    IonCard,
+    IonCardContent,
+    IonToggle,
+    IonCheckbox,
+    imageTileComp 
+    },
+  setup(){
+    return {
+      cameraOutline,
+      trashOutline,
+      searchOutline,
+      personOutline,
+      addOutline,
+      pizzaOutline,
+      compassOutline
+      }
+  },
   data(){
     return {
-      fields: [],
-      productId: this.$route.params.id
+      productId: this.$route.params.id,
+      productItem: null,
+      productGroupList:null,
+      is_groups_marked:0,
+      is_deleted:0,
+      is_disabled:0,
+      is_produced:0
     }
   },
   computed: {
-    
-  },
-  methods:{
-    save(field_name, field_value) {
-      var self = this;
-      this.submitted = true;
-      if(field_name == 'user_phone'){
-        if(!this.phoneValid){
-          return false;
-        }
-        field_value = field_value.replace(/\D/g,"");
+    message(){
+      if(this.productItem?.deleted_at){
+        return "Товар не активен и будет удален. Вы еще можете отменить удаление";
       }
-      var requestData = {};
-      requestData.product_id = this.productId;
-      requestData[field_name] = field_value;
-      jQuery.post( heap.state.hostname + "Product/itemUpdate", JSON.stringify(requestData))
-        .done(function() {
-            self.error = '';
-            self.getProduct();
-        })
-        .fail(function(err) {
-            self.error = err.responseJSON.messages.error;
-      });
+      if(this.productItem?.is_disabled==1){
+        return "Товар не активен и находится на рассмотрении у администратора";
+      }
+      if(this.productItem?.is_produced==1){
+        return "Товар активен и готов к продаже. Товар произодится вами, например еда";
+      }
+      return "Товар активен и готов к продаже.";
     },
-    getProduct(){
-        var self = this;
-        jQuery.post( heap.state.hostname + "Product/itemGet", { product_id: self.productId })
-            .done(function(response) {
-                self.error = '';
-                self.fields = response;
-                self.storeId = response.store_id;
-            })
-            .fail(function(err) {
-                self.error = err.responseJSON.messages.error;
-            });
+    messageClass(){
+      if(this.productItem?.deleted_at){
+        return "deleted";
+      }
+      if(this.productItem?.is_disabled==1){
+        return "disabled";
+      }
+      if(this.productItem?.is_produced==1){
+        return "primary";
+      }
+      return 'active';
     },
-    getStoreGroupTree(){
-        var self = this;
-        jQuery.post( heap.state.hostname + "Product/groupTreeGet", {store_id: self.fields.store_id})
-            .done(function(response) {
-                self.error = '';
-                self.storeGroups = response;
-                var first_group_id = Object.keys(self.storeGroups)[0];
-                if(self.$refs.segment){
-                  self.$refs.segment.value = first_group_id;
-                  self.setActiveParentGroup(first_group_id);
-                }
-            })
-            .fail(function(err) {
-                self.error = err.responseJSON.messages.error;
-            });
-    },
-    uploadImage(event) {
-      let data = new FormData();
-      data.append("files[]", event.target.files[0]); 
-      data.set("image_holder_id", this.storeId); 
-      jQuery.ajax(
-          {
-            url : heap.state.hostname + "Product/fileUpload",
-            type: "POST",
-            data : data,
-            processData: false,
-            contentType: false
-          })
-          .done(function() {
-            self.error = '';
-          })
-          .fail(function(err) {
-              self.error = err.responseJSON.messages.error;
-          });
-    }
   },
   created(){
-      this.getProduct();
+    this.listGroupGet()
+    this.itemGet()
   },
-  watch: {
-      '$route'(currentRoute) {
-          this.productId = currentRoute.params.id;
+  methods:{
+    async itemGet(){
+      try{
+        this.productItem=await jQuery.post( heap.state.hostname + "Product/itemGet", { product_id: this.productId })
+        this.itemParseFlags()
+        this.itemMarkGroups()
+      }catch{
+        //
       }
-  }
+    },
+    itemMarkGroups(){
+      if(!this.productItem || !this.productGroupList){
+        this.is_groups_marked=0
+        return
+      }
+      try{
+        const member_of_groups=this.productItem.member_of_groups.group_ids.split(',');
+        for(let group of this.productGroupList){
+          group.is_marked=member_of_groups.includes(group.group_id);
+        }
+        this.is_groups_marked=1
+      }catch{
+        //
+      }
+    },
+    itemParseFlags(){
+      this.is_deleted   = this.productItem.deleted_at==null?0:1
+      this.is_disabled  = this.productItem.is_disabled==0?0:1
+      this.is_produced  = this.productItem.is_produced==0?0:1
+    },
+    async itemDelete( is_deleted ){
+      const remoteFunction=is_deleted?'itemDelete':'itemUnDelete'
+      try{
+        await jQuery.post( heap.state.hostname + "Product/"+remoteFunction, { product_id: this.productId })
+        this.productItem.deleted_at=is_deleted?1:null;
+      }catch{
+        this.itemGet()
+      }
+    },
+    async itemDisable( is_disabled ){
+      if(this.productItem.is_disabled==is_disabled){
+        return
+      }
+      try{
+        await jQuery.post( heap.state.hostname + "Product/itemDisable", { product_id: this.productId, is_disabled })
+        this.productItem.is_disabled=is_disabled;
+      }catch{
+        this.itemGet()
+      }
+    },
+    saveForm(ev){
+      const field_name=ev.target.name;
+      const field_value=this.productItem[field_name]
+      console.log(field_name,field_value)
+      this.save(field_name,field_value)
+    },
+    async save(field_name, field_value) {
+      let request = {
+        product_id:this.productId,
+        [field_name]:field_value
+      };
+      try{
+        await jQuery.post( heap.state.hostname + "Product/itemUpdate", JSON.stringify(request))
+        this.productItem[field_name] = field_value;
+        this.itemParseFlags()
+      } catch(err){
+        this.$flash("Не удалось сохранить изменение")
+        this.itemGet()
+      }
+    },
+    async itemUpdateGroup(is_joined,group_id){
+      const request={
+        product_id:this.productId,
+        is_joined,
+        group_id
+      }
+      try{
+        await jQuery.post( heap.state.hostname + "Product/itemUpdateGroup", request)
+      } catch(err){
+        this.$flash("Не удалось сохранить изменение")
+        this.itemGet()
+      }      
+    },
+    async listGroupGet(){
+      try{
+        this.productGroupList=await jQuery.get( heap.state.hostname + "Product/listGroupGet")
+        this.itemMarkGroups()
+      }catch{/** */}
+    },
+    
+  },
 }
 </script>
-
-<style>
-
-</style>

@@ -1,37 +1,37 @@
+<style scoped>
+    .crop-to-fit {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      width: 100%;
+    }
+    .crop-to-fit img {
+      flex-shrink:0;
+      min-width:100%;
+    }
+</style>
+
 <template>
-    <swiper :modules="modules" :autoplay='{delay: 3000, disableOnInteraction: false}' :loop="true" class="store-image-slider">
-        <swiper-slide v-for="image in imageList" :key="image.image_hash"  style="max-height:50vh">
-          <img  class="slide_img" style="width:100%" :src="`${$heap.state.hostname}image/get.php/${image.image_hash}.${imgWidth||300}.${imgHeight||300}.webp`"/>
+    <swiper :modules="modules" :autoplay='{delay: 3000, disableOnInteraction: false}' :loop="true" effect="fade">
+        <swiper-slide v-for="image in imageList" :key="image.image_hash">
+          <div class="crop-to-fit" :style="`height: ${imgHeight||300}px;`">
+            <img :style="`min-height: ${imgHeight||300}px;`" :src="`${$heap.state.hostname}image/get.php/${image.image_hash}.${imgHeight*4||1200}.${imgHeight||300}.webp`"/>
+          </div>
         </swiper-slide>
       </swiper>
 </template>
 
-<style>
-    .store-image-slider{
-        overflow: hidden;
-        max-height: 300px;
-        min-height: 250px;
-    }
-    .slide_img{
-        display: block;
-        margin-left: auto;
-        width: 100%;
-        height: auto;
-        min-height: 300px;
-    }
-</style>
-
 <script>
-import { defineComponent } from 'vue';
-import { EffectFade, Autoplay } from 'swiper';
-import { Swiper, SwiperSlide } from 'swiper/vue';
-
-export default defineComponent({
+import { EffectFade, Autoplay }   from 'swiper';
+import { Swiper, SwiperSlide }    from 'swiper/vue';
+import 'swiper/css/bundle';
+export default({
     components: { 
       Swiper,
       SwiperSlide
     },
-    props: ['imageList','imgHeight','imgWidth','maxHeight'],
+    props: ['imageList','imgHeight'],
     setup() {
       return {
         modules: [Autoplay,EffectFade], 

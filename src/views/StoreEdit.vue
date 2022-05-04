@@ -200,31 +200,20 @@
       </ion-list>
     </form>
 
-
-    <ion-item-divider>
-        <ion-label>Адинистраторы</ion-label>
-    </ion-item-divider>
-
-    <ion-accordion-group>
-      <ion-accordion value="colors">
-        <ion-item slot="header">
-          <ion-label>Colors</ion-label>
-        </ion-item>
-        <ion-list slot="content">
-          <ion-item>
-            <ion-label>Red</ion-label>
-          </ion-item>
-          <ion-item>
-            <ion-label>Green</ion-label>
-          </ion-item>
-          <ion-item>
-            <ion-label>Blue</ion-label>
-          </ion-item>
-        </ion-list>
-      </ion-accordion>
-    </ion-accordion-group>
-
-
+    <ion-list v-if="ownerList">
+      <ion-item-divider>
+          <ion-label>Адинистраторы</ion-label>
+      </ion-item-divider>
+      <ion-item v-for="owner in ownerList" :key="owner.user_id">
+        <ion-icon :src="personOutline" slot="start" color="primary"/>
+        <ion-label>{{owner.user_phone}}</ion-label>
+        <ion-icon :src="trashOutline" slot="end" @click="ownerDelete(owner.user_id)"/>
+      </ion-item>
+      <ion-item button @click="ownerAdd()">
+        <ion-icon :src="addOutline" slot="start" color="primary"/>
+        <ion-label>Добавить администратора</ion-label>
+      </ion-item>
+    </ion-list>
   </base-layout>
 </template>
 
@@ -245,7 +234,9 @@ import {
   locationOutline,
   storefrontOutline,
   flagOutline,
-  searchOutline
+  searchOutline,
+  personOutline,
+  addOutline
 }                     from 'ionicons/icons'
 import imageTileComp  from '@/components/ImageTileComp.vue'
 import UserAddressPicker from '@/components/UserAddressPicker.vue'
@@ -270,7 +261,9 @@ export default  {
       locationOutline,
       storefrontOutline,
       flagOutline,
-      searchOutline
+      searchOutline,
+      personOutline,
+      addOutline
       }
   },
   data(){
@@ -281,6 +274,7 @@ export default  {
       storeId: this.$route.params.id,
       storeItem: null,
       storeGroupList:null,
+      ownerList:null,
       is_groups_marked:0,
       is_deleted:0,
       is_disabled:0,
@@ -290,7 +284,7 @@ export default  {
   },
   computed: {
     isPhoneValid() {
-      return this.storeItem.user_phone.replace(/\D/g,"").length == 11;
+      return [11,12].includes(this.storeItem.user_phone.replace(/\D/g,"").length);
     },
     message(){
       if(this.storeItem?.deleted_at){
@@ -325,7 +319,8 @@ export default  {
   },
   created(){
     this.listGroupGet()
-    this.itemGet();
+    this.itemGet()
+    this.ownerListGet()
   },
   methods:{
     async itemGet(){
@@ -384,9 +379,9 @@ export default  {
       this.save(field_name,field_value)
     },
     async save(field_name, field_value) {
-      if(this.storeItem[field_name] == field_value){
-        return
-      }
+      // if(this.storeItem[field_name] == field_value){
+      //   return
+      // }
       if(field_name == 'user_phone'){
         if(!this.isPhoneValid){
           return false;
@@ -425,7 +420,39 @@ export default  {
         this.itemMarkGroups()
       }catch{/** */}
     },
-
+    async ownerListGet(){
+      try{
+        this.ownerList=await jQuery.post(heap.state.hostname + "Store/ownerListGet",{store_id:this.storeId} )
+      }catch{/** */}
+    },
+    async ownerAdd(){
+      let owner_phone=prompt('Введите номер телефона нового администратора')
+      if(!owner_phone){
+        return
+      }
+      owner_phone=owner_phone.replace(/\D/g,"")
+      if( ![11,12].includes(owner_phone.length) ){
+        this.$flash("Проверьте правильность телефона")
+        return
+      }
+      try{
+        await jQuery.post(heap.state.hostname + "Store/ownerSave",{store_id:this.storeId,action:'add',owner_phone})
+        this.ownerListGet()
+      }catch{
+        this.$flash("Не удалось добавить администратора")
+      }
+    },
+    async ownerDelete(owner_id){
+      if(!confirm("Удалить этого пользователя из администраторов магазина?")){
+        return
+      }
+      try{
+        await jQuery.post(heap.state.hostname + "Store/ownerSave",{store_id:this.storeId,action:'delete',owner_id})
+        this.ownerListGet()
+      }catch{
+        this.$flash("Не удалось удалить администратора")
+      }
+    },
     async modalLocationCreate() {
       if(!heap.state.user.user_id){
         this.$flash('Чтобы добавленные адреса сохранились, пожалуйста войдите в систему');
@@ -477,10 +504,3 @@ export default  {
   },
 }
 </script>
-
-<style>
-
-.store-edit-page .swiper-wrapper{
-    max-height: 250px;
-}
-</style>

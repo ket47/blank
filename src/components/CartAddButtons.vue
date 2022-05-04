@@ -4,9 +4,6 @@
     flex-flow: column;
     align-items: center;
     justify-content: space-between;
-    position: absolute;
-    left: 0px;
-    top: 0px;
 
     border-radius: 10px;
     overflow: hidden;
@@ -35,6 +32,11 @@
   .product-actions.horizontal{
     flex-flow: row-reverse;
   }
+  .absolute{
+    position: absolute;
+    left: 0px;
+    top: 0px;
+  }
   .incart{
         background-color:var(--ion-color-primary-tint);
   }
@@ -45,7 +47,7 @@
 </style>
 
 <template>
-    <div :class="`product-actions ${buttonLayout} ${this.currentQuantity>0?'incart':''} ${this.productData.product_quantity>0?'':'sold'}`">
+    <div :class="`product-actions ${componentLayout} ${buttonLayout} ${this.currentQuantity>0?'incart':''} ${this.productData.product_quantity>0?'':'sold'}`">
       
       <ion-button v-if="!this.currentQuantity" @click="addToOrder(+this.productData.product_quantity_min)" color="primary" size="small">
         <ion-icon :icon="add"  color="light"></ion-icon>
@@ -68,7 +70,7 @@ import { toastController } from '@ionic/vue';
 import heap from '@/heap';
 export default{
   inject:["$Order"],
-  props:['productItem','entry','orderData','buttonLayout'],
+  props:['productItem','entry','orderData','buttonLayout','display'],
   setup() {
     return {
       add,
@@ -169,6 +171,12 @@ export default{
       }
       //if buttons are in orderview or cartview
       return this.productData.entry_quantity;
+    },
+    componentLayout(){
+      if(this.display=='inline'){
+        return 'inline';
+      }
+      return 'absolute'
     }
   },
 }
