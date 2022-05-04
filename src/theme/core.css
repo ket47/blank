@@ -13,11 +13,10 @@
 *{ 
     font-family:"Comfortaa" !important;
 }
-body ion-content {
-    -font-weight: 500;
-    -font-size: 14px;
+ion-item-divider{
+    box-shadow: 0px -5px 5px #cccc;
+    margin-top: 10px;
 }
-
 
 main {
     display: flex;

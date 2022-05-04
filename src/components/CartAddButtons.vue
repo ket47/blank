@@ -13,7 +13,7 @@
     width: auto;
     transition: all 0.3s ease;
     font-weight: bold;
-    background-color:var(--ion-color-primary-tint);
+
   }
   .product-actions  ion-button{
     box-shadow: none;
@@ -36,8 +36,7 @@
     flex-flow: row-reverse;
   }
   .incart{
-    -border:1px solid var(--ion-color-primary);
-    -background-color: var(--ion-color-light);
+        background-color:var(--ion-color-primary-tint);
   }
   .sold{
     display: none;

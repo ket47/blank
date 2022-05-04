@@ -107,31 +107,20 @@
 </template>
 
 <script>
-import jQuery from "jquery";
-import heap from '../heap';
-import imageSlider from '../components/imageSlider'
-
-
-
+import jQuery       from "jquery";
+import heap         from '@/heap';
+import imageSlider  from '@/components/imageSlider'
 
 export default  {
-  name: 'SignIn',
   components: { imageSlider },
   data(){
     return {
-      error: '',
-      submitted: false,
-      config: {
-        phoneMask: '+0(000)-000-00-00'
-      },
       fields: [],
       productId: this.$route.params.id
     }
   },
   computed: {
-    phoneValid() {
-      return this.fields.user_phone.replace(/\D/g,"").length == 11;
-    }
+    
   },
   methods:{
     save(field_name, field_value) {

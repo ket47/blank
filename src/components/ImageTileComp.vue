@@ -3,7 +3,8 @@
     display:grid;
     grid-template-columns:repeat(3,1fr);
     gap:10px;
-    width:100%
+    width:100%;
+    margin-bottom:10px;
 }
 .image_grid>div{
     display: flex;
@@ -123,7 +124,7 @@ export default {
         async load(){
             const request={
                 image_holder_id:this.image_holder_id,
-                image_holder:'order',
+                image_holder:this.controller,
                 is_disabled:1,
                 is_deleted:1,
                 is_active:1
