@@ -16,21 +16,24 @@
     width: 100%;
     justify-content: space-evenly;
 }
+ion-avatar{
+    border:5px solid #fff;
+}
 .deleted{
-    border:3px solid red;
+    border:5px solid red;
 }
 .disabled{
-    border:3px solid gray;
+    border:5px solid gray;
 }
 </style>
 <template>
-    <div v-if="imageList?.length">
+    <div>
         <ion-item lines="none">
             <ion-label>Фотографии</ion-label>
             <ion-icon v-if="editMode" slot="end" :icon="settingsSharp" color="primary" @click="editMode=0"/>
             <ion-icon v-else slot="end" :icon="settingsOutline" @click="editMode=1"/>
         </ion-item>
-        <div class="image_grid">
+        <div class="image_grid" v-if="imageList?.length">
             <div v-for="img in imageList" :key="img.image_id">
                 <ion-avatar @click="imagePreview(img.image_hash)" :class="img.class">
                     <ion-img :src="$heap.state.hostname + 'image/get.php/'+img.image_hash+'.100.100.webp'"/>
@@ -38,7 +41,9 @@
             
                 <div v-if="editMode" class="image_controls">
                     <ion-icon :icon="chevronBackCircleOutline" @click="back(img)"/>
-                    <ion-icon :icon="trashBin" color="danger" @click="remove(img)"/>
+                    <ion-icon :icon="checkmarkCircle" color="success" v-if="isAdmin && img.is_disabled==1" @click="enable(img)"/>
+                    <ion-icon :icon="trash" color="success" @click="restore(img)" v-if="img.deleted_at"/>
+                    <ion-icon :icon="trashBin" color="danger" @click="remove(img)" v-else/>
                     <ion-icon :icon="chevronForwardCircleOutline" @click="forward(img)"/>
                 </div>
             </div>
@@ -52,17 +57,20 @@ import {
     settingsSharp,
     chevronBackCircleOutline,
     chevronForwardCircleOutline,
-    trashBin
+    trashBin,
+    trash,
+    checkmarkCircle
 }                               from 'ionicons/icons';
 import ImagePreviewModal        from '@/components/ImagePreviewModal.vue'
 import { modalController }      from '@ionic/vue';
 import jQuery                   from 'jquery'
 import Topic                    from '@/scripts/Topic.js'
+import User                     from '@/scripts/User.js'
 
 export default {
     props:['images','image_holder_id','controller'],
     setup(){
-        return {settingsOutline,settingsSharp,chevronBackCircleOutline,chevronForwardCircleOutline,trashBin}
+        return {settingsOutline,settingsSharp,chevronBackCircleOutline,chevronForwardCircleOutline,trashBin,trash,checkmarkCircle}
     },
     created(){
         //this.imageList=this.images;
@@ -94,6 +102,9 @@ export default {
                 }
             }
             return filtered;
+        },
+        isAdmin(){
+            return User.isAdmin()
         }
     },
     methods:{
@@ -101,25 +112,31 @@ export default {
             try{
                 await jQuery.post(this.$heap.state.hostname + 'Image/itemUpdateOrder',{image_id:img.image_id,dir:'up'});
                 this.load();
-            } catch(err){
-                console.log(err);
-            }
+            } catch{/** */}
         },
         async forward(img){
             try{
                 await jQuery.post(this.$heap.state.hostname + 'Image/itemUpdateOrder',{image_id:img.image_id,dir:'down'});
                 this.load();
-            } catch(err){
-                console.log(err);
-            }
+            } catch{/** */}
         },
         async remove(img){
             try{
                 await jQuery.post(this.$heap.state.hostname + 'Image/itemDelete',{image_id:img.image_id});
                 this.load();
-            } catch(err){
-                console.log(err);
-            }
+            } catch{/** */}
+        },
+        async restore(img){
+            try{
+                await jQuery.post(this.$heap.state.hostname + 'Image/itemUnDelete',{image_id:img.image_id});
+                this.load();
+            } catch{/** */}
+        },
+        async enable(img){
+            try{
+                await jQuery.post(this.$heap.state.hostname + 'Image/itemDisable',{image_id:img.image_id,is_disabled:0});
+                this.load();
+            } catch{/** */}
         },
         async load(){
             const request={

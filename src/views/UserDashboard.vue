@@ -41,7 +41,7 @@ ion-icon{
           <ion-label>Пользователь</ion-label>
         </ion-item-divider>
         <ion-item v-if="!isSignedIn" lines="full" button detail @click="$router.push('sign-in')">
-            <ion-icon :icon="logIn" slot="start"></ion-icon>
+            <ion-icon :icon="logIn" slot="start" color="primary"></ion-icon>
             <ion-label>Войти</ion-label>
         </ion-item>
         <ion-item lines="full" button detail @click="$router.push('user-addresses')">
@@ -56,6 +56,16 @@ ion-icon{
             <ion-icon :icon="exitOutline" slot="start" color="primary"></ion-icon>
             <ion-label>Выйти</ion-label>
         </ion-item>
+
+        <ion-item-group v-if="isAdmin">
+          <ion-item-divider>
+            <ion-label>Администратор</ion-label>
+          </ion-item-divider>
+          <ion-item @click="$router.push('text-list')" lines="full" button detail>
+              <ion-icon :icon="documentTextOutline" slot="start" color="primary"></ion-icon>
+              <ion-label>Редактирование страниц</ion-label>
+          </ion-item>
+        </ion-item-group>
         <!--
         <ion-item lines="full" button detail>
           <router-link class="section-button" to="/user-favourites">
@@ -210,18 +220,20 @@ export default {
     const self=this;
     Topic.on('courierStatusChange',(status)=>{
       self.courierStatus=status;
-      console.log(status);
     });
   },
   computed: {
     isSignedIn() {
       return heap.state?.user?.user_id > -1;
     },
+    isAdmin(){
+      return User.isAdmin();
+    }
   },
   methods: {
     async signOut() {
       await User.signOut();
-      User.get();
+      this.user=await User.get();
     },
     async courierStatusSet( new_status ){
       try{

@@ -20,8 +20,8 @@ const routes = [
         component: () => import('@/views/Home.vue')
       },
       {
-        path: 'search',
-        component: () => import('@/views/Search.vue')
+        path: '/search',
+        component: () => import('@/views/SearchView.vue')
       },
       {
         path: 'user-dashboard',
@@ -113,7 +113,18 @@ const routes = [
         path: '/confirm-password',
         component: () => import('@/views/UserResetPasswordConfirm.vue')
       },
-
+      {
+        path: '/text-edit-:id',
+        component: () => import('@/views/TextPageEdit.vue')
+      },
+      {
+        path: '/text-list',
+        component: () => import('@/views/TextListView.vue')
+      },
+      {
+        path: '/page-:id',
+        component: () => import('@/views/TextPageView.vue')
+      },
   ]
   },
 ]

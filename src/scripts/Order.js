@@ -70,6 +70,19 @@ const Order = {
         listSave(){
            heap.commit('cartListStore',heap.state.cartList);
         },
+        listTotalGet(){
+            let total=0;
+            for(let i in heap.state.cartList){
+                for(let k in heap.state.cartList[i].entries){
+                let entry=heap.state.cartList[i].entries[k];
+                if( !entry || !entry.entry_quantity || !entry.entry_price ){
+                    continue;
+                }
+                total+= (entry.entry_quantity) * (entry.entry_price);
+                }
+            }
+            return total;
+        },
 
         async itemSync(order_id){
             const order=Order.cart.itemGetById(order_id);

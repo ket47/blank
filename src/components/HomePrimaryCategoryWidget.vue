@@ -65,13 +65,12 @@ import Topic      from "@/scripts/Topic.js"
 import Utils      from "@/scripts/Utils.js"
 
 export default {
-  name: "HomePrimaryCategoryWidget",
   data() {
     return {
       productGroupList: null,
       primaryStoreData:null,
       deliveryTime:{},
-      main_location_id:heap.state.user?.location_main?.location_id,
+      main_location_id:null,
     };
   },
   created(){
@@ -80,12 +79,13 @@ export default {
       self.main_location_id=mainloc.location_id;
       self.productGroupListGet()
     })
+    this.main_location_id=heap.state.user.location_main?heap.state.user.location_main.location_id:null
     this.productGroupListGet()
   },
   methods: {
     async productGroupListGet() {
         if(!this.main_location_id){
-            return ;
+            return ;      
         }
         try{
           const primaryStore=await jQuery.get(heap.state.hostname + "Store/primaryNearGet",{location_id:this.main_location_id})

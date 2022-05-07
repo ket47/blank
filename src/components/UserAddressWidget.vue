@@ -33,7 +33,7 @@
     <div v-if="isMainLocationSet" @click="selectDeliveryAddress()" class="selector">
       <div class="center">
         <ion-img v-if="location_main.image_hash" :src="$heap.state.hostname + 'image/get.php/'+location_main.image_hash+'.32.32.webp'"/>
-        <ion-text style="margin:5px" color="primary">{{$heap.state.user.location_main.location_address}}</ion-text>
+        <ion-text style="margin:5px" color="primary">{{$heap.state.user?.location_main?.location_address}}</ion-text>
       </div>
       <div class="rightend" v-if="deliveryTime">
         <ion-text style="font-size:24px">{{deliveryTime.time}}</ion-text>

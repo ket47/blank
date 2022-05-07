@@ -70,20 +70,9 @@
   border: 1px solid var(--ion-color-primary);
   border-radius: 15px;
 }
-ion-card {
-  text-align: center;
-}
 .link {
   text-decoration: none;
   color: var(--ion-text-main);
-}
-ion-card-header {
-  padding: 10px 0px;
-  text-align: center;
-}
-ion-card-content {
-  padding: 10px 0px;
-  text-align: center;
 }
 ion-img{
     width:auto;
@@ -103,10 +92,10 @@ ion-img{
                     <cart-add-buttons buttonLayout="vertical" :productItem="productItem"></cart-add-buttons>
                 </div>
                 <router-link class="link" :to="'product-' + productItem.product_id">
-                    <ion-img v-if="productItem.image_hash" :src="$heap.state.hostname +'/image/get.php/' +productItem.image_hash +'.150.150.jpg'"/>
+                    <ion-img v-if="productItem.image_hash" :src="$heap.state.hostname +'/image/get.php/' +productItem.image_hash +'.150.150.webp'"/>
                 </router-link>
             </div>
-            <div style="height:50px;">
+            <div style="height:50px;overflow:hidden">
                 <router-link class="link" :to="'product-' + productItem.product_id">
                     <span v-if="productItem.product_price!=productItem.product_final_price" style="color:var(--ion-color-danger)">
                         <s>{{productItem.product_price}}{{$heap.state.currencySign}}</s>&nbsp;&nbsp;
@@ -126,7 +115,7 @@ ion-img{
 
 <script>
 
-import CartAddButtons from '../components/CartAddButtons';
+import CartAddButtons from '@/components/CartAddButtons';
 
 export default {
     props: ['productList', 'onClick'],

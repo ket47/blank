@@ -41,7 +41,7 @@
             </router-link>
           </div>
         </ion-col>
-        <ion-col class="ion-middle-column" size="6">
+        <ion-col class="ion-middle-column" :size="cartListTotal>0?6:9">
           <div class="page-content">
             <ion-toolbar>
               <ion-buttons slot="start">
@@ -52,7 +52,7 @@
             <slot />
           </div>
         </ion-col>
-        <ion-col class="ion-right-column" size="3">
+        <ion-col class="ion-right-column" size="3" v-if="cartListTotal">
           <cart-body-modal/>
         </ion-col>
       </ion-row>
@@ -67,20 +67,19 @@
 
 import {
   IonPage,
-  IonHeader,
   IonToolbar,
   IonTitle,
   IonContent,
   IonBackButton,
   IonButtons,
-  IonTabs,
   IonIcon,
   IonTabBar,
   IonTabButton
 } from "@ionic/vue";
-import CartHeader from "@/components/CartHeader";
 import FooterDesktop from "@/components/FooterDesktop";
 import CartBodyModal from '@/components/CartBodyModal.vue';
+import Order from '@/scripts/Order.js'
+
 import {
   personOutline,
   cartOutline,
@@ -97,6 +96,11 @@ export default {
       homeOutline
     }
   },
+  computed:{
+    cartListTotal(){
+      return Order.cart.listTotalGet()
+    }
+  },
   props: [
     "pageTitle",
     "pageDefaultBackLink",
@@ -107,18 +111,14 @@ export default {
   ],
   components: {
     IonPage,
-    IonHeader,
     IonToolbar,
     IonTitle,
     IonContent,
     IonBackButton,
     IonButtons,
-    CartHeader,
-    IonTabs,
     IonIcon,
     IonTabBar,
     IonTabButton,
-    FooterDesktop,
     CartBodyModal
   },
 };

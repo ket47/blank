@@ -1,9 +1,9 @@
 <template>
   <base-layout  pageLogo="./assets/icon/tezkel_logo.png">
-      <home-slider></home-slider>
-      <user-address-widget :deliveryTime="primaryDeliveryTime"></user-address-widget>
-      <home-primary-category-widget @deliveryTimeGet="deliveryTime=>{primaryDeliveryTime=deliveryTime}"></home-primary-category-widget>
-      <store-list></store-list>
+      <home-slider/>
+      <user-address-widget :deliveryTime="primaryDeliveryTime"/>
+      <home-primary-category-widget @deliveryTimeGet="deliveryTime=>{primaryDeliveryTime=deliveryTime}"/>
+      <store-list/>
   </base-layout>
 </template>
 

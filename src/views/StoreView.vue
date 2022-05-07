@@ -1,5 +1,4 @@
-
-<style>
+<style scoped>
 .store-info {
   box-shadow: 0px 0px 15px -5px #0000005e;
   background-color: var(--ion-background);

@@ -24,7 +24,6 @@
 
 <script>
 import {
-  IonPage,
   modalController
 }                         from "@ionic/vue";
 import router             from '@/router';
@@ -39,7 +38,6 @@ import { trash }          from 'ionicons/icons';
 export default{
   name: 'UserAddresses',
   components: {
-    IonPage,
     IonIcon
   },
   setup(){

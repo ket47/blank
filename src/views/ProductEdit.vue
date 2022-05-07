@@ -40,7 +40,7 @@
       </ion-item>
       <ion-item>
         <ion-icon :src="pizzaOutline" color="primary" slot="start"/>
-        Производится
+        Не ограниченный остаток
         <ion-toggle slot="end" v-model="is_produced" @ionChange="save('is_produced',$event.target.checked?1:0)"/>
       </ion-item>
     </ion-list>
@@ -117,17 +117,21 @@
       </ion-button>
     </ion-list>
 
-    <ion-list>
+    <ion-list v-if="categoryList">
       <ion-item-divider>
-        <ion-label>Категория товара</ion-label>
+          <ion-label>Категории товара</ion-label>
       </ion-item-divider>
-      <ion-item>
-        <ion-icon :src="compassOutline" color="primary" slot="start"/>
-        <ion-select>
-
-        </ion-select>
+      <ion-item v-for="cat in categoryList" :key="cat.group_id">
+        <ion-icon :src="compassOutline" slot="start" color="primary"/>
+        <ion-label>{{cat.group_name}}</ion-label>
+        <ion-icon :src="trashOutline" slot="end" @click="categoryDelete(cat.group_id,cat.group_name)"/>
+      </ion-item>
+      <ion-item button @click="categoryAdd()">
+        <ion-icon :src="addOutline" slot="start" color="primary"/>
+        <ion-label>Добавить в категорию</ion-label>
       </ion-item>
     </ion-list>
+
   </base-layout>
 </template>
 
@@ -139,6 +143,7 @@ import {
   IonCardContent,
   IonToggle,
   IonCheckbox,
+  modalController
   }                   from '@ionic/vue'
 import {
   cameraOutline,
@@ -150,7 +155,9 @@ import {
   compassOutline
 }                     from 'ionicons/icons'
 import imageTileComp  from '@/components/ImageTileComp.vue'
+import GroupPicker    from '@/components/GroupPicker.vue'
 import heap           from '@/heap';
+import Topic          from '@/scripts/Topic.js'
 import jQuery         from "jquery";
 
 export default  {
@@ -161,7 +168,8 @@ export default  {
     IonCardContent,
     IonToggle,
     IonCheckbox,
-    imageTileComp 
+    imageTileComp ,
+    modalController
     },
   setup(){
     return {
@@ -210,10 +218,24 @@ export default  {
       }
       return 'active';
     },
+    categoryList(){
+      let categories=[];
+      try{
+        let member_of_ids=this.productItem.member_of_groups.group_ids.split(',');
+        let member_of_names=this.productItem.member_of_groups.group_names.split(',');
+        for( let i in member_of_ids){
+          categories.push({group_id:member_of_ids[i],group_name:member_of_names[i]})
+        }
+      }catch{/** */}
+      return categories;
+    }
   },
   created(){
     this.listGroupGet()
     this.itemGet()
+    this.groupChanged=(group_id,is_checked)=>{
+        console.log(group_id)
+      }
   },
   methods:{
     async itemGet(){
@@ -221,21 +243,6 @@ export default  {
         this.productItem=await jQuery.post( heap.state.hostname + "Product/itemGet", { product_id: this.productId })
         this.itemParseFlags()
         this.itemMarkGroups()
-      }catch{
-        //
-      }
-    },
-    itemMarkGroups(){
-      if(!this.productItem || !this.productGroupList){
-        this.is_groups_marked=0
-        return
-      }
-      try{
-        const member_of_groups=this.productItem.member_of_groups.group_ids.split(',');
-        for(let group of this.productGroupList){
-          group.is_marked=member_of_groups.includes(group.group_id);
-        }
-        this.is_groups_marked=1
       }catch{
         //
       }
@@ -285,6 +292,30 @@ export default  {
         this.itemGet()
       }
     },
+    categoryDelete(group_id,group_name){
+      if(!confirm("Исключить товар из категории "+group_name+"?")){
+        return
+      }
+      try{
+        this.itemUpdateGroup(0,group_id)
+      } catch{/** */}
+    },
+    async categoryAdd(){
+      const memberOfIds=this.productItem?.member_of_groups?.group_ids?.split(',')||[];
+      const modal = await modalController.create({
+          component: GroupPicker,
+          componentProps:{controller:'Product',memberId:this.productId,memberOfIds,memberLimit:1},
+          initialBreakpoint: 0.75,
+          breakpoints: [0.75, 1],
+          canDissmiss:true,
+          });
+      modal.present()
+      Topic.on('dismissModal',()=>{
+          modal.dismiss()
+      });
+      await modal.onDidDismiss();
+      this.itemGet()
+    },
     async itemUpdateGroup(is_joined,group_id){
       const request={
         product_id:this.productId,
@@ -295,8 +326,8 @@ export default  {
         await jQuery.post( heap.state.hostname + "Product/itemUpdateGroup", request)
       } catch(err){
         this.$flash("Не удалось сохранить изменение")
-        this.itemGet()
-      }      
+      }
+      this.itemGet()
     },
     async listGroupGet(){
       try{
