@@ -1,10 +1,9 @@
 .desktop-main-container .desktop-template{
   max-width: var(--breakpoints-width);
   padding: 0;
-  margin-bottom: 5vh;
 }
 .desktop-main-container {
-  --background: var(--ion-main-container-background-color);
+  --background: url('../../public/assets/icon/tezkel_logo.png');
 }
 
 
@@ -14,6 +13,8 @@
 
 .desktop-main-container .ion-left-column {
   padding: 1em;
+  background-color: #fff;
+  
   border-right: 1px solid var(--ion-item-border-color);
   text-align: right;
 }
@@ -177,7 +178,7 @@
   min-height: 15vh;
 }
 .desktop-main-container ion-footer.desktop-footer .desktop-footer-container{
-  max-width: calc(var(--breakpoints-width)/2);
+  max-width: calc(var(--breakpoints-width)/1);
   margin: 0 auto;
 }
 .desktop-main-container ion-footer  a{

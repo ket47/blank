@@ -14,7 +14,6 @@ import UserAddressWidget          from "@/components/UserAddressWidget";
 import HomePrimaryCategoryWidget  from "@/components/HomePrimaryCategoryWidget";
 
 export default {
-  name: "HomePage",
   components: {
     HomeSlider,
     StoreList,

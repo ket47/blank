@@ -12,18 +12,10 @@
         </div>
       </ion-toolbar>  
     </ion-header>
-    <ion-content
-      :class="['main-container', pageClass]"
-      :scrollEvents="contentOnScroll ? 'true' : 'false'"
-      @ionScroll="contentOnScroll($event)"
-    >
+    <ion-content :class="['main-container', pageClass]" :scrollEvents="contentOnScroll ? 'true' : 'false'" @ionScroll="contentOnScroll($event)">
       <slot />
+      <div style="height:30px"><!--spacer for tabs--></div>
     </ion-content>
-    <ion-footer collapse="fade">
-      <ion-text color="danger">
-        {{ errorMessage }}
-      </ion-text>
-    </ion-footer>
   </ion-page>
 </template>
 
@@ -37,7 +29,7 @@ import {
   IonContent,
   IonBackButton,
   IonButtons,
-} from "@ionic/vue";
+}                 from "@ionic/vue";
 import CartHeader from "@/components/CartHeader";
 
 export default {

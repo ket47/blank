@@ -176,7 +176,7 @@ ion-chip .active-chip {
             <ion-text color="primary" style="font-size:20px">{{ storeItem.store_name }}</ion-text>
           </ion-col>
           <ion-col style="text-align:right">
-            <router-link :to="'/store-edit-' + storeItem.store_id">
+            <router-link :to="'/store-edit-' + storeItem.store_id" v-if="storeItem.is_writable==1">
               <ion-icon :icon="settingsOutline" style="font-size:24px"></ion-icon>
             </router-link>
           </ion-col>
@@ -301,7 +301,7 @@ ion-chip .active-chip {
 </template>
 <script>
 import { search, settingsOutline } from "ionicons/icons";
-import ImageSlider from "@/components/imageSlider";
+import ImageSlider from "@/components/ImageSlider";
 import GroupList from "@/components/GroupList.vue";
 import ProductList from '@/components/ProductList.vue';
 import { IonSlides, IonSlide } from "@ionic/vue";

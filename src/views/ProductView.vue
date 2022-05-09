@@ -1,23 +1,3 @@
-<style scoped>
-  .product-footer{
-    bottom: 0;
-    z-index: 2;
-    width: 100%;
-  }
-  .product-footer-palceholder{
-    height: 10px;
-  }
-  .product-footer-section{
-    background-color:var(--ion-color-primary-tint);
-    border-top:1px solid var(--ion-color-primary-shade);
-    margin-top: 15px;
-    padding: 20px;
-  }
-  .product-footer-section ion-textarea{
-    border: 1px solid var(--ion-color-primary-shade);
-  }
-</style>
-
 <template>
   <base-layout :page-title="productItem?.product_name " :page-default-back-link="'/store-'+productItem?.store_id" :cartComponent="CartHeader">
       <image-slider v-if="productItem" :imageList="productItem.images" imgHeight="200"/>
@@ -90,7 +70,7 @@ import {
 import {
   IonTextarea
 }                       from '@ionic/vue'
-import imageSlider      from '@/components/imageSlider'
+import ImageSlider      from '@/components/ImageSlider'
 import CartAddButtons   from '@/components/CartAddButtons'
 import CartHeader       from '@/components/CartHeader'
 
@@ -98,7 +78,7 @@ import Order            from '@/scripts/Order.js'
 
 export default  {
   components: { 
-    imageSlider,
+    ImageSlider,
     CartAddButtons,
     CartHeader,
     IonTextarea

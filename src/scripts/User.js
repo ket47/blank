@@ -75,14 +75,20 @@ const User = {
         return 1;//should check connection and login status
     },
     isAdmin(){
-        const user_types=heap.state.user?.member_of_groups?.group_types||"";
+        let user_types="";
+        try{
+            user_types=heap.state.user.member_of_groups.group_types;
+        }catch{/** */}
         if( user_types.indexOf('admin')>-1 ){
           return true;
         }
         return false;
     },
     isCourier(){
-        const user_types=heap.state.user?.member_of_groups?.group_types||"";
+        let user_types="";
+        try{
+            user_types=heap.state.user.member_of_groups.group_types;
+        }catch{/** */}
         if( user_types.indexOf('courier')>-1 ){
           return true;
         }

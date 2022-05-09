@@ -12,10 +12,10 @@
           <ion-title>Быстро и удобно</ion-title>
         </div>
         <div>
-          <router-link to="/user-edit">
+          <router-link to="/page-about">
             <ion-label>О нас</ion-label>
           </router-link>
-          <router-link to="/user-edit">
+          <router-link to="/page-howtoorder">
             <ion-label>Как заказать?</ion-label>
           </router-link>
         </div>
@@ -25,17 +25,24 @@
             <ion-label>Все права защищены. 2022 iSellSoft © </ion-label>
           </div>
           <div>
-            <router-link to="/user-edit">
+            <router-link to="/page-rules">
               <ion-label>Правила пользования</ion-label>
             </router-link>
-            <router-link to="/user-edit">
+            <router-link to="/page-privacy_policy">
               <ion-label>Политика конфиденциальности</ion-label>
             </router-link>
           </div>
       </div>
     </div>
-    <ion-text color="danger">
-      {{ errorMessage }}
-    </ion-text>
   </ion-footer>
 </template>
+<script>
+import Order          from '@/scripts/Order.js'
+export default {
+  computed:{
+    cartListTotal(){
+      return Order.cart.listTotalGet()
+    }
+  },
+}
+</script>
