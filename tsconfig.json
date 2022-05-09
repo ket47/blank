@@ -34,8 +34,12 @@
     "src/**/*.tsx",
     "src/**/*.vue",
     "tests/**/*.ts",
-    "tests/**/*.tsx"
-, "src/scripts/Utils.js", "src/scripts/User.js", "src/scripts/Topic.js", "src/scripts/Order.js"  ],
+    "tests/**/*.tsx",
+    "src/scripts/Utils.js",
+    "src/scripts/User.js",
+    "src/scripts/Topic.js",
+    "src/scripts/Order.js"
+  ],
   "exclude": [
     "node_modules"
   ]

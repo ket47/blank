@@ -2,8 +2,8 @@ import { createStore } from 'vuex'
 const heap = createStore({
     state() {
         return {
-            hostname: "https://tezkel.local/",
-            //hostname: "https://api.tezkel.com/",
+            //hostname: "https://tezkel.local/",
+            hostname: "https://api.tezkel.com/",
             app_title: "Тезкель",
             user: {user_id: -1},
             deliverySettings:{
