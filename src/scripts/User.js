@@ -63,9 +63,7 @@ const User = {
             User.sessionIdUse(null);
             User.geo.trackingStop();
             return {user_id: -1};
-        } catch(err) {
-            console.log(err);
-        }
+        } catch{/** */}
     },
     signUp(requestData, callback){
         return jQuery.post( heap.state.hostname + "User/signUp", requestData)
@@ -95,12 +93,12 @@ const User = {
         status:'notcourier',
         async get(){
             try{
-                let data=await jQuery.post( heap.state.hostname + "Courier/itemGet")
+                const data=await jQuery.post( heap.state.hostname + "Courier/itemGet")
                 User.courier.data=data;
                 User.courier.parseStatus();
                 return data;
             }catch(err){
-                User.courier.data=false;
+                User.courier.data=null;
             }
         },
         async updateStatus(new_status){

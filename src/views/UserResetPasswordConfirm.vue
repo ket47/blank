@@ -61,15 +61,9 @@ export default  {
   },
   computed: {},
   methods:{
-    onSubmit() {
+    async onSubmit() {
       this.submitted = true;
-      jQuery.post( "https://api.tezkel.com/User/phoneVerificationCheck", {verification_code: this.fields.code})
-      .done(function(response) {
-        console.log(response);
-      })
-      .fail(function(err) {
-        console.log(err);
-      });
+      await jQuery.post( this.$heap.state.hostname+"User/phoneVerificationCheck", {verification_code: this.fields.code})
     }
   }
 }

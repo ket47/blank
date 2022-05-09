@@ -77,9 +77,7 @@ export default {
                 for(let group of this.groupList){
                     group.is_marked=this.checkedGroupList.includes(group.group_id)?1:0;
                 }
-            }catch(err){
-                console.log(err)
-            }
+            }catch{/** */}
         },
         async itemUpdateGroup(is_joined,group_id){
             const request={

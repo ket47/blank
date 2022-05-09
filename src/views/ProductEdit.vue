@@ -142,7 +142,6 @@ import {
   IonCard,
   IonCardContent,
   IonToggle,
-  IonCheckbox,
   modalController
   }                   from '@ionic/vue'
 import {
@@ -167,9 +166,7 @@ export default  {
     IonCard,
     IonCardContent,
     IonToggle,
-    IonCheckbox,
-    imageTileComp ,
-    modalController
+    imageTileComp
     },
   setup(){
     return {
@@ -233,9 +230,9 @@ export default  {
   created(){
     this.listGroupGet()
     this.itemGet()
-    this.groupChanged=(group_id,is_checked)=>{
-        console.log(group_id)
-      }
+    // this.groupChanged=(group_id,is_checked)=>{
+    //     console.log(group_id)
+    //   }
   },
   methods:{
     async itemGet(){
@@ -275,7 +272,6 @@ export default  {
     saveForm(ev){
       const field_name=ev.target.name;
       const field_value=this.productItem[field_name]
-      console.log(field_name,field_value)
       this.save(field_name,field_value)
     },
     async save(field_name, field_value) {

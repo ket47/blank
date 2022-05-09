@@ -7,7 +7,7 @@ const Order = {
             return jQuery.post( heap.state.hostname + "Order/itemGet",{order_id} );
         },
         async itemSync( cart ){
-            let order={
+            const order={
                 order_id:cart.order_id,
                 order_store_id:cart.order_store_id,
                 order_description:cart.order_description,
@@ -44,7 +44,7 @@ const Order = {
             return this.entryCreate(entry,order_id);
         },
         async entryCreate(entry,order_id){
-            let request={
+            const request={
                 order_id,
                 product_id:entry.product_id,
                 product_quantity:entry.entry_quantity
@@ -72,9 +72,9 @@ const Order = {
         },
         listTotalGet(){
             let total=0;
-            for(let i in heap.state.cartList){
-                for(let k in heap.state.cartList[i].entries){
-                let entry=heap.state.cartList[i].entries[k];
+            for(const i in heap.state.cartList){
+                for(const k in heap.state.cartList[i].entries){
+                const entry=heap.state.cartList[i].entries[k];
                 if( !entry || !entry.entry_quantity || !entry.entry_price ){
                     continue;
                 }
@@ -92,13 +92,11 @@ const Order = {
                 Order.cart.listSave();
                 return syncedOrder;
             }
-            catch( e ){
-                console.error('itemSync errrrror',e);
-            }
+            catch{/** */}
         },
 
         itemGetByStoreId(store_id){
-            for(let i in heap.state.cartList){
+            for(const i in heap.state.cartList){
                 if( heap.state.cartList[i].order_store_id==store_id && heap.state.cartList[i].stage_current!='customer_purged' ){
                     return {
                         data:heap.state.cartList[i],
@@ -109,7 +107,7 @@ const Order = {
             return null;
         },
         itemGetById(order_id){
-            for(let i in heap.state.cartList){
+            for(const i in heap.state.cartList){
                 if( heap.state.cartList[i].order_id==order_id && heap.state.cartList[i].stage_current!='customer_purged' ){
                     return {
                         data:heap.state.cartList[i],
@@ -130,8 +128,8 @@ const Order = {
             if( heap.state.currentStore && heap.state.currentStore.store_id== store_id ){
                 store_name=heap.state.currentStore.store_name;
             }
-            let date=new Date();
-            let cart={
+            const date=new Date();
+            const cart={
                 order_store_id:store_id,
                 order_id:-store_id,
                 store:{store_name:store_name},
@@ -150,7 +148,7 @@ const Order = {
             return store_id;
         },
         itemUpdate(store_id,entries){
-            let existingOrder=this.itemGetByStoreId(store_id);
+            const existingOrder=this.itemGetByStoreId(store_id);
             if( existingOrder ){
                 heap.state.cartList[existingOrder.order_index].entries=existingOrder.data.entries.concat(entries||[]);
                 Order.cart.listSave();
@@ -159,7 +157,7 @@ const Order = {
             return false;
         },
         itemDelete(order_id){
-            let existingOrder=this.itemGetById(order_id);
+            const existingOrder=this.itemGetById(order_id);
             if( existingOrder ){
                 heap.state.cartList.splice(existingOrder.order_index,1);
                 Order.cart.listSave();
@@ -170,18 +168,18 @@ const Order = {
 
 
         entryQuantityGet(product_id){
-            let entry=Order.cart.entryGet(product_id);
+            const entry=Order.cart.entryGet(product_id);
             if( !entry || !entry.data.entry_quantity ){
                 return 0;
             }
             return parseFloat(entry.data.entry_quantity)||0;
         },
         entryGet(product_id){
-            for(let i in heap.state.cartList){
+            for(const i in heap.state.cartList){
                 if( !heap.state.cartList[i].entries || heap.state.cartList[i].stage_current=='customer_deleted' ){
                     return null;
                 }
-                for(let k in heap.state.cartList[i].entries){
+                for(const k in heap.state.cartList[i].entries){
                     if(heap.state.cartList[i].entries[k].product_id==product_id){
                         return {
                             data:heap.state.cartList[i].entries[k],
@@ -194,7 +192,7 @@ const Order = {
             return null;
         },
         async entrySave(store_id,entry){
-            let existingOrder=Order.cart.itemGetByStoreId(store_id);
+            const existingOrder=Order.cart.itemGetByStoreId(store_id);
             if( !existingOrder ){
                 Order.cart.itemCreate(store_id,[entry]);
                 return true;
@@ -214,24 +212,22 @@ const Order = {
             return true;
         },
         async entryUpdate(entry){
-            let entryOld=Order.cart.entryGet(entry.product_id);
+            const entryOld=Order.cart.entryGet(entry.product_id);
             if( !entryOld ){
                 return false;
             }
-            let entryNew=Object.assign(entryOld.data,entry);
+            const entryNew=Object.assign(entryOld.data,entry);
             heap.state.cartList[entryOld.order_index].entries[entryOld.entry_index]=entryNew;
             Order.cart.listSave();
             if(entryNew.entry_id){
                 try{
                     await Order.api.entryUpdate(entry);
-                } catch(err){
-                    console.log('entryUpdate error',err);
-                }
+                } catch{/** */}
             }
             return entryNew;
         },
         entryDelete(product_id){
-            let entryOld=Order.cart.entryGet(product_id);
+            const entryOld=Order.cart.entryGet(product_id);
             heap.state.cartList[entryOld.order_index].entries.splice(entryOld.entry_index,1);
             if(heap.state.cartList[entryOld.order_index].entries.length==0){
                 heap.state.cartList.splice(entryOld.order_index,1);

@@ -127,8 +127,7 @@ export default  {
     }
   },
   methods:{
-    save(field_name, field_value) {
-      var self = this;
+    async save(field_name, field_value) {
       this.submitted = true;
       if(field_name == 'user_phone'){
         if(!this.phoneValid){
@@ -139,14 +138,10 @@ export default  {
       var requestData = {};
       requestData.user_id = heap.state.user.user_id;
       requestData[field_name] = field_value;
-      jQuery.post( heap.state.hostname + "User/itemUpdate", JSON.stringify(requestData))
-        .done(function(response) {
-            console.log(response);
-            self.getUserData();
-        })
-        .fail(function(err) {
-            self.error = err.responseJSON.messages.error;
-      });
+      try{
+        await jQuery.post( heap.state.hostname + "User/itemUpdate", JSON.stringify(requestData))
+        this.getUserData()
+      }catch{/** */}
     },
     getUserData(){
       var self = this;

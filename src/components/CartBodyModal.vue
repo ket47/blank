@@ -81,8 +81,8 @@ export default{
                 return;
             }
             this.$router.push('order-'+syncedOrder.order_id);
-        } catch( err ){
-            console.error(err);
+        } catch{
+          /** */
         }
     },
   }

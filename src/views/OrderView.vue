@@ -51,9 +51,7 @@ export default({
                 order_stage_code=order_stage_code.split('_').splice(1).join('_');
                 try{
                     this[order_stage_code](order_id);
-                }catch(err){
-                    console.error(order_stage_code);
-                }
+                }catch{/** */}
                 return;
             }
             try{
@@ -67,9 +65,7 @@ export default({
                     }
                     this.orderGet();
                 }
-            }catch(err){
-                console.log(err);
-            }
+            }catch{/** */}
         },
         async action_checkout(order_id){
             await this.onStageCreate(order_id, 'customer_confirmed');

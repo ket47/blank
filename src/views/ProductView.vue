@@ -24,7 +24,7 @@
       <ion-list v-if="productItem">
         <ion-list-header>
           <h2>
-            {{ productItem.product_name }} <span v-if="!productItem.product_quantity">(Нет в наличии)</span>
+            {{ productItem.product_name }} <span v-if="!(productItem.product_quantity>0)">(Нет в наличии)</span>
           </h2>
         </ion-list-header>
         <ion-item lines="none">
@@ -113,7 +113,7 @@ export default  {
     };
   },
   created(){
-      this.getProduct();
+      //
   },
   computed:{
     categories(){
@@ -152,6 +152,9 @@ export default  {
       }
       return entry.data.entry_comment??''
     }
+  },
+  ionViewDidEnter(){
+    this.getProduct();
   },
   methods: {
       async getProduct(){

@@ -510,7 +510,7 @@ export default {
       }
     },
   },
-  mounted() {
+  ionViewDidEnter() {
     this.getStore();
   },
   watch: {

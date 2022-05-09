@@ -24,7 +24,7 @@
 <script>
 import { IonSlides, IonSlide } from '@ionic/vue';
 import jQuery from "jquery";
-import store from '../store';
+import heap from '@/heap';
 
 const slideOpts = {  
     slidesPerView: 'auto',

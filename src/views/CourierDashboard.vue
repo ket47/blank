@@ -178,8 +178,7 @@ export default  {
         await jQuery.post(heap.state.hostname + "Courier/itemCreate");
         await User.get();
         this.courier=User.courier.data;
-      } catch(err){
-        console.error(err);
+      } catch {
         this.$flash("Не удалось зарегистрироваться как курьер")
       }
     },

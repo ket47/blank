@@ -1,4 +1,4 @@
-import heap from '../heap';
+import heap from '@/heap';
 const Utils={
     deliveryCalculate(Store){
         if( !Store.locations || !Store.locations[0] || !Store.locations[0].distance){

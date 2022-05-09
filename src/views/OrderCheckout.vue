@@ -170,9 +170,7 @@ export default({
             // try{
             //     await Order.api.itemStageCreate(this.order.order_id, 'customer_cart');
             // } catch(err){/* */}
-            
             this.$router.push('order-'+this.order.order_id);
-            console.log('go')
         },
         async paymentFormOpen( order_data ) {
             const self=this;

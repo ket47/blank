@@ -55,19 +55,15 @@ export default {
     closeModal(){
       return modalController.dismiss();
     },
-    passwordReset(){
+    async passwordReset(){
       let requestData = {
         user_phone: '+'+this.phone.replace(/\D/g,""),
         user_name:  this.username
       }
-      jQuery.post( "https://api.tezkel.com/User/passwordReset", requestData)
-      .done(function() {
-        this.closeModal;
-      })
-      .fail(function(err) {
-        this.closeModal;
-        console.log(err.responseJSON.messages.error);
-      });
+      try{
+        await jQuery.post( "https://api.tezkel.com/User/passwordReset", requestData)
+      } catch{/** */}
+      this.closeModal()
     },
   }
 };

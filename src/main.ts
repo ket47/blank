@@ -36,6 +36,8 @@ import User                 from '@/scripts/User.js'
 import Order                from '@/scripts/Order.js'
 import jQuery               from "jquery";
 
+import './registerServiceWorker';
+
 
 const FlashNotice={
   queue:([] as any),
@@ -102,7 +104,7 @@ app.config.globalProperties.$topic = Topic;
 
 if(isPlatform('mobile') || isPlatform('mobileweb')){
   app.component('base-layout', BaseLayout);
-  require('./theme/base_layout.css');
+  //require('./theme/base_layout.css');
 } else {
   app.component('base-layout', BaseLayoutDesktop);
   require('./theme/base_layout_desktop.css');

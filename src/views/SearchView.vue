@@ -86,7 +86,6 @@ export default  {
       try{
         const found=await jQuery.get(this.$heap.state.hostname+'Search/listGet',request)
         this.found=this.storeListCalculate(found)
-        console.log(this.found)
       }catch{
         this.found='void'
       }
