@@ -64,11 +64,11 @@
 
 import {
   IonPage,
-  IonToolbar,
-  IonTitle,
+
+
   IonContent,
-  IonBackButton,
-  IonButtons,
+
+
   IonIcon,
   IonTabBar,
   IonTabButton
@@ -107,11 +107,7 @@ export default {
   ],
   components: {
     IonPage,
-    IonToolbar,
-    IonTitle,
     IonContent,
-    IonBackButton,
-    IonButtons,
     IonIcon,
     IonTabBar,
     IonTabButton,

@@ -3,7 +3,7 @@
   padding: 0;
 }
 .desktop-main-container {
-  --background: url('../../public/assets/icon/tezkel_logo.png');
+  --background: url('../../public/img/bg3.png');
 }
 
 
@@ -13,8 +13,7 @@
 
 .desktop-main-container .ion-left-column {
   padding: 1em;
-  background-color: #fff;
-  
+  background-color: var(--ion-color-tertiary-tint);
   border-right: 1px solid var(--ion-item-border-color);
   text-align: right;
 }
