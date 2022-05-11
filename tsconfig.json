@@ -34,7 +34,7 @@
     "tests/**/*.ts",
     "tests/**/*.tsx",
     "src/scripts/*.js"
-  ],
+, "src/router/index.js", "src/heap/index.js"  ],
   "exclude": [
     "node_modules"
   ]

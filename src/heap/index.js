@@ -34,16 +34,16 @@ const heap = createStore({
         },
         cartListRestore(){
             const cartLastDays=30;
-            let date=new Date();
+            const date=new Date();
             date.setDate(date.getDate()-cartLastDays)
-            let older=date.toISOString().replace(/[T]/g,' ').replace(/.\d\d\dZ/,'');
-            let cartList=[];
+            const older=date.toISOString().replace(/[T]/g,' ').replace(/.\d\d\dZ/,'');
+            const cartList=[];
             let cartListUnfiltered=[];
             if(localStorage.cartList){
                 cartListUnfiltered = JSON.parse(localStorage.cartList);
             }
             if(cartListUnfiltered && cartListUnfiltered.length){
-                for(let cart of cartListUnfiltered){
+                for(const cart of cartListUnfiltered){
                     if( cart && cart.created_at>older && cart.order_store_id ){
                         cartList.push(cart);
                     }
@@ -68,9 +68,9 @@ const heap = createStore({
             this.commit('cartWathcerPrepare',cartList);
         },
         cartWathcerPrepare(state,cartList){
-            let watcher={};
-            for(let cart of cartList){
-                for(let entry of cart.entries){
+            const watcher={};
+            for(const cart of cartList){
+                for(const entry of cart.entries){
                     watcher[entry.product_id]=entry.entry_quantity;
                 }
             }

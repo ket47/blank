@@ -87,8 +87,8 @@ const Order = {
         async itemSync(order_id){
             const order=Order.cart.itemGetById(order_id);
             try{
-                const syncedOrder = await Order.api.itemSync(order.data);
-                heap.state.cartList[order.order_index]=syncedOrder;
+                const syncedOrder = await Order.api.itemSync(order?.data);
+                heap.state.cartList[order?.order_index]=syncedOrder;
                 Order.cart.listSave();
                 return syncedOrder;
             }
@@ -228,9 +228,9 @@ const Order = {
         },
         entryDelete(product_id){
             const entryOld=Order.cart.entryGet(product_id);
-            heap.state.cartList[entryOld.order_index].entries.splice(entryOld.entry_index,1);
-            if(heap.state.cartList[entryOld.order_index].entries.length==0){
-                heap.state.cartList.splice(entryOld.order_index,1);
+            heap.state.cartList[entryOld?.order_index].entries.splice(entryOld?.entry_index,1);
+            if(heap.state.cartList[entryOld?.order_index].entries.length==0){
+                heap.state.cartList.splice(entryOld?.order_index,1);
             }
             Order.cart.listSave();
         }
