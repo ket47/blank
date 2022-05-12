@@ -166,7 +166,6 @@ ion-chip .active-chip {
     :contentOnScroll="onScroll"
     :page-title="pageTitle"
   >
-  <ion-page ref="Store">
   <div style="background-color:var(--ion-background-shade)">
     <div class="store-info">
       <image-slider :imageList="storeItem.images" :imgHeight="200"></image-slider>
@@ -226,8 +225,8 @@ ion-chip .active-chip {
 
 
 
-    <div class="group-fixed-block hidden-block">
-      <ion-segment ref="segment" scrollable>
+    <div v-if="storeGroups" class="group-fixed-block hidden-block">
+      <ion-segment v-model="activeParentGroupId" scrollable>
         <ion-segment-button
           v-for="group_item in storeGroups"
           :key="group_item.group_id"
@@ -252,33 +251,40 @@ ion-chip .active-chip {
       </ion-row>
     </div>
 
-    <ion-searchbar
-      class="search-container"
-      :value="searchRequest"
+
+
+
+
+
+
+
+
+
+
+
+
+    <ion-searchbar class="search-container" :value="searchRequest" placeholder="Поиск в этом предприятии"
       @input="
         getStoreProducts({
           name_query: $event.target.value,
           name_query_fields: 'product_name,product_code',
         });
         searchRequest = $event.target.value;
-      "
-      placeholder="Поиск в этом предприятии"
-    ></ion-searchbar>
+      "/>
 
-    <group-list :groupList="storeGroups" :onClick="(group_id) => {setActiveParentGroup(group_id) }"></group-list>
+    <group-list v-if="storeGroups" :groupList="storeGroups" :onClick="(group_id) => {setActiveParentGroup(group_id) }"></group-list>
 
-    <ion-slides
-      v-if="storeGroups.length !== 0"
+    <swiper
+      v-if="storeGroups"
       pager="true"
-      ref="slides"
       :options="slideOpts"
       class="product-list-slider"
-      @ionSlideDidChange="slideChanged($event)"
+      @slideChange="slideChanged($event)"
     >
-      <ion-slide v-for="parent_group_item in storeGroups" :key="parent_group_item.group_id">
+      <swiper-slide v-for="parent_group_item in storeGroups" :key="parent_group_item.group_id">
+
         <ion-grid class="product-list">
           <ion-row
-            v-show="storeProducts[group_item.group_id]"
             v-for="group_item in parent_group_item.children"
             :key="group_item.group_id"
             :ref="'group-' + group_item.group_id"
@@ -287,27 +293,52 @@ ion-chip .active-chip {
             <ion-col class="group-title" size="12">
               <label><b>{{ group_item.group_name }}</b></label>
             </ion-col>
-
             <ion-col  size="12">
               <product-list :productList="storeProducts[group_item.group_id]"></product-list>
             </ion-col>
           </ion-row>
         </ion-grid>
-      </ion-slide>
-    </ion-slides>
+
+      </swiper-slide>
+    </swiper>
+    
     </div>
-  </ion-page>
   </base-layout>
 </template>
+
 <script>
-import { search, settingsOutline } from "ionicons/icons";
-import ImageSlider from "@/components/ImageSlider";
-import GroupList from "@/components/GroupList.vue";
-import ProductList from '@/components/ProductList.vue';
-import { IonSlides, IonSlide } from "@ionic/vue";
-import jQuery from "jquery";
-import heap from "@/heap";
-import Utils from "@/scripts/Utils.js";
+import {
+  IonText,
+  IonCol,
+  IonIcon,
+  IonRow,
+  IonNote,
+  IonGrid,
+  IonLabel,
+  IonSegmentButton,
+  IonSegment,
+  IonChip,
+  IonSearchbar,
+  IonPage,
+}                         from "@ionic/vue";
+import { 
+  Autoplay
+}                         from 'swiper';
+import { 
+  Swiper,
+  SwiperSlide 
+ }                        from 'swiper/vue';
+import { 
+  search,
+  settingsOutline
+}                         from "ionicons/icons";
+import ImageSlider        from "@/components/ImageSlider";
+import GroupList          from "@/components/GroupList.vue";
+import ProductList        from '@/components/ProductList.vue';
+import jQuery             from "jquery";
+import heap               from "@/heap";
+import Utils              from "@/scripts/Utils.js";
+import { defineComponent } from "@vue/runtime-core";
 
 
 
@@ -322,11 +353,23 @@ const slideOpts = {
   touchStartForcePreventDefault: true,
 };
 
-export default {
+export default defineComponent({
   components: {
+    IonText,
+    IonCol,
+    IonIcon,
+    IonRow,
+    IonNote,
+    IonGrid,
+    IonLabel,
+    IonSegmentButton,
+    IonSegment,
+    IonChip,
+    IonSearchbar,
+    IonPage,
     ImageSlider,
-    IonSlides,
-    IonSlide,
+    Swiper,
+    SwiperSlide,
     GroupList,
     ProductList
   },
@@ -334,7 +377,8 @@ export default {
     return {
       search,
       settingsOutline,
-      slideOpts
+      slideOpts,
+      slideModules:[Autoplay]
     };
   },
   data() {
@@ -345,7 +389,7 @@ export default {
       error: "",
       storeItem: [],
       storeProducts: {},
-      storeGroups: [],
+      storeGroups: null,
       activeGroup: { children: [] },
       activeParentGroupId: 0,
       offsetModificator: 150
@@ -359,42 +403,37 @@ export default {
   methods: {
     setActiveParentGroup(parent_group_id) {
       this.activeParentGroupId = parent_group_id;
-      var first_group_id =  Object.keys(this.storeGroups[this.activeParentGroupId].children)[0];
-      var self = this;
+      const first_group_id =  Object.keys(this.storeGroups[this.activeParentGroupId].children)[0];
+      const self = this;
       setTimeout(function(){
         self.scrollTo(first_group_id);
         self.setSubgroupActive(first_group_id);
       }, 200);
-      var slide_index = Object.keys(this.storeGroups).indexOf(this.activeParentGroupId);
-      if (this.$refs.slides) {
-        this.$refs.slides.$el.slideTo(slide_index, false, function () {
-          return false;
-        });
-      }
+      const swiper = document.querySelector('.product-list-slider').swiper;
+      const slide_index = Object.keys(this.storeGroups).indexOf(this.activeParentGroupId);
+      swiper.slideTo(slide_index,100,false);
     },
     slideChanged(event) {
-      var self = this;
-      event.target.getActiveIndex().then(function (slideIndex) {
-        var groud_id = Object.keys(self.storeGroups)[slideIndex];
-        self.setActiveParentGroup(groud_id);
-        self.$refs.segment.value = self.activeParentGroupId;
-        var first_group_id =  Object.keys(self.storeGroups[self.activeParentGroupId].children)[0];
-        setTimeout(function(){
-          self.scrollTo(first_group_id);
-          self.setSubgroupActive(first_group_id);
-        }, 200);
-      });
+      const slideIndex=event.activeIndex
+      const groud_id = Object.keys(this.storeGroups)[slideIndex];
+      const first_group_id =  Object.keys(this.storeGroups[groud_id].children)[0];
+      const self=this
+      this.setActiveParentGroup(groud_id);
+      setTimeout(function(){
+        self.scrollTo(first_group_id);
+        self.setSubgroupActive(first_group_id);
+      }, 200);
     },
     async getStore() {
       try{
-        const store=await jQuery.post(heap.state.hostname + "Store/itemGet", {store_id: this.storeId,distance_include:1})
+        const store=await jQuery.post(`${heap.state.hostname}Store/itemGet`, {store_id: this.storeId,distance_include:1})
         this.storeItem = this.prepareStore(store);
         this.storeId = store.store_id;
         this.pageTitle=store.store_name
         this.getStoreGroupTree({ store_id: this.storeId });
         heap.commit('setCurrentStore',this.storeItem);
       } catch(err){
-        //
+        //console.log(err)
       }
     },
     prepareStore(storeItem) {
@@ -406,24 +445,15 @@ export default {
       storeItem.delivery=Utils.deliveryCalculate(storeItem);
       return storeItem;
     },
-    getStoreGroupTree(filter) {
-      var self = this;
-      jQuery
-        .post(heap.state.hostname + "Product/groupTreeGet", {
-          store_id: filter.store_id,
-        })
-        .done(function (response) {
-          self.storeGroups = response;
-          var first_group_id = Object.keys(self.storeGroups)[0];
-          if (self.$refs.segment) {
-            self.$refs.segment.value = first_group_id;
-            self.activeParentGroupId = first_group_id;
-          }
-          self.getStoreProducts();
-        })
-        .fail(function (err) {
-          self.error = err.responseJSON.messages.error;
-        });
+    async getStoreGroupTree(filter) {
+      try{
+        this.storeGroups=await jQuery.get(`${heap.state.hostname}Product/groupTreeGet`, {store_id: filter.store_id})
+        const first_group_id = Object.keys(this.storeGroups)[0];
+        this.activeParentGroupId = first_group_id;
+        this.getStoreProducts();
+      }catch(err){
+        //console.log(err);
+      }
     },
     getStoreProducts(filter = {}) {
       filter.store_id = this.storeId;
@@ -474,7 +504,7 @@ export default {
         return;
       }
       const offset=document.querySelector("ion-content").shadowRoot.querySelector("main").scrollTop;
-      const anchor=this.$refs["group-" + groupId][0].getBoundingClientRect().top;
+      const anchor=this.$refs["group-" + groupId][0].$el.getBoundingClientRect().top;
       var elementPosition = offset+anchor - this.offsetModificator - (window.innerHeight/4);
       var first_group_id = Object.keys(this.storeGroups[this.activeParentGroupId].children)[0];
       if(first_group_id == groupId){
@@ -493,9 +523,9 @@ export default {
       const offsetTop=document.querySelector(".product-list-slider")?.offsetTop;
       const offsetHeight=document.querySelector(".group-fixed-block")?.offsetHeight;
       if (offsetTop - offsetHeight - 100 < event.detail.scrollTop ) {
-        document.querySelector(".group-fixed-block").className = "group-fixed-block";
+        document.querySelector(".group-fixed-block") && (document.querySelector(".group-fixed-block").className = "group-fixed-block");
       } else {
-        document.querySelector(".group-fixed-block").className = "group-fixed-block hidden-block";
+        document.querySelector(".group-fixed-block") && (document.querySelector(".group-fixed-block").className = "group-fixed-block hidden-block");
       }
       var productGroupElementList = document.querySelectorAll(".swiper-slide-active .product-list ion-row");
       for (var row of productGroupElementList) {
@@ -518,5 +548,5 @@ export default {
       this.storeId = currentRoute.params.id;
     },
   },
-};
+})
 </script>

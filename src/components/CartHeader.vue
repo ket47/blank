@@ -7,14 +7,23 @@
  
 <script>
 import { cart }             from 'ionicons/icons';
-import { modalController }  from '@ionic/vue';
-import heap                 from '@/heap';
+import {
+  IonIcon,
+  IonLabel,
+  IonChip,
+  modalController
+}                           from '@ionic/vue';
 import router               from '@/router';
 import CartBodyModal        from '@/components/CartBodyModal.vue';
 import Topic                from '@/scripts/Topic.js';
 
 export default{
   inject:["$Order"],
+  components:{
+    IonIcon,
+    IonLabel,
+    IonChip,
+  },
   setup() {
     return {
       cart

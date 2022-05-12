@@ -1,56 +1,70 @@
 <template>
   <ion-header>
     <ion-toolbar>
-      <ion-title>{{ title }}</ion-title>
-      <ion-button slot="end" @click="closeModal">Закрыть</ion-button>
+      <ion-title>Напоминание пароля</ion-title>
+      <ion-icon :icon="closeCircle" @click="closeModal();" slot="end" size="large" color="medium"></ion-icon>
     </ion-toolbar>
   </ion-header>
-  <ion-content >
+  <ion-content>
       <form novalidate>
         <ion-list>
           <ion-item>
-            <ion-row>
-              <ion-col>
-                <ion-label position="stacked" color="primary">Имя пользователя</ion-label>
-                <ion-input
-                  v-model="username"
-                  name="username"
-                  type="text"
-                  inputmode="text"
-                  :value="username"
-                  @input="username = $event.target.value"
-                  placeholder="Введите имя пользователя..."
-                  required
-                ></ion-input>
-              </ion-col>
-            </ion-row>
+            <ion-label position="stacked" color="primary">Номер телефона</ion-label>
+            <ion-input v-model="userphone" placeholder="Ваш телефон"/>
+          </ion-item>
+          <ion-item>
+            <ion-label position="stacked" color="primary">Имя пользователя</ion-label>
+            <ion-input v-model="username" placeholder="Введите имя пользователя..."/>
           </ion-item>
         </ion-list>
-
-        <ion-row responsive-sm>
-          <ion-col>
-            <ion-button @click="passwordReset" expand="block">Подтвердить</ion-button>
-          </ion-col>
-        </ion-row>
+        <ion-button @click="passwordReset()" expand="full">Выслать пароль</ion-button>
       </form>
   </ion-content>
 </template>
 
 <script>
-import { modalController } from '@ionic/vue';
-import { IonContent, IonHeader, IonTitle, IonToolbar, IonList, IonItem } from '@ionic/vue';
+import { 
+  IonContent, 
+  IonHeader, 
+  IonTitle, 
+  IonToolbar, 
+  IonList, 
+  IonItem,
+  IonInput,
+  IonButton,
+  IonIcon,
+  IonLabel,
 
-import jQuery from "jquery";
+  modalController 
+}                   from '@ionic/vue';
+import {
+    closeCircle
+}                   from 'ionicons/icons';
+import jQuery       from "jquery";
 
 export default {
-  name: 'ModalUsernameConfirm',
+  components: {
+  IonContent, 
+  IonHeader, 
+  IonTitle, 
+  IonToolbar, 
+  IonList, 
+  IonItem,
+  IonInput,
+  IonButton,
+  IonIcon,
+  IonLabel,
+  },
   props: [ 'phone' ],
+  setup(){
+    return {closeCircle}
+  },
   data() {
     return {
       username: '',
+      userphone:this.phone
     }
   },
-  components: { IonContent, IonHeader, IonTitle, IonToolbar, IonList, IonItem },
   methods: {
     closeModal(){
       return modalController.dismiss();
@@ -61,8 +75,16 @@ export default {
         user_name:  this.username
       }
       try{
-        await jQuery.post( "https://api.tezkel.com/User/passwordReset", requestData)
-      } catch{/** */}
+        await jQuery.post(`${this.$heap.state.hostname}User/passwordReset`, requestData)
+        this.$flash(`Ваш новый пароль выслан на номер '${this.userphone}'`)
+      } catch(err){
+        const message=err.responseJSON.messages.error
+        if(message=='user_not_found'){
+          this.$flash(`Пользователь с телефоном '${this.userphone}' и именем '${this.username}' ненайден`)
+        }else{
+          this.$flash(`Не удалось восстановить пароль`)
+        }
+      }
       this.closeModal()
     },
   }

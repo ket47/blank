@@ -14,7 +14,7 @@
     </ion-header>
     <ion-content :class="['main-container', pageClass]" :scrollEvents="contentOnScroll ? 'true' : 'false'" @ionScroll="contentOnScroll($event)">
       <slot />
-      <div style="height:30px"><!--spacer for tabs--></div>
+      <div style="height:30px"><!--spacer for bottom main tabs--></div>
     </ion-content>
   </ion-page>
 </template>
@@ -29,10 +29,12 @@ import {
   IonContent,
   IonBackButton,
   IonButtons,
-}                 from "@ionic/vue";
-import CartHeader from "@/components/CartHeader";
+  IonImg
+}                           from "@ionic/vue";
+import CartHeader           from "@/components/CartHeader";
+import { defineComponent }  from "@vue/runtime-core";
 
-export default {
+export default defineComponent({
   props: [
     "pageTitle",
     "pageLogo",
@@ -50,9 +52,10 @@ export default {
     IonContent,
     IonBackButton,
     IonButtons,
+    IonImg,
     CartHeader
   },
-};
+})
 </script>
 
 <style>

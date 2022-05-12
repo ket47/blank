@@ -32,6 +32,11 @@
 <script>
 import {
   IonList,
+  IonImg,
+  IonChip,
+  IonItem,
+  IonCard,
+  IonTitle,
 } from "@ionic/vue";
 import jQuery from "jquery";
 import heap from "../heap";
@@ -39,6 +44,11 @@ import heap from "../heap";
 export default {
   components: {
     IonList,
+    IonImg,
+    IonChip,
+    IonItem,
+    IonCard,
+    IonTitle,
   },
   data() {
     return {

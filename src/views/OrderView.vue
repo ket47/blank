@@ -21,8 +21,21 @@ import OrderComp from           '@/components/OrderComp.vue';
 import ImageTileComp from       '@/components/ImageTileComp.vue'
 import router from              '@/router';
 
+
+import { 
+    IonLabel,
+    IonIcon,
+    IonContent,
+}                   from '@ionic/vue';
+
 export default({
-    components: { OrderComp,ImageTileComp },
+    components: { 
+    OrderComp,
+    ImageTileComp,
+    IonLabel,
+    IonIcon,
+    IonContent,
+    },
     setup(){
         return {sparklesOutline};
     },

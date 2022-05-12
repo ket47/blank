@@ -87,7 +87,7 @@ ion-img{
             :class="productItem.product_quantity>0?'':'absent'"
             :id="`product_list_item${productItem.product_id}`"
         >                
-            <div style="" class="product_list_item_img">
+            <div class="product_list_item_img">
                 <div style="position:relative;top:-50%;">
                     <cart-add-buttons buttonLayout="vertical" :productItem="productItem"></cart-add-buttons>
                 </div>
@@ -114,12 +114,15 @@ ion-img{
 </template>
 
 <script>
-
-import CartAddButtons from '@/components/CartAddButtons';
+import {
+    IonImg
+}                       from '@ionic/vue'
+import CartAddButtons   from '@/components/CartAddButtons';
 
 export default {
     props: ['productList', 'onClick'],
     components: { 
+        IonImg,
         CartAddButtons
     }
 };

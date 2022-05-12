@@ -61,20 +61,31 @@ import {
     trash,
     checkmarkCircle
 }                               from 'ionicons/icons';
+import { 
+    IonLabel,
+    IonIcon,
+    IonItem,
+    IonImg,
+    IonAvatar,
+    modalController
+    }                           from '@ionic/vue';
 import ImagePreviewModal        from '@/components/ImagePreviewModal.vue'
-import { modalController }      from '@ionic/vue';
 import jQuery                   from 'jquery'
 import Topic                    from '@/scripts/Topic.js'
 import User                     from '@/scripts/User.js'
 
 export default {
     props:['images','image_holder_id','controller'],
+    components:{
+    IonLabel,
+    IonIcon,
+    IonItem,
+    IonImg,
+    IonAvatar,
+
+    },
     setup(){
         return {settingsOutline,settingsSharp,chevronBackCircleOutline,chevronForwardCircleOutline,trashBin,trash,checkmarkCircle}
-    },
-    created(){
-        //this.imageList=this.images;
-        //console.log(this.imageList);
     },
     data(){
         return {

@@ -32,19 +32,34 @@
 </template>
 
 <script>
+import {
+  modalController,
+  IonContent,
+  IonLabel,
+  IonHeader,
+  IonToolbar,
+  IonIcon,
+  IonTitle
+}                         from "@ionic/vue";
 import 
 {
   closeCircle,
   sparklesOutline
 }                         from 'ionicons/icons';
 import heap               from '@/heap';
-import {modalController}  from "@ionic/vue";
 import OrderComp          from '@/components/OrderComp.vue';
 import Order              from '@/scripts/Order.js';
 
 export default{
-  inject:['$Order'],
-  components: { OrderComp },
+  components: { 
+  OrderComp,
+  IonContent,
+  IonLabel,
+  IonHeader,
+  IonToolbar,
+  IonIcon,
+  IonTitle
+  },
   setup() {
       const closeModal = function(){
           modalController.dismiss();

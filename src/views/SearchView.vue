@@ -22,31 +22,19 @@
             <ion-thumbnail slot="start">
               <ion-img style="border-radius:10px" :src="`${$heap.state.hostname}image/get.php/${store.image_hash}.150.150.webp`"/>
             </ion-thumbnail>
-            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;width:100%">
-              <div>
-                <ion-title>{{store?.store_name}}</ion-title>
-              </div>
-              <div style="text-align:right">
-                <ion-chip v-if="store.is_opened" color="success">Открыт до {{ store.store_time_closes }}:00</ion-chip>
-                <ion-chip v-else color="danger">Закрыт до {{ store.store_time_opens }}:00</ion-chip>
-              </div>
-              <div style="text-align:right">
-                <ion-chip v-if="store.deliveryTime.timeMin" color="primary">{{store.deliveryTime.timeMin}}-{{store.deliveryTime.timeMax}}мин</ion-chip>
-              </div>
-              <div style="grid-column: 1/-1">
-                <ion-note>{{store.store_description}}</ion-note>
-              </div>
-            </div>
+            <ion-title>{{store?.store_name}}</ion-title>
+            <ion-note slot="helper">{{store.store_description}}</ion-note>
           </ion-item>
-          
-
-              <div style="margin:10px;display:grid;grid-template-columns:repeat(auto-fit, 150px)">
-                <div v-for="productItem in store.matches" :key="productItem.product_id">                
-                  <product-item :productItem="productItem"/>
-                </div>
-              </div>
-
-
+          <div>
+            <ion-chip v-if="store.is_opened" color="success">Открыт до {{ store.store_time_closes }}:00</ion-chip>
+            <ion-chip v-else color="danger">Закрыт до {{ store.store_time_opens }}:00</ion-chip>
+            <ion-chip v-if="store.deliveryTime.timeMin" color="primary">{{store.deliveryTime.timeMin}}-{{store.deliveryTime.timeMax}}мин</ion-chip>
+          </div>
+          <div style="margin:10px;display:grid;grid-template-columns:repeat(auto-fit, 150px)">
+            <div v-for="productItem in store.matches" :key="productItem.product_id">                
+              <product-item :productItem="productItem" :storeName="store.store_name"/>
+            </div>
+          </div>
       </ion-list>
     </div>
     <div v-else>
@@ -56,13 +44,32 @@
 </template>
 
 <script>
-import jQuery from 'jquery'
-import {IonSearchbar} from '@ionic/vue'
-import Utils from '@/scripts/Utils.js'
-import ProductItem from '@/components/ProductItem.vue'
+import {
+  IonSearchbar,
+  IonTitle,
+  IonImg,
+  IonThumbnail,
+  IonChip,
+  IonNote,
+  IonItem,
+  IonList,
+}                       from '@ionic/vue'
+import jQuery           from 'jquery'
+import Utils            from '@/scripts/Utils.js'
+import ProductItem      from '@/components/ProductItem.vue'
 
 export default  {
-  components:{IonSearchbar,ProductItem},
+  components:{
+  IonSearchbar,
+  IonTitle,
+  IonImg,
+  IonThumbnail,
+  IonChip,
+  IonNote,
+  IonItem,
+  IonList,
+  ProductItem
+  },
   data(){
     return {
       query:this.$route.query.q||'',

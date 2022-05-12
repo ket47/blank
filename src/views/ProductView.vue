@@ -68,7 +68,15 @@ import {
   settingsOutline
 }                       from 'ionicons/icons'
 import {
-  IonTextarea
+  IonTextarea,
+  IonListHeader,
+  IonText,
+  IonIcon,
+  IonItem,
+  IonChip,
+  IonLabel,
+  IonList,
+
 }                       from '@ionic/vue'
 import ImageSlider      from '@/components/ImageSlider'
 import CartAddButtons   from '@/components/CartAddButtons'
@@ -80,11 +88,17 @@ export default  {
   components: { 
     ImageSlider,
     CartAddButtons,
-    CartHeader,
-    IonTextarea
+    IonTextarea,
+    IonListHeader,
+    IonText,
+    IonIcon,
+    IonItem,
+    IonChip,
+    IonLabel,
+    IonList,
   },
   setup(){
-    return {compassOutline,cartOutline,pricetagOutline,giftOutline,walletOutline,chatboxEllipsesOutline,settingsOutline}
+    return {CartHeader,compassOutline,cartOutline,pricetagOutline,giftOutline,walletOutline,chatboxEllipsesOutline,settingsOutline}
   },
   data() {
     return { 

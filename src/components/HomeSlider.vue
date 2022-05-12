@@ -39,6 +39,11 @@
       Swiper,
       SwiperSlide,
     },
+    setup() {
+      return {
+        modules: [Autoplay,EffectFade], 
+      };
+    },
     data(){
       return {
         home_slides:[],
@@ -59,11 +64,6 @@
                 self.error = err.responseJSON.messages.error;
             });
         }
-    },
-    setup() {
-      return {
-        modules: [Autoplay,EffectFade], 
-      };
     },
   });
 </script>

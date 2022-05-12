@@ -37,11 +37,6 @@
                 </ion-row>
               </ion-tab-button>
             </ion-tab-bar>
-            <div slot="end" style="width:100px">
-              <router-link :to="'/search'">
-                <ion-icon :icon="search" />
-              </router-link>
-            </div>
           </ion-col>
           <ion-col class="ion-middle-column" :size="cartListTotal>0?6:9">
             <div class="page-content">
@@ -64,14 +59,15 @@
 
 import {
   IonPage,
-
-
   IonContent,
-
-
   IonIcon,
   IonTabBar,
-  IonTabButton
+  IonTabButton,
+  IonImg,
+  IonLabel,
+  IonRow,
+  IonCol,
+  IonGrid,
 } from "@ionic/vue";
 import FooterDesktop  from "@/components/FooterDesktop";
 import CartBodyModal  from '@/components/CartBodyModal.vue';
@@ -111,6 +107,11 @@ export default {
     IonIcon,
     IonTabBar,
     IonTabButton,
+    IonImg,
+    IonLabel,
+    IonRow,
+    IonCol,
+    IonGrid,
     CartBodyModal,
     FooterDesktop
   },

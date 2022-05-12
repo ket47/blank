@@ -38,11 +38,24 @@
 </template>
 <script>
 import Order          from '@/scripts/Order.js'
-export default {
+import {
+  IonFooter,
+  IonLabel,
+  IonImg,
+  IonTitle
+  }      from '@ionic/vue'
+import { defineComponent } from '@vue/runtime-core'
+export default defineComponent({
+  components:{
+    IonFooter,
+    IonLabel,
+    IonImg,
+    IonTitle
+  },
   computed:{
     cartListTotal(){
       return Order.cart.listTotalGet()
     }
   },
-}
+})
 </script>

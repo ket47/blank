@@ -99,10 +99,36 @@ ion-text{
 import jQuery from "jquery";
 import heap from '@/heap';
 import User from '@/scripts/User.js';
-import { IonTextarea,IonInput,IonCard,IonCardContent }          from "@ionic/vue";
+import { 
+  IonTextarea,
+  IonInput,
+  IonCard,
+  IonCardContent,
+  IonLabel,
+  IonItem,
+  IonNote,
+  IonButton,
+  IonImg,
+  IonThumbnail,
+  IonList,
+
+ }          from "@ionic/vue";
 
 export default  {
-  components: { IonTextarea,IonInput,IonCard,IonCardContent },
+  components: {
+  IonTextarea,
+  IonInput,
+  IonCard,
+  IonCardContent,
+  IonLabel,
+  IonItem,
+  IonNote,
+  IonButton,
+  IonImg,
+  IonThumbnail,
+  IonList,
+
+  },
   data(){
     return {
       courier:User.courier.data,

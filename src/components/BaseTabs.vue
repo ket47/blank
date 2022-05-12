@@ -178,33 +178,36 @@ ion-icon{
   </ion-page>
 </template>
 
-<script>
+<script lang="js">
 import {
+  IonPage,
   IonTabBar,
   IonTabButton,
   IonTabs,
   IonIcon,
-  IonPage,
+  IonLabel,
   IonRouterOutlet,
 }                   from "@ionic/vue";
 import personIcon   from "@/assets/icons/account.svg";
 import ordersIcon   from "@/assets/icons/orders.svg";
 import searchIcon   from "@/assets/icons/search.svg";
 import homeIcon     from "@/assets/icons/home.svg";
+import { defineComponent } from "@vue/runtime-core";
 
-export default {
+export default defineComponent({
   components: {
-    IonTabs,
-    IonTabBar,
-    IonTabButton,
-    IonIcon,
-    IonPage,
-    IonRouterOutlet,
+  IonPage,
+  IonTabBar,
+  IonTabButton,
+  IonTabs,
+  IonIcon,
+  IonLabel,
+  IonRouterOutlet,
   },
   setup() {
     return {
       personIcon,ordersIcon,searchIcon,homeIcon
     };
   },
-};
+})
 </script>

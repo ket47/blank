@@ -1,5 +1,5 @@
 <template>
-  <base-layout page-title="Мои адреса" page-default-back-link="/user-dashboard" :errorMessage="error"  ref="UserAddressPage">
+  <base-layout page-title="Мои адреса" page-default-back-link="/user-dashboard"  ref="UserAddressPage">
         <ion-list v-if="locationList.length" lines="full">
           <ion-item v-for="(location,i) in locationList" :key="location.location_id">
               <ion-img slot="start" :src="`${$heap.state.hostname}/image/get.php/${location.image_hash}.32.32.png`" />
@@ -24,6 +24,13 @@
 
 <script>
 import {
+  IonImg,
+  IonLabel,
+  IonItem,
+  IonList,
+  IonNote,
+  IonListHeader,
+  IonIcon,
   modalController
 }                         from "@ionic/vue";
 import router             from '@/router';
@@ -32,13 +39,18 @@ import Topic              from '@/scripts/Topic.js'
 import jQuery             from 'jquery';
 import UserAddressPicker  from '@/components/UserAddressPicker.vue';
 
-import { IonIcon }        from '@ionic/vue';
 import { trash }          from 'ionicons/icons';
 
 export default{
   name: 'UserAddresses',
   components: {
-    IonIcon
+  IonImg,
+  IonLabel,
+  IonItem,
+  IonList,
+  IonNote,
+  IonListHeader,
+  IonIcon,
   },
   setup(){
     return { trash };

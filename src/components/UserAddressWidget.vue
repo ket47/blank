@@ -57,7 +57,15 @@
 </template>
 
 <script>
-import { IonIcon,IonTextarea }  from "@ionic/vue";
+import { 
+  IonIcon,
+  IonTextarea,
+  IonImg,
+  IonText,
+  IonNote,
+  IonLabel,
+  IonItem,
+ }  from "@ionic/vue";
 import { location }             from "ionicons/icons";
 import heap                     from "@/heap";
 import router                   from '@/router';
@@ -67,7 +75,13 @@ import jQuery                   from 'jquery';
 export default {
   props:['deliveryTime','showComment'],
   components: {
-    IonIcon,IonTextarea
+      IonIcon,
+      IonTextarea,
+      IonImg,
+      IonText,
+      IonNote,
+      IonLabel,
+      IonItem,
   },
   setup() {
     return { location };

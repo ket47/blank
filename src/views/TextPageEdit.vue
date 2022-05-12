@@ -35,12 +35,37 @@ import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import "@ckeditor/ckeditor5-build-classic/build/translations/ru";
 import {documentTextOutline,codeOutline,bookmarkOutline} from 'ionicons/icons';
 
-import {IonInput} from '@ionic/vue'
+import { 
+    IonLabel,
+    IonIcon,
+    IonList,
+    IonItem,
+    IonImg,
+    IonNote,
+    IonInput,
+    IonButton,
+    IonGrid,
+    IonRow,
+    IonCol,
+
+}                       from '@ionic/vue'
 import User from '@/scripts/User.js';
 import jQuery from "jquery";
 
 export default {
-  components: { ckeditor: CKEditor.component,IonInput },
+  components: {     
+    IonLabel,
+    IonIcon,
+    IonList,
+    IonItem,
+    IonImg,
+    IonNote,
+    IonInput,
+    IonButton,
+    IonGrid,
+    IonRow,
+    IonCol,
+    ckeditor: CKEditor.component },
   setup() {
     return { documentTextOutline, codeOutline, bookmarkOutline };
   },

@@ -1,19 +1,45 @@
 <template>
     <base-layout :pageTitle="page?.page_title||$heap.state.app_title">
-        <div v-if="page=='error'">
-            <ion-title>Страница не найдена</ion-title>
+        <div v-if="page=='error'" style="padding:20px">
+            <h6>Страница не найдена</h6>
         </div>
-        <div v-else-if="page==null"></div>
+        <div v-else-if="page==null" style="padding:20px">
+            <ion-skeleton-text animated  style="height:2em;width:40%"></ion-skeleton-text>
+            <ion-skeleton-text animated ></ion-skeleton-text>
+            <ion-skeleton-text animated ></ion-skeleton-text>
+            <ion-skeleton-text animated ></ion-skeleton-text>
+            <ion-skeleton-text animated ></ion-skeleton-text>
+            <ion-skeleton-text animated ></ion-skeleton-text>
+            <ion-skeleton-text animated ></ion-skeleton-text>
+            <ion-skeleton-text animated ></ion-skeleton-text>
+            <br>
+            <ion-skeleton-text animated ></ion-skeleton-text>
+            <ion-skeleton-text animated ></ion-skeleton-text>
+            <ion-skeleton-text animated ></ion-skeleton-text>
+            <ion-skeleton-text animated ></ion-skeleton-text>
+            <ion-skeleton-text animated ></ion-skeleton-text>
+            <ion-skeleton-text animated ></ion-skeleton-text>
+            <ion-skeleton-text animated ></ion-skeleton-text>
+        </div>
         <div v-else style="padding:10px">
-            <h1>{{page.page_title}}</h1>
             <ion-text v-html="page.page_content"></ion-text>
         </div>
     </base-layout>
 </template>
 <script>
+import { 
+  IonTitle,
+  IonText,
+  IonSkeletonText
+} from "@ionic/vue";
 import jQuery from "jquery";
 export default {
-    data(){
+  components: {
+  IonTitle,
+  IonText,
+  IonSkeletonText
+  },
+   data(){
         return{
             page:null
         }

@@ -1,19 +1,3 @@
-<template>
-    <div id="hcat_widget_grid">
-        <div v-for="group in groupList" :key="group.group_id"  @click="() => {return onClick(group.group_id)}">
-            <ion-thumbnail style="width:70px;height:70px">
-                <ion-img style="border-radius:10px;border:1px solid #ddd" :src="$heap.state.hostname + 'image/get.php/'+group.image_hash+'.150.150.webp'"/>
-            </ion-thumbnail>
-            <ion-label style="height:2em;text-align:center">{{group.group_name}}</ion-label>
-        </div>
-    </div>
-</template>
-
-<script>
-export default {
-    props: ['groupList', 'onClick'],
-};
-</script>
 <style scoped>
 #hcat_widget_grid {
     display: grid;
@@ -45,3 +29,30 @@ export default {
     padding: 10px;
 }
 </style>
+<template>
+    <div id="hcat_widget_grid">
+        <div v-for="group in groupList" :key="group.group_id"  @click="() => {return onClick(group.group_id)}">
+            <ion-thumbnail style="width:70px;height:70px">
+                <ion-img style="border-radius:10px;border:1px solid #ddd" :src="`${$heap.state.hostname}image/get.php/${group.image_hash}.150.150.webp`"/>
+            </ion-thumbnail>
+            <ion-label style="height:2em;text-align:center">{{group.group_name}}</ion-label>
+        </div>
+    </div>
+</template>
+
+<script>
+import { 
+  IonImg,
+  IonThumbnail,
+  IonLabel,
+}                          from "@ionic/vue";
+import { defineComponent } from "@vue/runtime-core";
+export default defineComponent({
+    components:{
+        IonImg,
+        IonThumbnail,
+        IonLabel,
+    },
+    props: ['groupList', 'onClick']
+})
+</script>

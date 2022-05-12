@@ -47,9 +47,15 @@
     </div>
 </template>
 <script>
+import {
+  IonImg,
+}                       from '@ionic/vue'
 import CartAddButtons from '@/components/CartAddButtons';
 export default {
-    props:['productItem'],
-    components: {CartAddButtons}
+    components:{
+    IonImg,
+    CartAddButtons
+    },
+    props:['productItem']
 }
 </script>

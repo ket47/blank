@@ -4,7 +4,7 @@
   }
 </style>
 <template>
-  <base-layout page-title="Вход в систему"  page-default-back-link="/home" :errorMessage="error">
+  <base-layout page-title="Вход в систему"  page-default-back-link="/home">
       <form novalidate>
 
       <ion-grid>
@@ -47,12 +47,10 @@
           <ion-col>
             <ion-label position="stacked" color="primary">Пароль (Минимум 6 символов)</ion-label>
             <ion-input 
-              v-model="password" 
+              v-model="fields.password" 
               name="password" 
               type="password" 
-              :value="fields.password"
               autocorrect="off"
-              @ionInput="fields.password = $event.target.value" 
               placeholder="Пароль (Минимум 6 символов)"
               required
             ></ion-input>
@@ -75,7 +73,7 @@
         
         <ion-row responsive-sm>
           <ion-col>
-            <ion-button color="light" expand="block" @click="router.push({path: `/sign-up`})">Зарегистрироваться</ion-button>
+            <ion-button color="light" expand="block" @click="$router.push({path: `/sign-up`})">Зарегистрироваться</ion-button>
           </ion-col>
         </ion-row>
         
@@ -90,26 +88,37 @@
 </template>
 
 <script>
-import { modalController, onIonViewDidEnter } from '@ionic/vue';
-import ModalUsernameConfirm from '../components/ModalUsernameConfirm.vue'
-
-import User from '../scripts/User.js'
-
-import router from '../router';
-import jQuery from "jquery";
-import heap from '../heap';
+import { 
+  IonLabel,
+  IonSelectOption,
+  IonSelect,
+  IonCol,
+  IonInput,
+  IonRow,
+  IonText,
+  IonButton,
+  IonGrid,
+  modalController
+}                               from '@ionic/vue';
+import ModalUsernameConfirm     from '@/components/ModalUsernameConfirm.vue'
+import User                     from '@/scripts/User.js'
+import router                   from '@/router';
+import heap                     from '@/heap';
+import jQuery                   from "jquery";
 
 
 export default{
-  inject:['$Order'],
-  setup() {
-    onIonViewDidEnter(() => {
-      // if(heap.state.user.user_id && heap.state.user.user_id > -1){
-      //   return router.go(-1);
-      // } 
-    });
+  components:{
+  IonLabel,
+  IonSelectOption,
+  IonSelect,
+  IonCol,
+  IonInput,
+  IonRow,
+  IonText,
+  IonButton,
+  IonGrid,
   },
-  name: 'UserSignIn',
   data(){
     return {
       error: '',
@@ -216,10 +225,11 @@ export default{
       const modal = await modalController
         .create({
           component: ModalUsernameConfirm,
-          cssClass: 'my-custom-class',
           componentProps: {
             phone: self.fields.phonePrefix + self.fields.phoneBody.replace(/\D/g,"")
-          }
+          },
+          initialBreakpoint: 0.3,
+          breakpoints: [0.3, 0.6]
         })
       return modal.present();
     } 

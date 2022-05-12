@@ -7,7 +7,6 @@ ion-icon{
   <base-layout
     page-title="Личный кабинет"
     page-default-back-link="/home"
-    :errorMessage="error"
   >
     <div v-if="isSignedIn" class="user-dashboard-header">
       <ion-list>
@@ -41,21 +40,27 @@ ion-icon{
           <ion-label>Пользователь</ion-label>
         </ion-item-divider>
         <ion-item v-if="!isSignedIn" lines="full" button detail @click="$router.push('sign-in')">
-            <ion-icon :icon="logIn" slot="start" color="primary"></ion-icon>
+            <ion-icon :icon="logInOutline" slot="start" color="primary"></ion-icon>
             <ion-label>Войти</ion-label>
         </ion-item>
-        <ion-item lines="full" button detail @click="$router.push('user-addresses')">
-            <ion-icon :icon="locationOutline" slot="start" color="primary"></ion-icon>
-            <ion-label>Мои адреса</ion-label>
+        <ion-item v-if="!isSignedIn" lines="full" button detail @click="$router.push('sign-up')">
+            <ion-icon :icon="personCircleOutline" slot="start" color="primary"></ion-icon>
+            <ion-label>Зарегистрироваться</ion-label>
         </ion-item>
-        <ion-item lines="full" button detail @click="$router.push('order-list')">
-            <ion-icon :icon="cartOutline" slot="start" color="primary"></ion-icon>
-            <ion-label>Мои заказы</ion-label>
-        </ion-item>
-        <ion-item v-if="isSignedIn" @click="signOut" lines="full" button detail>
-            <ion-icon :icon="exitOutline" slot="start" color="primary"></ion-icon>
-            <ion-label>Выйти</ion-label>
-        </ion-item>
+        <div v-if="isSignedIn">
+          <ion-item @click="signOut" lines="full" button detail>
+              <ion-icon :icon="exitOutline" slot="start" color="primary"></ion-icon>
+              <ion-label>Выйти</ion-label>
+          </ion-item>
+          <ion-item lines="full" button detail @click="$router.push('user-addresses')">
+              <ion-icon :icon="locationOutline" slot="start" color="primary"></ion-icon>
+              <ion-label>Мои адреса</ion-label>
+          </ion-item>
+          <ion-item lines="full" button detail @click="$router.push('order-list')">
+              <ion-icon :icon="cartOutline" slot="start" color="primary"></ion-icon>
+              <ion-label>Мои заказы</ion-label>
+          </ion-item>
+        </div>
 
         <ion-item-group v-if="isAdmin">
           <ion-item-divider>
@@ -158,16 +163,50 @@ ion-icon{
         </ion-item>
 
       </ion-item-group>
+
+
+      <ion-item-group>
+        <ion-item-divider>
+          <ion-label>Информация</ion-label>
+        </ion-item-divider>
+        <ion-item lines="full" button detail @click="$router.push('page-about')">
+            <ion-icon :icon="informationCircleOutline" slot="start" color="primary"></ion-icon>
+            <ion-label>О нас</ion-label>
+        </ion-item>
+        <ion-item lines="full" button detail @click="$router.push('page-rules')">
+            <ion-icon :icon="informationCircleOutline" slot="start" color="primary"></ion-icon>
+            <ion-label>Правила пользования</ion-label>
+        </ion-item>
+        <ion-item lines="full" button detail @click="$router.push('page-privacy_policy')">
+            <ion-icon :icon="informationCircleOutline" slot="start" color="primary"></ion-icon>
+            <ion-label>Политика конфиденциальности</ion-label>
+        </ion-item>
+      </ion-item-group>
+
     </ion-list>
   </base-layout>
 </template>
 
 
 <script>
-import { IonIcon, IonAvatar } from "@ionic/vue";
+import { 
+  IonIcon,
+  IonAvatar,
+  IonImg,
+  IonLabel,
+  IonItem,
+  IonThumbnail,
+  IonList,
+  IonItemDivider,
+  IonItemGroup,
+  IonNote,
+  IonText,
+  IonButton,
+} from "@ionic/vue";
 import {
   settingsOutline,
-  logIn,
+  logInOutline,
+  personCircleOutline,
   exitOutline,
 
   locationOutline,
@@ -180,7 +219,8 @@ import {
   cartOutline,
   notifications,
   chevronForwardOutline,
-  documentTextOutline
+  documentTextOutline,
+  informationCircleOutline
 } from "ionicons/icons";
 
 import User from "@/scripts/User.js";
@@ -188,15 +228,25 @@ import Topic from '@/scripts/Topic.js';
 import heap from "@/heap";
 
 export default {
-  name: "UserDashboard",
   components: {
-    IonIcon,
-    IonAvatar,
+  IonIcon,
+  IonAvatar,
+  IonImg,
+  IonLabel,
+  IonItem,
+  IonThumbnail,
+  IonList,
+  IonItemDivider,
+  IonItemGroup,
+  IonNote,
+  IonText,
+  IonButton,
   },
   setup() {
     return {
       settingsOutline,
-      logIn,
+      logInOutline,
+      personCircleOutline,
       exitOutline,
       locationOutline,
       heartOutline,
@@ -207,7 +257,8 @@ export default {
       cartOutline,
       notifications,
       chevronForwardOutline,
-      documentTextOutline
+      documentTextOutline,
+      informationCircleOutline
     };
   },
   data() {

@@ -1,5 +1,5 @@
 <template>
-  <base-layout page-title="Зарегистрироваться"  page-default-back-link="/home" :errorMessage="error">
+  <base-layout page-title="Зарегистрироваться"  page-default-back-link="/home">
       <form novalidate>
         <ion-list>
           <ion-item>
@@ -38,11 +38,9 @@
           <ion-item>
             <ion-label position="stacked" color="primary">Пароль (Минимум 6 символов)</ion-label>
             <ion-input 
-              v-model="password" 
+              v-model="fields.password" 
               name="password" 
-              type="password" 
-              :value="fields.password"
-              @ionInput="fields.password = $event.target.value" 
+              type="password"
               placeholder="Пароль (Минимум 6 символов)"
               required
             ></ion-input>
@@ -55,11 +53,9 @@
           <ion-item>
             <ion-label position="stacked" color="primary">Имя пользователя</ion-label>
             <ion-input 
-              v-model="username" 
+              v-model="fields.username" 
               name="username" 
               type="text" 
-              :value="fields.username"
-              @ionInput="fields.username = $event.target.value" 
               placeholder="Имя пользователя"
               required
             ></ion-input>
@@ -89,7 +85,19 @@
 </template>
 
 <script>
-import { IonRow, IonCol, IonSelect, IonSelectOption   } from '@ionic/vue';
+import { 
+  IonRow,
+  IonCol, 
+  IonSelect, 
+  IonSelectOption,
+  IonLabel,
+  IonInput,
+  IonItem,
+  IonText,
+  IonList,
+  IonButton,
+
+} from '@ionic/vue';
 
 import User from '../scripts/User.js'
 
@@ -97,7 +105,18 @@ import router from '../router';
 
 export default  {
   name: 'UserSignup',
-  components: { IonRow, IonCol, IonSelect, IonSelectOption },
+  components: {
+  IonRow,
+  IonCol, 
+  IonSelect, 
+  IonSelectOption,
+  IonLabel,
+  IonInput,
+  IonItem,
+  IonText,
+  IonList,
+  IonButton,    
+  },
   data(){
     return {
       error: '',

@@ -58,13 +58,28 @@ ion-img{
 }
 </style>
 
-<script>
+<script lang="js">
 import heap       from "@/heap";
 import jQuery     from "jquery";
 import Topic      from "@/scripts/Topic.js"
 import Utils      from "@/scripts/Utils.js"
+import {
+  IonImg,
+  IonThumbnail,
+  IonNote,
+  IonItem,
+  IonLabel,
+} from "@ionic/vue"
+import { defineComponent } from 'vue';
 
-export default {
+export default defineComponent({
+  components:{
+    IonImg,
+    IonThumbnail,
+    IonNote,
+    IonItem,
+    IonLabel,
+  },
   data() {
     return {
       productGroupList: null,
@@ -98,5 +113,5 @@ export default {
         }
     },
   },
-};
+})
 </script>

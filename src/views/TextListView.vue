@@ -16,14 +16,30 @@
   </base-layout>
 </template>
 <script>
-import User from "@/scripts/User.js";
-import jQuery from "jquery";
+import { 
+    IonLabel,
+    IonIcon,
+    IonList,
+    IonItem,
+    IonImg,
+    IonNote,
+}                       from '@ionic/vue';
 import {
   documentTextOutline,
   addOutline
-} from "ionicons/icons";
+}                       from "ionicons/icons";
+import User             from "@/scripts/User.js";
+import jQuery           from "jquery";
 
 export default {
+  components:{
+    IonLabel,
+    IonIcon,
+    IonList,
+    IonItem,
+    IonImg,
+    IonNote,
+  },
   setup() {
     return { documentTextOutline,addOutline };
   },

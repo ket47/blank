@@ -123,10 +123,15 @@ const Order = {
             }
             return Order.cart.itemCreate(store_id,entries);
         },
-        itemCreate(store_id,entries){
+        async itemCreate(store_id,entries){
             let store_name='';
             if( heap.state.currentStore && heap.state.currentStore.store_id== store_id ){
                 store_name=heap.state.currentStore.store_name;
+            } else {
+                try{
+                    const store=await jQuery.get(heap.state.hostname+'Store/itemGet',{store_id,mode:'basic'})
+                    store_name=store.store_name
+                }catch{/** */}
             }
             const date=new Date();
             const cart={

@@ -13,10 +13,26 @@
 
 <script>
 import {closeOutline}      from 'ionicons/icons';
-import {modalController}  from "@ionic/vue";
+import {
+  IonLabel,
+  IonIcon,
+  IonToolbar,
+  IonHeader,
+  IonImg,
+  IonContent,
+  modalController
+  }  from "@ionic/vue";
 
 export default{
   props:['image_hash'],
+  components:{
+  IonLabel,
+  IonIcon,
+  IonToolbar,
+  IonHeader,
+  IonImg,
+  IonContent,
+  },
   setup() {
       const closeModal = function(){
           modalController.dismiss();

@@ -116,12 +116,54 @@
 import { add, remove, trash, storefrontOutline,checkmarkOutline }   from 'ionicons/icons';
 import router from '@/router';
 import CartAddButtons from '@/components/CartAddButtons.vue';
-
+import { 
+    IonSegment,
+    IonSegmentButton,
+    IonIcon,
+    IonAvatar,
+    IonText,
+    IonLabel,
+    IonItem,
+    IonList,
+    IonContent,
+    IonChip,
+    IonImg,
+    IonThumbnail,
+    IonNote,
+    IonButton,
+    IonCol,
+    IonRow,
+    IonGrid,
+    IonAccordion,
+    IonAccordionGroup,
+    IonSkeletonText
+}                   from '@ionic/vue';
 
 export default({
     inject:['$Order'],
     props:['orderData'],
-    components: {CartAddButtons},
+    components: {
+    CartAddButtons,
+    IonSegment,
+    IonSegmentButton,
+    IonIcon,
+    IonAvatar,
+    IonText,
+    IonLabel,
+    IonItem,
+    IonList,
+    IonContent,
+    IonChip,
+    IonImg,
+    IonThumbnail,
+    IonNote,
+    IonButton,
+    IonCol,
+    IonRow,
+    IonGrid,
+    IonAccordion,
+    IonAccordionGroup,
+    IonSkeletonText},
     setup() {
         return { add, remove, trash, storefrontOutline, checkmarkOutline };
     },

@@ -47,17 +47,41 @@
   </base-layout>
 </template>
 <script>
-import { IonSegment, IonSegmentButton } from '@ionic/vue';
-import {storefrontOutline,sparklesOutline,timeOutline}      from 'ionicons/icons';
-import Order from '@/scripts/Order.js';
-import User  from '@/scripts/User.js';
-import Topic from '@/scripts/Topic.js';
-import router from '@/router';
-import { modalController }  from '@ionic/vue';
+import { 
+    IonSegment,
+    IonSegmentButton,
+    IonIcon,
+    IonAvatar,
+    IonText,
+    IonLabel,
+    IonItem,
+    IonList,
+
+
+    modalController
+}                   from '@ionic/vue';
+import {
+    storefrontOutline,
+    sparklesOutline,
+    timeOutline
+}                   from 'ionicons/icons';
+import Order        from '@/scripts/Order.js';
+import User         from '@/scripts/User.js';
+import Topic        from '@/scripts/Topic.js';
+import router       from '@/router';
 import CourierJobPreview    from '@/components/CourierJobPreview.vue';
 
 export default {
-    components: { IonSegment, IonSegmentButton },
+    components: {
+    IonSegment,
+    IonSegmentButton,
+    IonIcon,
+    IonAvatar,
+    IonText,
+    IonLabel,
+    IonItem,
+    IonList,
+    },
     setup() {
       return { sparklesOutline,storefrontOutline,timeOutline };
     },

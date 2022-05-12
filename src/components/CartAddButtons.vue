@@ -65,10 +65,26 @@
 </template>
 
 <script>
-import { add, remove, trash, cart } from 'ionicons/icons';
-import { toastController } from '@ionic/vue';
-import heap from '@/heap';
+import { 
+  toastController,
+  IonIcon,
+  IonButton,
+  IonLabel,
+
+}                           from '@ionic/vue';
+import { 
+  add,
+  remove,
+  trash,
+  cart 
+}                           from 'ionicons/icons';
+import heap                 from '@/heap';
 export default{
+  components:{
+    IonIcon,
+    IonButton,
+    IonLabel,
+  },
   inject:["$Order"],
   props:['productItem','entry','orderData','buttonLayout','display'],
   setup() {

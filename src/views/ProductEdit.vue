@@ -142,6 +142,13 @@ import {
   IonCard,
   IonCardContent,
   IonToggle,
+  IonIcon,
+  IonItem,
+  IonList,
+  IonLabel,
+  IonItemDivider,
+  IonItemGroup,
+  IonButton,
   modalController
   }                   from '@ionic/vue'
 import {
@@ -166,6 +173,13 @@ export default  {
     IonCard,
     IonCardContent,
     IonToggle,
+    IonIcon,
+    IonItem,
+    IonList,
+    IonLabel,
+    IonItemDivider,
+    IonItemGroup,
+    IonButton,
     imageTileComp
     },
   setup(){

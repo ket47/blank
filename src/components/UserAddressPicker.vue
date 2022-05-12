@@ -2,11 +2,9 @@
     <ion-header>
         <ion-toolbar color="light">
             <ion-button slot="start" @click="pickAddress" :disabled="!selectedPlacemark" color="success">
-                <ion-icon :icon="locationOutline" /> Добавить {{location_group_name_low}} адрес
+                <ion-icon :icon="locationOutline" /> Добавить адрес
             </ion-button>
-            <ion-button slot="end" @click="closeModal" color="secondary">
-                Закрыть
-            </ion-button>
+            <ion-icon :icon="closeOutline" @click="closeModal();" slot="end" size="large"></ion-icon>
         </ion-toolbar>
         <ion-searchbar id="suggest" placeholder="Поиск адреса"></ion-searchbar>
     </ion-header>
@@ -16,19 +14,32 @@
 </template>
 
 <script>
-import { IonContent, IonToolbar, modalController }  from "@ionic/vue";
-import { loadYmap }                                 from "vue-yandex-maps";
-import { IonIcon }                                  from '@ionic/vue';
-import { locationOutline }                          from 'ionicons/icons';
-import heap                                         from '@/heap';
+import { 
+    IonContent,
+    IonToolbar,
+    IonButton,
+    IonSearchbar,
+    IonHeader,
+    IonIcon,
+    modalController
+}                           from "@ionic/vue";
+import { loadYmap }         from "vue-yandex-maps";
+import { locationOutline,closeOutline }  from 'ionicons/icons';
 
 export default({
-    components: { IonContent, IonToolbar, IonIcon },
+    components: {
+    IonContent,
+    IonToolbar,
+    IonButton,
+    IonSearchbar,
+    IonHeader,
+    IonIcon,
+    },
     setup() {
         const closeModal = function(){
             modalController.dismiss();
         };
-        return { closeModal, locationOutline };
+        return { closeModal, locationOutline,closeOutline };
     },
     props: {
 		location_group_name_low: String,
@@ -36,7 +47,7 @@ export default({
     },
     data(){
         let locationType=this.location_group_name_low+" адрес"
-        let locSettings=heap.state.location;
+        let locSettings=this.$heap.state.location;
         return {
             mapBoundaries:locSettings.mapBoundaries,
             mapCenter:locSettings.mapCenter,
