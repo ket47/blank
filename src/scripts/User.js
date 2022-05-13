@@ -30,7 +30,7 @@ const User = {
         if( userData?.user_id>1 ){
             return userData;
         }
-        const signInCredentials=JSON.parse(localStorage.signInData??'');
+        const signInCredentials=JSON.parse(localStorage.signInData??'{}');
         if( signInCredentials && signInCredentials.user_phone && signInCredentials.user_pass ){
             await User.signIn(signInCredentials);
             return await User.get();
