@@ -128,9 +128,9 @@ export default{
       },
       fields: {
         phonePrefix: '+7',
-        phone: '9785141948',
-        phoneBody: '9785141948',
-        password: '123456'
+        phone: '',
+        phoneBody: '',
+        password: ''
       },
       modalOpen: false
     }

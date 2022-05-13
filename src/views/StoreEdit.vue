@@ -63,6 +63,7 @@
         <ion-item>
           <ion-label position="stacked" color="primary">Название новое</ion-label>
           <ion-input v-model="storeItem.store_name_new" name="store_name_new"/>
+          <ion-icon v-if="isAdmin" :icon="checkmarkCircleOutline" slot="end" color="success" @click="fieldApprove('store_name')"/>
         </ion-item>
 
         <ion-item>
@@ -72,6 +73,7 @@
         <ion-item>
           <ion-label position="stacked" color="primary">Описание новое</ion-label>
           <ion-textarea v-model="storeItem.store_description_new" name="store_description_new"></ion-textarea>
+          <ion-icon v-if="isAdmin" :icon="checkmarkCircleOutline" slot="end" color="success" @click="fieldApprove('store_description')"/>
         </ion-item>
 
         <ion-item>
@@ -81,6 +83,7 @@
         <ion-item>
           <ion-label position="stacked" color="primary">Название предприятия новое</ion-label>
           <ion-textarea v-model="storeItem.store_company_name_new" name="store_company_name_new"></ion-textarea>
+          <ion-icon v-if="isAdmin" :icon="checkmarkCircleOutline" slot="end" color="success" @click="fieldApprove('store_company_name')"/>
         </ion-item>
         <ion-item>
           <ion-label position="stacked" color="primary">Телефон</ion-label>
@@ -153,7 +156,6 @@
         <ion-button @click="$refs.storeImgs.take_photo()" size="small" expand="full" color="medium">
           <ion-icon :src="cameraOutline"/> Добавить
         </ion-button>
-
       </ion-list>
 
       <ion-list>
@@ -248,12 +250,14 @@ import {
   flagOutline,
   searchOutline,
   personOutline,
-  addOutline
+  addOutline,
+  checkmarkCircleOutline
 }                     from 'ionicons/icons'
 import imageTileComp  from '@/components/ImageTileComp.vue'
 import UserAddressPicker from '@/components/UserAddressPicker.vue'
 import heap           from '@/heap';
 import jQuery         from "jquery";
+import User           from '@/scripts/User.js'
 
 export default  {
   components: { 
@@ -287,7 +291,8 @@ export default  {
       flagOutline,
       searchOutline,
       personOutline,
-      addOutline
+      addOutline,
+      checkmarkCircleOutline
       }
   },
   data(){
@@ -309,6 +314,9 @@ export default  {
   computed: {
     isPhoneValid() {
       return [11,12].includes(this.storeItem.user_phone.replace(/\D/g,"").length);
+    },
+    isAdmin(){
+      return User.isAdmin();
     },
     message(){
       if(this.storeItem?.deleted_at){
@@ -427,6 +435,18 @@ export default  {
         this.$flash("Не удалось сохранить изменение")
         this.itemGet()
       }
+    },
+    async fieldApprove(field_name){
+      let request = {
+        store_id:this.storeId,
+        field_name
+      };
+      try{
+        await jQuery.post( heap.state.hostname + "Store/fieldApprove", JSON.stringify(request))
+      } catch(err){
+        this.$flash("Не удалось сохранить изменение")
+      }
+      this.itemGet()
     },
     async itemUpdateGroup(is_joined,group_id){
       const request={

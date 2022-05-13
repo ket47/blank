@@ -24,14 +24,18 @@ const routes = [
         component: () => import('@/views/SearchView.vue')
       },
       {
-        path: 'user-dashboard',
+        path: '/user-dashboard',
         name: 'UserDashboard',
         component: () => import('@/views/UserDashboard.vue'),
         props: true
       },
       {
-        path:'courier-dashboard',
-        component:()=>import('@/views/CourierDashboard.vue')
+        path: '/courier-dashboard',
+        component:() => import('@/views/CourierDashboard.vue')
+      },
+      {
+        path: '/supplier-dashboard',
+        component:() => import('@/views/SupplierDashboard.vue')
       },
       {
         path: '/product-edit-:id',

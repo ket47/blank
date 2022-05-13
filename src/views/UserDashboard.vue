@@ -171,14 +171,14 @@ ion-icon{
           <ion-icon :icon="storefrontOutline" slot="start"></ion-icon>
           {{store.store_name}}
         </ion-item>
-        <div v-if="!storeList">
+        <div v-if="!storeList || storeList.length==0">
           <ion-item lines="none">
             <ion-text>
               <ion-label>Пока вы не поставщик</ion-label>
               <ion-note>Зарегистрируйте свой магазин или ресторан</ion-note>
             </ion-text>
           </ion-item>
-          <ion-item @click="storeItemCreate()" lines="full">
+          <ion-item @click="$router.push(`supplier-dashboard`)" lines="full">
             <ion-icon :icon="storefrontOutline" slot="start"></ion-icon>
             <ion-button slot="end" color="light">Стать поставщиком</ion-button>
           </ion-item>
@@ -290,10 +290,16 @@ export default {
       storeList:null
     };
   },
+  ionViewDidEnter(){
+    User.get();
+  },
   created(){
     const self=this;
     Topic.on('courierStatusChange',(status)=>{
       self.courierStatus=status;
+    });
+    Topic.on('userGet',(data)=>{
+      self.user=data;
     });
     this.storeOwnedListGet();
   },
@@ -325,26 +331,7 @@ export default {
       }
       this.storeList=await User.supplier.storeListGet()
     },
-    async storeItemCreate(){
-      try{
-        const name=prompt("Название магазина или ресторана")
-        if(!name){
-          return
-        }
-        const store_id=await User.supplier.storeItemCreate(name)
-        if(!store_id){
-          this.$flash("Не удалось создать магазин или ресторан")
-          return
-        }
-        this.$router.push(`store-edit-${store_id}`)
-      }catch(err){
-        const message=err.responseJSON?.messages?.error;
-        if( message=='limit_exeeded' ){
-          this.$flash("У вас зарегистрировано максимальное количество магазинов")
-        }
-        this.$flash("Не удалось создать магазин или ресторан")
-      }
-    }
+
   },
   watch: {
     $route(to, from) {

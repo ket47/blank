@@ -32,7 +32,9 @@ const User = {
         }
         const signInCredentials=JSON.parse(localStorage.signInData??'{}');
         if( signInCredentials && signInCredentials.user_phone && signInCredentials.user_pass ){
-            await User.signIn(signInCredentials);
+            try{
+                await User.signIn(signInCredentials);
+            }catch{/** */}
             return await User.get();
         }
         return userData;

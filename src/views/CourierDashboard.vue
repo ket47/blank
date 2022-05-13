@@ -25,16 +25,19 @@ ion-text{
 </style>
 <template>
   <base-layout page-title="Анкета курьера" page-default-back-link="/user-dashboard">
-
-  <div v-if="courier===false">
+  <div v-if="!courier">
     <ion-card>
       <ion-item>
         <ion-label>Пока вы не курьер</ion-label>
       </ion-item>
       <ion-item>
-        <ion-note>Подайте заявку, чтобы стать курьером</ion-note>
+        <ion-text>
+        Подавая заявку вы даете согласие на условия 
+        <a href="#/page-courier_contract">Договор о предоставлении услуг</a>
+        </ion-text>
+        <ion-checkbox v-model="contractAccepted" slot="end"/>
       </ion-item>
-      <ion-button expand="full" @click="itemCreate()">Стать курьером</ion-button>
+      <ion-button expand="full" @click="itemCreate()" :disabled="!contractAccepted">Стать курьером</ion-button>
     </ion-card>
   </div>
 
@@ -74,6 +77,8 @@ ion-text{
             <ion-label position="stacked" color="primary">Коментарий</ion-label>
             <ion-textarea v-model="courier.courier_comment"></ion-textarea>
           </ion-item>
+
+          
           
           <ion-item v-if="courier.deleted_at" lines="none">
               <ion-button slot="end" @click="itemUnDelete()" color="success">Восстановить</ion-button>
@@ -88,6 +93,11 @@ ion-text{
           <ion-item v-if="showEnable" lines="none">
               <ion-button slot="end" @click="itemEnable()" color="success">Утвердить анкету</ion-button>
           </ion-item>
+          <ion-item lines="none">
+            <ion-text>
+              <a href="#/page-courier_contract">Договор о предоставлении услуг курьера</a>
+            </ion-text>
+          </ion-item>
         </ion-list>
     </form>
   </div>
@@ -96,9 +106,6 @@ ion-text{
 </template>
 
 <script>
-import jQuery from "jquery";
-import heap from '@/heap';
-import User from '@/scripts/User.js';
 import { 
   IonTextarea,
   IonInput,
@@ -111,8 +118,12 @@ import {
   IonImg,
   IonThumbnail,
   IonList,
-
- }          from "@ionic/vue";
+  IonCheckbox,
+  IonText
+}                   from "@ionic/vue";
+import jQuery       from "jquery";
+import heap         from '@/heap';
+import User         from '@/scripts/User.js';
 
 export default  {
   components: {
@@ -127,12 +138,14 @@ export default  {
   IonImg,
   IonThumbnail,
   IonList,
-
+  IonCheckbox,
+  IonText
   },
   data(){
     return {
       courier:User.courier.data,
-      isAdmin:User.isAdmin()
+      isAdmin:User.isAdmin(),
+      contractAccepted:0
     }
   },
   mounted(){
