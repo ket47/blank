@@ -135,12 +135,14 @@ export default {
             try{
                 await jQuery.post(this.$heap.state.hostname + 'Image/itemDelete',{image_id:img.image_id});
                 this.load();
+                this.$flash("Фото перемещено в корзину и будет удалено")
             } catch{/** */}
         },
         async restore(img){
             try{
                 await jQuery.post(this.$heap.state.hostname + 'Image/itemUnDelete',{image_id:img.image_id});
                 this.load();
+                this.$flash("Фото перемещено извлечено из корзины")
             } catch{/** */}
         },
         async enable(img){
@@ -196,6 +198,7 @@ export default {
         },
         take_photo(){
             jQuery('#foto_upload').trigger('click');
+            this.editMode=true
         },
     }
 }

@@ -155,8 +155,6 @@ ion-icon{
             <ion-button slot="end" color="light">Заполнить анкету</ion-button>
           </ion-item>
         </div>
-
-
         <ion-item v-else lines="full" button detail @click="$router.push('courier-dashboard')">
             <ion-icon :icon="documentTextOutline" slot="start" color="primary"></ion-icon>
             <ion-label>Анкета курьера</ion-label>
@@ -164,6 +162,28 @@ ion-icon{
 
       </ion-item-group>
 
+      <ion-item-group v-if="isSignedIn">
+        <ion-item-divider>
+          <ion-label>Поставщик</ion-label>
+        </ion-item-divider>
+
+        <ion-item v-for="store in storeList" :key="store.store_id" detail button @click="$router.push(`store-edit-${store.store_id}`)">
+          <ion-icon :icon="storefrontOutline" slot="start"></ion-icon>
+          {{store.store_name}}
+        </ion-item>
+        <div v-if="!storeList">
+          <ion-item lines="none">
+            <ion-text>
+              <ion-label>Пока вы не поставщик</ion-label>
+              <ion-note>Зарегистрируйте свой магазин или ресторан</ion-note>
+            </ion-text>
+          </ion-item>
+          <ion-item @click="storeItemCreate()" lines="full">
+            <ion-icon :icon="storefrontOutline" slot="start"></ion-icon>
+            <ion-button slot="end" color="light">Стать поставщиком</ion-button>
+          </ion-item>
+        </div>
+      </ion-item-group>
 
       <ion-item-group>
         <ion-item-divider>
@@ -220,12 +240,13 @@ import {
   notifications,
   chevronForwardOutline,
   documentTextOutline,
-  informationCircleOutline
+  informationCircleOutline,
+  storefrontOutline
 } from "ionicons/icons";
 
-import User from "@/scripts/User.js";
-import Topic from '@/scripts/Topic.js';
-import heap from "@/heap";
+import User     from "@/scripts/User.js";
+import Topic    from '@/scripts/Topic.js';
+import heap     from "@/heap";
 
 export default {
   components: {
@@ -258,13 +279,15 @@ export default {
       notifications,
       chevronForwardOutline,
       documentTextOutline,
-      informationCircleOutline
+      informationCircleOutline,
+      storefrontOutline
     };
   },
   data() {
     return {
       user: heap.state.user,
-      courierStatus:User.courier.status
+      courierStatus:User.courier.status,
+      storeList:null
     };
   },
   created(){
@@ -272,6 +295,7 @@ export default {
     Topic.on('courierStatusChange',(status)=>{
       self.courierStatus=status;
     });
+    this.storeOwnedListGet();
   },
   computed: {
     isSignedIn() {
@@ -295,15 +319,32 @@ export default {
         }
       }
     },
-    // async courierStatusGet(){
-    //   const user_types=heap.state.user?.member_of_groups?.group_types||"";
-    //   if( user_types.indexOf('courier')==-1 ){
-    //     this.courierStatus='notcourier';
-    //     return;
-    //   }
-    //   await User.courier.get();
-    //   this.courierStatus=User.courier.status;
-    // }
+    async storeOwnedListGet(){
+      if( !this.isSignedIn ){
+        return
+      }
+      this.storeList=await User.supplier.storeListGet()
+    },
+    async storeItemCreate(){
+      try{
+        const name=prompt("Название магазина или ресторана")
+        if(!name){
+          return
+        }
+        const store_id=await User.supplier.storeItemCreate(name)
+        if(!store_id){
+          this.$flash("Не удалось создать магазин или ресторан")
+          return
+        }
+        this.$router.push(`store-edit-${store_id}`)
+      }catch(err){
+        const message=err.responseJSON?.messages?.error;
+        if( message=='limit_exeeded' ){
+          this.$flash("У вас зарегистрировано максимальное количество магазинов")
+        }
+        this.$flash("Не удалось создать магазин или ресторан")
+      }
+    }
   },
   watch: {
     $route(to, from) {

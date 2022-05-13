@@ -225,6 +225,18 @@ import {
   IonCard,
   IonCardContent,
   IonCheckbox,
+  IonIcon,
+  IonItem,
+  IonList,
+  IonLabel,
+  IonItemDivider,
+  IonText,
+  IonCol,
+  IonRow,
+  IonItemGroup,
+  IonImg,
+  IonAvatar,
+  IonButton,
   modalController
   }                   from '@ionic/vue'
 import {
@@ -245,13 +257,25 @@ import jQuery         from "jquery";
 
 export default  {
   components: { 
-    IonInput,
-    IonTextarea,
-    IonToggle,
-    IonCard,
-    IonCardContent,
-    IonCheckbox,
-    imageTileComp 
+  IonInput,
+  IonTextarea,
+  IonToggle,
+  IonCard,
+  IonCardContent,
+  IonCheckbox,
+  IonIcon,
+  IonItem,
+  IonList,
+  IonLabel,
+  IonItemDivider,
+  IonText,
+  IonCol,
+  IonRow,
+  IonItemGroup,
+  IonImg,
+  IonAvatar,
+  IonButton,
+  imageTileComp
     },
   setup(){
     return {
@@ -387,6 +411,9 @@ export default  {
           return false;
         }
         field_value = field_value.replace(/\D/g,"");
+      }
+      if(!field_name){
+        return
       }
       let request = {
         store_id:this.storeId,

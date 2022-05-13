@@ -157,7 +157,8 @@ export default{
       }
       try{
         await User.signIn(requestData);
-        this.getUserData();
+        await User.get();
+        router.go(-1);
       } catch(err){
         const exception=err.responseJSON;
         const exception_code=exception.messages.error;
@@ -178,13 +179,10 @@ export default{
             this.$flash("Номер телефона не подтвержден");
             this.phoneVerify();
             break;
+          default:
+            this.$flash("Не удалось войти в систему");
         }
       }
-    },
-    async getUserData(){
-      const userData=await User.get();
-      heap.commit('setUser', userData);
-      router.go(-1);
     },
     phoneVerify(){
       var self = this;

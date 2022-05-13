@@ -96,6 +96,43 @@ const User = {
         }
         return false;
     },
+    // isSupplier(){
+    //     let user_types="";
+    //     try{
+    //         user_types=heap.state.user.member_of_groups.group_types;
+    //     }catch{/** */}
+    //     if( user_types.indexOf('supplier')>-1 ){
+    //       return true;
+    //     }
+    //     return false;
+    // },
+    supplier:{
+        //data:null,
+        storeList:null,
+        status:'notsupplier',
+        async storeListGet(){
+            this.storeList=null
+            const user_id=heap.state?.user?.user_id??0
+            if(user_id>0){
+                const request={
+                    owner_id:user_id,
+                    owner_ally_ids:user_id,
+                }
+                try{
+                    this.storeList=await jQuery.post(heap.state.hostname + "Store/listGet",request)
+                    this.status='supplier'
+                }catch{/** */}
+            }
+            return this.storeList
+        },
+        async storeItemCreate(name){
+            const user_id=heap.state?.user?.user_id??0
+            if(user_id>0){
+                return await jQuery.post(heap.state.hostname + "Store/itemCreate",{name})
+            }
+            return null
+        }
+    },
     courier:{
         data:null,
         status:'notcourier',
