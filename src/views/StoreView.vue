@@ -180,6 +180,11 @@ ion-chip .active-chip {
             </router-link>
           </ion-col>
         </ion-row>
+        <ion-row v-if="storeItem.is_writable==1">
+          <ion-col>
+          <ion-button @click="productItemCreate()" color="light">Добавить товар</ion-button>
+          </ion-col>
+        </ion-row> 
         <ion-row style="font-size:12px">
           <ion-col>
             {{ storeItem.store_group_names }}
@@ -320,6 +325,7 @@ import {
   IonChip,
   IonSearchbar,
   IonPage,
+  IonButton
 }                         from "@ionic/vue";
 import { 
   Autoplay
@@ -367,6 +373,7 @@ export default defineComponent({
     IonChip,
     IonSearchbar,
     IonPage,
+    IonButton,
     ImageSlider,
     Swiper,
     SwiperSlide,
@@ -458,6 +465,10 @@ export default defineComponent({
     getStoreProducts(filter = {}) {
       filter.store_id = this.storeId;
       filter.is_active = 1;
+      if(this.storeItem.is_writable==1){
+        filter.is_disabled=1
+        filter.is_deleted=1
+      }
       if (filter.name_query && filter.name_query == "") {
         this.getStoreGroupTree({ store_id: self.storeId });
         return;
@@ -475,6 +486,20 @@ export default defineComponent({
         .fail(function (err) {
           self.error = err.responseJSON.messages.error;
         });
+    },
+    async productItemCreate(){
+      try{
+        const request={
+          store_id:this.storeId,
+          product_name:"Новый товар",
+          product_price:1000,
+          product_promo_price:1000
+        }
+        const product_id=await jQuery.post(`${heap.state.hostname}Product/itemCreate`,request)
+        this.$router.push(`product-edit-${product_id}`)
+      }catch{
+        this.$flash("Не удалось создать товар")
+      }
     },
     prepareProductList(product_list) {
       this.storeProducts = {};
