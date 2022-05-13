@@ -25,15 +25,17 @@ const User = {
     async autoSignIn(){
         if(localStorage.sessionId){
             User.sessionIdUse(localStorage.sessionId);
-            const userData=await User.get();
-            if( userData?.user_id>1 ){
-                return userData;
-            }
         }
-        if( localStorage.signInData ){//User credentials are stored but session is not valid
-            await User.signIn(JSON.parse(localStorage.signInData));
+        const userData=await User.get();
+        if( userData?.user_id>1 ){
+            return userData;
         }
-        return await User.get();
+        const signInCredentials=JSON.parse(localStorage.signInData??'');
+        if( signInCredentials && signInCredentials.user_phone && signInCredentials.user_pass ){
+            await User.signIn(signInCredentials);
+            return await User.get();
+        }
+        return userData;
     },
     sessionIdUse(sid){
         localStorage.sessionId=sid;
