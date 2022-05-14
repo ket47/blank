@@ -202,7 +202,7 @@
       </ion-list>
     </form>
 
-    <ion-list v-if="ownerList">
+    <ion-list v-if="storeItem">
       <ion-item-divider>
           <ion-label>Адинистраторы</ion-label>
       </ion-item-divider>
@@ -442,8 +442,15 @@ export default  {
         field_name
       };
       try{
-        await jQuery.post( heap.state.hostname + "Store/fieldApprove", JSON.stringify(request))
+        await jQuery.post( heap.state.hostname + "Store/fieldApprove", request)
       } catch(err){
+        const validationErrors=err.responseJSON.messages.error
+        if(validationErrors?.includes('store_description')){
+          this.$flash("Описание слишком короткое")
+        } else
+        if(validationErrors?.includes('store_name')){
+          this.$flash("Название слишком короткое")
+        } else 
         this.$flash("Не удалось сохранить изменение")
       }
       this.itemGet()

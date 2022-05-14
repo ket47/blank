@@ -409,6 +409,7 @@ export default defineComponent({
   },
   methods: {
     setActiveParentGroup(parent_group_id) {
+      console.log('setActiveParentGroup',parent_group_id)
       this.activeParentGroupId = parent_group_id;
       const first_group_id =  Object.keys(this.storeGroups[this.activeParentGroupId].children)[0];
       const self = this;
@@ -418,6 +419,7 @@ export default defineComponent({
       }, 200);
       const swiper = document.querySelector('.product-list-slider').swiper;
       const slide_index = Object.keys(this.storeGroups).indexOf(this.activeParentGroupId);
+      console.log(Object.keys(this.storeGroups),this.activeParentGroupId,slide_index)
       swiper.slideTo(slide_index,100,false);
     },
     slideChanged(event) {
@@ -462,7 +464,7 @@ export default defineComponent({
         //console.log(err);
       }
     },
-    getStoreProducts(filter = {}) {
+    async getStoreProducts(filter = {}) {
       filter.store_id = this.storeId;
       filter.is_active = 1;
       if(this.storeItem.is_writable==1){
@@ -470,22 +472,19 @@ export default defineComponent({
         filter.is_deleted=1
       }
       if (filter.name_query && filter.name_query == "") {
-        this.getStoreGroupTree({ store_id: self.storeId });
+        this.getStoreGroupTree({ store_id: this.storeId });
         return;
       }
-      var self = this;
-      jQuery
-        .post(heap.state.hostname + "Product/listGet", filter)
-        .done(function (response) {
-          self.prepareProductList(response.product_list);
-          var first_group_id = Object.keys(
-            self.storeGroups[self.activeParentGroupId].children
-          )[0];
-          self.setSubgroupActive(first_group_id);
-        })
-        .fail(function (err) {
-          self.error = err.responseJSON.messages.error;
-        });
+      try{
+        const response=await jQuery.post(heap.state.hostname + "Product/listGet", filter)
+        this.prepareProductList(response.product_list);
+        this.addOtherGroup()
+        var first_group_id = Object.keys(
+          this.storeGroups[this.activeParentGroupId].children
+        )[0];
+        this.setSubgroupActive(first_group_id);
+      }catch{/** */}
+      console.log(this.storeProducts)
     },
     async productItemCreate(){
       try{
@@ -501,14 +500,34 @@ export default defineComponent({
         this.$flash("Не удалось создать товар")
       }
     },
+    addOtherGroup(){
+      if(this.storeProducts[0]){
+        console.log(this.storeGroups);
+        this.storeGroups['other']={
+          group_id:'other',
+          group_name:"Другое",
+          image_hash:"",
+          children:{
+            '0':{
+              group_id:0,
+              group_name:"другое",
+              group_parent_id:0,
+              group_path:"",
+              image_hash:""
+            }
+          }
+        }
+      }
+    },
     prepareProductList(product_list) {
       this.storeProducts = {};
       for (var product of product_list) {
-        if (this.storeGroups)
+        if (this.storeGroups){
           if (!this.storeProducts[product.group_id]) {
-            this.storeProducts[product.group_id] = [];
+            this.storeProducts[product.group_id??0] = [];
           }
-        this.storeProducts[product.group_id].push(product);
+        }
+        this.storeProducts[product.group_id??0].push(product);
       }
     },
     setSubgroupActive(groupId) {
