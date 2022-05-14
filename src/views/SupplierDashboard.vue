@@ -25,7 +25,6 @@ ion-text{
 </style>
 <template>
   <base-layout page-title="Анкета поставщика" page-default-back-link="/user-dashboard">
-
       <ion-card>
         <ion-item>
           <ion-label>Пока вы не поставщик</ion-label>
@@ -37,7 +36,7 @@ ion-text{
         <ion-item>
           <ion-text>
           Подавая заявку вы даете согласие на условия 
-          <a href="#/page-supplier_contract">Договор поставки товаров и услуг</a>
+          <a @click="$router.push('/page-supplier_contract')">Договор поставки товаров и услуг</a>
           </ion-text>
           <ion-checkbox v-model="contractAccepted" slot="end"/>
         </ion-item>

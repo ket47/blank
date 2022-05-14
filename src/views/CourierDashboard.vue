@@ -77,9 +77,6 @@ ion-text{
             <ion-label position="stacked" color="primary">Коментарий</ion-label>
             <ion-textarea v-model="courier.courier_comment"></ion-textarea>
           </ion-item>
-
-          
-          
           <ion-item v-if="courier.deleted_at" lines="none">
               <ion-button slot="end" @click="itemUnDelete()" color="success">Восстановить</ion-button>
           </ion-item>
@@ -95,7 +92,7 @@ ion-text{
           </ion-item>
           <ion-item lines="none">
             <ion-text>
-              <a href="#/page-courier_contract">Договор о предоставлении услуг курьера</a>
+              <a @click="$router.push('/page-courier_contract')">Договор о предоставлении услуг курьера</a>
             </ion-text>
           </ion-item>
         </ion-list>
