@@ -39,7 +39,15 @@ import {
     IonCheckbox,
     IonContent,
     IonHeader,
-    IonToolbar
+    IonToolbar,
+    IonTitle,
+    IonIcon,
+    IonButton,
+    IonImg,
+    IonAvatar,
+    IonLabel,
+    IonItemDivider,
+    IonList,
 }                         from "@ionic/vue";
 import jQuery             from 'jquery'
 
@@ -49,7 +57,15 @@ export default {
     IonCheckbox,
     IonContent,
     IonHeader,
-    IonToolbar
+    IonToolbar,
+    IonTitle,
+    IonIcon,
+    IonButton,
+    IonImg,
+    IonAvatar,
+    IonLabel,
+    IonItemDivider,
+    IonList,
     ],
     setup(){
         return {closeCircle}

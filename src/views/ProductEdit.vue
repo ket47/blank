@@ -251,12 +251,24 @@ export default  {
   methods:{
     async itemGet(){
       try{
-        this.productItem=await jQuery.post( heap.state.hostname + "Product/itemGet", { product_id: this.productId })
+        let productItem=await jQuery.post( heap.state.hostname + "Product/itemGet", { product_id: this.productId })
+
+
+        this.productItem=this.itemPrepare(productItem)
         this.itemParseFlags()
         this.itemMarkGroups()
       }catch{
         //
       }
+    },
+    itemPrepare(productItem){
+      if(productItem.product_promo_start){
+        productItem.product_promo_start=productItem.product_promo_start.split(' ')[0]
+      }
+      if(productItem.product_promo_finish){
+        productItem.product_promo_finish=productItem.product_promo_finish.split(' ')[0]
+      }
+      return productItem
     },
     itemParseFlags(){
       this.is_deleted   = this.productItem.deleted_at==null?0:1
@@ -285,7 +297,7 @@ export default  {
     },
     saveForm(ev){
       const field_name=ev.target.name;
-      const field_value=this.productItem[field_name]
+      const field_value=this.productItem[field_name]=ev.target.value
       this.save(field_name,field_value)
     },
     async save(field_name, field_value) {
@@ -298,6 +310,13 @@ export default  {
         this.productItem[field_name] = field_value;
         this.itemParseFlags()
       } catch(err){
+        const validationErrors=err.responseJSON.messages.error
+        if(validationErrors?.includes('product_description')){
+          this.$flash("Описание слишком короткое")
+        } else
+        if(validationErrors?.includes('product_name')){
+          this.$flash("Название слишком короткое")
+        } else 
         this.$flash("Не удалось сохранить изменение")
         this.itemGet()
       }
