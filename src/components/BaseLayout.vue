@@ -13,6 +13,11 @@
       </ion-toolbar>  
     </ion-header>
     <ion-content :class="['main-container', pageClass]" :scrollEvents="contentOnScroll ? 'true' : 'false'" @ionScroll="contentOnScroll($event)">
+      
+      <ion-refresher slot="fixed" id="refresher" @ionRefresh="reload()">
+        <ion-refresher-content></ion-refresher-content>
+      </ion-refresher>
+
       <slot />
       <div style="height:30px"><!--spacer for bottom main tabs--></div>
     </ion-content>
@@ -29,10 +34,13 @@ import {
   IonContent,
   IonBackButton,
   IonButtons,
-  IonImg
+  IonImg,
+  IonRefresher,
+  IonRefresherContent,
 }                           from "@ionic/vue";
 import CartHeader           from "@/components/CartHeader";
 import { defineComponent }  from "@vue/runtime-core";
+import Topic                from '@/scripts/Topic.js'
 
 export default defineComponent({
   props: [
@@ -53,8 +61,15 @@ export default defineComponent({
     IonBackButton,
     IonButtons,
     IonImg,
+    IonRefresher,
+    IonRefresherContent,
     CartHeader
   },
+  methods:{
+    reload(){
+      location.reload();
+    }
+  }
 })
 </script>
 

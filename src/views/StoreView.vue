@@ -325,7 +325,7 @@ import {
   IonChip,
   IonSearchbar,
   IonPage,
-  IonButton
+  IonButton,
 }                         from "@ionic/vue";
 import { 
   Autoplay
@@ -409,7 +409,6 @@ export default defineComponent({
   },
   methods: {
     setActiveParentGroup(parent_group_id) {
-      console.log('setActiveParentGroup',parent_group_id)
       this.activeParentGroupId = parent_group_id;
       const first_group_id =  Object.keys(this.storeGroups[this.activeParentGroupId].children)[0];
       const self = this;
@@ -419,7 +418,6 @@ export default defineComponent({
       }, 200);
       const swiper = document.querySelector('.product-list-slider').swiper;
       const slide_index = Object.keys(this.storeGroups).indexOf(this.activeParentGroupId);
-      console.log(Object.keys(this.storeGroups),this.activeParentGroupId,slide_index)
       swiper.slideTo(slide_index,100,false);
     },
     slideChanged(event) {
@@ -484,7 +482,6 @@ export default defineComponent({
         )[0];
         this.setSubgroupActive(first_group_id);
       }catch{/** */}
-      console.log(this.storeProducts)
     },
     async productItemCreate(){
       try{
@@ -502,7 +499,6 @@ export default defineComponent({
     },
     addOtherGroup(){
       if(this.storeProducts[0]){
-        console.log(this.storeGroups);
         this.storeGroups['other']={
           group_id:'other',
           group_name:"Другое",
