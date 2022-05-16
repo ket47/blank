@@ -21,7 +21,6 @@ import {
     IonIcon,
     IonList,
     IonItem,
-    IonImg,
     IonNote,
 }                       from '@ionic/vue';
 import {
@@ -37,7 +36,6 @@ export default {
     IonIcon,
     IonList,
     IonItem,
-    IonImg,
     IonNote,
   },
   setup() {

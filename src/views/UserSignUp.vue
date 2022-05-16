@@ -37,7 +37,7 @@
                   <ion-input
                     v-model="user_phone"
                     @ionChange="phoneFormat()"
-                    name="login"
+                    name="phone"
                     type="tel"
                     inputmode="tel"
                     placeholder="(xxx)xxxxxxxxx"
@@ -84,6 +84,7 @@
             <ion-label position="stacked" color="primary">Ваш псевдоним*</ion-label>
             <ion-input 
               v-model="user_name"
+              name="username"
               type="text" 
               placeholder="как к вам обращаться?"
               required
@@ -97,6 +98,7 @@
             <ion-label position="stacked" color="primary">Ваш е-маил (не обязательно)</ion-label>
             <ion-input 
               v-model="user_email"
+              name="email"
               type="email" 
               placeholder="е-маил"
               required
@@ -139,8 +141,9 @@ import {
   IonCardHeader,
   IonCardTitle,
   IonCardContent,
-}               from '@ionic/vue';
-import User     from '@/scripts/User.js'
+}                               from '@ionic/vue';
+import User                     from '@/scripts/User.js'
+import jQuery                   from "jquery";
 
 export default  {
   components: {
@@ -198,6 +201,8 @@ export default  {
       
       try{
         await User.signUp(requestData);
+        localStorage.signInData = JSON.stringify({user_phone: this.user_phone_prefix+this.user_phone,user_pass: this.user_pass});
+        this.phoneVerify()
       } catch(err){
         let exception_code='unknown';
         try{
@@ -251,6 +256,16 @@ export default  {
         }
         this.user_phone=user_phone
       } catch{/** */}
+    },
+    async phoneVerify(){
+      let requestData = {
+        user_phone: this.user_phone_prefix+this.user_phone
+      }
+      try{
+        this.$router.push({name:'UserVerifyPhone',params:requestData})
+      } catch{
+        this.$flash("Не удалось выслать смс с подтверждением")
+      }
     },
   }
 }

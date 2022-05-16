@@ -27,15 +27,13 @@
     </base-layout>
 </template>
 <script>
-import { 
-  IonTitle,
+import {
   IonText,
   IonSkeletonText
 } from "@ionic/vue";
 import jQuery from "jquery";
 export default {
   components: {
-  IonTitle,
   IonText,
   IonSkeletonText
   },

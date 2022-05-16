@@ -32,7 +32,7 @@
                   <ion-input
                     v-model="user_phone"
                     @ionChange="phoneFormat()"
-                    name="login"
+                    name="phone"
                     type="tel"
                     inputmode="tel"
                     placeholder="(xxx)xxxxxxxxx"
@@ -106,6 +106,7 @@ import {
 import ModalUsernameConfirm     from '@/components/ModalUsernameConfirm.vue'
 import User                     from '@/scripts/User.js'
 import router                   from '@/router';
+import jQuery                   from "jquery";
 
 export default{
   components:{
@@ -217,7 +218,17 @@ export default{
           breakpoints: [0.3, 0.6]
         })
       return modal.present();
-    } 
+    },
+    phoneVerify(){
+      let requestData = {
+        user_phone: this.user_phone_prefix+this.user_phone
+      }
+      try{
+        this.$router.push({name:'UserVerifyPhone',query:requestData})
+      } catch{
+        this.$flash("Не удалось выслать смс с подтверждением")
+      }
+    },
   }
 }
 </script>

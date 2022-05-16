@@ -24,12 +24,6 @@ const routes = [
         component: () => import('@/views/SearchView.vue')
       },
       {
-        path: '/user-dashboard',
-        name: 'UserDashboard',
-        component: () => import('@/views/UserDashboard.vue'),
-        props: true
-      },
-      {
         path: '/courier-dashboard',
         component:() => import('@/views/CourierDashboard.vue')
       },
@@ -59,7 +53,6 @@ const routes = [
       },
       {
         path: '/sign-in',
-        name: 'UserSignIn',
         component: () => import('@/views/UserSignIn.vue')
       },
       {
@@ -71,8 +64,13 @@ const routes = [
         component: () => import('@/views/UserEdit.vue')
       },
       {
+        path: '/user-dashboard',
+        component: () => import('@/views/UserDashboard.vue'),
+        props: true
+      },
+      {
         path: '/verify-phone',
-        name: 'UserVerifyPhone',
+        name:'UserVerifyPhone',
         component: () => import('@/views/UserVerifyPhone.vue'),
         props: true
       },
@@ -82,7 +80,6 @@ const routes = [
       },
       {
         path: '/user-addresses',
-        name:'UserAddresses',
         component: () => import('@/views/UserAddresses.vue')
       },
       {

@@ -15,7 +15,7 @@
 
   .desktop-main-container .ion-left-column {
     padding: 1em;
-    background-color: var(--ion-color-tertiary-tint);
+    background-color: #ffffff66;
     border-right: 1px solid var(--ion-item-border-color);
     text-align: right;
   }

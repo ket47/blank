@@ -36,7 +36,6 @@ import {
   IonChip,
   IonItem,
   IonCard,
-  IonTitle,
 } from "@ionic/vue";
 import jQuery from "jquery";
 import heap from "../heap";
@@ -48,7 +47,6 @@ export default {
     IonChip,
     IonItem,
     IonCard,
-    IonTitle,
   },
   data() {
     return {

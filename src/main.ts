@@ -82,12 +82,12 @@ jQuery( document ).ajaxError(function( event, jqxhr, settings, thrownError ) {
     if( heap.getters.userIsLogged ){
       flash('К сожалению, нет прав для этого действия');
     } else {
-      flash('Нужно выполнить вход, чтобы продолжить');
+      flash('Вы не выполнили вход, пожалуйста авторизируйтесь');
       router.push({path: `/sign-in`});
     }
   }
   if(status_code==401){
-    flash('Нужно выполнить вход, чтобы продолжить');
+    flash('Вы не выполнили вход, пожалуйста авторизируйтесь');
     router.push({path: `/sign-in`});
   }
 });

@@ -324,7 +324,6 @@ import {
   IonSegment,
   IonChip,
   IonSearchbar,
-  IonPage,
   IonButton,
 }                         from "@ionic/vue";
 import { 
@@ -372,7 +371,6 @@ export default defineComponent({
     IonSegment,
     IonChip,
     IonSearchbar,
-    IonPage,
     IonButton,
     ImageSlider,
     Swiper,

@@ -47,18 +47,12 @@ ion-text{
 </template>
 
 <script>
-import { 
-  IonTextarea,
+import {
   IonInput,
   IonCard,
-  IonCardContent,
   IonLabel,
   IonItem,
-  IonNote,
   IonButton,
-  IonImg,
-  IonThumbnail,
-  IonList,
   IonCheckbox,
   IonText
 }                   from "@ionic/vue";
@@ -68,17 +62,11 @@ import User         from '@/scripts/User.js';
 
 export default  {
   components: {
-  IonTextarea,
   IonInput,
   IonCard,
-  IonCardContent,
   IonLabel,
   IonItem,
-  IonNote,
   IonButton,
-  IonImg,
-  IonThumbnail,
-  IonList,
   IonCheckbox,
   IonText
   },

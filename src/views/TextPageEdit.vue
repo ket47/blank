@@ -40,17 +40,15 @@ import {
     IonIcon,
     IonList,
     IonItem,
-    IonImg,
-    IonNote,
     IonInput,
     IonButton,
     IonGrid,
     IonRow,
     IonCol,
 
-}                       from '@ionic/vue'
-import User from '@/scripts/User.js';
-import jQuery from "jquery";
+}               from '@ionic/vue'
+import User     from '@/scripts/User.js';
+import jQuery   from "jquery";
 
 export default {
   components: {     
@@ -58,8 +56,6 @@ export default {
     IonIcon,
     IonList,
     IonItem,
-    IonImg,
-    IonNote,
     IonInput,
     IonButton,
     IonGrid,

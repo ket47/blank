@@ -1,19 +1,29 @@
 <template>
-  <base-layout page-title="Подтверждение телефона" page-default-back-link="/home" :errorMessage="error">
+  <base-layout page-title="Подтверждение телефона" page-default-back-link="/home">
+      <ion-card>
+        <ion-card-header>
+          <ion-card-title color="primary">
+            Подтверждение номера телефона
+          </ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          Мы выслали вам смс с кодом подтверждения на номер <b>{{user_phone}}</b>. Введите 4 цифры из смс ниже
+        </ion-card-content>
+      </ion-card>
+
       <form novalidate>
         <ion-list>
           <ion-item>
             <ion-row>
               <ion-col>
-                <ion-label position="stacked" color="primary">Код</ion-label>
+                <ion-label position="stacked" color="primary">Код подтверждения из смс</ion-label>
                 <ion-input
-                  v-model="fields.code"
-                  name="code"
+                  v-model="verification_code"
                   type="numeric"
-                  inputmode="tel"
-                  :value="fields.code"
-                  @input="fields.code = $event.target.value"
+                  inputmode="numeric"
                   placeholder="- - - -"
+                  @ionInput="verification_code=$event.target.value;onSubmit()"
+                  enterkeyhint="go"
                   required
                 ></ion-input>
               </ion-col>
@@ -23,7 +33,7 @@
 
         <ion-row responsive-sm>
           <ion-col>
-            <ion-button @click="onSubmit" expand="block">Подтвердить</ion-button>
+            <ion-button @click="onSubmit()" expand="block">Подтвердить</ion-button>
           </ion-col>
         </ion-row>
       </form>
@@ -31,70 +41,80 @@
 </template>
 
 <script>
-import jQuery from "jquery";
-import router from '../router';
-import heap from '../heap';
+import { 
+  IonLabel,
+  IonCol,
+  IonInput,
+  IonRow,
+  IonText,
+  IonButton,
+  IonGrid,
+  IonCard,
+  IonCardHeader,
+  IonCardTitle,
+  IonCardContent,
+  IonItem,
+  IonList,
+}                     from '@ionic/vue';
+import jQuery         from "jquery";
+import User           from '@/scripts/User.js';
 
 export default  {
-  name: 'UserVerifyPhone',
-  props: ['phone', 'password'],
+  name:'UserVerifyPhone',
+  components:{
+  IonLabel,
+  IonCol,
+  IonInput,
+  IonRow,
+  IonText,
+  IonButton,
+  IonGrid,
+  IonCard,
+  IonCardHeader,
+  IonCardTitle,
+  IonCardContent,
+  IonItem,
+  IonList,
+  },
   data(){
     return {
-      error: '',
-      submitted: false,
-      fields: {
-        code: ''
-      }
+      verification_code:null,
+      user_phone:this.$route.query.user_phone||''
     }
   },
-  computed: {},
+  async mounted(){
+    this.user_phone=this.$route.query.user_phone||'';
+    if(!this.user_phone){
+      return;
+    }
+    let requestData = {
+      user_phone: this.user_phone
+    }
+    try{
+      await jQuery.post( `${this.$heap.state.hostname}User/phoneVerificationSend`, requestData)
+    }catch{/** */}
+  },
   methods:{
-    onSubmit() {
-      var self = this;
-      this.submitted = true;
-      jQuery.post( "https://api.tezkel.com/User/phoneVerificationCheck", {user_phone: this.phone, verification_code: this.fields.code})
-      .done(function() {
-          self.signIn();
-      })
-      .fail(function(err) {
-        self.error = err.responseJSON.messages.error;
-      });
-    },
-    signIn() {
-      var self = this;
-      let requestData = {
-        user_phone: this.phone,
-        user_pass: this.password,
-        user_pass_confirm: this.password
+    async onSubmit() {
+      if( !this.verification_code || String(this.verification_code).length!=4 ){
+        return
       }
-      jQuery.post( heap.state.hostname + "User/signIn", requestData)
-        .done(function() {
-            self.getUserData();
-        })
-    },
-    getUserData(){
-      var self = this;
-      jQuery.post( heap.state.hostname + "User/itemGet")
-        .done(function(response, textStatus, request) {
-          var sid=request.getResponseHeader('x-sid');
-          heap.commit('setSessionId', sid);
-          heap.commit('setUser', response);
-          jQuery.ajaxSetup({
-            beforeSend: function(xhr) {
-                xhr.setRequestHeader('x-sid',  sid);
-            }
-          })
-          router.push({path: '/user-dashboard'});
-        })
-        .fail(function(err) {
-            self.error = err.responseJSON.messages.error;
-        });
+      try{
+        await jQuery.post( `${this.$heap.state.hostname}/User/phoneVerificationCheck`, {user_phone: this.user_phone, verification_code: this.verification_code})
+        User.autoSignIn()
+        this.$router.push('/home')
+        this.$flash("Номер телефона верифицирован")
+      } catch(err){
+        const message=err.responseJSON.messages.error
+        switch(message){
+          case 'verification_not_found':
+            this.$flash("Код верификации устарел")
+            this.$router.push('sign-in')
+            break;
+        }
+        this.$flash("Не удалось верифицировать телефон")
+      }
     },
   },
-  created(){
-    if(heap.state.user.user_phone_verified && heap.state.user.user_phone_verified !== '0'){
-      return router.push('/user-dashboard');
-    } 
-  }
 }
 </script>
