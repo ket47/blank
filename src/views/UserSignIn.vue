@@ -5,66 +5,63 @@
 </style>
 <template>
   <base-layout page-title="Вход в систему"  page-default-back-link="/home">
-      <form novalidate>
+    <ion-card v-if="$heap.state.user.user_id>0" style="background-color:var(--ion-color-success-tint)">
+      <ion-card-header>
+        <ion-card-title color="primary">
+          {{$heap.state.user.user_name}} {{$heap.state.user.user_surname}} {{$heap.state.user.user_middlename}}
+        </ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        Вы уже вошли в систему с номером телефона <b>{{$heap.state.user.user_phone}}</b>
+      </ion-card-content>
+    </ion-card>
 
-      <ion-grid>
-        <ion-row>
-          <ion-col size="4">
-            <ion-label position="stacked" color="primary">Код</ion-label>
-            <ion-select 
-              :value="fields.phonePrefix" 
-              @ionChange="fields.phonePrefix = $event.target.value" 
-            >
-              <ion-select-option value="+7" >+7 </ion-select-option>
-            </ion-select>
-          </ion-col>
-          <ion-col size="8">
-            <ion-label position="stacked" color="primary">Телефон</ion-label>
-            <ion-input
-              v-model="fields.phoneBody"
-              name="phone"
-              type="numeric"
-              inputmode="tel"
-              :value="fields.phoneBody"
-              @input="$event.target.value = phoneValidate($event);"
-              placeholder="(900)-000-00-00"
-              spellcheck="false"
-              autocapitalize="off"
-              required
-            ></ion-input>
-          </ion-col>
-        </ion-row>
-
-        <ion-row>
-          <ion-col>
-            <ion-text color="danger">
+    <form novalidate>
+        <ion-list>
+          <ion-item>
+            <ion-grid style="width:100%">
+              <ion-row>
+                <ion-col size="5">
+                  <ion-label position="stacked" color="primary">Код</ion-label>
+                  <ion-select :value="user_phone_prefix">
+                    <ion-select-option value="7" selected>+7 </ion-select-option>
+                  </ion-select>
+                </ion-col>
+                <ion-col size="7">
+                  <ion-label position="stacked" color="primary">Мобильный телефон*</ion-label>
+                  <ion-input
+                    v-model="user_phone"
+                    @ionChange="phoneFormat()"
+                    name="login"
+                    type="tel"
+                    inputmode="tel"
+                    placeholder="(xxx)xxxxxxxxx"
+                    required
+                  ></ion-input>
+                </ion-col>
+              </ion-row>
+            </ion-grid>
+            <ion-text color="danger" slot="helper">
               <p v-show="!phoneValid && submitted == true" padding-left>Неверный номер телефона</p>
             </ion-text>
-          </ion-col>
-        </ion-row>
+          </ion-item>
 
-        <ion-row>
-          <ion-col>
-            <ion-label position="stacked" color="primary">Пароль (Минимум 6 символов)</ion-label>
+          <ion-item>
+            <ion-label position="stacked" color="primary">Пароль (Минимум 4 символа)*</ion-label>
             <ion-input 
-              v-model="fields.password" 
+              v-model="user_pass" 
               name="password" 
               type="password" 
               autocorrect="off"
-              placeholder="Пароль (Минимум 6 символов)"
+              placeholder="Пароль (Минимум 4 символа)"
               required
             ></ion-input>
-          </ion-col>
-        </ion-row>
-
-        <ion-row>
-          <ion-col>
-          <ion-text color="danger">
-            <p v-show="!passwordValid && submitted == true" padding-left>Пароль должен содержать не менее 6 символов.</p>
-          </ion-text>
-          </ion-col>
-        </ion-row>
-
+            <ion-text color="danger" slot="helper">
+              <p v-show="!passwordValid && submitted == true" padding-left>Пароль должен содержать не менее 4 символов.</p>
+            </ion-text>
+          </ion-item>
+        </ion-list>
+      <ion-grid>
         <ion-row responsive-sm>
           <ion-col>
             <ion-button @click="onSubmit" expand="block">Войти</ion-button>
@@ -83,7 +80,7 @@
           </ion-col>
         </ion-row>
       </ion-grid>
-      </form>
+    </form>
   </base-layout>
 </template>
 
@@ -98,14 +95,17 @@ import {
   IonText,
   IonButton,
   IonGrid,
+  IonCard,
+  IonCardHeader,
+  IonCardTitle,
+  IonCardContent,
+  IonItem,
+  IonList,
   modalController
 }                               from '@ionic/vue';
 import ModalUsernameConfirm     from '@/components/ModalUsernameConfirm.vue'
 import User                     from '@/scripts/User.js'
 import router                   from '@/router';
-import heap                     from '@/heap';
-import jQuery                   from "jquery";
-
 
 export default{
   components:{
@@ -118,42 +118,50 @@ export default{
   IonText,
   IonButton,
   IonGrid,
+  IonCard,
+  IonCardHeader,
+  IonCardTitle,
+  IonCardContent,
+  IonList,
+  IonItem,
   },
   data(){
     return {
-      error: '',
       submitted: false,
-      config: {
-        phoneMask: '(000)-000-00-00'
-      },
-      fields: {
-        phonePrefix: '+7',
-        phone: '',
-        phoneBody: '',
-        password: ''
-      },
+      user_pass:null,
+      user_phone:null,
+      user_phone_prefix:'7',
       modalOpen: false
     }
   },
   computed: {
     phoneValid() {
-      return this.fields.phoneBody.replace(/\D/g,"").length == 10;
+      return this.user_phone?.replace(/\D/g,"").length == 10;
     },
     passwordValid() {
-      return this.fields.password.length >= 6;
+      return this.user_pass?.length >= 4;
+    }
+  },
+  created(){
+    const signInCredentials=JSON.parse(localStorage.signInData??'{}');
+    if( signInCredentials && signInCredentials.user_phone ){
+        this.user_phone=signInCredentials.user_phone
+        this.phoneFormat()
+    }
+    if( signInCredentials && signInCredentials.user_pass ){
+        this.user_pass=signInCredentials.user_pass
     }
   },
   methods:{
     async onSubmit() {
-      var self = this;
       this.submitted = true;
       if(!this.phoneValid || !this.passwordValid){
         return false;
       }
       let requestData = {
-        user_phone: this.fields.phonePrefix + this.fields.phoneBody.replace(/\D/g,""),
-        user_pass: this.fields.password,
-        user_pass_confirm: this.fields.password
+        user_phone: this.user_phone_prefix+this.user_phone,
+        user_pass: this.user_pass,
+        user_pass_confirm: this.user_pass
       }
       try{
         await User.signIn(requestData);
@@ -184,38 +192,17 @@ export default{
         }
       }
     },
-    phoneVerify(){
-      var self = this;
-      jQuery.post( heap.state.hostname + "User/phoneVerificationSend", {user_phone: '7' + this.fields.phoneBody.replace(/\D/g,"")})
-        .done(function() {
-            router.push({name: 'UserVerifyPhone', params: {phone: self.fields.phonePrefix + self.fields.phoneBody.replace(/\D/g,""), password: self.fields.password}});
-        })
-        .fail(function(err) {
-            self.error = err.responseJSON.messages.error;
-        });
-    },
-    phoneValidate(ev) {
-      this.fields.phoneBody = ev.target.value;
-      this.fields.phoneBody = this.fields.phoneBody.replace(/\D/g,"");
-      if(this.fields.phoneBody.length > 10){
-        this.fields.phoneBody = this.fields.phoneBody.substring(0, 10);
+    phoneFormat(){
+      if( !this.user_phone ){
+        this.user_phone='';
       }
-      let result = '';
-      let numberIndex = 0; 
-      for(let index in this.config.phoneMask){
-        if(!this.fields.phoneBody[numberIndex]){
-          break;
+      try{
+        let user_phone=this.user_phone.replace(/\D/g,"")
+        if(user_phone.length>10){
+          user_phone=user_phone.substring(user_phone.length-10)
         }
-        let character = this.config.phoneMask[index];
-        if(character == '0'){
-          result += this.fields.phoneBody[numberIndex];
-          numberIndex++;
-        } else {
-          result += character
-        }
-      }
-      this.fields.phoneBody = result;
-      return this.fields.phoneBody;
+        this.user_phone=user_phone
+      } catch{/** */}
     },
     async openModal() {
       this.modalOpen = true;
@@ -224,7 +211,7 @@ export default{
         .create({
           component: ModalUsernameConfirm,
           componentProps: {
-            phone: self.fields.phonePrefix + self.fields.phoneBody.replace(/\D/g,"")
+            phone: self.user_phone
           },
           initialBreakpoint: 0.3,
           breakpoints: [0.3, 0.6]

@@ -17,6 +17,10 @@
   .active{
     background-color: var(--ion-color-success-shade);
   }
+  ion-text{
+    padding:20px 0px 20px 0px;
+    font-style: italic;
+  }
 </style>
 
 <template>
@@ -104,11 +108,11 @@
         <ion-item>
           <ion-row>
             <ion-col>
-              <ion-label position="stacked" color="primary">Мин. заказ</ion-label>
+              <ion-label position="stacked" color="primary">Мин. заказ ({{$heap.state.currencySign}})</ion-label>
               <ion-input v-model="storeItem.store_minimal_order" name="store_minimal_order"/>
             </ion-col>
             <ion-col>
-              <ion-label position="stacked" color="primary">Подготовка заказа</ion-label>
+              <ion-label position="stacked" color="primary">Подготовка (минут)</ion-label>
               <ion-input v-model="storeItem.store_time_preparation" name="store_time_preparation"/>
             </ion-col>
           </ion-row>
@@ -150,7 +154,7 @@
       </ion-list>
       <ion-list>
         <ion-item-divider>
-          <ion-label>Слайдер</ion-label>
+          <ion-label>Изображения магазина в приложении</ion-label>
         </ion-item-divider>
           <image-tile-comp :images="storeItem.images" :image_holder_id="storeItem.store_id" controller="Store" ref="storeImgs"></image-tile-comp>
         <ion-button @click="$refs.storeImgs.take_photo()" size="small" expand="full" color="medium">
@@ -383,7 +387,7 @@ export default  {
       this.is_deleted   = this.storeItem.deleted_at==null?0:1
       this.is_disabled  = this.storeItem.is_disabled==0?0:1
       this.is_working   = this.storeItem.is_working==0?0:1
-      this.is_primary   = this.storeItem.is_primary==0?0:1
+      this.is_primary   = this.storeItem.is_primary==1?1:0
     },
     async itemDelete( is_deleted ){
       const remoteFunction=is_deleted?'itemDelete':'itemUnDelete'

@@ -69,8 +69,8 @@ const User = {
             return {user_id: -1};
         } catch{/** */}
     },
-    signUp(requestData, callback){
-        return jQuery.post( heap.state.hostname + "User/signUp", requestData)
+    async signUp(requestData, callback){
+        return await jQuery.post( heap.state.hostname + "User/signUp", requestData)
         .then(function() {
             callback({success: true, message: ''});
         });

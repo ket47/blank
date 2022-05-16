@@ -149,7 +149,7 @@ export default{
         newQuantity=0;
       }
       newQuantity=this.productData.product_quantity_min*Math.round(newQuantity/this.productData.product_quantity_min);
-      if( this.productData.is_produced==0 && newQuantity>this.productData.product_quantity ){
+      if( this.productData.is_counted==0 && newQuantity>this.productData.product_quantity ){
         this.flash(`В наличии есть только ${this.productData.product_quantity}${this.productData.product_unit}`);
         newQuantity=this.productData.product_quantity;
       }
@@ -159,7 +159,7 @@ export default{
         product_id:this.productData.product_id,
         product_unit:this.productData.product_unit,
         product_quantity:stock_product_quantity,
-        is_produced:this.productData.is_produced,
+        is_counted:this.productData.is_counted,
         entry_quantity:newQuantity,
         entry_price:this.productData.product_final_price||this.productData.entry_price,
         entry_text:this.productData.product_name||this.productData.entry_text,

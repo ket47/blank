@@ -62,8 +62,8 @@ const FlashNotice={
     const toast = await toastController
       .create({
         message: message,
-        duration: 2000,
-        color:'dark'
+        duration: 3000,
+        color:'secondary'
       })
     toast.present();
     toast.onDidDismiss().then(()=>{

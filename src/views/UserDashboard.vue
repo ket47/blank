@@ -166,12 +166,19 @@ ion-icon{
         <ion-item-divider>
           <ion-label>Поставщик</ion-label>
         </ion-item-divider>
-
-        <ion-item v-for="store in storeList" :key="store.store_id" detail button @click="$router.push(`store-edit-${store.store_id}`)">
-          <ion-icon :icon="storefrontOutline" slot="start"></ion-icon>
-          {{store.store_name}}
-        </ion-item>
-        <div v-if="!storeList || storeList.length==0">
+        <div v-if="!storeList">
+          <ion-item>
+            <ion-icon :icon="storefrontOutline" slot="start"></ion-icon>
+            <ion-skeleton-text animated></ion-skeleton-text>
+          </ion-item>   
+        </div>
+        <div v-else-if="storeList">
+          <ion-item v-for="store in storeList" :key="store.store_id" detail button @click="$router.push(`store-edit-${store.store_id}`)">
+            <ion-icon :icon="storefrontOutline" slot="start"></ion-icon>
+            {{store.store_name}}
+          </ion-item>        
+        </div>
+        <div v-else>
           <ion-item lines="none">
             <ion-text>
               <ion-label>Пока вы не поставщик</ion-label>
@@ -222,6 +229,7 @@ import {
   IonNote,
   IonText,
   IonButton,
+  IonSkeletonText
 } from "@ionic/vue";
 import {
   settingsOutline,
@@ -262,6 +270,7 @@ export default {
   IonNote,
   IonText,
   IonButton,
+  IonSkeletonText
   },
   setup() {
     return {

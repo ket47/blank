@@ -24,7 +24,7 @@
 }
 </style>
 <template>
-    <div :class="productItem.product_quantity>0?'':'absent'" :id="`product_list_item${productItem.product_id}`"
+    <div :class="(!productItem.is_counted || productItem.product_quantity>0)?'':'absent'" :id="`product_list_item${productItem.product_id}`"
         >
         <div class="product_list_item_img">
             <div style="position:relative;top:-50%;">

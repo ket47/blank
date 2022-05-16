@@ -40,8 +40,8 @@
       </ion-item>
       <ion-item>
         <ion-icon :src="pizzaOutline" color="primary" slot="start"/>
-        Не ограниченный остаток
-        <ion-toggle slot="end" v-model="is_produced" @ionChange="save('is_produced',$event.target.checked?1:0)"/>
+        Вести учет остатков
+        <ion-toggle slot="end" v-model="is_counted" @ionChange="save('is_counted',$event.target.checked?1:0)"/>
       </ion-item>
     </ion-list>
 
@@ -63,7 +63,7 @@
             <ion-label color="primary">Артикул</ion-label>
             <ion-input v-model="productItem.product_code" name="product_code" slot="end"/>
           </ion-item>
-          <ion-item v-if="!is_produced">
+          <ion-item v-if="!is_counted">
             <ion-label color="primary">Остаток {{productItem.product_unit}}</ion-label>
             <ion-input v-model="productItem.product_quantity" name="product_quantity" slot="end"/>
           </ion-item>
@@ -201,7 +201,7 @@ export default  {
       is_groups_marked:0,
       is_deleted:0,
       is_disabled:0,
-      is_produced:0
+      is_counted:0
     }
   },
   computed: {
@@ -212,7 +212,7 @@ export default  {
       if(this.productItem?.is_disabled==1){
         return "Товар не активен и находится на рассмотрении у администратора";
       }
-      if(this.productItem?.is_produced==1){
+      if(this.productItem?.is_counted!=1){
         return "Товар активен и готов к продаже. Товар произодится вами, например еда";
       }
       return "Товар активен и готов к продаже.";
@@ -224,7 +224,7 @@ export default  {
       if(this.productItem?.is_disabled==1){
         return "disabled";
       }
-      if(this.productItem?.is_produced==1){
+      if(this.productItem?.is_counted!=1){
         return "primary";
       }
       return 'active';
@@ -273,7 +273,7 @@ export default  {
     itemParseFlags(){
       this.is_deleted   = this.productItem.deleted_at==null?0:1
       this.is_disabled  = this.productItem.is_disabled==0?0:1
-      this.is_produced  = this.productItem.is_produced==0?0:1
+      this.is_counted  = this.productItem.is_counted==0?0:1
     },
     async itemDelete( is_deleted ){
       const remoteFunction=is_deleted?'itemDelete':'itemUnDelete'
