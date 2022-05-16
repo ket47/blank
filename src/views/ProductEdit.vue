@@ -73,11 +73,11 @@
           </ion-item>
           <ion-item>
             <ion-label color="primary">Мин. заказ</ion-label>
-            <ion-input v-model="productItem.product_quantity_min" name="product_quantity_min" slot="end"/>
+            <ion-input v-model="productItem.product_quantity_min" name="product_quantity_min" type="number" inputmode="numeric" pattern="\d\." slot="end"/>
           </ion-item>
           <ion-item>
             <ion-label color="primary">Вес единицы (кг)</ion-label>
-            <ion-input v-model="productItem.product_weight" name="product_weight" slot="end"/>
+            <ion-input v-model="productItem.product_weight" name="product_weight" type="number" inputmode="numeric" pattern="\d\." slot="end"/>
           </ion-item>
         </ion-item-group>
       </ion-list>
@@ -109,7 +109,7 @@
     </form>
     <ion-list v-if="productItem">
       <ion-item-divider>
-        <ion-label>Слайдер</ion-label>
+        <ion-label>Изображения товара</ion-label>
       </ion-item-divider>
       <image-tile-comp :images="productItem.images" :image_holder_id="productItem.product_id" controller="Product" ref="productImgs"></image-tile-comp>
       <ion-button @click="$refs.productImgs.take_photo()" size="small" expand="full" color="medium">
