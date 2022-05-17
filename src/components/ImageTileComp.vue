@@ -31,10 +31,14 @@ ion-avatar{
         <ion-item lines="none">
             <ion-label>Фотографии</ion-label>
             <ion-icon v-if="editMode" slot="end" :icon="settingsSharp" color="primary" @click="editMode=0"/>
-            <ion-icon v-else slot="end" :icon="settingsOutline" @click="editMode=1"/>
+            <ion-icon v-else slot="end" :icon="settingsOutline" @click="editMode=1;load()"/>
         </ion-item>
         <div class="image_grid" v-if="imageList?.length">
-            <div v-for="img in imageList" :key="img.image_id">
+            <div v-for="img in imageList" :key="img.image_id" style="position:relative">
+                <div style="position: absolute; top:0px;background-color:#fffc;font-size:0.75em"  @click="imagePreview(img.image_hash)">
+                    <div v-if="img.deleted_at">будет удалено</div>
+                    <div v-else-if="img.is_disabled==1">на модерации</div>
+                </div>
                 <ion-avatar @click="imagePreview(img.image_hash)" :class="img.class">
                     <ion-img :src="$heap.state.hostname + 'image/get.php/'+img.image_hash+'.100.100.webp'"/>
                 </ion-avatar>
@@ -82,7 +86,6 @@ export default {
     IonItem,
     IonImg,
     IonAvatar,
-
     },
     setup(){
         return {settingsOutline,settingsSharp,chevronBackCircleOutline,chevronForwardCircleOutline,trashBin,trash,checkmarkCircle}
@@ -166,7 +169,7 @@ export default {
                 component: ImagePreviewModal,
                 componentProps:{image_hash},
                 initialBreakpoint: 0.5,
-                breakpoints: [0, 0.5, 1]
+                breakpoints: [0.5, 1]
                 });
             const dismissFn=function(){
                 modal.dismiss();

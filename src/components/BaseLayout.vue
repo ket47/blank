@@ -20,6 +20,9 @@
 
       <slot />
       <div style="height:30px"><!--spacer for bottom main tabs--></div>
+      <ion-fab v-if="isInteractingWithServer" vertical="bottom" horizontal="end" slot="fixed">
+        <ion-spinner></ion-spinner>
+      </ion-fab>
     </ion-content>
   </ion-page>
 </template>
@@ -37,6 +40,8 @@ import {
   IonImg,
   IonRefresher,
   IonRefresherContent,
+  IonSpinner,
+  IonFab
 }                           from "@ionic/vue";
 import CartHeader           from "@/components/CartHeader";
 import { defineComponent }  from "@vue/runtime-core";
@@ -63,7 +68,14 @@ export default defineComponent({
     IonImg,
     IonRefresher,
     IonRefresherContent,
+    IonSpinner,
+    IonFab,
     CartHeader
+  },
+  computed:{
+    isInteractingWithServer(){
+      return this.$heap.state.isInteractingWithServer
+    }
   },
   methods:{
     reload(){

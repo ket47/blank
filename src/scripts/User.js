@@ -9,17 +9,21 @@ const User = {
     init(){
         this.geo.trackingStart();
     },
-    async get(){
-        const user=await jQuery.post( heap.state.hostname + "User/itemGet")
+    async get( mode='all' ){
+        const user=await jQuery.post( heap.state.hostname + "User/itemGet",{mode})
         .done(function(response, textStatus, request){
             const sid = request.getResponseHeader('x-sid');
             User.sessionIdUse(sid);
             heap.commit('setUser', response);
             Topic.publish('userGet',response);
+            if(mode=='full'){
+                User.courier.data=response.courier
+                User.courier.parseStatus()
+            }
         });
-        if( User.isCourier() ){
-            await User.courier.get();
-        }
+        // if( User.isCourier() ){
+        //     await User.courier.get();
+        // }
         return user;
     },
     async autoSignIn(){
@@ -98,21 +102,22 @@ const User = {
         }
         return false;
     },
-    // isSupplier(){
-    //     let user_types="";
-    //     try{
-    //         user_types=heap.state.user.member_of_groups.group_types;
-    //     }catch{/** */}
-    //     if( user_types.indexOf('supplier')>-1 ){
-    //       return true;
-    //     }
-    //     return false;
-    // },
+    isSupplier(){
+        return true
+        // let user_types="";
+        // try{
+        //     user_types=heap.state.user.member_of_groups.group_types;
+        // }catch{/** */}
+        // if( user_types.indexOf('supplier')>-1 ){
+        //   return true;
+        // }
+        // return false;
+    },
     supplier:{
         //data:null,
         storeList:null,
         status:'notsupplier',
-        async storeListGet(){
+        async listGet(){
             this.storeList=null
             const user_id=heap.state?.user?.user_id??0
             if(user_id>0){
@@ -125,6 +130,7 @@ const User = {
                     this.status='supplier'
                 }catch{/** */}
             }
+            Topic.publish('supplierStoreListGet',this.storeList);
             return this.storeList
         },
         async storeItemCreate(name){

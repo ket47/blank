@@ -186,6 +186,7 @@ export default{
             break;
           case 'user_phone_unverified':
             this.$flash("Номер телефона не подтвержден");
+            localStorage.signInData = JSON.stringify({user_phone: this.user_phone_prefix+this.user_phone,user_pass: this.user_pass});
             this.phoneVerify();
             break;
           default:

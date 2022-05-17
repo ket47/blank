@@ -43,6 +43,15 @@
         Вести учет остатков
         <ion-toggle slot="end" v-model="is_counted" @ionChange="save('is_counted',$event.target.checked?1:0)"/>
       </ion-item>
+      <ion-item-divider></ion-item-divider>
+      <ion-item button @click="$router.push('store-'+productItem.store_id)">
+        <ion-icon :src="chevronBack" slot="start"/>
+        Вернуться в Магазин
+      </ion-item>
+      <ion-item button @click="$router.push('store-edit-'+productItem.store_id)">
+        <ion-icon :src="chevronBack" slot="start"/>
+        Управление магазином
+      </ion-item>
     </ion-list>
 
     <form @change="saveForm" v-if="productItem">
@@ -53,31 +62,31 @@
           </ion-item-divider>
           <ion-item>
             <ion-label position="stacked" color="primary">Название</ion-label>
-            <ion-textarea v-model="productItem.product_name" name="product_name"></ion-textarea>
+            <ion-textarea v-model="productItem.product_name" name="product_name" placeholder="полное название товара"></ion-textarea>
           </ion-item>
           <ion-item>
             <ion-label position="stacked" color="primary">Описание</ion-label>
-            <ion-textarea v-model="productItem.product_description" name="product_description" rows="6"></ion-textarea>
+            <ion-textarea v-model="productItem.product_description" name="product_description" rows="6" placeholder="характеристики, свойства, состав товара"></ion-textarea>
           </ion-item>
           <ion-item>
             <ion-label color="primary">Артикул</ion-label>
-            <ion-input v-model="productItem.product_code" name="product_code" slot="end"/>
+            <ion-input v-model="productItem.product_code" name="product_code" slot="end" placeholder="код товара"/>
           </ion-item>
-          <ion-item v-if="!is_counted">
-            <ion-label color="primary">Остаток {{productItem.product_unit}}</ion-label>
-            <ion-input v-model="productItem.product_quantity" name="product_quantity" slot="end"/>
+          <ion-item v-if="is_counted">
+            <ion-label color="primary">Остаток <span v-if="productItem.product_unit">({{productItem.product_unit}})</span></ion-label>
+            <ion-input v-model="productItem.product_quantity" name="product_quantity" slot="end" placeholder="в наличии"/>
           </ion-item>
           <ion-item>
             <ion-label color="primary">Единица</ion-label>
-            <ion-input v-model="productItem.product_unit" name="product_unit" slot="end"/>
+            <ion-input v-model="productItem.product_unit" name="product_unit" slot="end" placeholder="шт,кг и т.д."/>
           </ion-item>
           <ion-item>
-            <ion-label color="primary">Мин. заказ</ion-label>
+            <ion-label color="primary">Мин. заказ <span v-if="productItem.product_unit">({{productItem.product_unit}})</span></ion-label>
             <ion-input v-model="productItem.product_quantity_min" name="product_quantity_min" type="number" inputmode="numeric" pattern="\d\." slot="end"/>
           </ion-item>
           <ion-item>
             <ion-label color="primary">Вес единицы (кг)</ion-label>
-            <ion-input v-model="productItem.product_weight" name="product_weight" type="number" inputmode="numeric" pattern="\d\." slot="end"/>
+            <ion-input v-model="productItem.product_weight" name="product_weight" type="number" step="0.1" inputmode="numeric" pattern="\d\." slot="end"/>
           </ion-item>
         </ion-item-group>
       </ion-list>
@@ -91,11 +100,11 @@
         </ion-item-group>
         <ion-item>
           <ion-label color="primary">Цена</ion-label>
-          <ion-input v-model="productItem.product_price" name="product_price" slot="end"/>
+          <ion-input v-model="productItem.product_price" name="product_price" type="number" inputmode="numeric" slot="end"/>
         </ion-item>
         <ion-item>
           <ion-label color="primary">Цена акционная</ion-label>
-          <ion-input v-model="productItem.product_promo_price" name="product_promo_price" slot="end" color="success"/>
+          <ion-input v-model="productItem.product_promo_price" name="product_promo_price" type="number" inputmode="numeric" slot="end" color="success"/>
         </ion-item>
         <ion-item>
           <ion-label color="primary">Начало акции</ion-label>
@@ -158,7 +167,8 @@ import {
   personOutline,
   addOutline,
   pizzaOutline,
-  compassOutline
+  compassOutline,
+  chevronBack
 }                     from 'ionicons/icons'
 import imageTileComp  from '@/components/ImageTileComp.vue'
 import GroupPicker    from '@/components/GroupPicker.vue'
@@ -190,7 +200,8 @@ export default  {
       personOutline,
       addOutline,
       pizzaOutline,
-      compassOutline
+      compassOutline,
+      chevronBack
       }
   },
   data(){

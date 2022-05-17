@@ -2,8 +2,8 @@
 <template>
   <ion-header>
       <ion-toolbar>
-          <ion-label>Просмотр фотографии</ion-label>
-          <ion-icon :icon="closeOutline" @click="closeModal();" slot="end"></ion-icon>
+          <ion-title>Просмотр фотографии</ion-title>
+          <ion-icon :icon="closeOutline" @click="closeModal();" slot="end" size="large"></ion-icon>
       </ion-toolbar>
   </ion-header>
   <ion-content>
@@ -14,13 +14,14 @@
 <script>
 import {closeOutline}      from 'ionicons/icons';
 import {
+  modalController,
   IonLabel,
   IonIcon,
   IonToolbar,
   IonHeader,
   IonImg,
   IonContent,
-  modalController
+  IonTitle
   }  from "@ionic/vue";
 
 export default{
@@ -32,6 +33,7 @@ export default{
   IonHeader,
   IonImg,
   IonContent,
+  IonTitle
   },
   setup() {
       const closeModal = function(){

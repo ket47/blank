@@ -12,6 +12,9 @@
   min-width:100%;
   min-height:100%
 }
+ion-card{
+  border-radius: 10px;
+}
 </style>
 
 <template>
@@ -22,6 +25,7 @@
         </div>
         <ion-chip v-if="store_item.is_opened" color="success">Открыт до {{ store_item.store_time_closes }}:00</ion-chip>
         <ion-chip v-else color="danger">Закрыт до {{ store_item.store_time_opens }}:00</ion-chip>
+        <ion-chip v-if="store_item.deliveryTime.timeMin" color="primary">{{store_item.deliveryTime.timeMin}}-{{store_item.deliveryTime.timeMax}}мин</ion-chip>
         <ion-item lines="none">
             <h3>{{store_item.store_name}}</h3>
         </ion-item>
@@ -36,9 +40,10 @@ import {
   IonChip,
   IonItem,
   IonCard,
-} from "@ionic/vue";
-import jQuery from "jquery";
-import heap from "../heap";
+}                   from "@ionic/vue";
+import jQuery       from "jquery";
+import heap         from "@/heap";
+import Utils        from '@/scripts/Utils.js'
 
 export default {
   components: {
@@ -61,8 +66,15 @@ export default {
         return;
       }
       try{
-        this.storeList=await jQuery.post(heap.state.hostname + "Store/listNearGet", {location_id: main_address.location_id,})
+        const found=await jQuery.post(heap.state.hostname + "Store/listNearGet", {location_id: main_address.location_id,})
+        this.storeList=this.storeListCalculate(found)
       }catch{/** */}
+    },
+    storeListCalculate(found){
+      for(let i in found){
+        found[i].deliveryTime=Utils.deliveryTimeCalculate(found[i].distance,found[i].store_time_preparation)
+      }
+      return found
     },
   },
   created() {

@@ -182,7 +182,7 @@ ion-chip .active-chip {
         </ion-row>
         <ion-row v-if="storeItem.is_writable==1">
           <ion-col>
-          <ion-button @click="productItemCreate()" color="light">Добавить товар</ion-button>
+          <ion-button @click="productItemCreate()" color="light" expand="full">Добавить товар</ion-button>
           </ion-col>
         </ion-row> 
         <ion-row style="font-size:12px">

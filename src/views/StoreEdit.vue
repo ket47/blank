@@ -52,6 +52,15 @@
         На модерации
         <ion-toggle slot="end" v-model="is_disabled" @ionChange="itemDisable($event.target.checked?1:0)"></ion-toggle>
       </ion-item>
+      <ion-item-divider></ion-item-divider>
+      <ion-item button @click="$router.push('store-'+storeId)">
+        <ion-icon :src="chevronBack" slot="start"/>
+        Вернуться в Магазин
+      </ion-item>
+      <ion-item @click="productItemCreate()" button>
+        <ion-icon :src="addOutline" slot="start"/>
+        Добавить товар
+      </ion-item>
     </ion-list>
     <form @change="saveForm" v-if="storeItem">
       <ion-list lines="full">
@@ -97,6 +106,7 @@
             type="tel"
             inputmode="tel"
             placeholder="x(xxx)-xxx-xx-xx"
+            @ionChange="phoneFormat()"
             spellcheck="false"
             autocapitalize="off"
           ></ion-input>
@@ -171,6 +181,9 @@
           <ion-label slot="start">Понедельник</ion-label>
           <ion-input placeholder="от" v-model="storeItem.store_time_opens_0" name="store_time_opens_0"/>
           <ion-input placeholder="до" v-model="storeItem.store_time_closes_0" name="store_time_closes_0"/>
+
+
+          <ion-checkbox/>
         </ion-item>
         <ion-item>
           <ion-label slot="start">Вторник</ion-label>
@@ -255,7 +268,8 @@ import {
   searchOutline,
   personOutline,
   addOutline,
-  checkmarkCircleOutline
+  checkmarkCircleOutline,
+  chevronBack,
 }                     from 'ionicons/icons'
 import imageTileComp  from '@/components/ImageTileComp.vue'
 import UserAddressPicker from '@/components/UserAddressPicker.vue'
@@ -296,7 +310,8 @@ export default  {
       searchOutline,
       personOutline,
       addOutline,
-      checkmarkCircleOutline
+      checkmarkCircleOutline,
+      chevronBack,
       }
   },
   data(){
@@ -409,15 +424,55 @@ export default  {
         this.itemGet()
       }
     },
+    async productItemCreate(){
+      try{
+        const request={
+          store_id:this.storeId,
+          product_name:"Новый товар",
+          product_price:1000,
+          product_promo_price:1000
+        }
+        const product_id=await jQuery.post(`${heap.state.hostname}Product/itemCreate`,request)
+        this.$router.push(`product-edit-${product_id}`)
+      }catch{
+        this.$flash("Не удалось создать товар")
+      }
+    },
     saveForm(ev){
       const field_name=ev.target.name;
       const field_value=this.storeItem[field_name]
-      this.save(field_name,field_value)
+
+      if( field_name.indexOf('store_time')>-1 ){
+        this.saveSchedule(field_name)
+      }else{
+        this.save(field_name,field_value)
+      }
+    },
+    saveSchedule(field_name){
+      const dayIndex=field_name.split('_').pop()
+      let store_time_opens=this.storeItem['store_time_opens_'+dayIndex]
+      let store_time_closes=this.storeItem['store_time_closes_'+dayIndex]
+
+      if( store_time_opens>=24 ){
+        store_time_opens=0
+      }
+      if( store_time_closes>=24 ){
+        store_time_closes=0
+      }
+      if( store_time_opens>=store_time_closes ){
+        store_time_closes=Number(store_time_opens)+1
+        this.$flash("Время закрытия должно быть позже открытия")
+      }
+      const request={
+        store_id:this.storeId,
+        ['store_time_opens_'+dayIndex]:store_time_opens,
+        ['store_time_closes_'+dayIndex]:store_time_closes
+      }
+      this.storeItem['store_time_opens_'+dayIndex] = store_time_opens;
+      this.storeItem['store_time_closes_'+dayIndex] = store_time_closes;
+      this.itemUpdate(request)
     },
     async save(field_name, field_value) {
-      // if(this.storeItem[field_name] == field_value){
-      //   return
-      // }
       if(field_name == 'user_phone'){
         if(!this.isPhoneValid){
           return false;
@@ -431,14 +486,29 @@ export default  {
         store_id:this.storeId,
         [field_name]:field_value
       };
+      this.storeItem[field_name] = field_value;
+      this.itemUpdate(request)
+    },
+    async itemUpdate(request){
       try{
         await jQuery.post( heap.state.hostname + "Store/itemUpdate", JSON.stringify(request))
-        this.storeItem[field_name] = field_value;
         this.itemParseFlags()
       } catch(err){
         this.$flash("Не удалось сохранить изменение")
         this.itemGet()
       }
+    },
+    phoneFormat(){
+      if( !this.storeItem.store_phone ){
+        this.storeItem.store_phone='';
+      }
+      try{
+        let user_phone=this.storeItem.store_phone.replace(/\D/g,"")
+        if(user_phone.length>10){
+          user_phone=user_phone.substring(user_phone.length-10)
+        }
+        this.storeItem.store_phone=user_phone
+      } catch{/** */}
     },
     async fieldApprove(field_name){
       let request = {

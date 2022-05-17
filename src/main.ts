@@ -76,7 +76,7 @@ const flash= ( message:string )=>{
   FlashNotice.push(message);
 }
 
-jQuery( document ).ajaxError(function( event, jqxhr, settings, thrownError ) {
+jQuery( document ).ajaxError(( event, jqxhr, settings, thrownError )=>{
   const status_code=jqxhr.status;
   if(status_code==403){
     if( heap.getters.userIsLogged ){
@@ -85,12 +85,20 @@ jQuery( document ).ajaxError(function( event, jqxhr, settings, thrownError ) {
       flash('Вы не выполнили вход, пожалуйста авторизируйтесь');
       router.push({path: `/sign-in`});
     }
-  }
+  } else
   if(status_code==401){
     flash('Вы не выполнили вход, пожалуйста авторизируйтесь');
     router.push({path: `/sign-in`});
+  } else {
+    console.log("NETWORK ERRORRRRRR",thrownError)
   }
-});
+})
+jQuery( document ).ajaxSend(()=>{
+  heap.commit('setInteractionStatus',1)
+})
+jQuery( document ).ajaxComplete(()=>{
+  heap.commit('setInteractionStatus',0)
+})
 
 const app = createApp(App)
   .use(IonicVue)
@@ -109,8 +117,6 @@ if(isPlatform('mobile') || isPlatform('mobileweb')){
   app.component('base-layout', BaseLayoutDesktop);
   require('./theme/base_layout_desktop.css');
 }
-
-
 User.autoSignIn().then(function(){
   app.mount('#app');
 });

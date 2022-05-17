@@ -16,7 +16,7 @@
     <swiper :modules="modules" :autoplay='{delay: 3000, disableOnInteraction: false}' :loop="true" effect="fade">
         <swiper-slide v-for="image in imageList" :key="image.image_hash">
           <div class="crop-to-fit" :style="`height: ${imgHeight||300}px;`">
-            <img :style="`min-height: ${imgHeight||300}px;`" :src="`${$heap.state.hostname}image/get.php/${image.image_hash}.${imgHeight*4||1200}.${imgHeight||300}.webp`"/>
+            <img :style="`min-height: ${imgHeight||300}px;`" :src="`${$heap.state.hostname}image/get.php/${image.image_hash}.${imgHeight*4||1200}.${imgHeight*4||1200}.webp`"/>
           </div>
         </swiper-slide>
       </swiper>

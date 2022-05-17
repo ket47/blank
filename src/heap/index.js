@@ -18,7 +18,8 @@ const heap = createStore({
                 ymapApiKey:"12d851cb-5290-4946-bf15-817cce1f96df",
                 addressErase:"Россия, Республика Крым, "
             },
-            currencySign:"₽"
+            currencySign:"₽",
+            isInteractingWithServer:0
         }
     }, 
     getters: {
@@ -61,6 +62,9 @@ const heap = createStore({
         },
         setCurrentStore (state, storeData) {
             state.currentStore = storeData;
+        },
+        setInteractionStatus(state,is_interacting){
+            state.isInteractingWithServer = is_interacting;
         },
         cartListStore(state, cartList){
             state.cartList=cartList;

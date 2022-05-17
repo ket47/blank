@@ -48,12 +48,13 @@ import {
     IonLabel,
     IonItemDivider,
     IonList,
+    IonItem
 }                         from "@ionic/vue";
 import jQuery             from 'jquery'
 
 export default {
     props:['controller','memberId','memberOfIds','memberLimit'],
-    components:[
+    components:{
     IonCheckbox,
     IonContent,
     IonHeader,
@@ -66,7 +67,8 @@ export default {
     IonLabel,
     IonItemDivider,
     IonList,
-    ],
+    IonItem
+    },
     setup(){
         return {closeCircle}
     },

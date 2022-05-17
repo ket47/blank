@@ -166,14 +166,14 @@ ion-icon{
         <ion-item-divider>
           <ion-label>Поставщик</ion-label>
         </ion-item-divider>
-        <div v-if="!storeList">
+        <div v-if="!user.storeList">
           <ion-item>
             <ion-icon :icon="storefrontOutline" slot="start"></ion-icon>
             <ion-skeleton-text animated></ion-skeleton-text>
           </ion-item>   
         </div>
-        <div v-else-if="storeList">
-          <ion-item v-for="store in storeList" :key="store.store_id" detail button @click="$router.push(`store-edit-${store.store_id}`)">
+        <div v-else-if="user.storeList">
+          <ion-item v-for="store in user.storeList" :key="store.store_id" detail button @click="$router.push(`store-edit-${store.store_id}`)">
             <ion-icon :icon="storefrontOutline" slot="start"></ion-icon>
             {{store.store_name}}
           </ion-item>        
@@ -300,7 +300,8 @@ export default {
     };
   },
   ionViewDidEnter(){
-    User.get();
+    User.get('full');
+    //this.storeOwnedListGet();
   },
   created(){
     const self=this;
@@ -310,7 +311,6 @@ export default {
     Topic.on('userGet',(data)=>{
       self.user=data;
     });
-    this.storeOwnedListGet();
   },
   computed: {
     isSignedIn() {
@@ -334,13 +334,6 @@ export default {
         }
       }
     },
-    async storeOwnedListGet(){
-      if( !this.isSignedIn ){
-        return
-      }
-      this.storeList=await User.supplier.storeListGet()
-    },
-
   },
   watch: {
     $route(to, from) {
