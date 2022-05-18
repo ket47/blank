@@ -50,6 +50,9 @@
         </ion-row>
       </ion-grid>
       <footer-desktop/>
+      <ion-fab v-if="isInteractingWithServer" vertical="center" horizontal="center" slot="fixed">
+        <ion-spinner></ion-spinner>
+      </ion-fab>
     </ion-content>
   </ion-page>
 </template>
@@ -85,12 +88,19 @@ import {
 export default {
   setup() {
     return {
-      personIcon,ordersIcon,searchIcon,homeIcon,cartOutline
+      personIcon,
+      ordersIcon,
+      searchIcon,
+      homeIcon,
+      cartOutline
     }
   },
   computed:{
     cartListTotal(){
       return Order.cart.listTotalGet()
+    },
+    isInteractingWithServer(){
+      return this.$heap.state.isInteractingWithServer
     }
   },
   props: [

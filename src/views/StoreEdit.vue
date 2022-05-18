@@ -25,11 +25,21 @@
 
 <template>
   <base-layout page-title="Мой магазин" :page-default-back-link="'/store-'+this.storeId">
-    <ion-card v-if="message">
+    <ion-card v-if="validity_perc<validity_min" color="danger">
+      <ion-card-content>
+        Анкета заполнена на {{validity_perc}}%
+        <ion-progress-bar :value="validity"></ion-progress-bar>
+        <ion-text v-if="validity_perc<validity_min">
+          Вам необходимо заполнить анкету не меньше чем на {{validity_min}}% для рассмотрения модератором
+        </ion-text>
+      </ion-card-content>
+    </ion-card>
+    <ion-card v-else-if="message">
       <ion-card-content :class="messageClass">
         {{message}}
       </ion-card-content>
     </ion-card>
+
 
     <ion-list v-if="storeItem">
       <ion-item>
@@ -52,16 +62,13 @@
         На модерации
         <ion-toggle slot="end" v-model="is_disabled" @ionChange="itemDisable($event.target.checked?1:0)"></ion-toggle>
       </ion-item>
-      <ion-item-divider></ion-item-divider>
-      <ion-item button @click="$router.push('store-'+storeId)">
-        <ion-icon :src="chevronBack" slot="start"/>
-        Вернуться в Магазин
-      </ion-item>
+      <ion-item-divider>Добавление товара</ion-item-divider>
       <ion-item @click="productItemCreate()" button>
         <ion-icon :src="addOutline" slot="start"/>
         Добавить товар
       </ion-item>
     </ion-list>
+
     <form @change="saveForm" v-if="storeItem">
       <ion-list lines="full">
       <ion-item-group>
@@ -69,37 +76,56 @@
           <ion-label>Основные настройки</ion-label>
         </ion-item-divider>
 
-        <ion-item>
-          <ion-label position="stacked" color="primary">Название действующее</ion-label>
-          <ion-text>{{storeItem.store_name}}</ion-text>
+        <ion-item v-if="storeItem.store_name">
+          <ion-label position="stacked" color="primary">Название</ion-label>
+          <ion-text>
+            {{storeItem.store_name}}
+            <div>
+              <ion-button @click="storeItem.store_name_new=storeItem.store_name">Изменить</ion-button>
+            </div>
+          </ion-text>
         </ion-item>
-        <ion-item>
-          <ion-label position="stacked" color="primary">Название новое</ion-label>
+        <ion-item v-if="storeItem.store_name_new||!storeItem.store_name">
+          <ion-label position="stacked" color="primary">Название непроверенное *</ion-label>
           <ion-input v-model="storeItem.store_name_new" name="store_name_new"/>
           <ion-icon v-if="isAdmin" :icon="checkmarkCircleOutline" slot="end" color="success" @click="fieldApprove('store_name')"/>
         </ion-item>
 
-        <ion-item>
-          <ion-label position="stacked" color="primary">Описание действующее</ion-label>
-          <ion-text>{{storeItem.store_description}}</ion-text>
+        <ion-item v-if="storeItem.store_description">
+          <ion-label position="stacked" color="primary">Описание</ion-label>
+          <ion-text>
+            {{storeItem.store_description}}
+            <div>
+            <ion-button @click="storeItem.store_description_new=storeItem.store_description">Изменить</ion-button>
+            </div>
+          </ion-text>
         </ion-item>
-        <ion-item>
-          <ion-label position="stacked" color="primary">Описание новое</ion-label>
-          <ion-textarea v-model="storeItem.store_description_new" name="store_description_new"></ion-textarea>
+        <ion-item v-if="storeItem.store_description_new||!storeItem.store_description">
+          <ion-label position="stacked" color="primary">Описание непроверенное *</ion-label>
+          <ion-textarea v-model="storeItem.store_description_new" name="store_description_new" rows="6"></ion-textarea>
           <ion-icon v-if="isAdmin" :icon="checkmarkCircleOutline" slot="end" color="success" @click="fieldApprove('store_description')"/>
         </ion-item>
 
         <ion-item>
-          <ion-label position="stacked" color="primary">Название предприятия действующее</ion-label>
-          <ion-text>{{storeItem.store_company_name}}</ion-text>
+          <ion-label position="stacked" color="primary">ИНН *</ion-label>
+          <ion-input v-model="storeItem.store_tax_num" name="store_tax_num"></ion-input>
         </ion-item>
-        <ion-item>
-          <ion-label position="stacked" color="primary">Название предприятия новое</ion-label>
+        <ion-item v-if="storeItem.store_company_name">
+          <ion-label position="stacked" color="primary">Название предприятия (ООО, ИП и т.д.)</ion-label>
+          <ion-text>
+            {{storeItem.store_company_name}}
+            <div>
+            <ion-button @click="storeItem.store_company_name_new=storeItem.store_company_name">Изменить</ion-button>
+            </div>
+          </ion-text>
+        </ion-item>
+        <ion-item v-if="storeItem.store_company_name_new||!storeItem.store_company_name">
+          <ion-label position="stacked" color="primary">Название предприятия непроверенное *</ion-label>
           <ion-textarea v-model="storeItem.store_company_name_new" name="store_company_name_new"></ion-textarea>
           <ion-icon v-if="isAdmin" :icon="checkmarkCircleOutline" slot="end" color="success" @click="fieldApprove('store_company_name')"/>
         </ion-item>
         <ion-item>
-          <ion-label position="stacked" color="primary">Телефон</ion-label>
+          <ion-label position="stacked" color="primary">Телефон *</ion-label>
           <ion-input
             v-model="storeItem.store_phone"
             name="store_phone"
@@ -118,11 +144,11 @@
         <ion-item>
           <ion-row>
             <ion-col>
-              <ion-label position="stacked" color="primary">Мин. заказ ({{$heap.state.currencySign}})</ion-label>
+              <ion-label position="stacked" color="primary">Мин. заказ ({{$heap.state.currencySign}}) *</ion-label>
               <ion-input v-model="storeItem.store_minimal_order" name="store_minimal_order"/>
             </ion-col>
             <ion-col>
-              <ion-label position="stacked" color="primary">Подготовка (минут)</ion-label>
+              <ion-label position="stacked" color="primary">Подготовка (минут) *</ion-label>
               <ion-input v-model="storeItem.store_time_preparation" name="store_time_preparation"/>
             </ion-col>
           </ion-row>
@@ -131,9 +157,9 @@
       </ion-list>
 
       <ion-item-divider>
-        <ion-label>Категории товаров и услуг</ion-label>
+        <ion-label>Категории товаров и услуг *</ion-label>
       </ion-item-divider>
-      <ion-list v-if="is_groups_marked">
+      <ion-list>
         <ion-item v-for="group in storeGroupList" :key="group.group_id">
           <ion-avatar slot="start">
             <ion-img :src="`${$heap.state.hostname}image/get.php/${group.image_hash}.50.50.webp`"/>
@@ -144,7 +170,7 @@
       </ion-list>
 
       <ion-item-divider>
-        <ion-label>Адрес</ion-label>
+        <ion-label>Адрес *</ion-label>
       </ion-item-divider>
 
       <ion-list v-if="storeItem?.locations?.length">
@@ -164,7 +190,7 @@
       </ion-list>
       <ion-list>
         <ion-item-divider>
-          <ion-label>Изображения магазина в приложении</ion-label>
+          <ion-label>Изображения магазина в приложении *</ion-label>
         </ion-item-divider>
           <image-tile-comp :images="storeItem.images" :image_holder_id="storeItem.store_id" controller="Store" ref="storeImgs"></image-tile-comp>
         <ion-button @click="$refs.storeImgs.take_photo()" size="small" expand="full" color="medium">
@@ -175,45 +201,91 @@
       <ion-list>
       <ion-item-group class="schedule">
         <ion-item-divider>
-          <ion-label>Время работы</ion-label>
+          <ion-label>Время работы *</ion-label>
         </ion-item-divider>
         <ion-item>
-          <ion-label slot="start">Понедельник</ion-label>
+          <ion-label slot="start">
+            Понедельник{{storeItem.store_time_opens_0}}
+            <ion-label v-show="!storeItem.store_time_opens_0&&!storeItem.store_time_closes_0">(выходной)</ion-label>
+          </ion-label>
           <ion-input placeholder="от" v-model="storeItem.store_time_opens_0" name="store_time_opens_0"/>
           <ion-input placeholder="до" v-model="storeItem.store_time_closes_0" name="store_time_closes_0"/>
-
-
-          <ion-checkbox/>
+          <ion-icon :src="closeCircle" 
+            @click="storeItem.store_time_opens_0=storeItem.store_time_closes_0=null;saveSchedule('0')" 
+            v-show="storeItem.store_time_closes_0"
+          />
         </ion-item>
         <ion-item>
-          <ion-label slot="start">Вторник</ion-label>
+          <ion-label slot="start">
+            Вторник
+            <ion-label v-show="!storeItem.store_time_opens_1&&!storeItem.store_time_closes_1">(выходной)</ion-label>
+          </ion-label>
           <ion-input placeholder="от" v-model="storeItem.store_time_opens_1" name="store_time_opens_1"/>
           <ion-input placeholder="до" v-model="storeItem.store_time_closes_1" name="store_time_closes_1"/>
+          <ion-icon :src="closeCircle" 
+            @click="storeItem.store_time_opens_1=storeItem.store_time_closes_1=null;saveSchedule('1')" 
+            v-show="storeItem.store_time_closes_1"
+          />
         </ion-item>
         <ion-item>
-          <ion-label slot="start">Среда</ion-label>
+          <ion-label slot="start">
+            Среда
+            <ion-label v-show="!storeItem.store_time_opens_2&&!storeItem.store_time_closes_2">(выходной)</ion-label>
+          </ion-label>
           <ion-input placeholder="от" v-model="storeItem.store_time_opens_2" name="store_time_opens_2"/>
           <ion-input placeholder="до" v-model="storeItem.store_time_closes_2" name="store_time_closes_2"/>
+          <ion-icon :src="closeCircle" 
+            @click="storeItem.store_time_opens_2=storeItem.store_time_closes_2=null;saveSchedule('2')" 
+            v-show="storeItem.store_time_closes_2"
+          />
         </ion-item>
         <ion-item>
-          <ion-label slot="start">Четверг</ion-label>
+          <ion-label slot="start">
+            Четверг
+            <ion-label v-show="!storeItem.store_time_opens_3&&!storeItem.store_time_closes_3">(выходной)</ion-label>
+          </ion-label>
           <ion-input placeholder="от" v-model="storeItem.store_time_opens_3" name="store_time_opens_3"/>
           <ion-input placeholder="до" v-model="storeItem.store_time_closes_3" name="store_time_closes_3"/>
+          <ion-icon :src="closeCircle" 
+            @click="storeItem.store_time_opens_3=storeItem.store_time_closes_3=null;saveSchedule('3')" 
+            v-show="storeItem.store_time_closes_3"
+          />
         </ion-item>
         <ion-item>
-          <ion-label slot="start">Пятница</ion-label>
+          <ion-label slot="start">
+            Пятница
+            <ion-label v-show="!storeItem.store_time_opens_4&&!storeItem.store_time_closes_4">(выходной)</ion-label>
+          </ion-label>
           <ion-input placeholder="от" v-model="storeItem.store_time_opens_4" name="store_time_opens_4"/>
           <ion-input placeholder="до" v-model="storeItem.store_time_closes_4" name="store_time_closes_4"/>
+          <ion-icon :src="closeCircle" 
+            @click="storeItem.store_time_opens_4=storeItem.store_time_closes_4=null;saveSchedule('4')" 
+            v-show="storeItem.store_time_closes_4"
+          />
         </ion-item>
         <ion-item>
-          <ion-label slot="start">Суббота</ion-label>
+          <ion-label slot="start">
+            Суббота
+            <ion-label v-show="!storeItem.store_time_opens_5&&!storeItem.store_time_closes_5">(выходной)</ion-label>
+          </ion-label>
           <ion-input placeholder="от" v-model="storeItem.store_time_opens_5" name="store_time_opens_5"/>
           <ion-input placeholder="до" v-model="storeItem.store_time_closes_5" name="store_time_closes_5"/>
+          <ion-icon :src="closeCircle" 
+            @click="storeItem.store_time_opens_5=storeItem.store_time_closes_5=null;saveSchedule('5')" 
+            v-show="storeItem.store_time_closes_5"
+          />
         </ion-item>
         <ion-item>
-          <ion-label slot="start">Воскресенье</ion-label>
+          <ion-label slot="start">
+            Воскресенье
+            <ion-label v-show="!storeItem.store_time_opens_6&&!storeItem.store_time_closes_6">(выходной)</ion-label>
+          </ion-label>
           <ion-input placeholder="от" v-model="storeItem.store_time_opens_6" name="store_time_opens_6"/>
           <ion-input placeholder="до" v-model="storeItem.store_time_closes_6" name="store_time_closes_6"/>
+          <ion-icon :src="closeCircle" 
+            @click="storeItem.store_time_opens_6=storeItem.store_time_closes_6=null;saveSchedule('6')" 
+            v-show="storeItem.store_time_closes_6"
+          />
         </ion-item>
       </ion-item-group>
       </ion-list>
@@ -223,6 +295,11 @@
       <ion-item-divider>
           <ion-label>Адинистраторы</ion-label>
       </ion-item-divider>
+      <ion-item v-if="$heap.state.user.user_id=storeItem.owner_id">
+        <ion-icon :src="personOutline" slot="start" color="primary"/>
+        <ion-label>Вы (Суперадмин)</ion-label>
+      </ion-item>
+
       <ion-item v-for="owner in ownerList" :key="owner.user_id">
         <ion-icon :src="personOutline" slot="start" color="primary"/>
         <ion-label>{{owner.user_phone}}</ion-label>
@@ -256,6 +333,7 @@ import {
   IonImg,
   IonAvatar,
   IonButton,
+  IonProgressBar,
   modalController
   }                   from '@ionic/vue'
 import {
@@ -270,6 +348,7 @@ import {
   addOutline,
   checkmarkCircleOutline,
   chevronBack,
+  closeCircle
 }                     from 'ionicons/icons'
 import imageTileComp  from '@/components/ImageTileComp.vue'
 import UserAddressPicker from '@/components/UserAddressPicker.vue'
@@ -297,6 +376,7 @@ export default  {
   IonImg,
   IonAvatar,
   IonButton,
+  IonProgressBar,
   imageTileComp
     },
   setup(){
@@ -312,22 +392,22 @@ export default  {
       addOutline,
       checkmarkCircleOutline,
       chevronBack,
+      closeCircle
       }
   },
   data(){
     return {
-      config: {
-        phoneMask: '+0(000)-000-00-00'
-      },
       storeId: this.$route.params.id,
       storeItem: null,
       storeGroupList:null,
       ownerList:null,
-      is_groups_marked:0,
       is_deleted:0,
       is_disabled:0,
       is_working:0,
-      is_primary:0
+      is_primary:0,
+      validity:0,
+      validity_perc:0,
+      validity_min:80
     }
   },
   computed: {
@@ -338,13 +418,16 @@ export default  {
       return User.isAdmin();
     },
     message(){
+      if(!this.storeItem){
+        return null
+      }
       if(this.storeItem?.deleted_at){
         return "Предприятие не активно и будет удалено. Вы еще можете отменить удаление";
       }
       if(this.storeItem?.is_disabled==1){
         return "Предприятие не активно и находится на рассмотрении у администратора";
       }
-      if(this.storeItem?.is_working!=1){
+      if(this.storeItem?.is_working==0){
         return "Предприятие отмечено вами как времено не готовое к заказам. Например, в связи с праздниками";
       }
       if(this.storeItem?.is_primary==1){
@@ -379,6 +462,7 @@ export default  {
         this.storeItem=await jQuery.post( heap.state.hostname + "Store/itemGet", { store_id: this.storeId })
         this.itemParseFlags()
         this.itemMarkGroups()
+        this.itemValidityCalc()
       }catch{
         //
       }
@@ -403,6 +487,31 @@ export default  {
       this.is_disabled  = this.storeItem.is_disabled==0?0:1
       this.is_working   = this.storeItem.is_working==0?0:1
       this.is_primary   = this.storeItem.is_primary==1?1:0
+    },
+    itemValidityCalc(){
+      const requiredFields=[
+        "store_name|store_name_new",
+        "store_description|store_description_new",
+        "store_company_name|store_company_name_new",
+        "store_phone","store_tax_num",
+        "store_minimal_order",
+        "store_time_preparation",
+        "store_time_opens_0|store_time_opens_1|store_time_opens_2|store_time_opens_3|store_time_opens_4|store_time_opens_5|store_time_opens_6|store_time_closes_0|store_time_closes_1|store_time_closes_2|store_time_closes_3|store_time_closes_4|store_time_closes_5|store_time_closes_6"
+        ]
+      const filedsTotal=requiredFields.length
+      let validTotal=0
+      for(const fields of requiredFields){
+        let is_valid=0
+        for(const field of fields.split('|')){
+          if(this.storeItem[field]){
+            is_valid=1
+            break
+          }
+        }
+        validTotal+=is_valid
+      }
+      this.validity=validTotal/filedsTotal
+      this.validity_perc=Math.round(this.validity*100)
     },
     async itemDelete( is_deleted ){
       const remoteFunction=is_deleted?'itemDelete':'itemUnDelete'
@@ -453,14 +562,26 @@ export default  {
       let store_time_opens=this.storeItem['store_time_opens_'+dayIndex]
       let store_time_closes=this.storeItem['store_time_closes_'+dayIndex]
 
-      if( store_time_opens>=24 ){
+      if( store_time_opens=='' || store_time_opens==null ){
+        store_time_opens=null
+      } else {
+        store_time_opens=Number(store_time_opens)
+      }
+      if( store_time_closes=='' || store_time_closes==null ){
+        store_time_closes=null
+      } else {
+        store_time_closes=Number(store_time_closes)
+      }
+
+      if( store_time_opens>24 ){
         store_time_opens=0
       }
-      if( store_time_closes>=24 ){
+      if( store_time_closes>24 ){
         store_time_closes=0
       }
-      if( store_time_opens>=store_time_closes ){
-        store_time_closes=Number(store_time_opens)+1
+
+      if( store_time_opens>=store_time_closes && store_time_closes!=null || store_time_closes==0 ){
+        store_time_closes=store_time_opens+1
         this.$flash("Время закрытия должно быть позже открытия")
       }
       const request={
@@ -468,8 +589,14 @@ export default  {
         ['store_time_opens_'+dayIndex]:store_time_opens,
         ['store_time_closes_'+dayIndex]:store_time_closes
       }
-      this.storeItem['store_time_opens_'+dayIndex] = store_time_opens;
-      this.storeItem['store_time_closes_'+dayIndex] = store_time_closes;
+      
+      if(this.storeItem['store_time_opens_'+dayIndex] != store_time_opens){
+        this.storeItem['store_time_opens_'+dayIndex] = store_time_opens;
+      }
+      if(this.storeItem['store_time_closes_'+dayIndex] != store_time_closes){
+        this.storeItem['store_time_closes_'+dayIndex] = store_time_closes;
+      }
+      this.itemValidityCalc()
       this.itemUpdate(request)
     },
     async save(field_name, field_value) {
@@ -487,12 +614,14 @@ export default  {
         [field_name]:field_value
       };
       this.storeItem[field_name] = field_value;
+      this.itemValidityCalc()
       this.itemUpdate(request)
+      this.itemParseFlags()
     },
     async itemUpdate(request){
       try{
+        request['validity']=this.validity_perc
         await jQuery.post( heap.state.hostname + "Store/itemUpdate", JSON.stringify(request))
-        this.itemParseFlags()
       } catch(err){
         this.$flash("Не удалось сохранить изменение")
         this.itemGet()
