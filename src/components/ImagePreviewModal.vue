@@ -15,7 +15,6 @@
 import {closeOutline}      from 'ionicons/icons';
 import {
   modalController,
-  IonLabel,
   IonIcon,
   IonToolbar,
   IonHeader,
@@ -27,7 +26,6 @@ import {
 export default{
   props:['image_hash'],
   components:{
-  IonLabel,
   IonIcon,
   IonToolbar,
   IonHeader,
