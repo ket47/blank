@@ -2,13 +2,13 @@ import { createStore } from 'vuex'
 const heap = createStore({
     state() {
         return {
-            //hostname: "https://tezkel.local/",
-            hostname: "https://api.tezkel.com/",
+            hostname: "https://tezkel.local/",
+            //hostname: "https://api.tezkel.com/",
             app_title: "Тезкель",
             user: {user_id: -1},
             deliverySettings:{
                 courierVelocity:30000,// (30km/h),
-                deliveryTimeDelta:5,//5minutes
+                deliveryTimeDelta:10,//5minutes
                 fee:120,
                 defaultPreparationTime:15,//15 minutes
             },

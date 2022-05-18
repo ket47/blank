@@ -71,6 +71,8 @@ import {
   IonRow,
   IonCol,
   IonGrid,
+  IonFab,
+  IonSpinner
 } from "@ionic/vue";
 import FooterDesktop  from "@/components/FooterDesktop";
 import CartBodyModal  from '@/components/CartBodyModal.vue';
@@ -123,6 +125,8 @@ export default {
     IonCol,
     IonGrid,
     CartBodyModal,
+    IonFab,
+    IonSpinner,
     FooterDesktop
   },
 };

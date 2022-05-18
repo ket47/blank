@@ -102,7 +102,7 @@ export default {
   },
   methods: {
     selectDeliveryAddress() {
-        router.push({name: 'UserAddresses'});
+        router.push('user-addresses');
     },
     async locationCommentChanged(){
       const request={

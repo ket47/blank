@@ -25,16 +25,18 @@
 
 <template>
   <base-layout page-title="Мой магазин" :page-default-back-link="'/store-'+this.storeId">
-    <ion-card v-if="validity_perc<validity_min" color="danger">
-      <ion-card-content>
-        Анкета заполнена на {{validity_perc}}%
+    <ion-card :color="validity_perc<validity_min?'danger':''">
+      <ion-card-header>
+        <ion-label>Анкета заполнена на {{validity_perc}}%</ion-label>
         <ion-progress-bar :value="validity"></ion-progress-bar>
-        <ion-text v-if="validity_perc<validity_min">
+      </ion-card-header>
+      <ion-card-content v-if="validity_perc<validity_min">
+        <ion-text>
           Вам необходимо заполнить анкету не меньше чем на {{validity_min}}% для рассмотрения модератором
         </ion-text>
       </ion-card-content>
     </ion-card>
-    <ion-card v-else-if="message">
+    <ion-card v-if="message&&validity_perc>validity_min">
       <ion-card-content :class="messageClass">
         {{message}}
       </ion-card-content>
@@ -205,7 +207,7 @@
         </ion-item-divider>
         <ion-item>
           <ion-label slot="start">
-            Понедельник{{storeItem.store_time_opens_0}}
+            Понедельник
             <ion-label v-show="!storeItem.store_time_opens_0&&!storeItem.store_time_closes_0">(выходной)</ion-label>
           </ion-label>
           <ion-input placeholder="от" v-model="storeItem.store_time_opens_0" name="store_time_opens_0"/>
@@ -320,6 +322,7 @@ import {
   IonToggle,
   IonCard,
   IonCardContent,
+  IonCardHeader,
   IonCheckbox,
   IonIcon,
   IonItem,
@@ -363,6 +366,7 @@ export default  {
   IonToggle,
   IonCard,
   IonCardContent,
+  IonCardHeader,
   IonCheckbox,
   IonIcon,
   IonItem,
@@ -406,8 +410,8 @@ export default  {
       is_working:0,
       is_primary:0,
       validity:0,
-      validity_perc:0,
-      validity_min:80
+      validity_perc:100,
+      validity_min:90
     }
   },
   computed: {
@@ -496,14 +500,24 @@ export default  {
         "store_phone","store_tax_num",
         "store_minimal_order",
         "store_time_preparation",
-        "store_time_opens_0|store_time_opens_1|store_time_opens_2|store_time_opens_3|store_time_opens_4|store_time_opens_5|store_time_opens_6|store_time_closes_0|store_time_closes_1|store_time_closes_2|store_time_closes_3|store_time_closes_4|store_time_closes_5|store_time_closes_6"
+        "store_time_opens_0|store_time_opens_1|store_time_opens_2|store_time_opens_3|store_time_opens_4|store_time_opens_5|store_time_opens_6|store_time_closes_0|store_time_closes_1|store_time_closes_2|store_time_closes_3|store_time_closes_4|store_time_closes_5|store_time_closes_6",
+        "images",
+        "locations",
+        "member_of_groups.group_ids"
         ]
       const filedsTotal=requiredFields.length
       let validTotal=0
       for(const fields of requiredFields){
         let is_valid=0
         for(const field of fields.split('|')){
-          if(this.storeItem[field]){
+          let value=null
+          const path=field.split('.')
+          if(path[1]){//notation with dot
+            value=this.storeItem[path[0]][path[1]]
+          } else {
+            value=this.storeItem[path[0]]
+          }
+          if(value?.length>0){
             is_valid=1
             break
           }
@@ -668,8 +682,8 @@ export default  {
         await jQuery.post( heap.state.hostname + "Store/itemUpdateGroup", request)
       } catch(err){
         this.$flash("Не удалось сохранить изменение")
-        this.itemGet()
       }      
+      this.itemGet()
     },
     async listGroupGet(){
       try{

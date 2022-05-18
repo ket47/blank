@@ -1,5 +1,15 @@
 const path = require("path");
 
 module.exports = {
-  outputDir: path.resolve(__dirname, "../pwa/www")
+  outputDir: path.resolve(__dirname, "../pwa/www"),
+  pwa: {
+    name: "Tezkel",
+    title:"--tttttttttt",
+    appleMobileWebAppCapable: true,
+    themeColor: "#009dcd",
+    msTileColor: "#009dcd",
+    manifestOptions: {
+      background_color: "#fefefe"
+    }
+  }
 }

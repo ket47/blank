@@ -15,22 +15,39 @@
 ion-card{
   border-radius: 10px;
 }
+.closed ion-img{
+  filter: grayscale(1);
+}
 </style>
 
 <template>
-  <ion-list class="store-list" v-if="storeList">
-    <ion-card button v-for="store_item in storeList" :key="store_item.store_id" @click="$router.push('store-' + store_item.store_id)">
+  <ion-list v-if="storeList" class="store-list">
+    <ion-card button v-for="store_item in storeList" :key="store_item.store_id" @click="$router.push('store-' + store_item.store_id)"  :class="store_item.is_opened==0?'closed':''">
         <div class="crop-to-fit">
-            <ion-img v-if="store_item.image_hash" :src="$heap.state.hostname +'/image/get.php/' +store_item.image_hash +'.200.200.webp'"/>
+            <ion-img v-if="store_item.image_hash" :src="$heap.state.hostname +'/image/get.php/' +store_item.image_hash +'.300.300.webp'"/>
         </div>
-        <ion-chip v-if="store_item.is_opened" color="success">Открыт до {{ store_item.store_time_closes }}:00</ion-chip>
-        <ion-chip v-else color="danger">Закрыт до {{ store_item.store_time_opens }}:00</ion-chip>
+
+        <ion-chip v-if="store_item.is_opened==1" color="success">Открыт до {{ store_item.store_time_closes }}:00</ion-chip>
+        <ion-chip v-else color="danger">
+          <span v-if="store_item.is_working==0">Временно не работает</span>
+          <span v-else-if="store_item.store_next_time_opens>0">Закрыт до {{ store_item.store_next_time_opens }}:00</span>
+          <span v-else>Закрыт</span>
+        </ion-chip>
+
         <ion-chip v-if="store_item.deliveryTime.timeMin" color="primary">{{store_item.deliveryTime.timeMin}}-{{store_item.deliveryTime.timeMax}}мин</ion-chip>
         <ion-item lines="none">
             <h3>{{store_item.store_name}}</h3>
         </ion-item>
     </ion-card>
   </ion-list>
+  <ion-card v-if="!storeList || storeList.length==0">
+    <ion-card-header>
+      <ion-card-title>Подходящих поставщиков не нашлось</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      К сожалению, не найдено подходящих предприятий. Возможно вы находитесь вне радиуса доставки.
+    </ion-card-content>
+  </ion-card>
 </template>
 
 <script>
@@ -40,6 +57,9 @@ import {
   IonChip,
   IonItem,
   IonCard,
+  IonCardHeader,
+  IonCardTitle,
+  IonCardContent
 }                   from "@ionic/vue";
 import jQuery       from "jquery";
 import heap         from "@/heap";
@@ -52,6 +72,9 @@ export default {
     IonChip,
     IonItem,
     IonCard,
+    IonCardHeader,
+    IonCardTitle,
+    IonCardContent
   },
   data() {
     return {
@@ -76,12 +99,15 @@ export default {
       return found
     },
   },
-  created() {
+  mounted(){
     this.$topic.on('userGet',()=>{
+      this.listGet();
+    }) 
+    this.$topic.on('userMainLocationSet',mainloc=>{
       this.listGet();
     })
     this.listGet();
-  },
+  }
 };
 </script>
 

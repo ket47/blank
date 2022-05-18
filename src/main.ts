@@ -96,10 +96,12 @@ jQuery( document ).ajaxError(( event, jqxhr, settings, thrownError )=>{
     router.push({path: `/error-offline`});
   }
   if(thrownError === 'abort'){
-    alert('Ajax request aborted.');
+    flash('Похоже нет связи с интерентом. Попробуйте позже');
+    router.push({path: `/error-offline`});
   }
   if(thrownError === 'timeout'){
-    alert('Time out error.');
+    flash('Похоже нет связи с интерентом. Попробуйте позже');
+    router.push({path: `/error-offline`});
   }
 })
 jQuery( document ).ajaxSend(()=>{
