@@ -62,7 +62,6 @@ export default {
     async listGet() {
       var main_address = heap.state.user.location_main;
       if (!main_address) {
-        console.log("what to do address not set!!!");
         return;
       }
       try{
@@ -78,6 +77,9 @@ export default {
     },
   },
   created() {
+    this.$topic.on('userGet',()=>{
+      this.listGet();
+    })
     this.listGet();
   },
 };

@@ -45,7 +45,6 @@ import {
 }                           from "@ionic/vue";
 import CartHeader           from "@/components/CartHeader";
 import { defineComponent }  from "@vue/runtime-core";
-import Topic                from '@/scripts/Topic.js'
 
 export default defineComponent({
   props: [

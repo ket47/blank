@@ -175,7 +175,7 @@ ion-icon{
         <div v-else-if="user.storeList">
           <ion-item v-for="store in user.storeList" :key="store.store_id" detail button @click="$router.push(`store-edit-${store.store_id}`)">
             <ion-icon :icon="storefrontOutline" slot="start"></ion-icon>
-            {{store.store_name}}
+            {{store.store_name||'- - -'}}
           </ion-item>        
         </div>
         <div v-else>
@@ -301,7 +301,6 @@ export default {
   },
   ionViewDidEnter(){
     User.get('full');
-    //this.storeOwnedListGet();
   },
   created(){
     const self=this;

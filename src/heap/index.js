@@ -63,8 +63,8 @@ const heap = createStore({
         setCurrentStore (state, storeData) {
             state.currentStore = storeData;
         },
-        setInteractionStatus(state,is_interacting){
-            state.isInteractingWithServer = is_interacting;
+        setInteractionStatus(state,done_undone){
+            state.isInteractingWithServer += done_undone;
         },
         cartListStore(state, cartList){
             state.cartList=cartList;

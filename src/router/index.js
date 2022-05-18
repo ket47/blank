@@ -126,6 +126,11 @@ const routes = [
         path: '/page-:id',
         component: () => import('@/views/TextPageView.vue')
       },
+      {
+        path: '/error-offline',
+        component: () => import('@/views/ErrorOffline.vue')
+      },
+
   ]
   },
 ]

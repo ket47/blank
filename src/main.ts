@@ -89,15 +89,24 @@ jQuery( document ).ajaxError(( event, jqxhr, settings, thrownError )=>{
   if(status_code==401){
     flash('Вы не выполнили вход, пожалуйста авторизируйтесь');
     router.push({path: `/sign-in`});
-  } else {
-    console.log("NETWORK ERRORRRRRR",thrownError)
+  }
+
+  if(status_code==0){
+    flash('Похоже нет связи с интерентом. Попробуйте позже');
+    router.push({path: `/error-offline`});
+  }
+  if(thrownError === 'abort'){
+    alert('Ajax request aborted.');
+  }
+  if(thrownError === 'timeout'){
+    alert('Time out error.');
   }
 })
 jQuery( document ).ajaxSend(()=>{
   heap.commit('setInteractionStatus',1)
 })
 jQuery( document ).ajaxComplete(()=>{
-  heap.commit('setInteractionStatus',0)
+  heap.commit('setInteractionStatus',-1)
 })
 
 const app = createApp(App)
@@ -117,6 +126,5 @@ if(isPlatform('mobile') || isPlatform('mobileweb')){
   app.component('base-layout', BaseLayoutDesktop);
   require('./theme/base_layout_desktop.css');
 }
-User.autoSignIn().then(function(){
-  app.mount('#app');
-});
+app.mount('#app');
+User.autoSignIn();

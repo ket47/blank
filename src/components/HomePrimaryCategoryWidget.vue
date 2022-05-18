@@ -90,8 +90,12 @@ export default defineComponent({
   },
   created(){
     let self=this;
-    Topic.on('userMainLocationSet',mainloc=>{
+    this.$topic.on('userMainLocationSet',mainloc=>{
       self.main_location_id=mainloc.location_id;
+      self.productGroupListGet()
+    })
+    this.$topic.on('userGet',user=>{
+      self.main_location_id=user.location_main.location_id;
       self.productGroupListGet()
     })
     this.main_location_id=heap.state.user.location_main?heap.state.user.location_main.location_id:null

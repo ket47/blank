@@ -96,6 +96,9 @@ export default {
     Topic.on('userMainLocationSet',mainloc=>{
       self.location_main=mainloc
     })
+    Topic.on('userGet',user=>{
+      self.location_main=user.location_main
+    })
   },
   methods: {
     selectDeliveryAddress() {

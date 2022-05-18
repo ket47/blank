@@ -81,6 +81,10 @@ export default  {
   },
   created(){
     this.delayedListGet()
+    let self=this;
+    this.$topic.on('userGet',user=>{
+      self.delayedListGet()
+    })
   },
   methods:{
     async listGet(){
@@ -89,6 +93,9 @@ export default  {
         in_products:1,
         in_stores:0,
         location_id:this.locMainGet()
+      }
+      if(!request.location_id){
+        return
       }
       try{
         const found=await jQuery.get(this.$heap.state.hostname+'Search/listGet',request)
