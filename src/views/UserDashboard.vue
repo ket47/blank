@@ -8,7 +8,7 @@ ion-icon{
     page-title="Личный кабинет"
     page-default-back-link="/home"
   >
-    <div v-if="isSignedIn" class="user-dashboard-header">
+    <div v-if="isSignedIn()" class="user-dashboard-header">
       <ion-list>
         <ion-item lines="full" class="avatar-row">
           <ion-avatar slot="start">
@@ -39,15 +39,15 @@ ion-icon{
         <ion-item-divider>
           <ion-label>Пользователь</ion-label>
         </ion-item-divider>
-        <ion-item v-if="!isSignedIn" lines="full" button detail @click="$router.push('sign-in')">
+        <ion-item v-if="!isSignedIn()" lines="full" button detail @click="$router.push('sign-in')">
             <ion-icon :icon="logInOutline" slot="start" color="primary"></ion-icon>
             <ion-label>Войти</ion-label>
         </ion-item>
-        <ion-item v-if="!isSignedIn" lines="full" button detail @click="$router.push('sign-up')">
+        <ion-item v-if="!isSignedIn()" lines="full" button detail @click="$router.push('sign-up')">
             <ion-icon :icon="personCircleOutline" slot="start" color="primary"></ion-icon>
             <ion-label>Зарегистрироваться</ion-label>
         </ion-item>
-        <div v-if="isSignedIn">
+        <div v-if="isSignedIn()">
           <ion-item @click="signOut" lines="full" button detail>
               <ion-icon :icon="exitOutline" slot="start" color="primary"></ion-icon>
               <ion-label>Выйти</ion-label>
@@ -99,7 +99,7 @@ ion-icon{
         -->
       </ion-item-group>
 
-      <ion-item-group v-if="isSignedIn">
+      <ion-item-group v-if="isSignedIn()">
         <ion-item-divider>
           <ion-label>Курьер</ion-label>
 
@@ -162,7 +162,7 @@ ion-icon{
 
       </ion-item-group>
 
-      <ion-item-group v-if="isSignedIn">
+      <ion-item-group v-if="isSignedIn()">
         <ion-item-divider>
           <ion-label>Поставщик</ion-label>
         </ion-item-divider>
@@ -302,7 +302,7 @@ export default {
   ionViewDidEnter(){
     User.get('full');
   },
-  created(){
+  mounted(){
     const self=this;
     Topic.on('courierStatusChange',(status)=>{
       self.courierStatus=status;
@@ -312,14 +312,14 @@ export default {
     });
   },
   computed: {
-    isSignedIn() {
-      return heap.state?.user?.user_id > -1;
-    },
     isAdmin(){
       return User.isAdmin();
     }
   },
   methods: {
+    isSignedIn() {
+      return heap.getters.userIsLogged;
+    },
     async signOut() {
       await User.signOut();
       this.user=await User.get();

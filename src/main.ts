@@ -50,8 +50,9 @@ const FlashNotice={
     if( !this.idle ){
       return;
     }
-    const message=this.queue.shift()
-    if( message==undefined ){
+    const message=this.queue.join("<br/><br/>")
+    this.queue=[] 
+    if( !message ){
       return;
     }
     this.flash(message)

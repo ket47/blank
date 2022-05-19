@@ -53,7 +53,7 @@ ion-avatar{
             </div>
         </div>
     </div>
-    <input type="file" id="foto_upload" accept="image/*" @change="uploadImage($event)" style="display:none">
+    <input type="file" :id="`foto_upload${controller}`" accept="image/*" @change="uploadImage($event)" style="display:none">
 </template>
 <script>
 import {
@@ -200,7 +200,7 @@ export default {
             }
         },
         take_photo(){
-            jQuery('#foto_upload').trigger('click');
+            jQuery(`#foto_upload${this.controller}`).trigger('click');
             this.editMode=true
         },
     }

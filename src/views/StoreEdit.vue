@@ -24,7 +24,7 @@
 </style>
 
 <template>
-  <base-layout page-title="Мой магазин" :page-default-back-link="'/store-'+this.storeId">
+  <base-layout :page-title="this.storeItem?.store_name??'Мой магазин'" :page-default-back-link="'/store-'+this.storeId">
     <ion-card :color="validity_perc<validity_min?'danger':''">
       <ion-card-header>
         <ion-label>Анкета заполнена на {{validity_perc}}%</ion-label>
@@ -64,6 +64,7 @@
         На модерации
         <ion-toggle slot="end" v-model="is_disabled" @ionChange="itemDisable($event.target.checked?1:0)"></ion-toggle>
       </ion-item>
+      <ion-button @click="$router.push('/store-'+storeId)" expand="full">Открыть {{storeItem.store_name}}</ion-button>
       <ion-item-divider>Добавление товара</ion-item-divider>
       <ion-item @click="productItemCreate()" button>
         <ion-icon :src="addOutline" slot="start"/>
@@ -565,7 +566,7 @@ export default  {
       const field_name=ev.target.name;
       const field_value=this.storeItem[field_name]
 
-      if( field_name.indexOf('store_time')>-1 ){
+      if( field_name.indexOf('store_time_closes')>-1 || field_name.indexOf('store_time_opens')>-1 ){
         this.saveSchedule(field_name)
       }else{
         this.save(field_name,field_value)

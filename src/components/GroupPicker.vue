@@ -123,6 +123,9 @@ export default {
                     target.checked=0;
                     return
                 }
+                if(this.memberLimit==1){
+                    this.closeModal()
+                }
                 this.checkedGroupList.push(group_id)
             } else {
                 this.checkedGroupList = this.checkedGroupList.filter(function(value, index, arr){ 

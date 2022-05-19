@@ -47,7 +47,7 @@
 </style>
 
 <template>
-    <div :class="`product-actions ${componentLayout} ${buttonLayout} ${this.currentQuantity>0?'incart':''} ${this.productData.product_quantity>0?'':'sold'}`">
+    <div :class="`product-actions ${componentLayout} ${buttonLayout} ${this.currentQuantity>0?'incart':''} ${isAvailable?'':'sold'}`">
       
       <ion-button v-if="!this.currentQuantity" @click="addToOrder(+this.productData.product_quantity_min)" color="primary" size="small">
         <ion-icon :icon="add"  color="light"></ion-icon>
@@ -149,7 +149,7 @@ export default{
         newQuantity=0;
       }
       newQuantity=this.productData.product_quantity_min*Math.round(newQuantity/this.productData.product_quantity_min);
-      if( this.productData.is_counted==0 && newQuantity>this.productData.product_quantity ){
+      if( this.productData.is_counted==1 && newQuantity>this.productData.product_quantity ){
         this.flash(`В наличии есть только ${this.productData.product_quantity}${this.productData.product_unit}`);
         newQuantity=this.productData.product_quantity;
       }
@@ -193,6 +193,9 @@ export default{
         return 'inline';
       }
       return 'absolute'
+    },
+    isAvailable(){
+      return this.productData.is_counted==1?this.productData.product_quantity>0:true;
     }
   },
 }

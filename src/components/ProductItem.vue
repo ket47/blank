@@ -20,6 +20,7 @@
     height:130px;
     overflow:hidden;
     align-items: center;
+    justify-content: center;
     display:flex;
 }
 </style>

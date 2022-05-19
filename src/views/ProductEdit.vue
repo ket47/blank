@@ -21,7 +21,18 @@
 
 <template>
   <base-layout :page-title="productItem?.product_name??'Товар'" :page-default-back-link="'/product-'+this.productId">
-    <ion-card v-if="message">
+    <ion-card :color="validity_perc<validity_min?'danger':''">
+      <ion-card-header>
+        <ion-label>Анкета заполнена на {{validity_perc}}%</ion-label>
+        <ion-progress-bar :value="validity"></ion-progress-bar>
+      </ion-card-header>
+      <ion-card-content v-if="validity_perc<validity_min">
+        <ion-text>
+          Вам необходимо заполнить анкету не меньше чем на {{validity_min}}% для рассмотрения модератором
+        </ion-text>
+      </ion-card-content>
+    </ion-card>
+    <ion-card v-if="message&&validity_perc>validity_min">
       <ion-card-content :class="messageClass">
         {{message}}
       </ion-card-content>
@@ -44,9 +55,13 @@
         <ion-toggle slot="end" v-model="is_counted" @ionChange="save('is_counted',$event.target.checked?1:0)"/>
       </ion-item>
       <ion-item-divider></ion-item-divider>
-      <ion-item button @click="$router.push('store-'+productItem.store_id)">
+      <ion-item button @click="$router.push('product-'+productItem.product_id)">
         <ion-icon :src="chevronBack" slot="start"/>
-        Вернуться в Магазин
+        Показать товар
+      </ion-item>
+      <ion-item button @click="showProductInStore()">
+        <ion-icon :src="chevronBack" slot="start"/>
+        Показать в магазине
       </ion-item>
       <ion-item button @click="$router.push('store-edit-'+productItem.store_id)">
         <ion-icon :src="chevronBack" slot="start"/>
@@ -61,11 +76,11 @@
             <ion-label>Основные настройки</ion-label>
           </ion-item-divider>
           <ion-item>
-            <ion-label position="stacked" color="primary">Название</ion-label>
-            <ion-textarea v-model="productItem.product_name" name="product_name" placeholder="полное название товара"></ion-textarea>
+            <ion-label position="stacked" color="primary">Название*</ion-label>
+            <ion-input v-model="productItem.product_name" name="product_name" placeholder="полное название товара" clearInput="true" autofocus/>
           </ion-item>
           <ion-item>
-            <ion-label position="stacked" color="primary">Описание</ion-label>
+            <ion-label position="stacked" color="primary">Описание*</ion-label>
             <ion-textarea v-model="productItem.product_description" name="product_description" rows="6" placeholder="характеристики, свойства, состав товара"></ion-textarea>
           </ion-item>
           <ion-item>
@@ -77,15 +92,15 @@
             <ion-input v-model="productItem.product_quantity" name="product_quantity" slot="end" placeholder="в наличии"/>
           </ion-item>
           <ion-item>
-            <ion-label color="primary">Единица</ion-label>
+            <ion-label color="primary">Единица*</ion-label>
             <ion-input v-model="productItem.product_unit" name="product_unit" slot="end" placeholder="шт,кг и т.д."/>
           </ion-item>
           <ion-item>
-            <ion-label color="primary">Мин. заказ <span v-if="productItem.product_unit">({{productItem.product_unit}})</span></ion-label>
+            <ion-label color="primary">Мин. заказ*<span v-if="productItem.product_unit">({{productItem.product_unit}})</span></ion-label>
             <ion-input v-model="productItem.product_quantity_min" name="product_quantity_min" type="number" inputmode="numeric" pattern="\d\." slot="end"/>
           </ion-item>
           <ion-item>
-            <ion-label color="primary">Вес единицы (кг)</ion-label>
+            <ion-label color="primary">Вес единицы (кг)*</ion-label>
             <ion-input v-model="productItem.product_weight" name="product_weight" type="number" step="0.1" inputmode="numeric" pattern="\d\." slot="end"/>
           </ion-item>
         </ion-item-group>
@@ -99,26 +114,26 @@
           </ion-item-divider>
         </ion-item-group>
         <ion-item>
-          <ion-label color="primary">Цена</ion-label>
+          <ion-label color="primary">Цена*</ion-label>
           <ion-input v-model="productItem.product_price" name="product_price" type="number" inputmode="numeric" slot="end"/>
         </ion-item>
         <ion-item>
-          <ion-label color="primary">Цена акционная</ion-label>
+          <ion-label color="success">Цена акционная</ion-label>
           <ion-input v-model="productItem.product_promo_price" name="product_promo_price" type="number" inputmode="numeric" slot="end" color="success"/>
         </ion-item>
         <ion-item>
-          <ion-label color="primary">Начало акции</ion-label>
+          <ion-label color="success">Начало акции</ion-label>
           <ion-input type="date" v-model="productItem.product_promo_start" name="product_promo_start" slot="end"/>
         </ion-item>
         <ion-item>
-          <ion-label color="primary">Конец акции</ion-label>
+          <ion-label color="success">Конец акции</ion-label>
           <ion-input type="date" v-model="productItem.product_promo_finish" name="product_promo_finish" slot="end"/>
         </ion-item>
       </ion-list>
     </form>
     <ion-list v-if="productItem">
       <ion-item-divider>
-        <ion-label>Изображения товара</ion-label>
+        <ion-label>Изображения товара*</ion-label>
       </ion-item-divider>
       <image-tile-comp :images="productItem.images" :image_holder_id="productItem.product_id" controller="Product" ref="productImgs"></image-tile-comp>
       <ion-button @click="$refs.productImgs.take_photo()" size="small" expand="full" color="medium">
@@ -128,8 +143,12 @@
 
     <ion-list v-if="categoryList">
       <ion-item-divider>
-          <ion-label>Категории товара</ion-label>
+          <ion-label>Категории товара*</ion-label>
       </ion-item-divider>
+      <ion-item v-if="categoryList.length==0" color="light">
+        <ion-icon :src="compassOutline" slot="start" color="danger"/>
+        <ion-label color="danger">Без категории (в разделе 'Другое')</ion-label>
+      </ion-item>
       <ion-item v-for="cat in categoryList" :key="cat.group_id">
         <ion-icon :src="compassOutline" slot="start" color="primary"/>
         <ion-label>{{cat.group_name}}</ion-label>
@@ -150,6 +169,7 @@ import {
   IonTextarea,
   IonCard,
   IonCardContent,
+  IonCardHeader,
   IonToggle,
   IonIcon,
   IonItem,
@@ -158,6 +178,8 @@ import {
   IonItemDivider,
   IonItemGroup,
   IonButton,
+  IonProgressBar,
+  IonText,
   modalController
   }                   from '@ionic/vue'
 import {
@@ -182,6 +204,7 @@ export default  {
     IonTextarea,
     IonCard,
     IonCardContent,
+    IonCardHeader,
     IonToggle,
     IonIcon,
     IonItem,
@@ -190,6 +213,8 @@ export default  {
     IonItemDivider,
     IonItemGroup,
     IonButton,
+    IonProgressBar,
+    IonText,
     imageTileComp
     },
   setup(){
@@ -212,7 +237,10 @@ export default  {
       is_groups_marked:0,
       is_deleted:0,
       is_disabled:0,
-      is_counted:0
+      is_counted:0,
+      validity:0,
+      validity_perc:100,
+      validity_min:90
     }
   },
   computed: {
@@ -255,17 +283,13 @@ export default  {
   created(){
     this.listGroupGet()
     this.itemGet()
-    // this.groupChanged=(group_id,is_checked)=>{
-    //     console.log(group_id)
-    //   }
   },
   methods:{
     async itemGet(){
       try{
         let productItem=await jQuery.post( heap.state.hostname + "Product/itemGet", { product_id: this.productId })
-
-
         this.productItem=this.itemPrepare(productItem)
+        this.itemValidityCalc()
         this.itemParseFlags()
         this.itemMarkGroups()
       }catch{
@@ -306,20 +330,45 @@ export default  {
         this.itemGet()
       }
     },
-    saveForm(ev){
-      const field_name=ev.target.name;
-      const field_value=this.productItem[field_name]=ev.target.value
-      this.save(field_name,field_value)
+    itemValidityCalc(){
+      const requiredFields=[
+        "product_name",
+        "product_description",
+        "product_code",
+        "product_unit",
+        "product_quantity_min",
+        "product_weight",
+        "product_price",
+        "images",
+        "member_of_groups.group_ids"
+        ]
+      const filedsTotal=requiredFields.length
+      let validTotal=0
+      for(const fields of requiredFields){
+        let is_valid=0
+        for(const field of fields.split('|')){
+          let value=null
+          const path=field.split('.')
+          if(path[1]){//notation with dot
+            value=this.productItem[path[0]][path[1]]
+          } else {
+            value=this.productItem[path[0]]
+          }
+          if(value?.length>0){
+            is_valid=1
+            break
+          }
+        }
+        validTotal+=is_valid
+      }
+      this.validity=validTotal/filedsTotal
+      this.validity_perc=Math.round(this.validity*100)
     },
-    async save(field_name, field_value) {
-      let request = {
-        product_id:this.productId,
-        [field_name]:field_value
-      };
+    async itemUpdate(request){
       try{
+        request['validity']=this.validity_perc
         await jQuery.post( heap.state.hostname + "Product/itemUpdate", JSON.stringify(request))
-        this.productItem[field_name] = field_value;
-        this.itemParseFlags()
+        return true
       } catch(err){
         const validationErrors=err.responseJSON.messages.error
         if(validationErrors?.includes('product_description')){
@@ -328,8 +377,48 @@ export default  {
         if(validationErrors?.includes('product_name')){
           this.$flash("Название слишком короткое")
         } else 
-        this.$flash("Не удалось сохранить изменение")
+        this.$flash("Изменение не сохранено")
         this.itemGet()
+        return false
+      }
+    },
+    checkPromoPrice(field_name){
+      if( this.productItem.product_price<=this.productItem.product_promo_price ){
+        if(field_name=='product_promo_price'){
+          this.productItem.product_price=Number(this.productItem.product_promo_price)+1;
+        }
+        if(field_name=='product_price'){
+          this.productItem.product_promo_price=Number(this.productItem.product_price)-1;
+        }
+        const request = {
+          product_id:this.productId,
+          product_promo_price:this.productItem.product_promo_price,
+          product_price:this.productItem.product_price
+        };
+        this.itemValidityCalc()
+        this.itemUpdate(request)
+        this.$flash("Акционная цена должна быть ниже основной. Внимание цена изменена!")
+        return false
+      }
+      return true
+    },
+    saveForm(ev){
+      const field_name=ev.target.name;
+      const field_value=this.productItem[field_name]=ev.target.value
+      if( !this.checkPromoPrice(field_name) ){
+        return
+      }
+      this.save(field_name,field_value)
+    },
+    async save(field_name, field_value) {
+      let request = {
+        product_id:this.productId,
+        [field_name]:field_value
+      }
+      if( this.itemUpdate(request) ){
+        this.productItem[field_name] = field_value;
+        this.itemValidityCalc()
+        this.itemParseFlags()
       }
     },
     categoryDelete(group_id,group_name){
@@ -375,7 +464,14 @@ export default  {
         this.itemMarkGroups()
       }catch{/** */}
     },
-    
+    showProductInStore(){
+      console.log(this.productItem)
+      let sub_group_id=0;
+      try{
+        sub_group_id=this.productItem.member_of_groups.group_ids.split(',')[0];
+      } catch{/** */}
+      this.$router.push({path:('store-'+this.productItem.store_id),query:{sub_group_id}})
+    }
   },
 }
 </script>

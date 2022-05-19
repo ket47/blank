@@ -4,10 +4,13 @@ module.exports = {
   outputDir: path.resolve(__dirname, "../pwa/www"),
   pwa: {
     name: "Tezkel",
-    appleMobileWebAppCapable: true,
     themeColor: "#009dcd",
     msTileColor: "#009dcd",
+    appleMobileWebAppCapable: true,
+    appleMobileWebAppStatusBarStyle:'white',
     manifestOptions: {
+      name:"Tezkel fast delivery",
+      short_name:"Tezkel",
       background_color: "#fefefe"
     }
   }

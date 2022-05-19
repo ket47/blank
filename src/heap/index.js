@@ -27,11 +27,11 @@ const heap = createStore({
             return state.hostname;
         },
         userIsLogged(state){
-            return state.user.user_id > -1;
+            return state.user.user_id > 0;
         },
         isOnline(state){
             const isConnected=1;
-            return (state.user.user_id > -1) && isConnected;
+            return (state.user.user_id > 0) && isConnected;
         },
         cartListRestore(){
             const cartLastDays=30;

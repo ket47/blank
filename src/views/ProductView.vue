@@ -4,7 +4,7 @@
       <ion-list v-if="productItem">
         <ion-list-header>
           <h2>
-            {{ productItem.product_name }} <span v-if="!(productItem.is_counted && productItem.product_quantity>0)">(Нет в наличии)</span>
+            {{ productItem.product_name }} <span v-if="!isAvailable">(Нет в наличии)</span>
           </h2>
         </ion-list-header>
         <ion-item lines="none">
@@ -106,8 +106,11 @@ export default  {
       productItem: null
     };
   },
-  created(){
-      //
+  mounted(){
+    //this.getProduct();
+  },
+  ionViewDidEnter(){
+    this.getProduct();
   },
   computed:{
     categories(){
@@ -145,16 +148,18 @@ export default  {
         return null;
       }
       return entry.data.entry_comment??''
+    },
+    isAvailable(){
+      return this.productItem.is_counted==1?this.productItem.product_quantity>0:true;
     }
-  },
-  ionViewDidEnter(){
-    this.getProduct();
   },
   methods: {
       async getProduct(){
         try{
           this.productItem=await jQuery.post( heap.state.hostname + "Product/itemGet", { product_id: this.productId })
-        }catch{/** */}
+        }catch{
+          console.log('weird error is here')
+        }
       },
       cartCommentUpdate(comment){
         const entry={

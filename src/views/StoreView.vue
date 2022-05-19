@@ -164,11 +164,11 @@ ion-chip .active-chip {
     page-default-back-link="/home"
     page-class="store-page"
     :contentOnScroll="onScroll"
-    :page-title="pageTitle"
+    :page-title="this.storeItem.store_name??'Магазин'"
   >
   <div style="background-color:var(--ion-background-shade)">
     <div class="store-info">
-      <image-slider :imageList="storeItem.images" :imgHeight="400"></image-slider>
+      <image-slider :imageList="storeItem.images" :imgHeight="300"></image-slider>
       <ion-grid style="margin:15px 5px 5px 5px;"> 
         <ion-row>
           <ion-col>
@@ -231,22 +231,22 @@ ion-chip .active-chip {
 
 
     <div v-if="storeGroups" class="group-fixed-block hidden-block">
-      <ion-segment v-model="activeParentGroupId" scrollable>
+      <ion-segment v-model="groupSelectedParentId" scrollable>
         <ion-segment-button
           v-for="group_item in storeGroups"
           :key="group_item.group_id"
           :value="group_item.group_id"
-          @click="setActiveParentGroup(group_item.group_id)"
+          @click="groupSelectParent(group_item.group_id)"
           :ref="'group-tab-' + group_item.group_id"
         >
           <ion-label>{{ group_item.group_name }}</ion-label>
         </ion-segment-button>
       </ion-segment>
-      <ion-row v-if="storeGroups[activeParentGroupId]" class="groups-container">
+      <ion-row v-if="storeGroups[groupSelectedParentId]" class="groups-container">
         <ion-chip
           color="primary"
           v-show="storeProducts[group_item.group_id]"
-          v-for="group_item in storeGroups[activeParentGroupId].children"
+          v-for="group_item in storeGroups[groupSelectedParentId].children"
           :key="group_item.group_id"
           :ref="'group-chip-' + group_item.group_id"
           @click="scrollTo(group_item.group_id)"
@@ -268,24 +268,17 @@ ion-chip .active-chip {
 
 
 
-    <ion-searchbar class="search-container" :value="searchRequest" placeholder="Поиск в этом предприятии"
+    <ion-searchbar class="search-container" v-model="searchRequest" placeholder="Поиск в этом предприятии"
       @input="
-        getStoreProducts({
+        productListGet({
           name_query: $event.target.value,
           name_query_fields: 'product_name,product_code',
-        });
-        searchRequest = $event.target.value;
+        })
       "/>
 
-    <group-list v-if="storeGroups" :groupList="storeGroups" :onClick="(group_id) => {setActiveParentGroup(group_id) }"></group-list>
+    <group-list v-if="storeGroups" :groupList="storeGroups" :onClick="(group_id) => {groupSelectParent(group_id) }"></group-list>
 
-    <swiper
-      v-if="storeGroups"
-      pager="true"
-      :options="slideOpts"
-      class="product-list-slider"
-      @slideChange="slideChanged($event)"
-    >
+    <swiper v-if="storeGroups" pager="true" :options="slideOpts" class="product-list-slider" @slideChange="groupSliderChanged($event)">
       <swiper-slide v-for="parent_group_item in storeGroups" :key="parent_group_item.group_id">
 
         <ion-grid class="product-list">
@@ -389,59 +382,32 @@ export default defineComponent({
   data() {
     return {
       storeId: this.$route.params.id,
+      query:this.$route.query,
       searchRequest: "",
-      pageTitle:'Магазин',
-      error: "",
       storeItem: [],
       storeProducts: {},
       storeGroups: null,
-      activeGroup: { children: [] },
-      activeParentGroupId: 0,
-      offsetModificator: 150
+      groupSelectedParentId: 0,
+      offsetModificator: 150,
+      itemGetInProgress:false
     };
   },
-  computed: {
-    isSignedIn() {
-      return heap.state.user.user_id && heap.state.user.user_id > -1;
-    },
-  },
   methods: {
-    setActiveParentGroup(parent_group_id) {
-      this.activeParentGroupId = parent_group_id;
-      const first_group_id =  Object.keys(this.storeGroups[this.activeParentGroupId].children)[0];
-      const self = this;
-      setTimeout(function(){
-        self.scrollTo(first_group_id);
-        self.setSubgroupActive(first_group_id);
-      }, 200);
-      const swiper = document.querySelector('.product-list-slider').swiper;
-      const slide_index = Object.keys(this.storeGroups).indexOf(this.activeParentGroupId);
-      swiper.slideTo(slide_index,100,false);
-    },
-    slideChanged(event) {
-      const slideIndex=event.activeIndex
-      const groud_id = Object.keys(this.storeGroups)[slideIndex];
-      const first_group_id =  Object.keys(this.storeGroups[groud_id].children)[0];
-      const self=this
-      this.setActiveParentGroup(groud_id);
-      setTimeout(function(){
-        self.scrollTo(first_group_id);
-        self.setSubgroupActive(first_group_id);
-      }, 200);
-    },
-    async getStore() {
-      try{
-        const store=await jQuery.post(`${heap.state.hostname}Store/itemGet`, {store_id: this.storeId,distance_include:1})
-        this.storeItem = this.prepareStore(store);
-        this.storeId = store.store_id;
-        this.pageTitle=store.store_name
-        this.getStoreGroupTree({ store_id: this.storeId });
-        heap.commit('setCurrentStore',this.storeItem);
-      } catch(err){
-        //console.log(err)
+    async itemGet() {
+      if(this.itemGetInProgress){
+        return
       }
+      try{
+        this.itemGetInProgress=true
+        const store=await jQuery.post(`${heap.state.hostname}Store/itemGet`, {store_id: this.storeId,distance_include:1})
+        this.storeItem = this.itemPrepare(store);
+        this.storeId = store.store_id;
+        this.groupTreeGet({ store_id: this.storeId });
+        heap.commit('setCurrentStore',this.storeItem);
+        this.itemGetInProgress=false
+      } catch(err){/** */}
     },
-    prepareStore(storeItem) {
+    itemPrepare(storeItem) {
       if (storeItem.member_of_groups.group_names) {
         storeItem.store_group_names = storeItem.member_of_groups.group_names;
       }
@@ -450,17 +416,7 @@ export default defineComponent({
       storeItem.delivery=Utils.deliveryCalculate(storeItem);
       return storeItem;
     },
-    async getStoreGroupTree(filter) {
-      try{
-        this.storeGroups=await jQuery.get(`${heap.state.hostname}Product/groupTreeGet`, {store_id: filter.store_id})
-        const first_group_id = Object.keys(this.storeGroups)[0];
-        this.activeParentGroupId = first_group_id;
-        this.getStoreProducts();
-      }catch(err){
-        //console.log(err);
-      }
-    },
-    async getStoreProducts(filter = {}) {
+    async productListGet(filter = {}) {
       filter.store_id = this.storeId;
       filter.is_active = 1;
       if(this.storeItem.is_writable==1){
@@ -468,18 +424,30 @@ export default defineComponent({
         filter.is_deleted=1
       }
       if (filter.name_query && filter.name_query == "") {
-        this.getStoreGroupTree({ store_id: this.storeId });
+        this.groupTreeGet({ store_id: this.storeId });
         return;
       }
       try{
         const response=await jQuery.post(heap.state.hostname + "Product/listGet", filter)
-        this.prepareProductList(response.product_list);
-        this.addOtherGroup()
-        var first_group_id = Object.keys(
-          this.storeGroups[this.activeParentGroupId].children
-        )[0];
-        this.setSubgroupActive(first_group_id);
+        this.productListPrepare(response.product_list);
+        this.groupOtherAdd()
+
+        let self=this
+        setTimeout(()=>{
+          self.groupSelect();
+        })
       }catch{/** */}
+    },
+    productListPrepare(product_list) {
+      this.storeProducts = {};
+      for (var product of product_list) {
+        if (this.storeGroups){
+          if (!this.storeProducts[product.group_id??0]) {
+            this.storeProducts[product.group_id??0] = [];
+          }
+        }
+        this.storeProducts[product.group_id??0].push(product);
+      }
     },
     async productItemCreate(){
       try{
@@ -491,11 +459,22 @@ export default defineComponent({
         }
         const product_id=await jQuery.post(`${heap.state.hostname}Product/itemCreate`,request)
         this.$router.push(`product-edit-${product_id}`)
+        this.$flash("Добавлен 'Новый товар' в категорию 'Другое'")
       }catch{
         this.$flash("Не удалось создать товар")
       }
     },
-    addOtherGroup(){
+
+
+
+
+    async groupTreeGet(filter) {
+      try{
+        this.storeGroups=await jQuery.get(`${heap.state.hostname}Product/groupTreeGet`, {store_id: filter.store_id})
+        this.productListGet();
+      }catch(err){/** */}
+    },
+    groupOtherAdd(){
       if(this.storeProducts[0]){
         this.storeGroups['other']={
           group_id:'other',
@@ -513,49 +492,68 @@ export default defineComponent({
         }
       }
     },
-    prepareProductList(product_list) {
-      this.storeProducts = {};
-      for (var product of product_list) {
-        if (this.storeGroups){
-          if (!this.storeProducts[product.group_id]) {
-            this.storeProducts[product.group_id??0] = [];
+    groupSelect(){
+      let parent_group_id=this.query.parent_group_id
+      let sub_group_id=this.query.sub_group_id
+      if( sub_group_id ){
+        parentloop:for(let parent in this.storeGroups){
+          for(let sub in this.storeGroups[parent].children){
+            if(sub==sub_group_id){
+              parent_group_id=parent
+              break parentloop
+            }
           }
         }
-        this.storeProducts[product.group_id??0].push(product);
+      }
+      if( !parent_group_id ){
+        parent_group_id = Object.keys(this.storeGroups)[0];
+      }
+      this.groupSelectParent(parent_group_id)
+      if(sub_group_id){
+        this.groupSelectSub(sub_group_id)
       }
     },
-    setSubgroupActive(groupId) {
-      var chipList = document.querySelectorAll(".groups-container ion-chip");
-      for (var chip of chipList) {
+    groupSelectParent(parent_group_id){
+      this.groupSelectedParentId = parent_group_id;
+      const swiper = document.querySelector('.product-list-slider').swiper;
+      const slide_index = Object.keys(this.storeGroups).indexOf(this.groupSelectedParentId);
+      swiper.slideTo(slide_index,100,false);
+    },
+    groupSelectSub(sub_group_id){
+      document.querySelectorAll(".groups-container ion-chip").forEach(chip=>{
         chip.classList.remove("active-chip");
-      }
-      if (
-        this.$refs["group-chip-" + groupId] &&
-        this.$refs["group-chip-" + groupId][0] &&
-        this.$refs["group-chip-" + groupId][0].classList
-      ) {
-        this.$refs["group-chip-" + groupId][0].classList.add("active-chip");
-      }
+      });
+      try{
+        this.$refs["group-chip-" + sub_group_id][0].classList.add("active-chip");
+      }catch{/** */}
+      this.scrollTo(sub_group_id);
     },
-    scrollTo(groupId) {
-      if (!this.$refs["group-" + groupId][0]) {
+    groupSliderChanged(event) {
+      const slideIndex=event.activeIndex
+      const parent_groud_id = Object.keys(this.storeGroups)[slideIndex];
+      const sub_group_id =  Object.keys(this.storeGroups[parent_groud_id].children)[0];
+      this.groupSelectParent(parent_groud_id);
+      this.groupSelectSub(sub_group_id);
+    },
+
+
+
+
+    scrollTo(sub_group_id) {
+      if (!this.$refs["group-" + sub_group_id][0]) {
         return;
       }
       const offset=document.querySelector("ion-content").shadowRoot.querySelector("main").scrollTop;
-      const anchor=this.$refs["group-" + groupId][0].$el.getBoundingClientRect().top;
-      var elementPosition = offset+anchor - this.offsetModificator - (window.innerHeight/4);
-      var first_group_id = Object.keys(this.storeGroups[this.activeParentGroupId].children)[0];
-      if(first_group_id == groupId){
+      const anchor=this.$refs["group-" + sub_group_id][0].$el.getBoundingClientRect().top;
+      var elementPosition = offset + anchor - this.offsetModificator - (window.innerHeight/4);
+      var first_group_id = Object.keys(this.storeGroups[this.groupSelectedParentId].children)[0];
+      if(first_group_id == sub_group_id){
         elementPosition = offset+anchor - this.offsetModificator;
       }
       document
         .querySelector("ion-content")
         .shadowRoot.querySelector("main")
         .scrollTo({ top: elementPosition, behavior: "smooth" });
-      var self = this;  
-      setTimeout(function(){
-        self.setSubgroupActive(groupId);
-      }, 500);  
     },
     onScroll(event) {
       const offsetTop=document.querySelector(".product-list-slider")?.offsetTop;
@@ -572,17 +570,16 @@ export default defineComponent({
           row.getBoundingClientRect().bottom + this.offsetModificator >= (window.innerHeight - window.innerHeight/4) &&
           row.dataset.group_id
         ) {
-          this.setSubgroupActive(row.dataset.group_id);
           break;
         }
       }
     },
   },
   ionViewDidEnter() {
-    this.getStore();
+    this.itemGet();
   },
   mounted() {
-    this.getStore();
+    this.itemGet();
   },
   watch: {
     $route(currentRoute) {
