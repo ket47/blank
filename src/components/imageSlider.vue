@@ -9,11 +9,12 @@
     .crop-to-fit img {
       flex-shrink:0;
       min-width:100%;
+      max-width: unset;
     }
 </style>
 
 <template>
-    <swiper :modules="modules" :autoplay='{delay: 3000, disableOnInteraction: false}' :loop="true" effect="fade">
+    <swiper :modules="modules" :autoplay1='{delay: 3000, disableOnInteraction: false}' :loop="true" effect="fade">
         <swiper-slide v-for="image in imageList" :key="image.image_hash">
           <div class="crop-to-fit" :style="`height: ${imgHeight||300}px;`">
             <img :style="`min-height: ${imgHeight||300}px;`" :src="`${$heap.state.hostname}image/get.php/${image.image_hash}.${imgHeight*4||1200}.${imgHeight*4||1200}.webp`"/>

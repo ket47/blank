@@ -1,5 +1,5 @@
 <template>
-  <base-layout  pageLogo="./assets/icon/tezkel_logo.png">
+  <base-layout pageLogo="./assets/icon/tezkel_logo.png">
       <home-slider/>
       <user-address-widget :deliveryTime="primaryDeliveryTime"/>
       <home-primary-category-widget @deliveryTimeGet="deliveryTime=>{primaryDeliveryTime=deliveryTime}"/>

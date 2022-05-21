@@ -46,14 +46,14 @@ ion-avatar{
                 <div v-if="editMode" class="image_controls">
                     <ion-icon :icon="chevronBackCircleOutline" @click="back(img)"/>
                     <ion-icon :icon="checkmarkCircle" color="success" v-if="isAdmin && img.is_disabled==1" @click="enable(img)"/>
-                    <ion-icon :icon="trash" color="success" @click="restore(img)" v-if="img.deleted_at"/>
-                    <ion-icon :icon="trashBin" color="danger" @click="remove(img)" v-else/>
+                    <ion-icon :icon="addCircle" color="success" @click="restore(img)" v-if="img.deleted_at"/>
+                    <ion-icon :icon="trash" color="danger" @click="remove(img)" v-else/>
                     <ion-icon :icon="chevronForwardCircleOutline" @click="forward(img)"/>
                 </div>
             </div>
         </div>
     </div>
-    <input type="file" :id="`foto_upload${controller}`" accept="image/*" @change="uploadImage($event)" style="display:none">
+    <input type="file" :id="fileUploaderId" accept="image/*" @change="uploadImage($event)" style="display:none">
 </template>
 <script>
 import {
@@ -61,8 +61,8 @@ import {
     settingsSharp,
     chevronBackCircleOutline,
     chevronForwardCircleOutline,
-    trashBin,
     trash,
+    addCircle,
     checkmarkCircle
 }                               from 'ionicons/icons';
 import { 
@@ -88,12 +88,13 @@ export default {
     IonAvatar,
     },
     setup(){
-        return {settingsOutline,settingsSharp,chevronBackCircleOutline,chevronForwardCircleOutline,trashBin,trash,checkmarkCircle}
+        return {settingsOutline,settingsSharp,chevronBackCircleOutline,chevronForwardCircleOutline,trash,addCircle,checkmarkCircle}
     },
     data(){
         return {
             images_loaded:null,
-            editMode:false
+            editMode:false,
+            fileUploaderId:(this.controller+this.image_holder_id)
         }
     },
     computed:{
@@ -200,7 +201,7 @@ export default {
             }
         },
         take_photo(){
-            jQuery(`#foto_upload${this.controller}`).trigger('click');
+            jQuery(`#${this.fileUploaderId}`).trigger('click');
             this.editMode=true
         },
     }

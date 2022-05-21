@@ -23,9 +23,15 @@
     justify-content: center;
     display:flex;
 }
+.deleted .product_list_item_img{
+    border: 4px solid red;
+}
+.disabled .product_list_item_img{
+    border: 4px solid #666;
+}
 </style>
 <template>
-    <div :class="(!productItem.is_counted || productItem.product_quantity>0)?'':'absent'" :id="`product_list_item${productItem.product_id}`"
+    <div :class="item_class" :id="`product_list_item${productItem.product_id}`"
         >
         <div class="product_list_item_img">
             <div style="position:relative;top:-50%;">
@@ -57,6 +63,20 @@ export default {
     IonImg,
     CartAddButtons
     },
-    props:['productItem']
+    props:['productItem'],
+    computed:{
+        item_class(){
+            if(this.productItem.deleted_at){
+                return 'deleted'
+            }
+            if(this.productItem.disabled==1){
+                return 'disabled'
+            }
+            if(this.productItem.is_counted && this.productItem.product_quantity<1){
+                return 'absent'
+            }
+            return ''
+        }
+    }
 }
 </script>

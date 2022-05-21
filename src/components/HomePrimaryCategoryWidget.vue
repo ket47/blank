@@ -8,7 +8,7 @@
         </ion-item>
 
         <div id="hcat_widget_grid">
-            <div v-for="group in productGroupList" :key="group.group_id">
+            <div v-for="group in productGroupList" :key="group.group_id" @click="$router.push(`store-${primaryStoreData.store_id}?parent_group_id=${group.group_id}`)">
                 <ion-thumbnail>
                     <ion-img :src="$heap.state.hostname + 'image/get.php/'+group.image_hash+'.100.100.webp'"/>
                 </ion-thumbnail>
@@ -20,11 +20,12 @@
 
 <style scoped>
 #hcat_widget_grid {
-    display: grid;
-    margin:10px;
-    gap:6px;
-    grid-template-columns: repeat(3,1fr);
-    grid-template-rows: 140px;
+  cursor: pointer;
+  display: grid;
+  margin:10px;
+  gap:6px;
+  grid-template-columns: repeat(3,1fr);
+  grid-template-rows: 140px;
 }
 ion-thumbnail{
   border-radius:10px;
@@ -88,7 +89,7 @@ export default defineComponent({
       main_location_id:null,
     };
   },
-  created(){
+  mounted(){
     let self=this;
     this.$topic.on('userMainLocationSet',mainloc=>{
       self.main_location_id=mainloc.location_id;
@@ -100,6 +101,7 @@ export default defineComponent({
     })
     this.main_location_id=heap.state.user.location_main?heap.state.user.location_main.location_id:null
     this.productGroupListGet()
+            console.log('userMainLocationSet');
   },
   methods: {
     async productGroupListGet() {
@@ -113,6 +115,8 @@ export default defineComponent({
           this.primaryStoreData=primaryStore
           this.$emit('deliveryTimeGet',this.deliveryTime)
         } catch(err){
+          this.productGroupList=null
+          this.primaryStoreData=null
           //
         }
     },

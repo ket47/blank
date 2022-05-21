@@ -168,7 +168,7 @@ ion-chip .active-chip {
   >
   <div style="background-color:var(--ion-background-shade)">
     <div class="store-info">
-      <image-slider :imageList="storeItem.images" :imgHeight="300"></image-slider>
+      <image-slider :imageList="storeItem.images" :imgHeight="250"></image-slider>
       <ion-grid style="margin:15px 5px 5px 5px;"> 
         <ion-row>
           <ion-col>
@@ -225,10 +225,31 @@ ion-chip .active-chip {
           </ion-col>
         </ion-row>
       </ion-grid>
+      <ion-accordion-group style="width:100%">
+        <ion-accordion>
+          <ion-item slot="header">
+            <ion-label slot="end">Еще</ion-label>
+          </ion-item>
+
+          <ion-list slot="content">
+            <ion-item lines="none">
+              <ion-text><b>{{storeItem.store_company_name}}</b></ion-text>
+            </ion-item>
+            <ion-item lines="none">
+              <ion-label>ИНН</ion-label>
+              <ion-label>{{storeItem.store_tax_num}}</ion-label>
+            </ion-item>
+            <ion-item lines="none">
+              <ion-label>Телефон</ion-label>
+              <ion-label>{{storeItem.store_phone}}</ion-label>
+            </ion-item>
+            <ion-item lines="none">
+              <ion-text>{{storeItem.locations?.[0].location_address}}</ion-text>
+            </ion-item>
+          </ion-list>
+        </ion-accordion>
+      </ion-accordion-group>
     </div>
-
-
-
 
     <div v-if="storeGroups" class="group-fixed-block hidden-block">
       <ion-segment v-model="groupSelectedParentId" scrollable>
@@ -256,18 +277,6 @@ ion-chip .active-chip {
       </ion-row>
     </div>
 
-
-
-
-
-
-
-
-
-
-
-
-
     <ion-searchbar class="search-container" v-model="searchRequest" placeholder="Поиск в этом предприятии"
       @input="
         productListGet({
@@ -279,6 +288,8 @@ ion-chip .active-chip {
     <group-list v-if="storeGroups" :groupList="storeGroups" :onClick="(group_id) => {groupSelectParent(group_id) }"></group-list>
 
     <swiper v-if="storeGroups" pager="true" :options="slideOpts" class="product-list-slider" @slideChange="groupSliderChanged($event)">
+      
+      {{storeGroups}}
       <swiper-slide v-for="parent_group_item in storeGroups" :key="parent_group_item.group_id">
 
         <ion-grid class="product-list">
@@ -318,6 +329,10 @@ import {
   IonChip,
   IonSearchbar,
   IonButton,
+  IonAccordion,
+  IonAccordionGroup,
+  IonList,
+  IonItem
 }                         from "@ionic/vue";
 import { 
   Autoplay
@@ -365,6 +380,10 @@ export default defineComponent({
     IonChip,
     IonSearchbar,
     IonButton,
+    IonAccordion,
+    IonAccordionGroup,
+    IonList,
+    IonItem,
     ImageSlider,
     Swiper,
     SwiperSlide,
@@ -405,7 +424,9 @@ export default defineComponent({
         this.groupTreeGet({ store_id: this.storeId });
         heap.commit('setCurrentStore',this.storeItem);
         this.itemGetInProgress=false
-      } catch(err){/** */}
+      } catch(err){
+        console.log(err)
+      }
     },
     itemPrepare(storeItem) {
       if (storeItem.member_of_groups.group_names) {
@@ -427,16 +448,18 @@ export default defineComponent({
         this.groupTreeGet({ store_id: this.storeId });
         return;
       }
+      let response={};
       try{
-        const response=await jQuery.post(heap.state.hostname + "Product/listGet", filter)
-        this.productListPrepare(response.product_list);
-        this.groupOtherAdd()
+        response=await jQuery.post(heap.state.hostname + "Product/listGet", filter)
+      }catch(err){/** */}
 
-        let self=this
-        setTimeout(()=>{
-          self.groupSelect();
-        })
-      }catch{/** */}
+      this.productListPrepare(response.product_list);
+      this.groupOtherAdd()
+
+      let self=this
+      setTimeout(()=>{
+        self.groupSelect();
+      })
     },
     productListPrepare(product_list) {
       this.storeProducts = {};
@@ -476,7 +499,7 @@ export default defineComponent({
     },
     groupOtherAdd(){
       if(this.storeProducts[0]){
-        this.storeGroups['other']={
+        this.storeGroups[0]={
           group_id:'other',
           group_name:"Другое",
           image_hash:"",
@@ -505,8 +528,10 @@ export default defineComponent({
           }
         }
       }
-      if( !parent_group_id ){
-        parent_group_id = Object.keys(this.storeGroups)[0];
+      if( parent_group_id ){
+        sub_group_id=Object.keys(this.storeGroups[parent_group_id].children)[0]
+      } else {
+        parent_group_id = Object.keys(this.storeGroups)[0]
       }
       this.groupSelectParent(parent_group_id)
       if(sub_group_id){
