@@ -72,7 +72,7 @@ export default {
             if(this.productItem.disabled==1){
                 return 'disabled'
             }
-            if(this.productItem.is_counted && this.productItem.product_quantity<1){
+            if(this.productItem.is_counted==1 && this.productItem.product_quantity<1){
                 return 'absent'
             }
             return ''

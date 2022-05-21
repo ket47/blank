@@ -76,7 +76,8 @@ import {
   IonChip,
   IonLabel,
   IonList,
-
+  IonFab,
+  IonFabButton
 }                       from '@ionic/vue'
 import ImageSlider      from '@/components/ImageSlider'
 import CartAddButtons   from '@/components/CartAddButtons'
@@ -96,9 +97,11 @@ export default  {
     IonChip,
     IonLabel,
     IonList,
+    IonFab,
+    IonFabButton
   },
   setup(){
-    return {CartHeader,compassOutline,cartOutline,pricetagOutline,giftOutline,walletOutline,chatboxEllipsesOutline,settingsOutline}
+    return {CartHeader,compassOutline,cartOutline,pricetagOutline,giftOutline,walletOutline,chatboxEllipsesOutline,settingsOutline,searchOutline}
   },
   data() {
     return { 

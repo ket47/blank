@@ -77,7 +77,7 @@
           </ion-item-divider>
           <ion-item>
             <ion-label position="stacked" color="primary">Название*</ion-label>
-            <ion-input v-model="productItem.product_name" name="product_name" placeholder="полное название товара" clearInput="true" autofocus/>
+            <ion-input v-model="productItem.product_name" name="product_name" placeholder="полное название товара" clearInput="true"/>
           </ion-item>
           <ion-item>
             <ion-label position="stacked" color="primary">Описание*</ion-label>
