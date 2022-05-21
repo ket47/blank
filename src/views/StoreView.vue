@@ -168,7 +168,7 @@ ion-chip .active-chip {
   >
   <div style="background-color:var(--ion-background-shade)">
     <div class="store-info">
-      <image-slider :imageList="storeItem.images" :imgHeight="250"></image-slider>
+      <image-slider :imageList="storeItem.images" :imgHeight="200"></image-slider>
       <ion-grid style="margin:15px 5px 5px 5px;"> 
         <ion-row>
           <ion-col>
@@ -201,6 +201,15 @@ ion-chip .active-chip {
         <ion-row>
           <ion-col>
             <div style="border-bottom:1px solid var(--ion-color-primary-tint)"></div>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col>
+          <div v-if="storeItem.deliveryTime">
+            <ion-chip v-if="storeItem.is_opened" color="success">Открыт до {{ storeItem.store_time_closes }}:00</ion-chip>
+            <ion-chip v-else color="danger">Закрыт до {{ storeItem.store_time_opens }}:00</ion-chip>
+            <ion-chip v-if="storeItem.deliveryTime.timeMin" color="primary">{{storeItem.deliveryTime.timeMin}}-{{storeItem.deliveryTime.timeMax}}мин</ion-chip>
+          </div>
           </ion-col>
         </ion-row>
         <ion-row>
@@ -428,13 +437,13 @@ export default defineComponent({
         console.log(err)
       }
     },
-    itemPrepare(storeItem) {
+   itemPrepare(storeItem) {
       if (storeItem.member_of_groups.group_names) {
         storeItem.store_group_names = storeItem.member_of_groups.group_names;
       }
-      var date = new Date();
-      storeItem.willBeClosedAt = storeItem["store_time_closes_" + date.getDay()];
-      storeItem.delivery=Utils.deliveryCalculate(storeItem);
+      try{
+        storeItem.deliveryTime=Utils.deliveryTimeCalculate(storeItem.locations[0].distance,storeItem.store_time_preparation)
+      }catch{/** */}
       return storeItem;
     },
     async productListGet(filter = {}) {

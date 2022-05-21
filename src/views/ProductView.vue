@@ -101,7 +101,7 @@ export default  {
     IonFabButton
   },
   setup(){
-    return {CartHeader,compassOutline,cartOutline,pricetagOutline,giftOutline,walletOutline,chatboxEllipsesOutline,settingsOutline,searchOutline}
+    return {CartHeader,compassOutline,cartOutline,pricetagOutline,giftOutline,walletOutline,chatboxEllipsesOutline,settingsOutline}
   },
   data() {
     return { 

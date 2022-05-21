@@ -16,8 +16,8 @@
 .product_list_item_img{
     border-radius: 10px;
     border: 2px solid var(--ion-color-light);
-    width:130px;
-    height:130px;
+    width:160px;
+    height:160px;
     overflow:hidden;
     align-items: center;
     justify-content: center;
@@ -37,7 +37,7 @@
             <div style="position:relative;top:-50%;">
                 <cart-add-buttons buttonLayout="vertical" :productItem="productItem"></cart-add-buttons>
             </div>
-            <ion-img @click="$router.push(`product-${productItem.product_id}`)" :src="`${$heap.state.hostname}image/get.php/${productItem.image_hash}.150.150.webp`"/>
+            <ion-img @click="$router.push(`product-${productItem.product_id}`)" :src="`${$heap.state.hostname}image/get.php/${productItem.image_hash}.200.200.webp`"/>
         </div>
         <div style="height:3.5em;overflow:hidden">
             <span v-if="productItem.product_price!=productItem.product_final_price" style="color:var(--ion-color-danger)">

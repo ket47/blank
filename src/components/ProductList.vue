@@ -2,7 +2,7 @@
     .product_list_widget_grid {
     display: grid;
     gap: 2%;
-    grid-template-columns: repeat(auto-fit,130px);
+    grid-template-columns: repeat(auto-fit,160px);
     font-size: 0.8em;
     }
 </style>
