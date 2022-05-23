@@ -36,12 +36,11 @@
         <ion-text style="margin:5px" color="primary">{{$heap.state.user?.location_main?.location_address}}</ion-text>
       </div>
       <div class="rightend" v-if="deliveryTime">
-        <ion-text style="font-size:24px">{{deliveryTime.time}}</ion-text>
-        <ion-note style="font-size:10px">мин</ion-note>
+        <ion-text style="font-size:24px;color:var(--ion-color-secondary-contrast)">{{deliveryTime.time}}</ion-text>
+        <ion-note style="font-size:10px;color:var(--ion-color-secondary-contrast)">мин</ion-note>
       </div>
       <div class="rightend" v-else></div>
     </div>
-
     <ion-item v-else detail button @click="selectDeliveryAddress()">
       <ion-icon
         slot="start"
