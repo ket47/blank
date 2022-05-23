@@ -19,6 +19,9 @@ import '@ionic/vue/css/display.css';
 import './theme/variables.css';
 import './theme/core.css';
 
+/* Theme color */
+import './theme/color_blue.css';
+
 import { createApp }        from 'vue';
 import { isPlatform }       from '@ionic/vue';
 import { IonicVue }         from '@ionic/vue';
