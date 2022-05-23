@@ -9,13 +9,13 @@
     }
 </style>
 <template>
-    <ion-list v-if="orderData">
+    <ion-list v-if="orderData && job">
         <ion-item lines="none">
             <ion-avatar slot="start">
                 <ion-icon :icon="locationOutline" style="font-size:30px"/>
             </ion-avatar>
             <ion-label>
-                <ion-text color="primary">Курьер, {{job?.courier_name}}</ion-text>
+                <ion-text color="primary">Курьер, {{job.courier_name}}</ion-text>
             </ion-label>            
         </ion-item>
 
