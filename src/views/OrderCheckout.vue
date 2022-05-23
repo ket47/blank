@@ -82,14 +82,37 @@ import {
     pieChartOutline
     }                           from 'ionicons/icons';
 import { 
+    modalController,
     IonTextarea,
-    modalController 
+    IonItemDivider,
+    IonIcon,
+    IonItem,
+    IonList,
+    IonText,
+    IonItemGroup,
+    IonButton,
+    IonCol,
+    IonRow,
+    IonGrid,
 }                               from "@ionic/vue";
 import UserAddressWidget        from '@/components/UserAddressWidget.vue';
-import PaymentCardModal         from '@/components/PaymentCardModal.vue';
+import OrderPaymentCardModal         from '@/components/OrderPaymentCardModal.vue';
 
 export default({
-    components: { UserAddressWidget,IonTextarea },
+    components: { 
+        UserAddressWidget,
+        IonTextarea,
+        IonItemDivider,
+        IonIcon,
+        IonItem,
+        IonList,
+        IonText,
+        IonItemGroup,
+        IonButton,
+        IonCol,
+        IonRow,
+        IonGrid,
+    },
     setup(){
         return {cardOutline,cashOutline,giftOutline,cubeOutline,walletOutline,pieChartOutline};
     },
@@ -175,7 +198,7 @@ export default({
         async paymentFormOpen( order_data ) {
             const self=this;
             const modal = await modalController.create({
-                component: PaymentCardModal,
+                component: OrderPaymentCardModal,
                 componentProps:{order_data},
                 initialBreakpoint: 0.85,
                 breakpoints: [0, 0.85, 0.95]

@@ -1,7 +1,7 @@
 
 <template>
   <ion-header>
-      <ion-toolbar color="light">
+      <ion-toolbar color="secondary">
           <ion-title slot="start" style="color:black">Оплата картой</ion-title>
           <ion-icon :icon="closeOutline" @click="closeModal();" slot="end" size="large"></ion-icon>
       </ion-toolbar>
@@ -15,13 +15,26 @@
 </template>
 
 <script>
+import {
+  modalController,
+  IonTitle,
+  IonIcon,
+  IonToolbar,
+  IonHeader,
+  IonContent,
+}                           from "@ionic/vue";
 import {closeOutline}       from 'ionicons/icons';
 import loading              from '@/assets/icons/loading.svg';
-import {modalController}    from "@ionic/vue";
 import jQuery               from 'jquery';
 
 export default{
-  components: {},
+  components: {
+  IonTitle,
+  IonIcon,
+  IonToolbar,
+  IonHeader,
+  IonContent,
+  },
   props:['order_data'],
   setup() {
       const closeModal = function(){

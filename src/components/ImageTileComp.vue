@@ -29,7 +29,7 @@ ion-avatar{
 <template>
     <div>
         <ion-item lines="none">
-            <ion-label>Фотографии</ion-label>
+            <ion-label color="imageList?.length?'':medium">Фотографии</ion-label>
             <ion-icon v-if="editMode" slot="end" :icon="settingsSharp" color="primary" @click="editMode=0"/>
             <ion-icon v-else slot="end" :icon="settingsOutline" @click="editMode=1;load()"/>
         </ion-item>

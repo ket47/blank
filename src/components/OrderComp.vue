@@ -68,6 +68,7 @@
         </ion-grid>
 
 
+
         <ion-accordion-group v-if="orderData.stages">
             <ion-accordion>
                 <ion-item slot="header">
@@ -113,9 +114,6 @@
 </template>
 
 <script>
-import { add, remove, trash, storefrontOutline,checkmarkOutline }   from 'ionicons/icons';
-import router from '@/router';
-import CartAddButtons from '@/components/CartAddButtons.vue';
 import {
     IonIcon,
     IonText,
@@ -133,10 +131,17 @@ import {
     IonAccordion,
     IonAccordionGroup,
     IonSkeletonText
-}                   from '@ionic/vue';
+}                       from '@ionic/vue';
+import { 
+    add,
+    remove, 
+    trash, 
+    storefrontOutline,
+    checkmarkOutline 
+}                       from 'ionicons/icons';
+import CartAddButtons   from '@/components/CartAddButtons.vue';
 
 export default({
-    inject:['$Order'],
     props:['orderData'],
     components: {
     CartAddButtons,
@@ -197,11 +202,11 @@ export default({
     },
     methods:{
         storeOpen(){
-            router.push({path: `/store-${this.orderData.order_store_id}`});
+            this.$router.push({path: `/store-${this.orderData.order_store_id}`});
             this.parentClose();
         },
         productOpen(product_id){
-            router.push({path: `/product-${product_id}`});
+            this.$router.push({path: `/product-${product_id}`});
             this.parentClose();
         },
         parentClose(){

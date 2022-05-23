@@ -14,12 +14,12 @@ const User = {
         .done(function(response, textStatus, request){
             const sid = request.getResponseHeader('x-sid');
             User.sessionIdUse(sid);
-            heap.commit('setUser', response);
-            Topic.publish('userGet',response);
             if(mode=='full'){
                 User.courier.data=response.courier
                 User.courier.parseStatus()
             }
+            heap.commit('setUser', response);
+            Topic.publish('userGet',response);
         });
         // if( User.isCourier() ){
         //     await User.courier.get();

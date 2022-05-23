@@ -33,6 +33,9 @@ const Order = {
         async itemJobStart( order_id,courier_id ){
             return jQuery.post( heap.state.hostname + "Courier/itemJobStart", {order_id,courier_id} );
         },
+        async itemJobTrack( order_id ){
+            return jQuery.post( heap.state.hostname + "Courier/itemJobTrack", {order_id} );
+        },
 
         async entrySave(entry,order_id){
             if( entry.entry_id ){

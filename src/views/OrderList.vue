@@ -19,17 +19,20 @@
         </ion-segment>
         <ion-list v-if="orderList.length">
             <ion-item v-for="order in orderListComputed" :key="order.order_id" @click="itemClick(order)" detail lines="full">
-                <ion-avatar slot1="start">
+                <ion-avatar slot="start">
                     <ion-icon v-if="order.user_role=='customer'" src="./assets/icon/box-delivery.svg"/>
-                    <ion-icon v-if="order.user_role=='delivery'" src="./assets/icon/delivery_staying.svg"/>
-                    <ion-icon v-if="order.user_role=='admin'" src="./assets/icon/crown.svg"/>
+                    <ion-icon v-if="order.user_role=='courier'" src="./assets/icon/delivery_staying.svg"/>
+                    <ion-icon v-if="order.user_role=='admin'" src="./assets/icon/crown.svg" style="font-size:24px;"/>
                     <ion-icon v-if="order.user_role=='supplier'" :icon="storefrontOutline" style="font-size:24px;"/>
                 </ion-avatar>
-                <ion-label>
-                    <ion-text color="primary">{{order.store_name}} #{{order.order_id}} ({{order.order_sum_total}}{{$heap.state.currencySign}})</ion-text>
-                    <p><b>{{order.distance_km}}</b>{{order.location_address}}</p>
-                    <h4>{{order.stage_current_name}}</h4>
-                </ion-label>
+                <ion-text>
+                    <ion-label>{{order.store_name}} #{{order.order_id}} ({{order.order_sum_total}}{{$heap.state.currencySign}})</ion-label>
+                    <ion-label>
+                        <ion-chip color="primary" v-if="order.distance_km">{{order.distance_km}}</ion-chip>
+                        <ion-chip color="success" v-if="order.stage_current_name">{{order.stage_current_name}}</ion-chip>
+                    </ion-label>
+                    <ion-note>{{order.location_address}}</ion-note>
+                </ion-text>
                 <!--
                 <ion-thumbnail slot="end" v-if="order.image_hash">
                     <ion-img style="border-radius:10px;" :src="`${$heap.state.hostname}image/get.php/${order.image_hash}.150.150.webp`"/>
@@ -48,6 +51,7 @@
 </template>
 <script>
 import { 
+    modalController,
     IonSegment,
     IonSegmentButton,
     IonIcon,
@@ -56,9 +60,8 @@ import {
     IonLabel,
     IonItem,
     IonList,
-
-
-    modalController
+    IonChip,
+    IonNote
 }                   from '@ionic/vue';
 import {
     storefrontOutline,
@@ -81,6 +84,8 @@ export default {
     IonLabel,
     IonItem,
     IonList,
+    IonChip,
+    IonNote
     },
     setup() {
       return { sparklesOutline,storefrontOutline,timeOutline };
@@ -99,9 +104,9 @@ export default {
                 if( !order.location_address ){
                     order.location_address='';
                 }
-                order.location_address=order.location_address.split(',').reverse().join(',');
+                //order.location_address=order.location_address.split(',').reverse().join(',');
                 if( order.distance ){
-                    order.distance_km=Math.round(order.distance/1000)+'км';
+                    order.courier_supplier_distance_km=Math.round(order.distance/1000)+'км';
                 } else {
                     order.distance_km='';
                 }
@@ -176,7 +181,7 @@ export default {
             if( order.is_courier_job ){
                 const modal = await modalController.create({
                     component: CourierJobPreview,
-                    componentProps:{order},
+                    componentProps:{orderData:order},
                     initialBreakpoint: 0.5,
                     breakpoints: [0, 0.5, 0.75]
                     });

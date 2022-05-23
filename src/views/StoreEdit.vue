@@ -84,7 +84,7 @@
           <ion-text>
             {{storeItem.store_name}}
             <div>
-              <ion-button @click="storeItem.store_name_new=storeItem.store_name">Изменить</ion-button>
+              <ion-button @click="storeItem.store_name_new=storeItem.store_name;save('store_name_new',storeItem.store_name_new)">Изменить</ion-button>
             </div>
           </ion-text>
         </ion-item>
@@ -99,7 +99,7 @@
           <ion-text>
             {{storeItem.store_description}}
             <div>
-            <ion-button @click="storeItem.store_description_new=storeItem.store_description">Изменить</ion-button>
+            <ion-button @click="storeItem.store_description_new=storeItem.store_description;save('store_description_new',storeItem.store_description_new)">Изменить</ion-button>
             </div>
           </ion-text>
         </ion-item>
@@ -118,7 +118,7 @@
           <ion-text>
             {{storeItem.store_company_name}}
             <div>
-            <ion-button @click="storeItem.store_company_name_new=storeItem.store_company_name">Изменить</ion-button>
+            <ion-button @click="storeItem.store_company_name_new=storeItem.store_company_name;save('store_company_name_new',storeItem.store_company_name_new)">Изменить</ion-button>
             </div>
           </ion-text>
         </ion-item>
@@ -412,7 +412,7 @@ export default  {
       is_primary:0,
       validity:0,
       validity_perc:100,
-      validity_min:90
+      validity_min:80
     }
   },
   computed: {

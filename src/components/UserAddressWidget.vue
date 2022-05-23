@@ -51,7 +51,7 @@
       <ion-label> Выбрать адрес доставки </ion-label>
     </ion-item>
 
-    <ion-item v-if="showComment">
+    <ion-item v-if="showComment && $heap.state.user.location_main">
         <ion-textarea placeholder="комментарий к адресу" @change="locationCommentChanged()" v-model="$heap.state.user.location_main.location_comment"></ion-textarea>
     </ion-item>
 </template>

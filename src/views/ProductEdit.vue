@@ -240,7 +240,7 @@ export default  {
       is_counted:0,
       validity:0,
       validity_perc:100,
-      validity_min:90
+      validity_min:80
     }
   },
   computed: {

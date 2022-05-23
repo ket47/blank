@@ -25,80 +25,86 @@ ion-text{
 </style>
 <template>
   <base-layout page-title="Анкета курьера" page-default-back-link="/user-dashboard">
-  <div v-if="!courier">
-    <ion-card>
-      <ion-item>
-        <ion-label>Пока вы не курьер</ion-label>
-      </ion-item>
-      <ion-item>
-        <ion-text>
-        Подавая заявку вы даете согласие на условия 
-        <a href="#/page-courier_contract">Договор о предоставлении услуг</a>
-        </ion-text>
-        <ion-checkbox v-model="contractAccepted" slot="end"/>
-      </ion-item>
-      <ion-button expand="full" @click="itemCreate()" :disabled="!contractAccepted">Стать курьером</ion-button>
-    </ion-card>
-  </div>
+    <div v-if="!courier">
+      <ion-card>
+        <ion-item>
+          <ion-label>Пока вы не курьер</ion-label>
+        </ion-item>
+        <ion-item>
+          <ion-text>
+          Подавая заявку вы даете согласие на условия 
+          <a href="#/page-courier_contract">Договор о предоставлении услуг</a>
+          </ion-text>
+          <ion-checkbox v-model="contractAccepted" slot="end"/>
+        </ion-item>
+        <ion-button expand="full" @click="itemCreate()" :disabled="!contractAccepted">Стать курьером</ion-button>
+      </ion-card>
+    </div>
 
-  <div v-if="courier">
-    <ion-card lines="none" v-if="message">
-      <ion-card-content :class="messageClass">
-        {{message}}
-      </ion-card-content>
-    </ion-card>
-    <ion-card lines="none" v-else>
-      <ion-card-content style="background-color: var(--ion-color-success-tint);">
-      Анкета активна
-      </ion-card-content>
-    </ion-card>
-    
-    <form @change="updateCourier()">
+    <div v-if="courier">
+      <ion-card lines="none" v-if="message">
+        <ion-card-content :class="messageClass">
+          {{message}}
+        </ion-card-content>
+      </ion-card>
+      <ion-card lines="none" v-else>
+        <ion-card-content style="background-color: var(--ion-color-success-tint);">
+        Анкета активна. Вы можете открыть смену для приема заказов.
+        </ion-card-content>
+      </ion-card>
+      
+      <form @change="updateCourier()">
         <ion-list>
-          <ion-item lines="full">
-            <ion-thumbnail v-if="courier?.images[0]" slot="start">
-              <ion-img style="border-radius:10px;" :class="imageClass" :src="$heap.state.hostname + 'image/get.php/'+courier.images[0].image_hash+'.100.100.webp'"/>
-            </ion-thumbnail>
-            <ion-button slot="end" @click="uploadImageTrigger()">Загрузить фото</ion-button>
-            <input type="file" id="courier_foto_upload" accept="image/*" @change="uploadImage($event)" style="display:none">
+          <ion-item>
+            <ion-icon :src="trashOutline" color="primary" slot="start"/>
+            Удалено
+            <ion-toggle slot="end" v-model="is_deleted" color="danger" @ionChange="itemDelete($event.target.checked?1:0)"></ion-toggle>
+          </ion-item>
+          <ion-item>
+            <ion-icon :src="searchOutline" color="primary" slot="start"/>
+            На модерации
+            <ion-toggle slot="end" v-model="is_disabled" @ionChange="itemDisable($event.target.checked?1:0)"></ion-toggle>
           </ion-item>
 
+          <ion-item-divider>
+            <ion-label>Основные настройки</ion-label>
+          </ion-item-divider>
           <ion-item lines="full">
             <ion-label position="stacked" color="primary">Транспорт</ion-label>
-            <ion-input v-model="courier.courier_vehicle"/>
+            <ion-input v-model="courier.courier_vehicle" placeholder="автомобиль, мопед, велосипед"/>
           </ion-item>
-
           <ion-item lines="full">
             <ion-label position="stacked" color="primary">ИНН</ion-label>
-            <ion-input v-model="courier.courier_tax_num"/>
+            <ion-input v-model="courier.courier_tax_num" placeholder="Ваш ИНН"/>
           </ion-item>
-
           <ion-item lines="full">
             <ion-label position="stacked" color="primary">Коментарий</ion-label>
-            <ion-textarea v-model="courier.courier_comment"></ion-textarea>
-          </ion-item>
-          <ion-item v-if="courier.deleted_at" lines="none">
-              <ion-button slot="end" @click="itemUnDelete()" color="success">Восстановить</ion-button>
-          </ion-item>
-          <ion-item v-else lines="none">
-              <ion-button slot="end" color="danger" @click="itemDelete()">Удалить анкету</ion-button>
-          </ion-item>
-
-          <ion-item v-if="showDisable" lines="none">
-              <ion-button slot="end" @click="itemDisable()" color="dark">Заблокировать анкету</ion-button>
-          </ion-item>
-          <ion-item v-if="showEnable" lines="none">
-              <ion-button slot="end" @click="itemEnable()" color="success">Утвердить анкету</ion-button>
-          </ion-item>
-          <ion-item lines="none">
-            <ion-text>
-              <a @click="$router.push('/page-courier_contract')">Договор о предоставлении услуг курьера</a>
-            </ion-text>
+            <ion-textarea v-model="courier.courier_comment" placeholder="Цвет, номер авто"></ion-textarea>
           </ion-item>
         </ion-list>
-    </form>
-  </div>
+      </form>
+      <ion-list v-if="courier">
+        <ion-item-divider>
+          <ion-label>Ваше фото</ion-label>
+        </ion-item-divider>
+        <image-tile-comp :images="courier.images" :image_holder_id="courier.courier_id" controller="Courier" ref="courierImgs"></image-tile-comp>
+        <ion-button @click="$refs.courierImgs.take_photo()" size="small" expand="full" color="medium">
+          <ion-icon :src="cameraOutline"/> Добавить
+        </ion-button>
+      </ion-list>
 
+      <ion-list>
+        <ion-item-divider>
+          <ion-label>Информация</ion-label>
+        </ion-item-divider>
+        <ion-item lines="none" button detail @click="$router.push('/page-courier_contract')">
+          <ion-icon :src="documentTextOutline" slot="start"></ion-icon>
+          <ion-text>
+            Оферта об оказании услуг доставки
+          </ion-text>
+        </ion-item>
+      </ion-list>
+    </div>
   </base-layout>
 </template>
 
@@ -115,14 +121,26 @@ import {
   IonThumbnail,
   IonList,
   IonCheckbox,
-  IonText
+  IonText,
+  IonItemDivider,
+  IonItemGroup,
+  IonToggle,
+  IonIcon,
 }                   from "@ionic/vue";
+import {
+  cameraOutline,
+  trashOutline,
+  searchOutline,
+  documentTextOutline
+}                     from 'ionicons/icons'
 import jQuery       from "jquery";
 import heap         from '@/heap';
 import User         from '@/scripts/User.js';
+import imageTileComp  from '@/components/ImageTileComp.vue'
 
 export default  {
   components: {
+  imageTileComp,
   IonTextarea,
   IonInput,
   IonCard,
@@ -134,17 +152,31 @@ export default  {
   IonThumbnail,
   IonList,
   IonCheckbox,
-  IonText
+  IonText,
+  IonItemDivider,
+  IonItemGroup,
+  IonToggle,
+  IonIcon,
+  },
+  setup(){
+    return {
+  cameraOutline,
+  trashOutline,
+  searchOutline,
+  documentTextOutline
+    }
   },
   data(){
     return {
       courier:User.courier.data,
       isAdmin:User.isAdmin(),
-      contractAccepted:0
+      contractAccepted:0,
+      is_deleted:0,
+      is_disabled:0,
     }
   },
   mounted(){
-    //this.load();
+    this.itemGet();
   },
   computed:{
     message(){
@@ -171,41 +203,22 @@ export default  {
       }
       return '';
     },
-    showDisable(){
-      if( this.courier.is_disabled==0 && User.isAdmin() ){
-        return true;
-      }
-      return false;
-    },
-    showEnable(){
-      if( this.courier.is_disabled==1 && User.isAdmin() ){
-        return true;
-      }
-      return false;
-    },
-    showDelete(){
-      if( this.courier.deleted_at ){
-        return false;
-      }
-      return true;
-    },
-    showUnDelete(){
-      if( this.courier.deleted_at==-1 || this.courier.deleted_at ){
-        return false;
-      }
-      return true;
-    }
   },
   methods:{
-    async load(){
+    async itemGet(){
       try{
         this.courier=await User.courier.get();
       } catch(err){
         const status=JSON.parse(err.responseJSON?.status);
         if(status=="404"){
-          //
+          this.$flash("Анкета не найдена")
         }
       }
+      this.itemParseFlags()
+    },
+    itemParseFlags(){
+      this.is_deleted   = this.courier.deleted_at==null?0:1
+      this.is_disabled  = this.courier.is_disabled==0?0:1
     },
     async itemCreate(){
       try{
@@ -216,38 +229,25 @@ export default  {
         this.$flash("Не удалось зарегистрироваться как курьер")
       }
     },
-    async itemDelete(){
+    async itemDelete( is_deleted ){
+      const remoteFunction=is_deleted?'itemDelete':'itemUnDelete'
       try{
-        await jQuery.post(heap.state.hostname + "Courier/itemDelete",{courier_id:this.courier.courier_id});
-        this.load();
-      } catch(err){
-        const message=err.responseJSON?.messages?.error;
-        if(message=='invalid_status'){
-          this.$flash("Надо сначала закрыть смену");
-        }
+        await jQuery.post( heap.state.hostname + "Courier/"+remoteFunction, { courier_id: this.courier.courier_id })
+        this.courier.deleted_at=is_deleted?1:null;
+      }catch{
+        this.itemGet()
       }
     },
-    itemUnDelete(){
-      const self=this;
-      jQuery.post( heap.state.hostname + "Courier/itemUnDelete", {courier_id:this.courier.courier_id})
-      .done(()=>{
-        self.load();
-      });
-    },
-
-    itemDisable(){
-      const self=this;
-      jQuery.post( heap.state.hostname + "Courier/itemDisable", {courier_id:this.courier.courier_id,is_disabled:1})
-      .done(()=>{
-        self.load();
-      });
-    },
-    itemEnable(){
-      const self=this;
-      jQuery.post( heap.state.hostname + "Courier/itemDisable", {courier_id:this.courier.courier_id,is_disabled:0})
-      .done(()=>{
-        self.load();
-      });
+    async itemDisable( is_disabled ){
+      if(this.courier.is_disabled==is_disabled){
+        return
+      }
+      try{
+        await jQuery.post( heap.state.hostname + "Courier/itemDisable", { courier_id: this.courier.courier_id, is_disabled })
+        this.courier.is_disabled=is_disabled;
+      }catch{
+        this.itemGet()
+      }
     },
 
     async uploadImage(event) {
@@ -263,7 +263,7 @@ export default  {
       };
       try{
         await jQuery.ajax(request)
-        this.load()
+        this.itemGet()
       } catch(err){
         this.$flash("Не удалось загрузить фото");
       }
