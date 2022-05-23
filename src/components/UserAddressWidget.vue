@@ -5,7 +5,6 @@
     border-top-right-radius: 40px;
     border-bottom-right-radius: 40px;
     background-color: white;
-    box-shadow: 5px 0px 5px #0003;
     display: flex;
     align-items: center;
   }
@@ -20,7 +19,7 @@
     display: flex;
     background-color: var(--ion-color-secondary);
     height: 40px;
-    box-shadow: 0px 0px 5px #ccc;
+    box-shadow: 0px 0px 15px #0004;
     -margin-bottom: 20px;
   }
   ion-img{
@@ -41,7 +40,7 @@
       </div>
       <div class="rightend" v-else></div>
     </div>
-    <ion-item v-else detail button @click="selectDeliveryAddress()">
+    <ion-item v-else detail button @click="selectDeliveryAddress()" class="selector">
       <ion-icon
         slot="start"
         style="color: var(--ion-color-primary)"

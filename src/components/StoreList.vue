@@ -21,7 +21,7 @@ ion-card{
 </style>
 
 <template>
-  <ion-list v-if="!storeList" class="store-list">
+  <ion-list v-if="!storeList" class="store-list" >
     <ion-card button v-for="store_item in [1,1]" :key="store_item">
         <div class="crop-to-fit" style="background-color:var(--ion-color-light)">
 
@@ -44,7 +44,7 @@ ion-card{
     </ion-card-content>
   </ion-card>
 
-  <ion-list v-if="storeList" class="store-list">
+  <ion-list v-if="storeList" class="store-list"  style="box-shadow: 0px 0px 15px #0004;">
     <ion-card button v-for="store_item in storeList" :key="store_item.store_id" @click="$router.push('store-' + store_item.store_id)"  :class="store_item.is_opened==0?'closed':''">
         <div class="crop-to-fit">
             <ion-img v-if="store_item.image_hash" :src="$heap.state.hostname +'/image/get.php/' +store_item.image_hash +'.300.300.webp'"/>

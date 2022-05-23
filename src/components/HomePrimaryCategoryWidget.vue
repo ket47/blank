@@ -1,7 +1,7 @@
 <template>
     <div id="hcat_widget_wrapper" v-if="productGroupList">
         <ion-item button detail lines="none" color="light" @click="this.$router.push('store-'+primaryStoreData.store_id)">
-          <h4>{{primaryStoreData.store_name}}</h4>
+          <ion-title color="primary">{{primaryStoreData.store_name}}</ion-title>
           <ion-note slot="helper">
             Доставка за {{deliveryTime.timeMin}}-{{deliveryTime.timeMax}}мин
           </ion-note>    
@@ -12,7 +12,7 @@
                 <ion-thumbnail>
                     <ion-img :src="$heap.state.hostname + 'image/get.php/'+group.image_hash+'.100.100.webp'"/>
                 </ion-thumbnail>
-                <ion-label style="height:2em;text-align:center">{{group.group_name}}</ion-label>
+                <ion-label style="height:2em;text-align:center;padding: 3px;font-weight:bold" color="medium">{{group.group_name}}</ion-label>
             </div>
         </div>
     </div>
@@ -29,9 +29,10 @@
 }
 ion-thumbnail{
   border-radius:10px;
-  border:1px solid #ddd;
+  border:1px solid var(--ion-color-medium);
   height:100px;
-  width:100px
+  width:100px;
+  padding: 1px;
 }
 ion-img{
   border-radius:10px;
@@ -56,6 +57,8 @@ ion-img{
 }
 #hcat_widget_wrapper{
     background-color: var(--ion-color-light);
+    margin-top: 10px;
+    padding-bottom: 10px;
 }
 </style>
 
@@ -70,6 +73,7 @@ import {
   IonNote,
   IonItem,
   IonLabel,
+  IonTitle
 } from "@ionic/vue"
 import { defineComponent } from 'vue';
 
@@ -80,6 +84,7 @@ export default defineComponent({
     IonNote,
     IonItem,
     IonLabel,
+      IonTitle
   },
   data() {
     return {
