@@ -6,7 +6,8 @@
           <ion-back-button :default-href="pageDefaultBackLink" color="light" style="padding:0px 10px"></ion-back-button>
         </ion-buttons>
         <ion-title v-if="pageTitle" size="small"><div style="line-height: 1.5;max-height:3em;text-overflow: ellipsis;">{{ pageTitle }}</div></ion-title>
-        <ion-img v-if="pageLogo" style="height:30px;width:auto" :src="pageLogo"/>
+        
+        <ion-icon class="toolbar_svg_logo" style="color: white"  :icon="mainLogo"/>
         <div slot="end">
           <cart-header slot="end"></cart-header>
         </div>
@@ -45,8 +46,14 @@ import {
 }                           from "@ionic/vue";
 import CartHeader           from "@/components/CartHeader";
 import { defineComponent }  from "@vue/runtime-core";
+import mainLogo             from "@/assets/icons/tezkel_logo.svg";
 
 export default defineComponent({
+  setup() {
+    return {
+      mainLogo
+    }
+  },
   props: [
     "pageTitle",
     "pageLogo",
@@ -96,9 +103,10 @@ ion-header ion-toolbar ion-title{
   padding: 0 1em;
   font-size: 16px;
 }
-.toolbar_logo {
-  width: auto;
-  height: 40px;
-  margin: 0 auto;
+.toolbar_svg_logo {
+    height: 42px;
+    width: 161px;
+    margin: 0 auto;
+    display: block;
 }
 </style>

@@ -10,7 +10,7 @@
       <ion-grid class="desktop-template" :class="[pageClass]">
         <ion-row>
           <ion-col class="ion-left-column" size="3">
-            <ion-img class="toolbar_logo" src="./assets/icon/tezkel_logo_dark.png"></ion-img>
+            <ion-icon class="toolbar_svg_logo ion-color ion-color-primary"  :icon="mainLogo"/>
             <ion-tab-bar>
               <ion-tab-button tab="tab1" href="/home" routerDirection="backward">
                 <ion-row>
@@ -82,6 +82,7 @@ import personIcon     from "@/assets/icons/account.svg";
 import ordersIcon     from "@/assets/icons/orders.svg";
 import searchIcon     from "@/assets/icons/search.svg";
 import homeIcon       from "@/assets/icons/home.svg";
+import mainLogo       from "@/assets/icons/tezkel_logo.svg";
 
 import {
   cartOutline,
@@ -94,7 +95,8 @@ export default {
       ordersIcon,
       searchIcon,
       homeIcon,
-      cartOutline
+      cartOutline,
+      mainLogo
     }
   },
   computed:{
