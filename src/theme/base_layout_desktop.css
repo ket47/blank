@@ -20,11 +20,15 @@
     text-align: right;
   }
 
-  .desktop-main-container .ion-left-column .toolbar_logo{
-    width: inherit;
-    display: inline-block;
-    height: inherit;
-    margin: 1em 2em;
+  .desktop-main-container .ion-left-column .toolbar_svg_logo {
+    height: 42px;
+    width: 161px;
+    margin: 0.5em;
+  }
+  .desktop-main-container .ion-left-column .toolbar_svg_logo .icon-inner,
+  .desktop-main-container .ion-left-column .toolbar_svg_logo .svg{
+    width: 100%;
+    height: auto;
   }
   .desktop-main-container .ion-left-column ion-tab-bar {
     display: grid;
@@ -34,7 +38,6 @@
     justify-items: end;
     align-items: center;
     grid-template-columns: 100%;
-    margin: 2em 0;
   }
   .desktop-main-container .ion-left-column ion-tab-button {
     --padding-start: 0px;
