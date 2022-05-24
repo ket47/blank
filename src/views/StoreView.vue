@@ -35,6 +35,7 @@
 }
 .store-page .product-list {
   margin-top: 1em;
+  min-height: 80vh;
 }
 
 
@@ -612,7 +613,7 @@ export default defineComponent({
   ionViewDidEnter() {
     this.itemGet();
   },
-  mounted() {
+  created() {
     this.itemGet();
   },
   watch: {

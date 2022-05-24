@@ -9,35 +9,38 @@
     }
 </style>
 <template>
-    <ion-list v-if="orderData && job">
-        <ion-item lines="none">
-            <ion-avatar slot="start">
-                <ion-icon :icon="locationOutline" style="font-size:30px"/>
-            </ion-avatar>
-            <ion-label>
-                <ion-text color="primary">Курьер, {{job.courier_name}}</ion-text>
-            </ion-label>            
-        </ion-item>
 
-        <ion-item v-if="courier_finish_distance_km" lines="none">
-            <div class="center_chip">
-                <ion-chip color="success">
-                    <ion-text>{{courier_finish_distance_km}}</ion-text>
-                </ion-chip>
-                <ion-chip color="primary">
-                    <ion-text>{{courier_finish_time_min.timeMin}}-{{courier_finish_time_min.timeMax}}мин</ion-text>
-                </ion-chip>
-            </div>      
+<ion-accordion-group v-if="orderData && job?.group_type=='delivery_start'" value="tracking" color="primary">
+    <ion-accordion value="tracking">
+        <ion-item slot="header">
+            <ion-label>Отслеживание заказа</ion-label>
         </ion-item>
-        <ion-item v-if="job">
-            <ion-avatar slot="start">
-                <ion-icon :icon="flagOutline" style="font-size:30px;"/>
-            </ion-avatar>
-            <ion-text>
-                <ion-label color="primary">Вы, {{$heap.state.user.user_name}}</ion-label>
-            </ion-text>           
-        </ion-item>
-    </ion-list>
+        <ion-list slot="content">
+            <ion-item lines="none">
+                <ion-icon color="primary" slot="start" :icon="locationOutline" style="font-size:30px"/>
+                <ion-label>Курьер, {{job.courier_name}}</ion-label>      
+            </ion-item>
+
+            <ion-item v-if="courier_finish_distance_km" lines="none">
+                <ion-chip slot="start" color="success">
+                {{courier_finish_distance_km}}
+                </ion-chip>
+                <ion-chip slot="end" color="primary">
+                {{courier_finish_time_min.timeMin}}-{{courier_finish_time_min.timeMax}}мин
+                </ion-chip>   
+            </ion-item>
+            <ion-item v-if="courier_finish_distance_km" lines="none">
+                <ion-progress-bar color="secondary" :value="courier_progress"  reversed="true"></ion-progress-bar>
+            </ion-item>
+
+            <ion-item lines="none">
+                <ion-label style="text-align:right">Вы, {{$heap.state.user.user_name}}</ion-label>          
+                <ion-icon color="primary" slot="end" :icon="flagOutline" style="font-size:30px;"/>
+            </ion-item>
+        </ion-list>
+    </ion-accordion>
+</ion-accordion-group>
+
 </template>
 <script>
 import { 
@@ -53,13 +56,15 @@ import {
     IonText,
     IonAvatar,
     IonIcon,
+    IonAccordionGroup,
+    IonAccordion,
+    IonProgressBar
 }                   from '@ionic/vue';
 import {
     storefrontOutline,
     locationOutline,
     flagOutline
     }               from 'ionicons/icons';
-import User         from '@/scripts/User.js';
 import Order        from '@/scripts/Order.js';
 import Utils        from '@/scripts/Utils.js';
 
@@ -79,6 +84,9 @@ export default({
     IonText,
     IonAvatar,
     IonIcon,
+    IonAccordionGroup,
+    IonAccordion,
+    IonProgressBar
     },
     setup() {
         return { 
@@ -89,7 +97,8 @@ export default({
     },
     data(){
         return {
-            job:null
+            job:null,
+            refreshInterval:1000*60
         };
     },
     mounted(){
@@ -104,13 +113,19 @@ export default({
         },
         courier_finish_time_min(){
             return Utils.deliveryTimeCalculate(this.job?.courier_finish_distance,0)
+        },
+        courier_progress(){
+            return this.job?.courier_finish_distance/this.job?.start_finish_distance
         }
-
     },
     methods:{
         async jobGet(){
             try{
                 this.job=await Order.api.itemJobTrack(this.orderData.order_id);
+                if(this.job.group_type=='delivery_start'){
+                    const self=this
+                    setTimeout(()=>{self.jobGet()},this.refreshInterval)
+                }
             } catch(err){
                 const message=err.responseJSON?.messages?.error;
                 if(message=='notfound'){

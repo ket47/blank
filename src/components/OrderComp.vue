@@ -57,32 +57,16 @@
                 <ion-col  v-for="(stage_title, order_stage_code) in nextStageButtons" :key="order_stage_code" >
                     <ion-button 
                     v-if="stage_title[0]" 
-                    @click="stageCreate(orderData.order_id, order_stage_code)" 
+                    @click="stageCreate(orderData.order_id, order_stage_code, stage_title[1])" 
                     expand="block" 
                     :color="(stage_title[1]=='negative') ? 'danger' : (stage_title[1]=='positive' ? 'success' : 'primary')"
                     >
+                        <ion-icon slot="start" :src="stage_title.icon"></ion-icon>
                         {{ stage_title[0] }}
                     </ion-button>
                 </ion-col>
             </ion-row>
         </ion-grid>
-
-
-
-        <ion-accordion-group v-if="orderData.stages">
-            <ion-accordion>
-                <ion-item slot="header">
-                    <ion-label>История заказа</ion-label>
-                </ion-item>
-                <ion-list slot="content">
-                    <ion-item v-for="stage in orderData.stages" :key="stage.group_id">
-                        <ion-icon slot="start" :icon="checkmarkOutline" size="small" color="success"></ion-icon>
-                        <ion-text>{{stage.group_name}}</ion-text>
-                        <ion-note slot="end" style="width:80px">{{stage.created_at}}</ion-note>
-                    </ion-item>
-                </ion-list>
-            </ion-accordion>
-        </ion-accordion-group>
     </div>
     <div v-else>
         <ion-item detail button lines="none">
@@ -128,14 +112,13 @@ import {
     IonCol,
     IonRow,
     IonGrid,
-    IonAccordion,
-    IonAccordionGroup,
     IonSkeletonText
 }                       from '@ionic/vue';
 import { 
     add,
     remove, 
     trash, 
+    rocketOutline, 
     storefrontOutline,
     checkmarkOutline 
 }                       from 'ionicons/icons';
@@ -158,12 +141,10 @@ export default({
     IonCol,
     IonRow,
     IonGrid,
-    IonAccordion,
-    IonAccordionGroup,
     IonSkeletonText
     },
     setup() {
-        return { add, remove, trash, storefrontOutline, checkmarkOutline };
+        return { add, remove, trash, rocketOutline, storefrontOutline, checkmarkOutline };
     },
     data(){
         return {
@@ -182,11 +163,17 @@ export default({
             return total;
         },
         isEditable(){
-            if(this.orderData.user_role=='customer'){
-                return ['customer_cart'].includes(this.orderData.stage_current);
+            if(
+                (this.orderData.user_role=='customer' || this.orderData.user_role=='admin')
+                && ['customer_cart'].includes(this.orderData.stage_current) 
+                ){
+                return true
             }
-            if(this.orderData.user_role=='supplier'){
-                return ['supplier_corrected'].includes(this.orderData.stage_current);
+            if( 
+                (this.orderData.user_role=='supplier' || this.orderData.user_role=='admin') 
+                && ['supplier_corrected'].includes(this.orderData.stage_current) 
+                ){
+                return true
             }
             return false;
         },
@@ -195,6 +182,13 @@ export default({
             for(let i in this.orderData.stage_next){
                 if(this.orderData.stage_next[i][0]){
                     buttons[i]=this.orderData.stage_next[i];
+                    buttons[i].icon=checkmarkOutline
+                    if(i.includes('delivery')){
+                        buttons[i].icon=rocketOutline
+                    } else 
+                    if(i.includes('supplier')){
+                        buttons[i].icon=storefrontOutline
+                    }
                 }
             } 
             return buttons;
@@ -210,11 +204,14 @@ export default({
             this.parentClose();
         },
         parentClose(){
-            if(this.$parent.closeModal){
-                this.$parent.closeModal();
-            }
+            this.$topic.publish('dismissModal')
         },
-        stageCreate(order_id, order_stage_code){
+        stageCreate(order_id, order_stage_code, severity){
+            if( severity=='negative' ){
+                if(!confirm("Вы уверены?")){
+                    return
+                }
+            }
             this.$emit('stageCreate',order_id, order_stage_code);
         },
     }

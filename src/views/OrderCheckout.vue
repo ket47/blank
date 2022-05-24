@@ -6,9 +6,8 @@
 <template>
     <base-layout pageTitle="Оформление заказа">
         <user-address-widget :deliveryTime="deliveryTime" showComment="1"></user-address-widget>
-        <ion-item-divider></ion-item-divider>
+
         <ion-list>
-            <form>
             <ion-item-divider>Способы оплаты</ion-item-divider>
             <ion-item button @click="paymentType='payment_card'">
                 <ion-icon :icon="cardOutline" slot="start" color="primary"></ion-icon>
@@ -17,44 +16,38 @@
                     <input type="radio" name="paymentType" id="payment_card" value="card"  :checked="paymentType == 'payment_card'">
                 </div>
             </ion-item>
-            <ion-item button @click="paymentType='payment_cash'">
+            <ion-item button @click="paymentType='payment_cash'" v-if="0">
                 <ion-icon :icon="cashOutline" slot="start" color="primary"></ion-icon>
                 <label for="payment_cash">Оплата наличными</label>
                 <div slot="end">
                     <input type="radio" name="paymentType" id="payment_cash" value="cash" :checked="paymentType == 'payment_cash'">
                 </div>
             </ion-item>
-            </form>
+
+            <ion-item-divider>Итого к оплате</ion-item-divider>
+            <!--<ion-item button detail>
+                <ion-icon :icon="giftOutline" slot="start" color="primary"></ion-icon>
+                Выберите акцию
+            </ion-item>-->
+            <ion-item v-if="order?.order_sum_tax">
+                <ion-icon :icon="pieChartOutline" slot="start" color="primary"></ion-icon>
+                Налоги 
+                <ion-text slot="end">{{order?.order_sum_tax}}</ion-text>
+            </ion-item>
+            <ion-item>
+                <ion-icon src="./assets/icon/box-delivery.svg" slot="start" style="color:var(--ion-color-primary)"></ion-icon>
+                Доставка 
+                <ion-text slot="end">{{order?.order_sum_delivery??0}}</ion-text>
+            </ion-item>
+            <ion-item>
+                <ion-icon :icon="walletOutline" slot="start" color="primary"></ion-icon>
+                Итого
+                <ion-text slot="end">{{order?.order_sum_total}}</ion-text>
+            </ion-item>
         </ion-list>
-        <ion-item-divider></ion-item-divider>
-        <ion-list>
-            <ion-item-group>
-                <ion-item-divider>Итого к оплате</ion-item-divider>
-                <!--<ion-item button detail>
-                    <ion-icon :icon="giftOutline" slot="start" color="primary"></ion-icon>
-                    Выберите акцию
-                </ion-item>-->
-                <ion-item v-if="order?.order_sum_tax">
-                    <ion-icon :icon="pieChartOutline" slot="start" color="primary"></ion-icon>
-                    Налоги 
-                    <ion-text slot="end">{{order?.order_sum_tax}}</ion-text>
-                </ion-item>
-                <ion-item>
-                    <ion-icon src="./assets/icon/box-delivery.svg" slot="start" style="color:var(--ion-color-primary)"></ion-icon>
-                    Доставка 
-                    <ion-text slot="end">{{order?.order_sum_shipping??0}}</ion-text>
-                </ion-item>
-                <ion-item>
-                    <ion-icon :icon="walletOutline" slot="start" color="primary"></ion-icon>
-                    Итого
-                    <ion-text slot="end">{{order?.order_sum_total}}</ion-text>
-                </ion-item>
-            </ion-item-group>
-        </ion-list>
-        <ion-item-divider></ion-item-divider>
         <ion-list v-if="order">
             <ion-item>
-                <ion-textarea placeholder="комментарий к заказу" @change="orderDescriptionChanged()" v-model="order.order_description"></ion-textarea>
+                <ion-textarea rows="5" placeholder="комментарий к заказу" @change="orderDescriptionChanged()" v-model="order.order_description"></ion-textarea>
             </ion-item>
         </ion-list>
         <ion-grid>
@@ -96,7 +89,7 @@ import {
     IonGrid,
 }                               from "@ionic/vue";
 import UserAddressWidget        from '@/components/UserAddressWidget.vue';
-import OrderPaymentCardModal         from '@/components/OrderPaymentCardModal.vue';
+import OrderPaymentCardModal    from '@/components/OrderPaymentCardModal.vue';
 
 export default({
     components: { 

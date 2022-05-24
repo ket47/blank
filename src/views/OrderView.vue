@@ -9,11 +9,9 @@
                 </div>
             </div>
             <order-comp :orderData="order" @stageCreate="onStageCreate"></order-comp>
+            <order-tracking-comp :orderData="order"/>
+            <order-history-comp :orderData="order"/>
             <image-tile-comp :images="order?.images" :image_holder_id="order?.order_id" controller="Order" ref="orderImgs"/>
-            
-            <div style="backgroud-color:#eee">
-                <courier-job-comp :orderData="order"/>
-            </div>
         </ion-content>
     </base-layout>
 </template>
@@ -32,18 +30,19 @@ import {
     IonText,
     IonNote,
     IonList,
-
 }                           from '@ionic/vue';
 import Order                from '@/scripts/Order.js';
 import OrderComp            from '@/components/OrderComp.vue';
+import OrderHistoryComp     from '@/components/OrderHistoryComp.vue';
+import OrderTrackingComp    from '@/components/OrderTrackingComp.vue'
 import ImageTileComp        from '@/components/ImageTileComp.vue'
-import CourierJobComp    from '@/components/CourierJobComp.vue'
 
 
 export default({
     components: { 
     OrderComp,
-    CourierJobComp,
+    OrderHistoryComp,
+    OrderTrackingComp,
     ImageTileComp,
     IonLabel,
     IonIcon,

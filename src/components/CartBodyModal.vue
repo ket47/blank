@@ -10,9 +10,9 @@
 
 <template>
   <ion-header>
-      <ion-toolbar color="light">
-          <ion-title color="dark">Корзина</ion-title>
-          <ion-icon slot="end" @click="clearCart();" :icon="closeCircle" size="large" color="medium"></ion-icon>
+      <ion-toolbar color="secondary">
+        <ion-title>Корзина</ion-title>
+        <ion-icon slot="end" @click="clearCart();" :icon="closeOutline" size="large"></ion-icon>
       </ion-toolbar>
   </ion-header>
   <ion-content>
@@ -43,8 +43,9 @@ import {
 }                         from "@ionic/vue";
 import 
 {
-  closeCircle,
-  sparklesOutline
+  closeOutline,
+  sparklesOutline,
+  cartOutline,
 }                         from 'ionicons/icons';
 import heap               from '@/heap';
 import OrderComp          from '@/components/OrderComp.vue';
@@ -64,12 +65,17 @@ export default{
       const closeModal = function(){
           modalController.dismiss();
       };
-      return { closeModal, closeCircle, sparklesOutline };
+      return { closeModal, closeOutline,cartOutline, sparklesOutline };
   },
   data(){
     return {
       cartList:heap.state.cartList
     };
+  },
+  created(){
+    this.$topic.on('dismissModal',()=>{
+      modalController.dismiss();
+    })
   },
   methods: {
     clearCart(order_id){
