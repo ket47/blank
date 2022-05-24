@@ -7,7 +7,7 @@
         </ion-buttons>
         <ion-title v-if="pageTitle" size="small"><div style="line-height: 1.5;max-height:3em;text-overflow: ellipsis;">{{ pageTitle }}</div></ion-title>
         
-        <ion-icon class="toolbar_svg_logo" style="color: white"  :icon="mainLogo"/>
+        <ion-icon  v-if="pageLogo" class="toolbar_svg_logo" style="color: white"  :icon="pageLogo"/>
         <div slot="end">
           <cart-header slot="end"></cart-header>
         </div>
@@ -46,14 +46,8 @@ import {
 }                           from "@ionic/vue";
 import CartHeader           from "@/components/CartHeader";
 import { defineComponent }  from "@vue/runtime-core";
-import mainLogo             from "@/assets/icons/tezkel_logo.svg";
 
 export default defineComponent({
-  setup() {
-    return {
-      mainLogo
-    }
-  },
   props: [
     "pageTitle",
     "pageLogo",

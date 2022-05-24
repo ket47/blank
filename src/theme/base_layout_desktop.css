@@ -24,6 +24,7 @@
     height: 42px;
     width: 161px;
     margin: 0.5em;
+    display: inline-block;
   }
   .desktop-main-container .ion-left-column .toolbar_svg_logo .icon-inner,
   .desktop-main-container .ion-left-column .toolbar_svg_logo .svg{
