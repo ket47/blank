@@ -42,7 +42,8 @@ import {
   IonRefresher,
   IonRefresherContent,
   IonSpinner,
-  IonFab
+  IonFab,
+  IonIcon
 }                           from "@ionic/vue";
 import CartHeader           from "@/components/CartHeader";
 import { defineComponent }  from "@vue/runtime-core";
@@ -70,6 +71,7 @@ export default defineComponent({
     IonRefresherContent,
     IonSpinner,
     IonFab,
+    IonIcon,
     CartHeader
   },
   computed:{

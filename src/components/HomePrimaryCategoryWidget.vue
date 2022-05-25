@@ -122,6 +122,7 @@ export default defineComponent({
         } catch(err){
           this.productGroupList=null
           this.primaryStoreData=null
+          this.$emit('deliveryTimeGet',null)
           //
         }
     },

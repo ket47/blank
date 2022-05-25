@@ -20,7 +20,7 @@ import './theme/variables.css';
 import './theme/core.css';
 
 /* Theme color */
-//import './theme/color_seawave.css';
+//import './theme/color_green.css';
 
 import { createApp }        from 'vue';
 import { isPlatform }       from '@ionic/vue';

@@ -35,16 +35,16 @@ ion-card{
     </ion-card>
   </ion-list>
 
-  <ion-card v-else-if="storeList.length==0">
+  <ion-card v-else-if="storeList.length==0" color="warning">
     <ion-card-header>
-      <ion-card-title>Подходящих поставщиков не нашлось</ion-card-title>
+      <ion-card-title>Вне зоны обслуживания</ion-card-title>
     </ion-card-header>
-    <ion-card-content>
-      К сожалению, не найдено подходящих предприятий. Возможно вы находитесь вне радиуса доставки.
+    <ion-card-content style="font-family:Roboto">
+      К сожалению, не найдено подходящих магазинов и ресторанов. <br/>Возможно вы находитесь вне радиуса доставки.
     </ion-card-content>
   </ion-card>
 
-  <ion-list v-if="storeList" class="store-list"  style="box-shadow: 0px 0px 15px #0004;">
+  <ion-list v-if="storeList && storeList.length>0" class="store-list"  style="box-shadow: 0px 0px 15px #0004;">
     <ion-card button v-for="store_item in storeList" :key="store_item.store_id" @click="$router.push('store-' + store_item.store_id)"  :class="store_item.is_opened==0?'closed':''">
         <div class="crop-to-fit">
             <ion-img v-if="store_item.image_hash" :src="$heap.state.hostname +'/image/get.php/' +store_item.image_hash +'.300.300.webp'"/>

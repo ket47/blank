@@ -19,6 +19,7 @@ import {
     IonCardTitle,
     IonButton
 } from '@ionic/vue'
+import User from '@/scripts/User.js'
 export default {
     components:{
     IonCard,
@@ -31,7 +32,13 @@ export default {
         reload(){
             location.hash=""
             location.reload()
-        }
+        },
+        // checkOnline(){
+        //     const user=User.get()
+        //     if(user){
+        //         this.$router.push('/home')
+        //     }
+        // }
     }
 }
 </script>

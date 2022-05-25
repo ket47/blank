@@ -613,7 +613,7 @@ export default defineComponent({
   ionViewDidEnter() {
     this.itemGet();
   },
-  created() {
+  mounted() {
     this.itemGet();
   },
   watch: {

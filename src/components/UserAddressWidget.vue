@@ -7,6 +7,8 @@
     background-color: white;
     display: flex;
     align-items: center;
+    box-shadow: 5px 0px 5px #0004;
+    overflow: hidden;
   }
   .rightend{
     height: 100%;
@@ -31,8 +33,8 @@
 <template>
     <div v-if="isMainLocationSet" @click="selectDeliveryAddress()" class="selector">
       <div class="center">
-        <ion-img v-if="location_main.image_hash" :src="$heap.state.hostname + 'image/get.php/'+location_main.image_hash+'.32.32.webp'"/>
-        <ion-text style="margin:5px" color="primary">{{$heap.state.user?.location_main?.location_address}}</ion-text>
+        <ion-img v-if="location_main.image_hash" :src="$heap.state.hostname + 'image/get.php/'+location_main.image_hash+'.40.40.webp'"/>
+        <ion-text style="margin:5px;font-size: 0.7em;" color="dark">{{$heap.state.user?.location_main?.location_address}}</ion-text>
       </div>
       <div class="rightend" v-if="deliveryTime">
         <ion-text style="font-size:24px;color:var(--ion-color-secondary-contrast)">{{deliveryTime.time}}</ion-text>
@@ -41,11 +43,7 @@
       <div class="rightend" v-else></div>
     </div>
     <ion-item v-else detail button @click="selectDeliveryAddress()" class="selector">
-      <ion-icon
-        slot="start"
-        style="color: var(--ion-color-primary)"
-        :icon="location"
-      />
+      <ion-icon slot="start" style="color: var(--ion-color-primary)" :icon="location"/>
       <ion-label> Выбрать адрес доставки </ion-label>
     </ion-item>
 
