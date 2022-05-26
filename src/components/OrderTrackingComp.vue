@@ -120,6 +120,9 @@ export default({
     },
     methods:{
         async jobGet(){
+            if( !this.isDelivering() ){
+                return
+            }
             try{
                 this.job=await Order.api.itemJobTrack(this.orderData.order_id);
                 if(this.job.group_type=='delivery_start'){
@@ -137,6 +140,14 @@ export default({
                     return
                 }
             }
+        },
+        isDelivering(){
+            for(let stage of this.orderData.stages??[]){
+                if(stage?.group_type=='delivery_start'){
+                    return true
+                }
+            }
+            return false
         }
     }
 })

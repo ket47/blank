@@ -4,10 +4,46 @@
     }
 </style>
 <template>
-    <base-layout pageTitle="Оформление заказа">
+    <base-layout :pageTitle="`Оформление заказа`">
         <user-address-widget :deliveryTime="deliveryTime" showComment="1"></user-address-widget>
 
-        <ion-list>
+        <ion-list v-if="order">
+            <ion-item-divider>Заказ</ion-item-divider>
+            <ion-item>
+                <ion-icon :icon="ordersIcon" slot="start" color="primary"></ion-icon>
+                Номер 
+                <ion-text slot="end">#{{order?.order_id}}</ion-text>
+            </ion-item>            
+            <ion-item>
+                <ion-icon :icon="storefrontOutline" slot="start" color="primary"></ion-icon>
+                Из "{{order?.store.store_name}}"
+            </ion-item>            
+            <ion-item>
+                <ion-textarea rows="3" placeholder="комментарий к заказу" @change="orderDescriptionChanged()" v-model="order.order_description"></ion-textarea>
+            </ion-item>
+
+
+            <ion-item-divider>Итого к оплате</ion-item-divider>
+            <ion-item button detail>
+                <ion-icon :icon="giftOutline" slot="start" color="primary"></ion-icon>
+                Выберите акцию
+            </ion-item>
+            <ion-item v-if="order?.order_sum_tax">
+                <ion-icon :icon="pieChartOutline" slot="start" color="primary"></ion-icon>
+                Налоги 
+                <ion-text slot="end">{{order?.order_sum_tax}}</ion-text>
+            </ion-item>
+            <ion-item>
+                <ion-icon src="./assets/icon/box-delivery.svg" slot="start" style="color:var(--ion-color-primary)"></ion-icon>
+                Доставка 
+                <ion-text slot="end">{{order?.order_sum_delivery??0}}</ion-text>
+            </ion-item>
+            <ion-item>
+                <ion-icon :icon="walletOutline" slot="start" color="primary"></ion-icon>
+                Итого
+                <ion-text slot="end">{{order?.order_sum_total}}</ion-text>
+            </ion-item>
+
             <ion-item-divider>Способы оплаты</ion-item-divider>
             <ion-item button @click="paymentType='payment_card'">
                 <ion-icon :icon="cardOutline" slot="start" color="primary"></ion-icon>
@@ -24,31 +60,6 @@
                 </div>
             </ion-item>
 
-            <ion-item-divider>Итого к оплате</ion-item-divider>
-            <!--<ion-item button detail>
-                <ion-icon :icon="giftOutline" slot="start" color="primary"></ion-icon>
-                Выберите акцию
-            </ion-item>-->
-            <ion-item v-if="order?.order_sum_tax">
-                <ion-icon :icon="pieChartOutline" slot="start" color="primary"></ion-icon>
-                Налоги 
-                <ion-text slot="end">{{order?.order_sum_tax}}</ion-text>
-            </ion-item>
-            <ion-item>
-                <ion-icon src="./assets/icon/box-delivery.svg" slot="start" style="color:var(--ion-color-primary)"></ion-icon>
-                Доставка 
-                <ion-text slot="end">{{order?.order_sum_delivery??0}}</ion-text>
-            </ion-item>
-            <ion-item>
-                <ion-icon :icon="walletOutline" slot="start" color="primary"></ion-icon>
-                Итого
-                <ion-text slot="end">{{order?.order_sum_total}}</ion-text>
-            </ion-item>
-        </ion-list>
-        <ion-list v-if="order">
-            <ion-item>
-                <ion-textarea rows="5" placeholder="комментарий к заказу" @change="orderDescriptionChanged()" v-model="order.order_description"></ion-textarea>
-            </ion-item>
         </ion-list>
         <ion-grid>
             <ion-row>
@@ -66,13 +77,15 @@ import Topic    from '@/scripts/Topic.js';
 import router   from '@/router';
 import jQuery   from 'jquery';
 
+import ordersIcon   from "@/assets/icons/orders.svg";
 import { 
     cardOutline,
     cashOutline,
     giftOutline,
     cubeOutline,
     walletOutline,
-    pieChartOutline
+    pieChartOutline,
+    storefrontOutline,
     }                           from 'ionicons/icons';
 import { 
     modalController,
@@ -107,11 +120,11 @@ export default({
         IonGrid,
     },
     setup(){
-        return {cardOutline,cashOutline,giftOutline,cubeOutline,walletOutline,pieChartOutline};
+        return {cardOutline,cashOutline,giftOutline,cubeOutline,walletOutline,pieChartOutline,storefrontOutline,ordersIcon};
     },
     data(){
+         console.log(this.orderItem)
         return {
-            order_id:0,
             order:null,
             deliveryTime:{},
             paymentType:'payment_card'
@@ -120,13 +133,18 @@ export default({
     mounted(){
         this.checkoutDataGet();
     },
+    ionViewDidEnter(){
+        this.checkoutDataGet();
+    },
     methods:{
         async checkoutDataGet(){
-            this.order_id=this.$route.params.id;
             this.order=this.$heap.state.currentOrder;
             if( !this.order ){
-                await this.orderGet();
+                this.$flash("Заказ не найден");
+                this.$router.go(-1)
+                //await this.orderGet();
             }
+            console.log(this.order.order_sum_total)
             if( this.order.stage_current!="customer_confirmed" ){
                 router.push('order-'+this.order.order_id);
                 return;
@@ -137,19 +155,19 @@ export default({
                 this.deliveryTime=Utils.deliveryTimeCalculate(this.distance,preparation);
             }
         },
-        async orderGet(){
-            try{
-                this.order=await Order.api.itemGet(this.order_id);
-            } catch(err) {
-                switch(err.status){
-                    case 404:
-                        this.$flash("Заказ не найден");
-                        this.order='notfound';
-                        router.go(-1);
-                        break;
-                }
-            }
-        },
+        // async orderGet(){
+        //     try{
+        //         this.order=await Order.api.itemGet(this.order_id);
+        //     } catch(err) {
+        //         switch(err.status){
+        //             case 404:
+        //                 this.$flash("Заказ не найден");
+        //                 this.order='notfound';
+        //                 router.go(-1);
+        //                 break;
+        //         }
+        //     }
+        // },
         async distanceGet(){
             const request={
                 start_holder:'store',

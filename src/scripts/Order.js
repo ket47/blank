@@ -55,7 +55,11 @@ const Order = {
             return jQuery.post( heap.state.hostname + "Entry/itemCreate", request );
         },
         async entryUpdate(entry){
-            return jQuery.post( heap.state.hostname + "Entry/itemUpdate", JSON.stringify(entry) );
+            const request={
+                entry_id:entry.entry_id,
+                entry_quantity:entry.entry_quantity
+            }
+            return jQuery.post( heap.state.hostname + "Entry/itemUpdate", JSON.stringify(request) );
         },
         async entryDelete(entry_id){
             return jQuery.post( heap.state.hostname + "Entry/itemDelete", {entry_id} );

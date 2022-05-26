@@ -87,12 +87,12 @@ const routes = [
         component: () => import('@/views/UserFavourites.vue')
       },
       {
-        path: '/order-checkout-:id',
-        component: () => import('@/views/OrderCheckout.vue')
-      },
-      {
         path: '/order-list',
         component: () => import('@/views/OrderList.vue')
+      },
+      {
+        path: '/order-checkout',
+        component: () => import('@/views/OrderCheckout.vue')
       },
       {
         path: '/order-:id',

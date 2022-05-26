@@ -101,14 +101,26 @@ export default({
                         this.$router.push('order-list');
                         return;
                     }
-                    this.orderGet();
+                    await this.orderGet();
+                    return true;
                 }
-            }catch{/** */}
+            }catch(err){
+                const exception=err.responseJSON;
+                const exception_code=exception.messages.error;
+                switch(exception_code){
+                    case 'order_is_empty':
+                        this.$flash("Заказ пуст")
+                        break;
+                }
+                return false
+            }
         },
         async action_checkout(order_id){
-            await this.onStageCreate(order_id, 'customer_confirmed');
-            this.$heap.state.currentOrder=this.order;
-            this.$router.push('order-checkout-'+order_id);
+            const result=await this.onStageCreate(order_id, 'customer_confirmed');
+            if( result ){
+                this.$heap.commit('setCurrentOrder',this.order);
+                this.$router.push('order-checkout');
+            }
         },
         action_take_photo(){
             console.log(this.$refs.orderImgs)

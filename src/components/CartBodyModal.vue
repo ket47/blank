@@ -90,16 +90,15 @@ export default{
         if(order_stage_code=='customer_purged'){
           return this.clearCart(order_id);
         }
+        if(order_stage_code=='customer_action_checkout'){
+          order_stage_code='customer_confirmed'
+        }
         try{
             const syncedOrder=await Order.cart.itemSync(order_id);
             const stateChangeResult=await Order.api.itemStageCreate(syncedOrder.order_id,order_stage_code);
             
             if(stateChangeResult=='ok' && order_stage_code!='customer_cart'){
                 this.clearCart(syncedOrder.order_id);
-            }
-            if(stateChangeResult=='ok' && order_stage_code=='customer_confirmed'){
-                this.$router.push('order-checkout-'+syncedOrder.order_id);
-                return;
             }
             this.$router.push('order-'+syncedOrder.order_id);
         } catch{
