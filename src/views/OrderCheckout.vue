@@ -34,7 +34,7 @@
                 <ion-text slot="end">{{order?.order_sum_tax}}</ion-text>
             </ion-item>
             <ion-item>
-                <ion-icon src="./assets/icon/box-delivery.svg" slot="start" style="color:var(--ion-color-primary)"></ion-icon>
+                <ion-icon :icon="rocketOutline" slot="start" color="primary"></ion-icon>
                 Доставка 
                 <ion-text slot="end">{{order?.order_sum_delivery??0}}</ion-text>
             </ion-item>
@@ -86,6 +86,7 @@ import {
     walletOutline,
     pieChartOutline,
     storefrontOutline,
+    rocketOutline
     }                           from 'ionicons/icons';
 import { 
     modalController,
@@ -120,7 +121,7 @@ export default({
         IonGrid,
     },
     setup(){
-        return {cardOutline,cashOutline,giftOutline,cubeOutline,walletOutline,pieChartOutline,storefrontOutline,ordersIcon};
+        return {cardOutline,cashOutline,giftOutline,cubeOutline,walletOutline,pieChartOutline,storefrontOutline,ordersIcon,rocketOutline};
     },
     data(){
          console.log(this.orderItem)

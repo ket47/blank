@@ -46,8 +46,24 @@
                 </div>
             </ion-item>
             <ion-item lines="none">
+                <ion-icon :icon="cubeOutline" slot="start" color="primary"></ion-icon>
                 <ion-text color="medium">Сумма заказа: </ion-text>
                 <ion-label slot="end" color="primary"><b>{{ orderTotal }}{{$heap.state.currencySign}}</b></ion-label>
+            </ion-item>
+            <ion-item lines="none" v-if="orderData.order_sum_delivery>0">
+                <ion-icon :icon="rocketOutline" slot="start" color="primary"></ion-icon>
+                <ion-text color="medium">Доставка: </ion-text>
+                <ion-label slot="end" color="primary"><b>{{ orderData.order_sum_delivery }}{{$heap.state.currencySign}}</b></ion-label>
+            </ion-item>
+            <ion-item lines="none" v-if="orderData.order_sum_promo>0">
+                <ion-icon :icon="giftOutline" slot="start" color="primary"></ion-icon>
+                <ion-text color="medium">Скидка: </ion-text>
+                <ion-label slot="end" color="primary"><b>{{ orderData.order_sum_promo }}{{$heap.state.currencySign}}</b></ion-label>
+            </ion-item>
+            <ion-item lines="none" v-if="orderData.order_sum_total>0">
+                <ion-icon :icon="walletOutline" slot="start" color="primary"></ion-icon>
+                <ion-text color="medium">Итого: </ion-text>
+                <ion-label slot="end" color="primary"><b>{{ orderData.order_sum_total }}{{$heap.state.currencySign}}</b></ion-label>
             </ion-item>
         </ion-list>
 
@@ -112,7 +128,7 @@ import {
     IonCol,
     IonRow,
     IonGrid,
-    IonSkeletonText
+    IonSkeletonText,
 }                       from '@ionic/vue';
 import { 
     add,
@@ -120,7 +136,9 @@ import {
     trash, 
     rocketOutline, 
     storefrontOutline,
-    checkmarkOutline 
+    checkmarkOutline,
+    cubeOutline,
+    walletOutline
 }                       from 'ionicons/icons';
 import CartAddButtons   from '@/components/CartAddButtons.vue';
 
@@ -144,7 +162,8 @@ export default({
     IonSkeletonText
     },
     setup() {
-        return { add, remove, trash, rocketOutline, storefrontOutline, checkmarkOutline };
+        return { add, remove, trash, rocketOutline, storefrontOutline, checkmarkOutline,    cubeOutline,
+    walletOutline };
     },
     data(){
         return {

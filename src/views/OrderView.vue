@@ -20,7 +20,8 @@
 import {
     sparklesOutline
 }                           from 'ionicons/icons';
-import { 
+import {
+    modalController,
     IonLabel,
     IonIcon,
     IonContent,
@@ -35,6 +36,7 @@ import Order                from '@/scripts/Order.js';
 import OrderComp            from '@/components/OrderComp.vue';
 import OrderHistoryComp     from '@/components/OrderHistoryComp.vue';
 import OrderTrackingComp    from '@/components/OrderTrackingComp.vue'
+import OrderObjectionModal  from '@/components/OrderObjectionModal.vue'
 import ImageTileComp        from '@/components/ImageTileComp.vue'
 
 
@@ -111,6 +113,10 @@ export default({
                     case 'order_is_empty':
                         this.$flash("Заказ пуст")
                         break;
+                    case 'photos_must_be_made':
+                        this.$flash("Необходимо сфотографировать заказ")
+                        this.action_take_photo()
+                        break;
                 }
                 return false
             }
@@ -122,10 +128,33 @@ export default({
                 this.$router.push('order-checkout');
             }
         },
+        async action_objection(){
+            const modal = await modalController.create({
+                component: OrderObjectionModal,
+                initialBreakpoint: 0.50,
+                breakpoints: [0.50, 1],
+                canDissmiss:true,
+                });
+            modal.present()
+            const objection=await modal.onDidDismiss();
+            if(objection.data){
+                const result=await Order.api.itemUpdate({order_id:this.order_id,order_objection:objection.data})
+                if( result=='ok' ){
+                    const is_disputed=await this.onStageCreate(this.order_id, 'customer_disputed');
+                    if( is_disputed ){
+                        this.$flash("Ваше возражение принято и будет рассмотрено администратором.")
+                        alert("Необходимо сделать фото заказа")
+                        this.action_take_photo()
+                    }
+                }
+            }
+        },
         action_take_photo(){
-            console.log(this.$refs.orderImgs)
             this.$refs.orderImgs.take_photo();
         },
+        action_call_customer(){
+            window.open(`tel:${this.order.customer.user_phone}`)
+        }
     },
     ionViewDidEnter() {
         this.order_id=this.$route.params.id;

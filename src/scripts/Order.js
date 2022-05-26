@@ -6,6 +6,9 @@ const Order = {
         async itemGet(order_id){
             return jQuery.post( heap.state.hostname + "Order/itemGet",{order_id} );
         },
+        async itemUpdate(order){
+            return jQuery.post( heap.state.hostname + "Order/itemUpdate", JSON.stringify(order) );
+        },
         async itemSync( cart ){
             const order={
                 order_id:cart.order_id,

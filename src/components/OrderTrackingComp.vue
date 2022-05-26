@@ -34,7 +34,7 @@
             </ion-item>
 
             <ion-item lines="none">
-                <ion-label style="text-align:right">Вы, {{$heap.state.user.user_name}}</ion-label>          
+                <ion-label style="text-align:right">Клиент, {{$heap.state.user.user_name}}</ion-label>          
                 <ion-icon color="primary" slot="end" :icon="flagOutline" style="font-size:30px;"/>
             </ion-item>
         </ion-list>

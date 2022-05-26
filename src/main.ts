@@ -86,17 +86,20 @@ jQuery( document ).ajaxError(( event, jqxhr, settings, thrownError )=>{
     if( heap.getters.userIsLogged ){
       flash('К сожалению, нет прав для этого действия');
     } else {
+      Topic.publish('dismissModal')
       flash('Вы не выполнили вход, пожалуйста авторизируйтесь');
       router.push({path: `/sign-in`});
     }
   } else
   if(status_code==401){
     flash('Вы не выполнили вход, пожалуйста авторизируйтесь');
+    Topic.publish('dismissModal')
     router.push({path: `/sign-in`});
   }
 
   if(status_code==0){
     flash('Похоже нет связи с интерентом. Попробуйте позже');
+    Topic.publish('dismissModal')
     router.push({path: `/error-offline`});
   }
   if(thrownError === 'abort'){
