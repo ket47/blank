@@ -127,13 +127,13 @@ app.config.globalProperties.$heap = heap;
 app.config.globalProperties.$flash = flash;
 app.config.globalProperties.$topic = Topic;
 
-
-if(isPlatform('mobile') || isPlatform('mobileweb')){
-  app.component('base-layout', BaseLayout);
-  //require('./theme/base_layout.css');
-} else {
+console.log('isPlatform',isPlatform('mobile'))
+if(isPlatform('desktop')){
   app.component('base-layout', BaseLayoutDesktop);
   require('./theme/base_layout_desktop.css');
+} else {
+  app.component('base-layout', BaseLayout);
+  //require('./theme/base_layout.css');
 }
 app.mount('#app');
 User.autoSignIn();

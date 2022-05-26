@@ -10,9 +10,9 @@
         <div id="hcat_widget_grid">
             <div v-for="group in productGroupList" :key="group.group_id" @click="$router.push(`store-${primaryStoreData.store_id}?parent_group_id=${group.group_id}`)">
                 <ion-thumbnail>
-                    <ion-img :src="$heap.state.hostname + 'image/get.php/'+group.image_hash+'.100.100.webp'"/>
+                    <ion-img :src="$heap.state.hostname + 'image/get.php/'+group.image_hash+'.250.250.webp'"/>
                 </ion-thumbnail>
-                <ion-label style="height:2em;text-align:center;padding: 3px;font-weight:bold" color="medium">{{group.group_name}}</ion-label>
+                <ion-label style="height:2em;text-align:center;padding: 3px;font-size:0.7em" color="dark">{{group.group_name}}</ion-label>
             </div>
         </div>
     </div>
