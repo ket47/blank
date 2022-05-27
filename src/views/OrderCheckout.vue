@@ -4,7 +4,7 @@
     }
 </style>
 <template>
-    <base-layout :pageTitle="`Оформление заказа`">
+    <base-layout :pageTitle="`Оформление заказа`"  :pageDefaultBackLink="order?`/order-${order.order_id}`:`order-list`">
         <user-address-widget :deliveryTime="deliveryTime" showComment="1"></user-address-widget>
 
         <ion-list v-if="order">
@@ -142,10 +142,10 @@ export default({
             this.order=this.$heap.state.currentOrder;
             if( !this.order ){
                 this.$flash("Заказ не найден");
-                this.$router.go(-1)
+                this.$router.push('/order-list')
                 //await this.orderGet();
             }
-            console.log(this.order.order_sum_total)
+            console.log(this.order)
             if( this.order.stage_current!="customer_confirmed" ){
                 router.push('order-'+this.order.order_id);
                 return;

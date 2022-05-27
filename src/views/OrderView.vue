@@ -1,6 +1,6 @@
 <template>
-    <base-layout pageTitle="Заказ" pageDefaultBackLink="order-list">
-        <ion-content v-if="order">
+    <base-layout :pageTitle="`Заказ #${order_id}`" pageDefaultBackLink="/order-list">
+
             <div v-if="order=='notfound'" style="display:flex;align-items:center;justify-content:center;height:100%">
                 <div style="width:max-content;text-align:center">
                     <ion-icon :icon="sparklesOutline" size="large"></ion-icon>
@@ -8,11 +8,12 @@
                     <a href="/order-list">список заказов</a>
                 </div>
             </div>
-            <order-comp :orderData="order" @stageCreate="onStageCreate"></order-comp>
+
+            <order-comp :orderData="order" @stageCreate="onStageCreate"/>
             <order-tracking-comp :orderData="order"/>
             <order-history-comp :orderData="order"/>
             <image-tile-comp :images="order?.images" :image_holder_id="order?.order_id" controller="Order" ref="orderImgs"/>
-        </ion-content>
+
     </base-layout>
 </template>
 
@@ -62,13 +63,13 @@ export default({
     },
     data(){
         return {
-            order_id:0,
+            order_id:this.$route.params.id,
             order:null,
             orderIsLoading:false,
         }
     },
     methods:{
-        async orderGet(){
+        async itemGet(){
             if(this.orderIsLoading){
                 return
             }
@@ -103,7 +104,7 @@ export default({
                         this.$router.push('order-list');
                         return;
                     }
-                    await this.orderGet();
+                    await this.itemGet();
                     return true;
                 }
             }catch(err){
@@ -143,7 +144,7 @@ export default({
                     const is_disputed=await this.onStageCreate(this.order_id, 'customer_disputed');
                     if( is_disputed ){
                         this.$flash("Ваше возражение принято и будет рассмотрено администратором.")
-                        alert("Необходимо сделать фото заказа")
+                        alert("Необходимо сфотографировать заказ")
                         this.action_take_photo()
                     }
                 }
@@ -157,12 +158,10 @@ export default({
         }
     },
     ionViewDidEnter() {
-        this.order_id=this.$route.params.id;
-        this.orderGet();
+        //this.itemGet();
     },
     mounted(){
-        this.order_id=this.$route.params.id;
-        this.orderGet();
+        this.itemGet();
     }
 })
 </script>

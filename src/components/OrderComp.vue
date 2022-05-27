@@ -25,7 +25,7 @@
                     <ion-label color="dark">{{orderData.stage_current_name}}</ion-label>
                 </ion-chip>
             </ion-item>
-            <ion-item v-for="entry in orderData?.entries"  :key="entry.product_id" :class="entry.deleted_at?'entry-deleted':''" lines="full">
+            <ion-item v-for="entry in orderData?.entries"  :key="entry.product_id" :class="entry.deleted_at?'entry-deleted':''" lines="full" style="padding-top:10px;">
                 <ion-thumbnail slot="start" v-if="entry.image_hash" @click="productOpen(entry.product_id)">
                     <ion-img :src="`${$heap.state.hostname}image/get.php/${entry.image_hash}.150.150.webp`"/>
                 </ion-thumbnail>
@@ -46,22 +46,22 @@
                 </div>
             </ion-item>
             <ion-item lines="none">
-                <ion-icon :icon="cubeOutline" slot="start" color="primary"></ion-icon>
+                <ion-icon :icon="cubeOutline" slot="start" color="medium"></ion-icon>
                 <ion-text color="medium">Сумма заказа: </ion-text>
-                <ion-label slot="end" color="primary"><b>{{ orderTotal }}{{$heap.state.currencySign}}</b></ion-label>
+                <ion-label slot="end" color="primary">{{ orderTotal }}{{$heap.state.currencySign}}</ion-label>
             </ion-item>
             <ion-item lines="none" v-if="orderData.order_sum_delivery>0">
-                <ion-icon :icon="rocketOutline" slot="start" color="primary"></ion-icon>
+                <ion-icon :icon="rocketOutline" slot="start" color="medium"></ion-icon>
                 <ion-text color="medium">Доставка: </ion-text>
-                <ion-label slot="end" color="primary"><b>{{ orderData.order_sum_delivery }}{{$heap.state.currencySign}}</b></ion-label>
+                <ion-label slot="end" color="primary">{{ orderData.order_sum_delivery }}{{$heap.state.currencySign}}</ion-label>
             </ion-item>
             <ion-item lines="none" v-if="orderData.order_sum_promo>0">
-                <ion-icon :icon="giftOutline" slot="start" color="primary"></ion-icon>
+                <ion-icon :icon="giftOutline" slot="start" color="medium"></ion-icon>
                 <ion-text color="medium">Скидка: </ion-text>
-                <ion-label slot="end" color="primary"><b>{{ orderData.order_sum_promo }}{{$heap.state.currencySign}}</b></ion-label>
+                <ion-label slot="end" color="primary">{{ orderData.order_sum_promo }}{{$heap.state.currencySign}}</ion-label>
             </ion-item>
             <ion-item lines="none" v-if="orderData.order_sum_total>0">
-                <ion-icon :icon="walletOutline" slot="start" color="primary"></ion-icon>
+                <ion-icon :icon="walletOutline" slot="start" color="medium"></ion-icon>
                 <ion-text color="medium">Итого: </ion-text>
                 <ion-label slot="end" color="primary"><b>{{ orderData.order_sum_total }}{{$heap.state.currencySign}}</b></ion-label>
             </ion-item>

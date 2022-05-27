@@ -100,7 +100,13 @@ export default{
             if(stateChangeResult=='ok' && order_stage_code!='customer_cart'){
                 this.clearCart(syncedOrder.order_id);
             }
-            this.$router.push('order-'+syncedOrder.order_id);
+            if(stateChangeResult=='ok' && order_stage_code=='customer_confirmed'){
+              const confirmedOrder=await Order.api.itemGet(syncedOrder.order_id)
+              this.$heap.commit('setCurrentOrder',confirmedOrder);
+              this.$router.push('order-checkout');
+              return;
+            }
+            this.$router.push('/order-'+syncedOrder.order_id);
         } catch{
           /** */
         }

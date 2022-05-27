@@ -23,7 +23,6 @@ import './theme/core.css';
 //import './theme/color_green.css';
 
 import { createApp }        from 'vue';
-import { isPlatform }       from '@ionic/vue';
 import { IonicVue }         from '@ionic/vue';
 import { toastController }  from '@ionic/vue';
 
@@ -127,13 +126,13 @@ app.config.globalProperties.$heap = heap;
 app.config.globalProperties.$flash = flash;
 app.config.globalProperties.$topic = Topic;
 
-console.log('isPlatform',isPlatform('mobile'))
-if(isPlatform('desktop')){
-  app.component('base-layout', BaseLayoutDesktop);
-  require('./theme/base_layout_desktop.css');
-} else {
+const platformMobile= /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(window.navigator.userAgent);
+if(platformMobile){
   app.component('base-layout', BaseLayout);
   //require('./theme/base_layout.css');
+} else {
+  app.component('base-layout', BaseLayoutDesktop);
+  require('./theme/base_layout_desktop.css');
 }
 app.mount('#app');
 User.autoSignIn();

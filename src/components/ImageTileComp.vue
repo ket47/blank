@@ -28,10 +28,10 @@ ion-avatar{
 </style>
 <template>
     <div>
-        <ion-item lines="none">
+        <ion-item lines="none"  @click="editMode=!editMode;editMode&&load()">
             <ion-label color="imageList?.length?'':medium">Фотографии</ion-label>
-            <ion-icon v-if="editMode" slot="end" :icon="settingsSharp" color="primary" @click="editMode=0"/>
-            <ion-icon v-else slot="end" :icon="settingsOutline" @click="editMode=1;load()"/>
+            <ion-icon v-if="editMode" slot="end" :icon="settingsSharp" color="primary"/>
+            <ion-icon v-else slot="end" :icon="settingsOutline"/>
         </ion-item>
         <div class="image_grid" v-if="imageList?.length">
             <div v-for="img in imageList" :key="img.image_id" style="position:relative">

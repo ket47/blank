@@ -6,9 +6,7 @@
     font-family: 'Comfortaa';
     src: url('../assets/fonts/Comfortaa/Comfortaa-VariableFont_wght.ttf');
 }
-*{ 
-    font-family:"Comfortaa";
-}
+
 ion-item-divider{
     box-shadow: 0px -5px 5px #cccc;
     margin-top: 10px;
