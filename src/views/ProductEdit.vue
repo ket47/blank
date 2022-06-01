@@ -92,15 +92,20 @@
             <ion-input v-model="productItem.product_quantity" name="product_quantity" slot="end" placeholder="в наличии"/>
           </ion-item>
           <ion-item>
-            <ion-label color="primary">Единица*</ion-label>
-            <ion-input v-model="productItem.product_unit" name="product_unit" slot="end" placeholder="шт,кг и т.д."/>
-          </ion-item>
-          <ion-item>
             <ion-label color="primary">Мин. заказ*<span v-if="productItem.product_unit">({{productItem.product_unit}})</span></ion-label>
             <ion-input v-model="productItem.product_quantity_min" name="product_quantity_min" type="number" inputmode="numeric" pattern="\d\." slot="end"/>
           </ion-item>
           <ion-item>
-            <ion-label color="primary">Вес единицы (кг)*</ion-label>
+            <ion-label color="primary">Единица*</ion-label>
+            <ion-select v-model="productItem.product_unit" name="product_unit" slot="end">
+              <ion-select-option value="шт">штука</ion-select-option>
+              <ion-select-option value="кг">килограмм</ion-select-option>
+              <ion-select-option value="м">метр</ion-select-option>
+              <ion-select-option value="л">литр</ion-select-option>
+            </ion-select>
+          </ion-item>
+          <ion-item v-if="productItem.product_unit!='кг'">
+            <ion-label color="primary">Вес 1{{productItem.product_unit}} (кг)*</ion-label>
             <ion-input v-model="productItem.product_weight" name="product_weight" type="number" step="0.1" inputmode="numeric" pattern="\d\." slot="end"/>
           </ion-item>
         </ion-item-group>
@@ -180,6 +185,8 @@ import {
   IonButton,
   IonProgressBar,
   IonText,
+  IonSelect,
+  IonSelectOption,
   modalController
   }                   from '@ionic/vue'
 import {
@@ -215,6 +222,8 @@ export default  {
     IonButton,
     IonProgressBar,
     IonText,
+    IonSelect,
+    IonSelectOption,
     imageTileComp
     },
   setup(){

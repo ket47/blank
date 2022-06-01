@@ -47,7 +47,7 @@
 </style>
 
 <template>
-    <div :class="`product-actions ${componentLayout} ${buttonLayout} ${this.currentQuantity>0?'incart':''} ${isAvailable?'':'sold'}`">
+    <div v-if="productData" :class="`product-actions ${componentLayout} ${buttonLayout} ${this.currentQuantity>0?'incart':''} ${isAvailable?'':'sold'}`">
       
       <ion-button v-if="!this.currentQuantity" @click="addToOrder(+this.productData.product_quantity_min)" color="primary" size="small">
         <ion-icon :icon="add"  color="light"></ion-icon>
@@ -66,7 +66,6 @@
 
 <script>
 import { 
-  toastController,
   IonIcon,
   IonButton,
   IonLabel,
@@ -96,28 +95,33 @@ export default{
     }
   },
   data() {
-    let order_store_id=0;
-    let productData=(this.entry||this.productItem);
-    productData.product_quantity_min= productData.product_quantity_min | 1;
-
-    if( this.productItem ){
-      productData.entry_quantity=0;
-      order_store_id=this.productItem.store_id;
-    } else {
-      order_store_id=this.orderData.order_store_id;
-    }
-
     return { 
-      order_store_id,
-      productData
+      order_store_id:0,
+      productData:null
     };
   },
   mounted(){
+    this.propsCalculate()
     this.productListItemHighlight();
   },
+
   methods:{
+    propsCalculate(){
+      let order_store_id=0;
+      let productData=(this.entry||this.productItem);
+      productData.product_quantity_min= productData.product_quantity_min | 1;
+
+      if( this.productItem ){
+        productData.entry_quantity=0;
+        order_store_id=this.productItem.store_id;
+      } else {
+        order_store_id=this.orderData.order_store_id;
+      }
+      this.order_store_id=order_store_id;
+      this.productData=productData;
+    },
     productListItemHighlight(){
-      let product_list_item=document.getElementById(`product_list_item${this.productData.product_id}`);
+      let product_list_item=document.getElementById(`product_list_item${this.productData?.product_id}`);
       if(!product_list_item){
         return;
       }
@@ -149,8 +153,8 @@ export default{
         newQuantity=0;
       }
       newQuantity=this.productData.product_quantity_min*Math.round(newQuantity/this.productData.product_quantity_min);
-      if( this.productData.is_counted==1 && newQuantity>this.productData.product_quantity ){
-        this.flash(`В наличии есть только ${this.productData.product_quantity}${this.productData.product_unit}`);
+      if( this.productData.is_counted==1 && newQuantity>(this.productData.product_quantity-this.productData.product_quantity_reserved) ){
+        this.$flash(`В наличии есть только ${this.productData.product_quantity-this.productData.product_quantity_reserved}${this.productData.product_unit}`);
         newQuantity=this.productData.product_quantity;
       }
       let stock_product_quantity=this.productItem?this.productItem.product_quantity:this.productData.product_quantity;
@@ -169,15 +173,6 @@ export default{
       await this.$Order.doc.entrySave(this.order_store_id,entry,this.orderData);
       this.productListItemHighlight();
     },
-    async flash( message ) {
-      const toast = await toastController
-        .create({
-          message: message,
-          duration: 2000,
-          color:'dark'
-        })
-      return toast.present();
-    }
   },
   computed:{
     currentQuantity(){
@@ -195,8 +190,16 @@ export default{
       return 'absolute'
     },
     isAvailable(){
-      return this.productData.is_counted==1?this.productData.product_quantity>0:true;
+      return this.productData.is_counted==1?(this.productData.product_quantity-this.productData.product_quantity_reserved)>0:true;
     }
   },
+  watch:{
+    'productItem':function(){
+      this.propsCalculate()
+    },
+    'entry':function(){
+      this.propsCalculate()
+    },
+  }
 }
 </script>

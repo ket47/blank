@@ -181,19 +181,11 @@ ion-chip .active-chip {
             </router-link>
           </ion-col>
         </ion-row>
-        <ion-row v-if="storeItem.is_writable==1">
+        <!-- <ion-row v-if="storeItem.is_writable==1">
           <ion-col>
           <ion-button @click="productItemCreate()" color="light" expand="full">Добавить товар</ion-button>
           </ion-col>
-        </ion-row> 
-        <ion-row style="font-size:12px">
-          <ion-col>
-            {{ storeItem.store_group_names }}
-          </ion-col>
-          <ion-col v-show="storeItem.willBeClosedAt" style="text-align:right">
-            закроется в {{ storeItem.willBeClosedAt }}:00
-          </ion-col>
-        </ion-row>
+        </ion-row>  -->
         <ion-row>
           <ion-col>
             <ion-note>{{storeItem.store_description}}</ion-note>
@@ -204,37 +196,36 @@ ion-chip .active-chip {
             <div style="border-bottom:1px solid var(--ion-color-primary-tint)"></div>
           </ion-col>
         </ion-row>
-        <ion-row>
-          <ion-col>
-          <div v-if="storeItem.deliveryTime">
-            <ion-chip v-if="storeItem.is_opened" color="success">Открыт до {{ storeItem.store_time_closes }}:00</ion-chip>
-            <ion-chip v-else color="danger">Закрыт до {{ storeItem.store_time_opens }}:00</ion-chip>
-            <ion-chip v-if="storeItem.deliveryTime.timeMin" color="primary">{{storeItem.deliveryTime.timeMin}}-{{storeItem.deliveryTime.timeMax}}мин</ion-chip>
-          </div>
-          </ion-col>
-        </ion-row>
-        <ion-row>
-          <ion-col style="font-size:12px">
-            <div style="display:grid;grid-template-columns:30px 1fr;gap:5px">
-              <div style="grid-row:1 / 2;align-items: flex-start;">
-                <ion-icon src="./assets/icon/box-delivery.svg" style="font-size:26px;color:var(--ion-color-primary)"></ion-icon> 
-              </div>
-              <div style="grid-column:2 / span 3;display: flex;align-items: center;">
-                <span> Доставит <b style="color:var(--ion-color-primary)">{{$heap.state.app_title}}</b></span>
-              </div>
-            </div>
-            <div style="display:flex; justify-content: space-between;">
-              <div v-if="storeItem.delivery" style="text-align:left">
-                {{storeItem.delivery.timeMin}}-{{storeItem.delivery.timeMax}} мин
-              </div>
-              <div>доставка {{$heap.state.deliverySettings.fee}}₽</div>
-              <div v-if="storeItem.store_minimal_order" style="text-align:right">
-                заказ от {{storeItem.store_minimal_order}}₽
-              </div>
-            </div>
-          </ion-col>
-        </ion-row>
       </ion-grid>
+
+
+
+      <ion-list>
+        <ion-item lines="none" style="font-size:0.8em">
+          <ion-text>{{ storeItem.store_group_names }}</ion-text>
+          <ion-chip slot="end" v-if="storeItem.is_opened==1" color="success">Открыт до {{ storeItem.store_time_closes }}:00</ion-chip>
+          <ion-chip slot="end" v-else color="danger">
+            <span v-if="storeItem.is_working==0">Временно не работает</span>
+            <span v-else-if="storeItem.store_next_time_opens>0">Закрыт до {{ storeItem.store_next_time_opens }}:00</span>
+            <span v-else>Закрыт</span>
+          </ion-chip>
+        </ion-item>
+
+        <ion-item lines="none" style="font-size:0.8em">
+          <ion-text>Доставит <b style="color:var(--ion-color-primary)">{{$heap.state.settings.app_title}}</b></ion-text>
+          <ion-chip slot="end" v-if="storeItem.deliveryTime" color="primary">
+            {{storeItem.deliveryTime.timeMin}}-{{storeItem.deliveryTime.timeMax}}мин
+          </ion-chip>
+        </ion-item>
+        <ion-item lines="none" style="font-size:0.8em" v-if="storeItem.deliveryTime">
+          <ion-text slot="start">доставка {{$heap.state.settings.delivery.fee}}₽</ion-text>
+          <ion-text slot="end">заказ от {{storeItem.store_minimal_order}}₽</ion-text>
+        </ion-item>
+      </ion-list>
+
+
+
+
       <ion-accordion-group style="width:100%">
         <ion-accordion>
           <ion-item slot="header">
@@ -353,7 +344,9 @@ import {
  }                        from 'swiper/vue';
 import { 
   search,
-  settingsOutline
+  settingsOutline,
+  rocketOutline,
+  compassOutline,
 }                         from "ionicons/icons";
 import ImageSlider        from "@/components/ImageSlider";
 import GroupList          from "@/components/GroupList.vue";
@@ -404,6 +397,8 @@ export default defineComponent({
     return {
       search,
       settingsOutline,
+      rocketOutline,
+      compassOutline,
       slideOpts,
       slideModules:[Autoplay]
     };

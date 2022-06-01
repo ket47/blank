@@ -24,7 +24,7 @@ import './theme/core.css';
 
 import { createApp }        from 'vue';
 import { IonicVue }         from '@ionic/vue';
-import { toastController }  from '@ionic/vue';
+import { toastController,alertController }  from '@ionic/vue';
 
 import App                  from '@/App.vue';
 import router               from '@/router';
@@ -65,8 +65,10 @@ const FlashNotice={
     const toast = await toastController
       .create({
         message: message,
-        duration: 3000,
-        color:'secondary'
+        duration: 2000,
+        color:'secondary',
+        translucent:true,
+        position:'bottom'
       })
     toast.present();
     toast.onDidDismiss().then(()=>{
@@ -77,6 +79,22 @@ const FlashNotice={
 }
 const flash= ( message:string )=>{
   FlashNotice.push(message);
+}
+const alert = async (message:string,title:string)=>{
+  Topic.publish('dismissModal')
+  const alert = await alertController
+      .create({
+        header: title,
+        message: message,
+        buttons: [
+          {
+            text: 'Ok',
+            role: 'cancel',
+            cssClass: 'secondary'
+          },
+        ],
+      });
+    return alert.present();
 }
 
 jQuery( document ).ajaxError(( event, jqxhr, settings, thrownError )=>{
@@ -124,6 +142,7 @@ const app = createApp(App)
 app.provide("$Order",Order);
 app.config.globalProperties.$heap = heap;
 app.config.globalProperties.$flash = flash;
+app.config.globalProperties.$alert = alert;
 app.config.globalProperties.$topic = Topic;
 
 const platformMobile= /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(window.navigator.userAgent);

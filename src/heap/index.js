@@ -1,23 +1,11 @@
 import { createStore } from 'vuex'
 const heap = createStore({
     state() {
+        let hostname=localStorage.hostname || "https://api.tezkel.com/"
         return {
-            hostname: "https://tezkel.local/",
-            //hostname: "https://api.tezkel.com/",
-            app_title: "Тезкель",
+            hostname,
             user: {user_id: -1},
-            deliverySettings:{
-                courierVelocity:30000,// (30km/h),
-                deliveryTimeDelta:10,//5minutes
-                fee:120,
-                defaultPreparationTime:15,//15 minutes
-            },
-            location:{
-                mapBoundaries:[[ 45.068047847988005, 33.8779092284851 ],[ 44.907247740163136, 34.16767363278196 ]],
-                mapCenter:[ 44.943863592382236, 34.094551210249215 ],//merkezi pazar amethansultan meydani
-                ymapApiKey:"12d851cb-5290-4946-bf15-817cce1f96df",
-                addressErase:"Россия, Республика Крым, "
-            },
+            settings:null,
             currencySign:"₽",
             isInteractingWithServer:0
         }
@@ -56,6 +44,9 @@ const heap = createStore({
     mutations: {
         setUser (state, userData) {
             state.user = userData;
+        },
+        setSettings (state, settingsData) {
+            state.settings = settingsData;
         },
         setUserMainLocation(state,mainLocation){
             state.user.location_main=mainLocation

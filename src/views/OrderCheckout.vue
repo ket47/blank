@@ -124,7 +124,6 @@ export default({
         return {cardOutline,cashOutline,giftOutline,cubeOutline,walletOutline,pieChartOutline,storefrontOutline,ordersIcon,rocketOutline};
     },
     data(){
-         console.log(this.orderItem)
         return {
             order:null,
             deliveryTime:{},
@@ -145,7 +144,6 @@ export default({
                 this.$router.push('/order-list')
                 //await this.orderGet();
             }
-            console.log(this.order)
             if( this.order.stage_current!="customer_confirmed" ){
                 router.push('order-'+this.order.order_id);
                 return;

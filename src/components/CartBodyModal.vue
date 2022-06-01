@@ -90,7 +90,7 @@ export default{
         if(order_stage_code=='customer_purged'){
           return this.clearCart(order_id);
         }
-        if(order_stage_code=='customer_action_checkout'){
+        if(order_stage_code=='customer_action_confirm'){
           order_stage_code='customer_confirmed'
         }
         try{
@@ -107,9 +107,16 @@ export default{
               return;
             }
             this.$router.push('/order-'+syncedOrder.order_id);
-        } catch{
-          /** */
-        }
+        } catch(err){
+                const exception=err.responseJSON;
+                const exception_code=exception.messages.error;
+                switch(exception_code){
+                    case 'order_is_empty':
+                        this.$alert("К сожалению, товара не осталось в наличии &#9785;","Заказ пуст");
+                        break;
+                }
+                return false
+          }
     },
   }
 };

@@ -9,7 +9,14 @@ const User = {
     init(){
         this.geo.trackingStart();
     },
+    async settingsGet(){
+        const settings=await jQuery.get( heap.state.hostname + "User/itemSettingsGet")
+        heap.commit('setSettings', settings);
+    },
     async get( mode='all' ){
+        if( !heap.state.settings ){
+            await this.settingsGet()
+        }
         const user=await jQuery.post( heap.state.hostname + "User/itemGet",{mode})
         .done(function(response, textStatus, request){
             const sid = request.getResponseHeader('x-sid');

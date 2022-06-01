@@ -12,7 +12,7 @@
             <order-comp :orderData="order" @stageCreate="onStageCreate"/>
             <order-tracking-comp :orderData="order"/>
             <order-history-comp :orderData="order"/>
-            <image-tile-comp :images="order?.images" :image_holder_id="order?.order_id" controller="Order" ref="orderImgs"/>
+            <image-tile-comp v-if="order" :images="order?.images" :image_holder_id="order?.order_id" controller="Order" ref="orderImgs"/>
 
     </base-layout>
 </template>
@@ -32,6 +32,7 @@ import {
     IonText,
     IonNote,
     IonList,
+    
 }                           from '@ionic/vue';
 import Order                from '@/scripts/Order.js';
 import OrderComp            from '@/components/OrderComp.vue';
@@ -112,7 +113,7 @@ export default({
                 const exception_code=exception.messages.error;
                 switch(exception_code){
                     case 'order_is_empty':
-                        this.$flash("Заказ пуст")
+                        this.$alert("К сожалению, товара не осталось в наличии &#9785;","Заказ пуст");
                         break;
                     case 'photos_must_be_made':
                         this.$flash("Необходимо сфотографировать заказ")
@@ -122,12 +123,15 @@ export default({
                 return false
             }
         },
-        async action_checkout(order_id){
+        async action_confirm(order_id){
             const result=await this.onStageCreate(order_id, 'customer_confirmed');
             if( result ){
-                this.$heap.commit('setCurrentOrder',this.order);
-                this.$router.push('order-checkout');
+                this.action_checkout()
             }
+        },
+        async action_checkout(){
+            this.$heap.commit('setCurrentOrder',this.order);
+            this.$router.push('order-checkout');
         },
         async action_objection(){
             const modal = await modalController.create({
@@ -155,12 +159,17 @@ export default({
         },
         action_call_customer(){
             window.open(`tel:${this.order.customer.user_phone}`)
-        }
+        },
     },
     ionViewDidEnter() {
-        //this.itemGet();
+        if(this.order==null){
+            this.itemGet();
+        }
     },
-    mounted(){
+    ionViewDidLeave(){
+        this.order=null;
+    },
+    created(){
         this.itemGet();
     }
 })

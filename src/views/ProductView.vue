@@ -153,7 +153,7 @@ export default  {
       return entry.data.entry_comment??''
     },
     isAvailable(){
-      return this.productItem.is_counted==1?this.productItem.product_quantity>0:true;
+      return this.productItem.is_counted==1?(this.productItem.product_quantity-this.productItem.product_quantity_reserved)>0:true;
     }
   },
   methods: {

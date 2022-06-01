@@ -47,7 +47,7 @@ export default({
     },
     data(){
         let locationType=this.location_group_name_low+" адрес"
-        let locSettings=this.$heap.state.location;
+        let locSettings=this.$heap.state.settings.location;
         return {
             mapBoundaries:locSettings.mapBoundaries,
             mapCenter:locSettings.mapCenter,
