@@ -142,10 +142,8 @@ export default({
             }
         },
         isDelivering(){
-            for(let stage of this.orderData?.stages??[]){
-                if(stage?.group_type=='delivery_start'){
-                    return true
-                }
+            if(this.orderData?.stage_current=='delivery_start'){
+                return true
             }
             return false
         }

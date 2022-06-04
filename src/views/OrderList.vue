@@ -1,9 +1,3 @@
-<style scoped>
-    ion-icon{
-        font-size:40px;
-        color:var(--ion-color-medium);
-    }
-</style>
 <template>
   <base-layout page-default-back-link="/home" page-title="Заказы">
         <ion-segment swipe-gesture="true" v-model="orderType" @ionChange="listTypeChanged($event)">
@@ -17,30 +11,48 @@
                 Исполненые
             </ion-segment-button>
         </ion-segment>
-        <ion-list v-if="orderList.length">
-            <ion-item v-for="order in orderListComputed" :key="order.order_id" @click="itemClick(order)" detail lines="full">
-                <ion-avatar slot="start">
-                    <ion-icon v-if="order.user_role=='customer'" src="./assets/icon/box-delivery.svg"/>
-                    <ion-icon v-if="order.user_role=='courier'" src="./assets/icon/delivery_staying.svg"/>
-                    <ion-icon v-if="order.user_role=='admin'" src="./assets/icon/crown.svg" style="font-size:24px;"/>
-                    <ion-icon v-if="order.user_role=='supplier'" :icon="storefrontOutline" style="font-size:24px;"/>
-                </ion-avatar>
+        <ion-list v-if="orderList">
+            <div v-for="order in orderListComputed" :key="order.order_id" @click="itemClick(order)">
+                <ion-item detail lines="none">
+                    <ion-icon slot="start" :icon="order.icon"/>
+                    <ion-label>{{order.store_name}} #{{order.order_id}}</ion-label>
+                </ion-item>
+                <ion-item lines="full">
+                    <ion-text>
+                        <ion-label>
+                            <ion-chip color="medium">{{order.order_sum_total}}{{$heap.state.currencySign}}</ion-chip>
+                            <ion-chip color="primary" v-if="order.stage_current_name">
+                                <ion-icon :icon="checkmarkOutline"></ion-icon>
+                                <ion-label color="dark">{{order.stage_current_name}}</ion-label>
+                            </ion-chip>
+                        </ion-label>
+                        <ion-note>{{order.location_address}}</ion-note>
+                    </ion-text>
+                    <ion-thumbnail slot="end" v-if="order.image_hash">
+                        <ion-img style="border-radius:10px;" :src="`${$heap.state.hostname}image/get.php/${order.image_hash}.150.150.webp`"/>
+                    </ion-thumbnail>
+                </ion-item>
+            </div>
+        </ion-list>
+        <ion-list v-if="jobList">
+            <div v-for="order in jobListComputed" :key="order.order_id" @click="itemClick(order)">
+
+            <ion-item detail lines="none">
+                <ion-icon slot="start" :icon="rocketOutline"/>
+                <ion-label>{{order.store_name}}</ion-label>
+            </ion-item>
+            <ion-item lines="full">
                 <ion-text>
-                    <ion-label>{{order.store_name}} #{{order.order_id}} ({{order.order_sum_total}}{{$heap.state.currencySign}})</ion-label>
                     <ion-label>
+                        <ion-chip color="medium">{{order.order_sum_total}}{{$heap.state.currencySign}}</ion-chip>
                         <ion-chip color="primary" v-if="order.distance_km">{{order.distance_km}}</ion-chip>
-                        <ion-chip color="success" v-if="order.stage_current_name">{{order.stage_current_name}}</ion-chip>
                     </ion-label>
                     <ion-note>{{order.location_address}}</ion-note>
                 </ion-text>
-                <!--
-                <ion-thumbnail slot="end" v-if="order.image_hash">
-                    <ion-img style="border-radius:10px;" :src="`${$heap.state.hostname}image/get.php/${order.image_hash}.150.150.webp`"/>
-                </ion-thumbnail>
-                -->
             </ion-item>
+            </div>
         </ion-list>
-        <div v-else style="display:flex;align-items:center;justify-content:center;height:100%">
+        <div v-if="!orderList && !jobList" style="display:flex;align-items:center;justify-content:center;height:100%">
             <div style="width:max-content;text-align:center">
                 <ion-icon :icon="sparklesOutline" size="large"></ion-icon>
                 <ion-label>Заказов нет</ion-label><br>
@@ -61,13 +73,19 @@ import {
     IonItem,
     IonList,
     IonChip,
-    IonNote
+    IonNote,
+    IonImg,
+    IonThumbnail,
 }                   from '@ionic/vue';
 import {
     storefrontOutline,
     sparklesOutline,
-    timeOutline
+    timeOutline,
+    rocketOutline,
+    ribbonOutline,
+    checkmarkOutline,
 }                   from 'ionicons/icons';
+import ordersIcon   from "@/assets/icons/orders.svg";
 import Order        from '@/scripts/Order.js';
 import User         from '@/scripts/User.js';
 import Topic        from '@/scripts/Topic.js';
@@ -85,33 +103,55 @@ export default {
     IonItem,
     IonList,
     IonChip,
-    IonNote
+    IonNote,
+    IonImg,
+    IonThumbnail,
     },
     setup() {
-      return { sparklesOutline,storefrontOutline,timeOutline };
+      return { sparklesOutline,storefrontOutline,timeOutline,ordersIcon,rocketOutline,ribbonOutline,checkmarkOutline, };
     },
     data(){
         return {
-            orderList:[],
-            orderType:'active',
-            courierJobsInclude:0,
+            jobList:null,
+            orderList:null,
+            orderType:null,
+            courierJobsInclude:null,
             clock:null
         };
     },
     computed:{
         orderListComputed(){
             for(let order of this.orderList){
+                switch(order.user_role){
+                    case 'customer':
+                        order.icon=ordersIcon
+                        break;
+                    case 'admin':
+                        order.icon=ribbonOutline
+                        break;
+                    case 'courier':
+                        order.icon=rocketOutline
+                        break;
+                    case 'supplier':
+                        order.icon=storefrontOutline
+                        break;
+                }
+            }
+            return this.orderList;
+        },
+        jobListComputed(){
+            for(let order of this.jobList){
                 if( !order.location_address ){
                     order.location_address='';
                 }
-                //order.location_address=order.location_address.split(',').reverse().join(',');
+                order.location_address=order.location_address.split(',').reverse().join(',');
                 if( order.distance ){
-                    order.courier_supplier_distance_km=Math.round(order.distance/1000)+'км';
+                    order.distance_km=Math.round(order.distance/1000)+'км';
                 } else {
                     order.distance_km='';
                 }
             }
-            return this.orderList;
+            return this.jobList;
         }
     },
     created(){
@@ -122,6 +162,18 @@ export default {
         self.courierReadinessCheck();
     },
     methods:{
+        courierReadinessCheck(){
+            const courierJobsInclude=User.courier.status=='ready'?1:0;
+            if(this.courierJobsInclude===courierJobsInclude){
+                return
+            }
+            this.courierJobsInclude=courierJobsInclude
+            if(this.courierJobsInclude==0){
+                this.orderType='active';
+            } else {
+                this.orderType='jobs';
+            }
+        },
         async listLoad(listType){
             this.autoReload(listType);
             if( listType=='jobs' ){
@@ -133,21 +185,17 @@ export default {
                 order_group_type='!customer_finish';
             }
             this.orderList=await Order.api.listLoad(order_group_type);
+            this.jobList=null;
         },
         listTypeChanged(e){
             const listType=e.target.value;
             this.listLoad(listType);
         },
-        courierReadinessCheck(){
-            this.courierJobsInclude=User.courier.status=='ready'?1:0;
-            if(this.courierJobsInclude==0){
-                this.orderType='active';
-            }
-        },
         async listJobLoad(){
             try{
                 const courier_id=User.courier?.data?.courier_id;
-                this.orderList=await Order.api.listJobGet(courier_id);
+                this.jobList=await Order.api.listJobGet(courier_id);
+                this.orderList=null;
             } catch(err){
                 const message=err.responseJSON?.messages?.error;
                 if(message=='notready'){

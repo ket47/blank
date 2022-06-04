@@ -28,9 +28,9 @@ const User = {
             heap.commit('setUser', response);
             Topic.publish('userGet',response);
         });
-        // if( User.isCourier() ){
-        //     await User.courier.get();
-        // }
+        if( User.isCourier() ){
+            await User.courier.get();
+        }
         return user;
     },
     async autoSignIn(){

@@ -67,6 +67,13 @@
             </ion-item>
         </ion-list>
 
+        <ion-card color="warning"  v-if="orderData.order_objection">
+            <ion-card-header>
+                <ion-card-title>Проблема с заказом</ion-card-title>
+            </ion-card-header>
+            <ion-card-content>{{orderData.order_objection}}</ion-card-content>
+        </ion-card>
+
 
         <ion-grid>
             <ion-row>
@@ -129,6 +136,10 @@ import {
     IonRow,
     IonGrid,
     IonSkeletonText,
+    IonCard,
+    IonCardHeader,
+    IonCardContent,
+    IonCardTitle,
 }                       from '@ionic/vue';
 import { 
     add,
@@ -138,7 +149,8 @@ import {
     storefrontOutline,
     checkmarkOutline,
     cubeOutline,
-    walletOutline
+    walletOutline,
+    banOutline
 }                       from 'ionicons/icons';
 import CartAddButtons   from '@/components/CartAddButtons.vue';
 
@@ -159,10 +171,14 @@ export default({
     IonCol,
     IonRow,
     IonGrid,
-    IonSkeletonText
+    IonSkeletonText,
+    IonCard,
+    IonCardHeader,
+    IonCardContent,
+    IonCardTitle,
     },
     setup() {
-        return { add, remove, trash, rocketOutline, storefrontOutline, checkmarkOutline,    cubeOutline,
+        return { add, remove, trash, rocketOutline, storefrontOutline, checkmarkOutline,    cubeOutline, banOutline,
     walletOutline };
     },
     data(){

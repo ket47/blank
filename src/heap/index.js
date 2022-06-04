@@ -14,6 +14,9 @@ const heap = createStore({
         hostname(state){
             return state.hostname;
         },
+        settings(state){
+            return state.settings||{}
+        },
         userIsLogged(state){
             return state.user.user_id > 0;
         },

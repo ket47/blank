@@ -21,8 +21,8 @@
 
       <slot />
       <div style="height:30px"><!--spacer for bottom main tabs--></div>
-      <ion-fab v-if="isInteractingWithServer" vertical="bottom" horizontal="end" slot="fixed">
-        <ion-spinner></ion-spinner>
+      <ion-fab v-if="isInteractingWithServer" vertical="bottom" slot="fixed">
+        <tezkel-loader/>
       </ion-fab>
     </ion-content>
   </ion-page>
@@ -47,6 +47,7 @@ import {
 }                           from "@ionic/vue";
 import CartHeader           from "@/components/CartHeader";
 import { defineComponent }  from "@vue/runtime-core";
+import TezkelLoader   from "@/components/TezkelLoader.vue"
 
 export default defineComponent({
   props: [
@@ -72,7 +73,8 @@ export default defineComponent({
     IonSpinner,
     IonFab,
     IonIcon,
-    CartHeader
+    CartHeader,
+    TezkelLoader
   },
   computed:{
     isInteractingWithServer(){

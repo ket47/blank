@@ -170,37 +170,18 @@ ion-chip .active-chip {
   <div style="background-color:var(--ion-background-shade)">
     <div class="store-info">
       <image-slider :imageList="storeItem.images" :imgHeight="200"></image-slider>
-      <ion-grid style="margin:15px 5px 5px 5px;"> 
-        <ion-row>
-          <ion-col>
-            <ion-text color="primary" style="font-size:20px">{{ storeItem.store_name }}</ion-text>
-          </ion-col>
-          <ion-col style="text-align:right">
-            <router-link :to="'/store-edit-' + storeItem.store_id" v-if="storeItem.is_writable==1">
-              <ion-icon :icon="settingsOutline" style="font-size:24px"></ion-icon>
-            </router-link>
-          </ion-col>
-        </ion-row>
-        <!-- <ion-row v-if="storeItem.is_writable==1">
-          <ion-col>
-          <ion-button @click="productItemCreate()" color="light" expand="full">Добавить товар</ion-button>
-          </ion-col>
-        </ion-row>  -->
-        <ion-row>
-          <ion-col>
-            <ion-note>{{storeItem.store_description}}</ion-note>
-          </ion-col>
-        </ion-row>
-        <ion-row>
-          <ion-col>
-            <div style="border-bottom:1px solid var(--ion-color-primary-tint)"></div>
-          </ion-col>
-        </ion-row>
-      </ion-grid>
+        <ion-list>
+        <ion-item lines="none">
+          <ion-text color="primary" style="font-size:1.2em;">{{ storeItem.store_name }}</ion-text>
+          <router-link slot="end" :to="'/store-edit-' + storeItem.store_id" v-if="storeItem.is_writable==1">
+            <ion-icon :icon="settingsOutline" style="font-size:24px"></ion-icon>
+          </router-link>
+        </ion-item>
+        <ion-item lines="none">
+          <ion-text style="font-size:0.9em;text-align:justify" color="medium">{{storeItem.store_description}}</ion-text>
+        </ion-item>
+        <ion-item lines="none"></ion-item>
 
-
-
-      <ion-list>
         <ion-item lines="none" style="font-size:0.8em">
           <ion-text>{{ storeItem.store_group_names }}</ion-text>
           <ion-chip slot="end" v-if="storeItem.is_opened==1" color="success">Открыт до {{ storeItem.store_time_closes }}:00</ion-chip>
@@ -210,16 +191,15 @@ ion-chip .active-chip {
             <span v-else>Закрыт</span>
           </ion-chip>
         </ion-item>
-
         <ion-item lines="none" style="font-size:0.8em">
-          <ion-text>Доставит <b style="color:var(--ion-color-primary)">{{$heap.state.settings.app_title}}</b></ion-text>
+          <ion-text>Доставит <b style="color:var(--ion-color-primary)">{{$heap.getters.settings.app_title}}</b></ion-text>
           <ion-chip slot="end" v-if="storeItem.deliveryTime" color="primary">
             {{storeItem.deliveryTime.timeMin}}-{{storeItem.deliveryTime.timeMax}}мин
           </ion-chip>
         </ion-item>
         <ion-item lines="none" style="font-size:0.8em" v-if="storeItem.deliveryTime">
-          <ion-text slot="start">доставка {{$heap.state.settings.delivery.fee}}₽</ion-text>
-          <ion-text slot="end">заказ от {{storeItem.store_minimal_order}}₽</ion-text>
+          <ion-text slot="start">доставка <ion-text color="secondary">{{$heap.getters.settings.delivery.fee}}₽</ion-text></ion-text>
+          <ion-text slot="end">заказ от <ion-text color="secondary">{{storeItem.store_minimal_order}}₽</ion-text></ion-text>
         </ion-item>
       </ion-list>
 
@@ -229,7 +209,7 @@ ion-chip .active-chip {
       <ion-accordion-group style="width:100%">
         <ion-accordion>
           <ion-item slot="header">
-            <ion-label slot="end">Еще</ion-label>
+            <ion-label slot="end" color="medium">Еще</ion-label>
           </ion-item>
 
           <ion-list slot="content">
@@ -237,15 +217,15 @@ ion-chip .active-chip {
               <ion-text><b>{{storeItem.store_company_name}}</b></ion-text>
             </ion-item>
             <ion-item lines="none">
-              <ion-label>ИНН</ion-label>
-              <ion-label>{{storeItem.store_tax_num}}</ion-label>
+              <ion-label color="medium">ИНН</ion-label>
+              <ion-label color="medium">{{storeItem.store_tax_num}}</ion-label>
             </ion-item>
             <ion-item lines="none">
-              <ion-label>Телефон</ion-label>
-              <ion-label>{{storeItem.store_phone}}</ion-label>
+              <ion-label color="medium">Телефон</ion-label>
+              <ion-label color="medium">{{storeItem.store_phone}}</ion-label>
             </ion-item>
             <ion-item lines="none">
-              <ion-text>{{storeItem.locations?.[0].location_address}}</ion-text>
+              <ion-text color="medium">{{storeItem.locations?.[0].location_address}}</ion-text>
             </ion-item>
           </ion-list>
         </ion-accordion>

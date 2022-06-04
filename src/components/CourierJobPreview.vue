@@ -22,7 +22,7 @@
         <ion-item lines="none">
             <div class="center_chip">
                 <ion-chip color="success">
-                    <ion-text>{{orderData?.courier_supplier_distance_km}}</ion-text>
+                    <ion-text>{{orderData?.distance_km}}</ion-text>
                 </ion-chip>
             </div>      
         </ion-item>

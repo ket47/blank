@@ -28,12 +28,12 @@ ion-text{
     <div v-if="!courier">
       <ion-card>
         <ion-item>
-          <ion-label>Пока вы не курьер</ion-label>
+          <ion-label>Подача заявки</ion-label>
         </ion-item>
         <ion-item>
           <ion-text>
           Подавая заявку вы даете согласие на условия 
-          <a href="#/page-courier_contract">Договор о предоставлении услуг</a>
+          <a href="#/page-courier_contract" @click="$router.push('/page-courier_contract')">Оферта об оказании услуг доставки</a>
           </ion-text>
           <ion-checkbox v-model="contractAccepted" slot="end"/>
         </ion-item>
@@ -126,16 +126,16 @@ import {
   IonItemGroup,
   IonToggle,
   IonIcon,
-}                   from "@ionic/vue";
+}                    from "@ionic/vue";
 import {
   cameraOutline,
   trashOutline,
   searchOutline,
   documentTextOutline
 }                     from 'ionicons/icons'
-import jQuery       from "jquery";
-import heap         from '@/heap';
-import User         from '@/scripts/User.js';
+import jQuery         from "jquery";
+import heap           from '@/heap';
+import User           from '@/scripts/User.js';
 import imageTileComp  from '@/components/ImageTileComp.vue'
 
 export default  {
@@ -168,7 +168,7 @@ export default  {
   },
   data(){
     return {
-      courier:User.courier.data,
+      courier:null,
       isAdmin:User.isAdmin(),
       contractAccepted:0,
       is_deleted:0,
@@ -206,24 +206,20 @@ export default  {
   },
   methods:{
     async itemGet(){
-      try{
-        this.courier=await User.courier.get();
-      } catch(err){
-        const status=JSON.parse(err.responseJSON?.status);
-        if(status=="404"){
-          this.$flash("Анкета не найдена")
-        }
-      }
+      this.courier=await User.courier.get();
       this.itemParseFlags()
     },
     itemParseFlags(){
+      if(!this.courier){
+        return
+      }
       this.is_deleted   = this.courier.deleted_at==null?0:1
       this.is_disabled  = this.courier.is_disabled==0?0:1
     },
     async itemCreate(){
       try{
         await jQuery.post(heap.state.hostname + "Courier/itemCreate");
-        await User.get();
+        await User.get('full');
         this.courier=User.courier.data;
       } catch {
         this.$flash("Не удалось зарегистрироваться как курьер")

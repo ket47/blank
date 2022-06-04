@@ -9,12 +9,13 @@ const Utils={
         return Utils.deliveryTimeCalculate(distance,preparation);
     },
     deliveryTimeCalculate(distance,preparation){
-        preparation=preparation??heap.state.settings.delivery.timePreparationDefault;
-        const delta=heap.state.settings.delivery.timeDelta;
-        const time=Math.round(distance/heap.state.settings.delivery.speed*60/5)*5+parseInt(preparation);
-        const timeMin=time>delta?time-delta:time;
-        const timeMax=timeMin+delta;
-        return {time,timeMin,timeMax};
+        preparation=parseInt(preparation??heap.getters.settings.delivery.timePreparationDefault)
+        const delta=parseInt(heap.getters.settings.delivery.timeDelta)
+        const speed=parseInt(heap.getters.settings.delivery.speed)
+        const time=Math.round(distance/speed*60/5)*5+preparation
+        const timeMin=time>delta?time-delta:time
+        const timeMax=timeMin+delta
+        return {time,timeMin,timeMax}
     }
   };
   export default Utils;

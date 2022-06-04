@@ -51,7 +51,7 @@
       </ion-grid>
       <footer-desktop/>
       <ion-fab v-if="isInteractingWithServer" vertical="center" horizontal="center" slot="fixed">
-        <ion-spinner></ion-spinner>
+        <tezkel-loader/>
       </ion-fab>
     </ion-content>
   </ion-page>
@@ -74,6 +74,7 @@ import {
   IonFab,
   IonSpinner
 } from "@ionic/vue";
+import TezkelLoader   from "@/components/TezkelLoader.vue"
 import FooterDesktop  from "@/components/FooterDesktop";
 import CartBodyModal  from '@/components/CartBodyModal.vue';
 import Order          from '@/scripts/Order.js'
@@ -129,7 +130,8 @@ export default {
     CartBodyModal,
     IonFab,
     IonSpinner,
-    FooterDesktop
+    FooterDesktop,
+    TezkelLoader
   },
 };
 </script>

@@ -13,7 +13,24 @@
             <order-tracking-comp :orderData="order"/>
             <order-history-comp :orderData="order"/>
             <image-tile-comp v-if="order" :images="order?.images" :image_holder_id="order?.order_id" controller="Order" ref="orderImgs"/>
-
+            
+            
+            
+            <ion-popover :is-open="isOpenDeliveryRejectionPopover" @didDismiss="isOpenDeliveryRejectionPopover=false">
+                <ion-content>
+                <ion-list>
+                    <ion-item :button="true" :detail="false" @click="action_rejected_reason('ОТКАЗ КУРЬЕРА: Отказ клиента')">
+                        <ion-label>Отказ клиента</ion-label>
+                    </ion-item>
+                    <ion-item :button="true" :detail="false" @click="action_rejected_reason('ОТКАЗ КУРЬЕРА: Поломка в пути')">
+                        <ion-label>Поломка в пути</ion-label>
+                    </ion-item>
+                    <ion-item :button="true" :detail="false" @click="action_rejected_reason('ОТКАЗ КУРЬЕРА: Заказ испорчен')">
+                        <ion-label>Заказ испорчен</ion-label>
+                    </ion-item>
+                </ion-list>
+                </ion-content>
+            </ion-popover>
     </base-layout>
 </template>
 
@@ -32,7 +49,7 @@ import {
     IonText,
     IonNote,
     IonList,
-    
+    IonPopover
 }                           from '@ionic/vue';
 import Order                from '@/scripts/Order.js';
 import OrderComp            from '@/components/OrderComp.vue';
@@ -57,7 +74,7 @@ export default({
     IonText,
     IonNote,
     IonList,
-    
+    IonPopover
     },
     setup(){
         return {sparklesOutline};
@@ -67,6 +84,7 @@ export default({
             order_id:this.$route.params.id,
             order:null,
             orderIsLoading:false,
+            isOpenDeliveryRejectionPopover:false
         }
     },
     methods:{
@@ -112,6 +130,9 @@ export default({
                 const exception=err.responseJSON;
                 const exception_code=exception.messages.error;
                 switch(exception_code){
+                    case 'wrong_courier_status':
+                        this.$flash("Смена курьера не открыта");
+                        break;
                     case 'order_is_empty':
                         this.$alert("К сожалению, товара не осталось в наличии &#9785;","Заказ пуст");
                         break;
@@ -143,7 +164,8 @@ export default({
             modal.present()
             const objection=await modal.onDidDismiss();
             if(objection.data){
-                const result=await Order.api.itemUpdate({order_id:this.order_id,order_objection:objection.data})
+                const message=`ВОЗРАЖЕНИЕ ПОКУПАТЕЛЯ: ${objection.data}`;
+                const result=await Order.api.itemUpdate({order_id:this.order_id,order_objection:message})
                 if( result=='ok' ){
                     const is_disputed=await this.onStageCreate(this.order_id, 'customer_disputed');
                     if( is_disputed ){
@@ -153,6 +175,17 @@ export default({
                     }
                 }
             }
+        },
+        action_rejected(){
+            this.isOpenDeliveryRejectionPopover=true;
+        },
+        async action_rejected_reason(reason){
+            this.isOpenDeliveryRejectionPopover=false;
+            try{
+                await Order.api.itemUpdate({order_id:this.order_id,order_objection:reason})
+                await this.onStageCreate(this.order_id, 'delivery_rejected');
+                this.$flash("Вы отказались от доставки")
+            }catch{/** */}
         },
         action_take_photo(){
             this.$refs.orderImgs.take_photo();
