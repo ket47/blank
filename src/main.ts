@@ -132,7 +132,9 @@ jQuery( document ).ajaxSend(()=>{
   heap.commit('setInteractionStatus',1)
 })
 jQuery( document ).ajaxComplete(()=>{
-  heap.commit('setInteractionStatus',-1)
+  setTimeout(()=>{
+    heap.commit('setInteractionStatus',-1)
+  },300)
 })
 
 const app = createApp(App)

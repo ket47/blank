@@ -9,9 +9,9 @@ module.exports = {
     appleMobileWebAppCapable: true,
     appleMobileWebAppStatusBarStyle:'white',
     manifestOptions: {
-      name:"Tezkel fast delivery",
+      name:"Tezkel доставка",
       short_name:"Tezkel",
-      background_color: "#fefefe"
+      background_color: "#009dcd"
     }
   }
 }

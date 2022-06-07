@@ -55,23 +55,27 @@ ion-tab-bar.bottom-bar  .tab-indicator-container{
 }
 ion-tab-bar.bottom-bar  .tab-indicator{
   position: relative;
-  background-color: white;
   border-radius: 50%;
-  width: 55px;
-  height: 55px;
-  /*box-shadow: 0px -4px 5px 0px #999;
-  border: 5px solid #dbdada;*/
-  box-shadow: 0px -5px 10px 0px #dbdada;
+  width: 60px;
+  height: 60px;
 }
 ion-tab-bar.bottom-bar .tab-indicator .tab-indicator-content{
-  background-color: var(--ion-color-primary);
   position: relative;
   z-index: 20;
   border-radius: 50%;
-  width: 55px;
-  height: 55px;
-  border: 5px solid #dbdada;
-  background-color: dbdada;
+  width: 60px;
+  height: 60px;
+  background: linear-gradient(to bottom, #fff0 30%, #fff6 35%, #ccc 50%, #ccc 100%);
+}
+
+ion-tab-bar.bottom-bar .tab-indicator .tab-indicator-content-inner{
+  background-color: var(--ion-color-primary);
+  border-radius: 50%;
+  position: absolute;
+  top:5px;
+  left:5px;
+  width:calc( 100% - 10px );
+  height:calc( 100% - 10px );
 }
 
 ion-tab-bar.bottom-bar.accent-outer .tab-indicator .tab-indicator-content {
@@ -82,9 +86,9 @@ ion-tab-bar.bottom-bar .tab-indicator:before{
   content: "";
   position: absolute;
   z-index: 10;
-  right: calc(100% + -4px);
+  right: calc(100% + -1px);
   width: 20px;
-  height: 20px;
+  height: 16px;
   top: 27px;
   border-top-right-radius: 15px;
   box-shadow: 5px -3px 0px -1px #dbdada;
@@ -102,9 +106,9 @@ ion-tab-bar.bottom-bar .tab-indicator:after{
   content: "";
   position: absolute;
   z-index: 10;
-  left: calc(100% - 4px);
+  left: calc(100% - 2px);
   width: 20px;
-  height: 20px;
+  height: 16px;
   top: 27px;
   border-top-left-radius: 15px;
   box-shadow: -5px -3px 0px -1px #dbdada;
@@ -147,7 +151,7 @@ ion-icon{
   <ion-page>
     <ion-tabs>
       <ion-router-outlet></ion-router-outlet>
-      <ion-tab-bar class="bottom-bar accent-outer" slot="bottom">
+      <ion-tab-bar class="bottom-bar" slot="bottom">
         <ion-tab-button tab="tab1" href="/home" routerDirection="backward" selected>
           <ion-icon :icon="homeIcon"/>
           <ion-label>Главная</ion-label>
@@ -170,6 +174,7 @@ ion-icon{
         <div class="tab-indicator-container">
           <div class="tab-indicator">
             <div class="tab-indicator-content">
+              <div class="tab-indicator-content-inner"></div>
             </div>
           </div>
         </div>
