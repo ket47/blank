@@ -38,7 +38,7 @@
     top: 0px;
   }
   .incart{
-        background-color:var(--ion-color-primary-tint);
+    background-color:var(--ion-color-primary-tint);
   }
   .sold{
     display: none;

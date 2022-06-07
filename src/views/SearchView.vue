@@ -30,7 +30,7 @@
             <ion-chip v-else color="danger">Закрыт до {{ store.store_time_opens }}:00</ion-chip>
             <ion-chip v-if="store.deliveryTime.timeMin" color="primary">{{store.deliveryTime.timeMin}}-{{store.deliveryTime.timeMax}}мин</ion-chip>
           </div>
-          <div style="margin:10px;display:grid;grid-template-columns:repeat(auto-fit, 150px)">
+          <div style="margin:10px;display:grid;grid-template-columns:repeat(auto-fit, 160px)">
             <div v-for="productItem in store.matches" :key="productItem.product_id">                
               <product-item :productItem="productItem" :storeName="store.store_name"/>
             </div>
@@ -83,7 +83,7 @@ export default  {
     this.delayedListGet()
     let self=this;
     this.$topic.on('userGet',user=>{
-      self.delayedListGet()
+      //self.delayedListGet()//repeated loadings
     })
   },
   methods:{
