@@ -92,6 +92,7 @@ export default defineComponent({
       primaryStoreData:null,
       deliveryTime:{},
       main_location_id:null,
+      old_location_id:-1
     };
   },
   mounted(){
@@ -110,9 +111,10 @@ export default defineComponent({
   },
   methods: {
     async productGroupListGet() {
-        if(!this.main_location_id){
+        if(!this.main_location_id || this.old_location_id==this.main_location_id){
             return ;      
         }
+        this.old_location_id=this.main_location_id
         try{
           const primaryStore=await jQuery.get(heap.state.hostname + "Store/primaryNearGet",{location_id:this.main_location_id})
           this.productGroupList=primaryStore.category_list;

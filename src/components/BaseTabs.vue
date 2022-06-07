@@ -86,7 +86,7 @@ ion-tab-bar.bottom-bar .tab-indicator:before{
   content: "";
   position: absolute;
   z-index: 10;
-  right: calc(100% + -1px);
+  right: calc(100% + -2px);
   width: 20px;
   height: 16px;
   top: 27px;
