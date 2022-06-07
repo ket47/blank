@@ -1,5 +1,5 @@
 <template>
-      <swiper :modules="modules" :autoplay='{delay: 3000, disableOnInteraction: false}' :loop="true" effect="fade">
+      <swiper :modules="modules" :autoplay='{delay: 6000, disableOnInteraction: false}' :loop="true" >
         <swiper-slide v-for="hslide in home_slides" :key="hslide.title" :style="`background-color:${hslide.color};`">
           <img :src="hslide.image" class="home_slide_img"/>
           <div class="home_slide">
@@ -30,7 +30,7 @@
 <script>
   import jQuery from "jquery";
   import { defineComponent } from 'vue';
-  import { EffectFade, Autoplay } from 'swiper';
+  import { Autoplay } from 'swiper';
   import { Swiper, SwiperSlide } from 'swiper/vue';
 
   import 'swiper/css/bundle';
@@ -41,7 +41,7 @@
     },
     setup() {
       return {
-        modules: [Autoplay,EffectFade], 
+        modules: [Autoplay], 
       };
     },
     data(){
