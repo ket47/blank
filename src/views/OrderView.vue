@@ -56,6 +56,7 @@ import OrderComp            from '@/components/OrderComp.vue';
 import OrderHistoryComp     from '@/components/OrderHistoryComp.vue';
 import OrderTrackingComp    from '@/components/OrderTrackingComp.vue'
 import OrderObjectionModal  from '@/components/OrderObjectionModal.vue'
+import OrderEntryAdd        from '@/components/OrderEntryAdd.vue'
 import ImageTileComp        from '@/components/ImageTileComp.vue'
 
 
@@ -64,6 +65,7 @@ export default({
     OrderComp,
     OrderHistoryComp,
     OrderTrackingComp,
+    OrderEntryAdd,
     ImageTileComp,
     IonLabel,
     IonIcon,
@@ -154,6 +156,18 @@ export default({
             this.$heap.commit('setCurrentOrder',this.order);
             this.$router.push('order-checkout');
         },
+        async action_add(){
+            const modal = await modalController.create({
+                component: OrderEntryAdd,
+                componentProps:{store_id:this.order.order_store_id,order_id:this.order_id},
+                initialBreakpoint: 0.50,
+                breakpoints: [0.50, 1],
+                canDissmiss:true,
+                });
+            modal.present()     
+            const product=await modal.onDidDismiss();     
+            this.itemGet()  
+        },
         async action_objection(){
             const modal = await modalController.create({
                 component: OrderObjectionModal,
@@ -203,7 +217,11 @@ export default({
         this.order=null;
     },
     created(){
-        this.itemGet();
+        const self=this
+        self.itemGet();
+        this.$topic.on('orderSumChanged',()=>{
+            self.itemGet();
+        })
     }
 })
 </script>

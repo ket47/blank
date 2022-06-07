@@ -190,7 +190,10 @@ export default{
       return 'absolute'
     },
     isAvailable(){
-      return this.productData.is_counted==1?(this.productData.product_quantity-this.productData.product_quantity_reserved)>0:true;
+      if(this.productData.is_counted==1 && !this.productData.entry_quantity){
+        return (this.productData.product_quantity-this.productData.product_quantity_reserved)>0
+      }
+      return true;
     }
   },
   watch:{

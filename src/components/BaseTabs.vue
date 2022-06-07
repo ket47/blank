@@ -65,7 +65,7 @@ ion-tab-bar.bottom-bar .tab-indicator .tab-indicator-content{
   border-radius: 50%;
   width: 60px;
   height: 60px;
-  background: linear-gradient(to bottom, #fff0 30%, #fff6 35%, #ccc 50%, #ccc 100%);
+  background: linear-gradient(to bottom, #fff0 30%, #fff0 45%, #dbdada 45%, #dbdada 100%);
 }
 
 ion-tab-bar.bottom-bar .tab-indicator .tab-indicator-content-inner{
@@ -111,7 +111,7 @@ ion-tab-bar.bottom-bar .tab-indicator:after{
   height: 16px;
   top: 27px;
   border-top-left-radius: 15px;
-  box-shadow: -5px -3px 0px -1px #dbdada;
+  box-shadow: -5px -3px 5px -0px #dbdada;
 }
 
 ion-tab-bar.bottom-bar.accent-outer .tab-indicator:after{

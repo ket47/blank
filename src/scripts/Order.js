@@ -1,5 +1,6 @@
 import jQuery from "jquery";
 import heap from '@/heap';
+import Topic from '@/scripts/Topic.js'
 
 const Order = {
     api:{
@@ -55,17 +56,23 @@ const Order = {
                 product_id:entry.product_id,
                 product_quantity:entry.entry_quantity
             };
-            return jQuery.post( heap.state.hostname + "Entry/itemCreate", request );
+            const response=await jQuery.post( heap.state.hostname + "Entry/itemCreate", request );
+            Topic.publish('orderSumChanged',order_id)
+            return response
         },
         async entryUpdate(entry){
             const request={
                 entry_id:entry.entry_id,
                 entry_quantity:entry.entry_quantity
             }
-            return jQuery.post( heap.state.hostname + "Entry/itemUpdate", JSON.stringify(request) );
+            const response=await jQuery.post( heap.state.hostname + "Entry/itemUpdate", JSON.stringify(request) );
+            Topic.publish('orderSumChanged',null)
+            return response
         },
         async entryDelete(entry_id){
-            return jQuery.post( heap.state.hostname + "Entry/itemDelete", {entry_id} );
+            const response=await jQuery.post( heap.state.hostname + "Entry/itemDelete", {entry_id} );
+            Topic.publish('orderSumChanged',null)
+            return response
         }
     },
     doc:{
