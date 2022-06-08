@@ -82,7 +82,7 @@
                     v-if="stage_title[0]" 
                     @click="stageCreate(orderData.order_id, order_stage_code, stage_title[1])" 
                     expand="block" 
-                    :color="(stage_title[1]=='negative') ? 'danger' : (stage_title[1]=='positive' ? 'success' : 'primary')"
+                    :color="stage_title[1]??'primary'"
                     >
                         <ion-icon slot="start" :src="stage_title.icon"></ion-icon>
                         {{ stage_title[0] }}
@@ -242,7 +242,7 @@ export default({
             this.$topic.publish('dismissModal')
         },
         stageCreate(order_id, order_stage_code, severity){
-            if( severity=='negative' ){
+            if( severity=='danger' ){
                 if(!confirm("Вы уверены?")){
                     return
                 }

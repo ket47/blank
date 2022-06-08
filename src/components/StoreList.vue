@@ -50,7 +50,7 @@ ion-card{
         <div class="crop-to-fit">
             <ion-img v-if="store_item.image_hash" :src="$heap.state.hostname +'/image/get.php/' +store_item.image_hash +'.300.300.webp'"/>
         </div>
-
+      </a>
         <ion-chip v-if="store_item.is_opened==1" color="success">Открыт до {{ store_item.store_time_closes }}:00</ion-chip>
         <ion-chip v-else color="danger">
           <span v-if="store_item.is_working==0">Временно не работает</span>
@@ -62,7 +62,7 @@ ion-card{
         <ion-item lines="none">
             <h3>{{store_item.store_name}}</h3>
         </ion-item>
-      </a>
+
     </ion-card>
   </ion-list>
 

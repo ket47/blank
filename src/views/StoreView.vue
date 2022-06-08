@@ -184,12 +184,7 @@ ion-chip .active-chip {
 
         <ion-item lines="none" style="font-size:0.8em">
           <ion-text>{{ storeItem.store_group_names }}</ion-text>
-          <ion-chip slot="end" v-if="storeItem.is_opened==1" color="success">Открыт до {{ storeItem.store_time_closes }}:00</ion-chip>
-          <ion-chip slot="end" v-else color="danger">
-            <span v-if="storeItem.is_working==0">Временно не работает</span>
-            <span v-else-if="storeItem.store_next_time_opens>0">Закрыт до {{ storeItem.store_next_time_opens }}:00</span>
-            <span v-else>Закрыт</span>
-          </ion-chip>
+          <store-opened-indicator storeItem="storeItem"/>
         </ion-item>
         <ion-item lines="none" style="font-size:0.8em">
           <ion-text>Доставит <b style="color:var(--ion-color-primary)">{{$heap.getters.settings.app_title}}</b></ion-text>
@@ -331,6 +326,7 @@ import {
 import ImageSlider        from "@/components/ImageSlider";
 import GroupList          from "@/components/GroupList.vue";
 import ProductList        from '@/components/ProductList.vue';
+import StoreOpenedIndicator from '@/components/StoreOpenedIndicator.vue';
 import jQuery             from "jquery";
 import heap               from "@/heap";
 import Utils              from "@/scripts/Utils.js";
@@ -368,6 +364,7 @@ export default defineComponent({
     IonList,
     IonItem,
     ImageSlider,
+    StoreOpenedIndicator,
     Swiper,
     SwiperSlide,
     GroupList,
@@ -524,12 +521,19 @@ export default defineComponent({
       }
     },
     groupSelectParent(parent_group_id){
+      if(this.groupSelectedParentId == parent_group_id){
+        return
+      }
       this.groupSelectedParentId = parent_group_id;
       const swiper = document.querySelector('.product-list-slider').swiper;
       const slide_index = Object.keys(this.storeGroups).indexOf(this.groupSelectedParentId);
       swiper.slideTo(slide_index,100,false);
     },
     groupSelectSub(sub_group_id){
+      if(this.groupSelectedSubId == sub_group_id){
+        return
+      }
+      this.groupSelectedSubId = sub_group_id
       document.querySelectorAll(".groups-container ion-chip").forEach(chip=>{
         chip.classList.remove("active-chip");
       });
@@ -550,7 +554,7 @@ export default defineComponent({
 
 
     scrollTo(sub_group_id) {
-      if (!this.$refs["group-" + sub_group_id][0]) {
+      if (!this.$refs["group-" + sub_group_id]?.[0] ) {
         return;
       }
       const offset=document.querySelector("ion-content").shadowRoot.querySelector("main").scrollTop;
@@ -586,9 +590,14 @@ export default defineComponent({
     },
   },
   ionViewDidEnter() {
-    this.itemGet();
+    if(this.storeItem==[]){
+        this.itemGet();
+    }
   },
-  mounted() {
+  ionViewDidLeave(){
+      this.storeItem=[];
+  },
+  created() {
     this.itemGet();
   },
   watch: {

@@ -22,13 +22,11 @@
             <ion-thumbnail slot="start">
               <ion-img style="border-radius:10px" :src="`${$heap.state.hostname}image/get.php/${store.image_hash}.150.150.webp`"/>
             </ion-thumbnail>
-            <ion-title>{{store?.store_name}}</ion-title>
+            <p style="font-size:1.1em">{{store?.store_name}}</p>
             <ion-note slot="helper">{{store.store_description}}</ion-note>
           </ion-item>
           <div>
-            <ion-chip v-if="store.is_opened" color="success">Открыт до {{ store.store_time_closes }}:00</ion-chip>
-            <ion-chip v-else color="danger">Закрыт до {{ store.store_time_opens }}:00</ion-chip>
-            <ion-chip v-if="store.deliveryTime.timeMin" color="primary">{{store.deliveryTime.timeMin}}-{{store.deliveryTime.timeMax}}мин</ion-chip>
+            <store-opened-indicator storeItem="store"/>
           </div>
           <div style="margin:10px;display:grid;grid-template-columns:repeat(auto-fit, 160px)">
             <div v-for="productItem in store.matches" :key="productItem.product_id">                
@@ -57,9 +55,11 @@ import {
 import jQuery           from 'jquery'
 import Utils            from '@/scripts/Utils.js'
 import ProductItem      from '@/components/ProductItem.vue'
+import StoreOpenedIndicator from '@/components/StoreOpenedIndicator.vue';
 
 export default  {
   components:{
+  StoreOpenedIndicator,
   IonSearchbar,
   IonTitle,
   IonImg,

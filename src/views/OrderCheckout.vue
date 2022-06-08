@@ -23,25 +23,30 @@
             </ion-item>
 
 
-            <ion-item-divider>Итого к оплате</ion-item-divider>
+            <ion-item-divider>Итог</ion-item-divider>
+            <ion-item>
+                <ion-icon :icon="cubeOutline" slot="start" color="primary"></ion-icon>
+                Сумма заказа 
+                <ion-text slot="end">{{order.order_sum_product}}{{$heap.state.currencySign}}</ion-text>
+            </ion-item>
             <ion-item button detail>
                 <ion-icon :icon="giftOutline" slot="start" color="primary"></ion-icon>
                 Выберите акцию
             </ion-item>
-            <ion-item v-if="order?.order_sum_tax">
+            <ion-item v-if="order?.order_sum_tax>0">
                 <ion-icon :icon="pieChartOutline" slot="start" color="primary"></ion-icon>
                 Налоги 
-                <ion-text slot="end">{{order?.order_sum_tax}}</ion-text>
+                <ion-text slot="end">{{order?.order_sum_tax}}{{$heap.state.currencySign}}</ion-text>
             </ion-item>
             <ion-item>
                 <ion-icon :icon="rocketOutline" slot="start" color="primary"></ion-icon>
                 Доставка 
-                <ion-text slot="end">{{order?.order_sum_delivery??0}}</ion-text>
+                <ion-text slot="end">{{order?.order_sum_delivery??0}}{{$heap.state.currencySign}}</ion-text>
             </ion-item>
             <ion-item>
                 <ion-icon :icon="walletOutline" slot="start" color="primary"></ion-icon>
-                Итого
-                <ion-text slot="end">{{order?.order_sum_total}}</ion-text>
+                Итого к оплате
+                <ion-text slot="end" color="primary">{{order?.order_sum_total}}{{$heap.state.currencySign}}</ion-text>
             </ion-item>
 
             <ion-item-divider>Способы оплаты</ion-item-divider>
@@ -60,11 +65,25 @@
                 </div>
             </ion-item>
 
+            <ion-item lines="none">
+                <ion-text style="font-size:0.7em">
+                    Я согласен(на) с <a href="#/page-customer_contract" @click="$router.push('/page-customer_contract')">офертой об оказании услуг доставки</a>
+                </ion-text>
+                <ion-checkbox slot="end" v-model="termsAccepted"/>
+            </ion-item>
+
         </ion-list>
         <ion-grid>
+            <ion-row v-if="checkoutError">
+                <ion-col>
+                    <ion-card color="warning">
+                        <ion-card-content>{{checkoutError}}</ion-card-content>
+                    </ion-card>
+                </ion-col>
+            </ion-row>
             <ion-row>
                 <ion-col><ion-button expand="block" color="medium" @click="cancel()">Вернуться</ion-button></ion-col>
-                <ion-col><ion-button expand="block" @click="proceed()">Продолжить</ion-button></ion-col>
+                <ion-col><ion-button expand="block" @click="proceed()" :disabled="checkoutError">Продолжить</ion-button></ion-col>
             </ion-row>
         </ion-grid>
     </base-layout>
@@ -86,7 +105,8 @@ import {
     walletOutline,
     pieChartOutline,
     storefrontOutline,
-    rocketOutline
+    rocketOutline,
+    documentTextOutline
     }                           from 'ionicons/icons';
 import { 
     modalController,
@@ -101,33 +121,69 @@ import {
     IonCol,
     IonRow,
     IonGrid,
+    IonCheckbox,
+    IonCard,
+    IonCardHeader,
+    IonCardContent,
+    IonCardTitle,
 }                               from "@ionic/vue";
 import UserAddressWidget        from '@/components/UserAddressWidget.vue';
 import OrderPaymentCardModal    from '@/components/OrderPaymentCardModal.vue';
 
 export default({
     components: { 
-        UserAddressWidget,
-        IonTextarea,
-        IonItemDivider,
-        IonIcon,
-        IonItem,
-        IonList,
-        IonText,
-        IonItemGroup,
-        IonButton,
-        IonCol,
-        IonRow,
-        IonGrid,
+    UserAddressWidget,
+    IonTextarea,
+    IonItemDivider,
+    IonIcon,
+    IonItem,
+    IonList,
+    IonText,
+    IonItemGroup,
+    IonButton,
+    IonCol,
+    IonRow,
+    IonGrid,
+    IonCheckbox,
+    IonCard,
+    IonCardHeader,
+    IonCardContent,
+    IonCardTitle,
     },
     setup(){
-        return {cardOutline,cashOutline,giftOutline,cubeOutline,walletOutline,pieChartOutline,storefrontOutline,ordersIcon,rocketOutline};
+        return {cardOutline,cashOutline,giftOutline,cubeOutline,walletOutline,pieChartOutline,storefrontOutline,ordersIcon,rocketOutline,documentTextOutline};
     },
     data(){
         return {
             order:null,
             deliveryTime:{},
-            paymentType:'payment_card'
+            paymentType:'payment_card',
+            termsAccepted:1,
+            storeIsReady:0
+        }
+    },
+    computed:{
+        checkoutError(){
+            if( !this.order ){
+                return false
+            }
+            console.log(this.order.order_sum_product*1,this.order.store.store_minimal_order*1)
+            if(this.order.order_sum_product*1<=this.order.store.store_minimal_order*1){
+                return `Сумма заказа у "${this.order.store.store_name}" должна быть больше чем ${this.order.store.store_minimal_order}${this.$heap.state.currencySign}`
+            }
+            if(this.order.order_sum_total*1<=this.order.order_sum_delivery*1){
+                return `Сумма к оплате должна быть больше чем ${this.order.order_sum_delivery}${this.$heap.state.currencySign}`
+            }
+            if(this.order.order_sum_total<=10){
+                return `Сумма к оплате слишком маленькая`
+            }
+            if( this.storeIsReady==0 ){
+                return `К сожалению, "${this.order.store.store_name}" не готов к заказам`
+            }
+            if( this.termsAccepted==0 ){
+                return `К сожалению, мы не можем доставить вам заказ, без согласия с условиями`
+            }
+            return false
         }
     },
     mounted(){
@@ -142,7 +198,6 @@ export default({
             if( !this.order ){
                 this.$flash("Заказ не найден");
                 this.$router.push('/order-list')
-                //await this.orderGet();
             }
             if( this.order.stage_current!="customer_confirmed" ){
                 router.push('order-'+this.order.order_id);
@@ -153,20 +208,12 @@ export default({
             if(this.distance){
                 this.deliveryTime=Utils.deliveryTimeCalculate(this.distance,preparation);
             }
+            try{
+                this.storeIsReady=await jQuery.post(`${this.$heap.state.hostname}Store/itemIsReady`,{store_id:this.order.order_store_id})
+            } catch{
+                this.storeIsReady=0
+            }
         },
-        // async orderGet(){
-        //     try{
-        //         this.order=await Order.api.itemGet(this.order_id);
-        //     } catch(err) {
-        //         switch(err.status){
-        //             case 404:
-        //                 this.$flash("Заказ не найден");
-        //                 this.order='notfound';
-        //                 router.go(-1);
-        //                 break;
-        //         }
-        //     }
-        // },
         async distanceGet(){
             const request={
                 start_holder:'store',
@@ -176,9 +223,7 @@ export default({
             };
             try{
                 return await jQuery.post( this.$heap.state.hostname + "Location/distanceHolderGet", request );
-            } catch (err){
-                //
-            }
+            } catch{/** */}
         },
         async orderDescriptionChanged(){
             const request={

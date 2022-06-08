@@ -205,7 +205,7 @@ export default({
             this.$refs.orderImgs.take_photo();
         },
         action_call_customer(){
-            window.open(`tel:${this.order.customer.user_phone}`)
+            window.open(`tel:+${this.order.customer.user_phone}`)
         },
     },
     ionViewDidEnter() {

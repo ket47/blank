@@ -1,6 +1,6 @@
 <template>
   <ion-page>
-    <ion-header :class="[pageClass]">
+    <ion-header :class="[pageClass]" style="z-index:0"><!-- ???z-index cancels box-shadow -->
       <ion-toolbar>
         <ion-buttons slot="start">
           <ion-back-button :default-href="pageDefaultBackLink" color="light" style="padding:0px 10px"></ion-back-button>

@@ -26,7 +26,6 @@
                                 <ion-label color="dark">{{order.stage_current_name}}</ion-label>
                             </ion-chip>
                         </ion-label>
-                        <ion-note>{{order.location_address}}</ion-note>
                     </ion-text>
                     <ion-thumbnail slot="end" v-if="order.image_hash">
                         <ion-img style="border-radius:10px;" :src="`${$heap.state.hostname}image/get.php/${order.image_hash}.150.150.webp`"/>
