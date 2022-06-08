@@ -7,7 +7,11 @@
               <ion-icon slot="end" :icon="trash" @click="locationDelete(`${location.location_id}`,`${i}`)"></ion-icon>
           </ion-item>
         </ion-list>
-        <ion-note v-else>Пока адреса не добавлены</ion-note>
+        <ion-card v-else color="warning">
+          <ion-card-content>
+          Пока адреса не добавлены
+          </ion-card-content>
+        </ion-card>
 
         <ion-list>
           <ion-list-header>
@@ -31,7 +35,9 @@ import {
   IonNote,
   IonListHeader,
   IonIcon,
-  modalController
+  modalController,
+  IonCard,
+  IonCardContent,
 }                         from "@ionic/vue";
 import router             from '@/router';
 import heap               from '@/heap';
@@ -51,6 +57,8 @@ export default{
   IonNote,
   IonListHeader,
   IonIcon,
+  IonCard,
+  IonCardContent,
   },
   setup(){
     return { trash };

@@ -114,6 +114,11 @@ export default{
                     case 'order_is_empty':
                         this.$alert("К сожалению, товара не осталось в наличии &#9785;","Заказ пуст");
                         break;
+                    case 'address_not_set':
+                        this.$flash("Необходимо добавить адрес доставки")
+                        this.$topic.publish('dismissModal')
+                        this.$router.push('user-addresses')
+                        break;
                 }
                 return false
           }

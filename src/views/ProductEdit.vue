@@ -412,6 +412,9 @@ export default  {
       return true
     },
     saveForm(ev){
+      console.log(ev)
+
+      
       const field_name=ev.target.name;
       const field_value=this.productItem[field_name]=ev.target.value
       if( !this.checkPromoPrice(field_name) ){

@@ -142,6 +142,10 @@ export default({
                         this.$flash("Необходимо сфотографировать заказ")
                         this.action_take_photo()
                         break;
+                    case 'address_not_set':
+                        this.$flash("Необходимо добавить адрес доставки")
+                        this.$router.push('user-addresses');
+                        break;
                 }
                 return false
             }
