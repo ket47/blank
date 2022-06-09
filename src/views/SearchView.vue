@@ -1,16 +1,8 @@
 <style scoped>
-.search-container {
-  visibility: visible;
-  margin: 1em 0;
-  color: black;
-  --border-radius: 10px;
-}
-
 .product_list_widget_grid {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
 }
-
 </style>
 <template>
   <base-layout page-title="Поиск товаров" pageDefaultBackLink="/home">

@@ -178,8 +178,17 @@ export default({
     IonCardTitle,
     },
     setup() {
-        return { add, remove, trash, rocketOutline, storefrontOutline, checkmarkOutline,    cubeOutline, banOutline,
-    walletOutline };
+        return { 
+            add, 
+            remove, 
+            trash, 
+            rocketOutline, 
+            storefrontOutline, 
+            checkmarkOutline,    
+            cubeOutline, 
+            banOutline,
+            walletOutline
+        };
     },
     data(){
         return {

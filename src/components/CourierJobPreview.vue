@@ -9,6 +9,13 @@
     }
 </style>
 <template>
+  <ion-header>
+      <ion-toolbar color="secondary">
+        <ion-title>Просмотр задания</ion-title>
+        <ion-icon slot="end" @click="close();" :icon="closeOutline" size="large"></ion-icon>
+      </ion-toolbar>
+  </ion-header>
+  <ion-content>
     <ion-list v-if="orderData">
         <ion-item lines="none">
             <ion-avatar slot="start">
@@ -82,6 +89,7 @@
             <ion-button @click="deliveryStart()" expand="full">Начать доставку</ion-button>
         </ion-item-group>
     </ion-list>
+  </ion-content>
 </template>
 <script>
 import { 
@@ -97,11 +105,15 @@ import {
     IonText,
     IonAvatar,
     IonIcon,
+    IonHeader,
+    IonToolbar,
+    IonContent
 }                   from '@ionic/vue';
 import {
     storefrontOutline,
     locationOutline,
-    flagOutline
+    flagOutline,
+    closeOutline
     }               from 'ionicons/icons';
 import User         from '@/scripts/User.js';
 import Order        from '@/scripts/Order.js';
@@ -123,12 +135,16 @@ export default({
     IonText,
     IonAvatar,
     IonIcon,
+    IonHeader,
+    IonToolbar,
+    IonContent
     },
     setup() {
         return { 
             storefrontOutline,
             locationOutline,
-            flagOutline 
+            flagOutline ,
+            closeOutline
             }
     },
     data(){
@@ -185,6 +201,9 @@ export default({
                     this.$flash("Заданию уже назначен курьер");
                 }
             }
+            Topic.publish('dismissModal');
+        },
+        close(){
             Topic.publish('dismissModal');
         }
     }

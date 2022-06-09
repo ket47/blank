@@ -198,6 +198,7 @@ export default({
             if( !this.order ){
                 this.$flash("Заказ не найден");
                 this.$router.push('/order-list')
+                return
             }
             if( this.order.stage_current!="customer_confirmed" ){
                 router.push('order-'+this.order.order_id);

@@ -10,7 +10,7 @@
 </style>
 <template>
 
-<ion-accordion-group v-if="orderData && job?.group_type=='delivery_start'" value="tracking" color="primary">
+<ion-accordion-group v-if="isDelivering()" value="tracking" color="primary">
     <ion-accordion value="tracking">
         <ion-item slot="header">
             <ion-label>Отслеживание заказа</ion-label>
@@ -18,7 +18,7 @@
         <ion-list slot="content">
             <ion-item lines="none">
                 <ion-icon color="primary" slot="start" :icon="locationOutline" style="font-size:30px"/>
-                <ion-label>Курьер, {{job.courier_name}}</ion-label>      
+                <ion-label>Курьер, {{job?.courier_name}}</ion-label>      
             </ion-item>
 
             <ion-item v-if="courier_finish_distance_km" lines="none">
@@ -121,6 +121,7 @@ export default({
     methods:{
         async jobGet(){
             if( !this.isDelivering() ){
+                console.log(this.orderData)
                 return
             }
             try{

@@ -6,7 +6,7 @@ ion-icon{
 <template>
   <base-layout
     page-title="Личный кабинет"
-    page-default-back-link="/home"
+    pageDefaultBackLink="/home"
   >
     <div v-if="isSignedIn()" class="user-dashboard-header">
       <ion-list>

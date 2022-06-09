@@ -134,6 +134,14 @@ const Order = {
             }
             return null;
         },
+        itemSet(order){
+            const existingOrder=this.itemGetByStoreId(order.order_store_id);
+            if( existingOrder ){
+                heap.state.cartList[existingOrder.order_index]=order
+            }
+            heap.state.cartList.push(order)
+            Order.cart.listSave();
+        },
         itemSave(store_id,entries){
             if(Order.cart.itemUpdate(store_id,entries)){
                 return true;
@@ -181,6 +189,9 @@ const Order = {
         itemDelete(order_id){
             const existingOrder=this.itemGetById(order_id);
             if( existingOrder ){
+                if(existingOrder.order_id){
+                    Order.api.itemDelete(existingOrder.order_id)
+                }
                 heap.state.cartList.splice(existingOrder.order_index,1);
                 Order.cart.listSave();
                 return true;

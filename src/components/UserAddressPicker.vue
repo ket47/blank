@@ -1,13 +1,14 @@
 <template>
     <ion-header>
-        <ion-toolbar color="light">
-            <ion-button slot="start" @click="pickAddress" :disabled="!selectedPlacemark" color="success">
-                <ion-icon :icon="locationOutline" /> Добавить адрес
-            </ion-button>
+        <ion-toolbar color="secondary">
+            <ion-title><ion-icon :icon="locationOutline" /> Добавить адрес</ion-title>
             <ion-icon :icon="closeOutline" @click="closeModal();" slot="end" size="large"></ion-icon>
         </ion-toolbar>
-        <ion-searchbar id="suggest" placeholder="Поиск адреса"></ion-searchbar>
-    </ion-header>
+            <ion-searchbar id="suggest" placeholder="название улицы, номер дома"></ion-searchbar>
+            <ion-button @click="pickAddress" :disabled="!selectedPlacemark" color="primary" expand="full">
+                Добавить {{location_group_name_low}} адрес
+            </ion-button>
+        </ion-header>
   <ion-content>
         <div id="map" style="width: 100%; height: 100%;"></div>
   </ion-content>

@@ -1,5 +1,5 @@
 <template>
-  <base-layout page-default-back-link="/home" page-title="Заказы">
+  <base-layout pageDefaultBackLink="/home" page-title="Заказы">
         <ion-segment swipe-gesture="true" v-model="orderType" @ionChange="listTypeChanged($event)">
             <ion-segment-button value="jobs" v-if="courierJobsInclude">
                 Задания
@@ -13,11 +13,13 @@
         </ion-segment>
         <ion-list v-if="orderList">
             <div v-for="order in orderListComputed" :key="order.order_id" @click="itemClick(order)">
-                <ion-item detail lines="none">
-                    <ion-icon slot="start" :icon="order.icon"/>
-                    <ion-label>{{order.store_name}} #{{order.order_id}}</ion-label>
+                <ion-item lines="none">
+                    <ion-text slot="start">#{{order.order_id}}</ion-text>
+                    <ion-label>{{order.store_name}}</ion-label>
+                    <ion-text slot="end">{{order.date}}</ion-text>
                 </ion-item>
                 <ion-item lines="full">
+                    <ion-icon slot="start" :icon="order.icon" color="primary"/>
                     <ion-text>
                         <ion-label>
                             <ion-chip color="medium">{{order.order_sum_total}}{{$heap.state.currencySign}}</ion-chip>
@@ -36,11 +38,12 @@
         <ion-list v-if="jobList">
             <div v-for="order in jobListComputed" :key="order.order_id" @click="itemClick(order)">
 
-            <ion-item detail lines="none">
-                <ion-icon slot="start" :icon="rocketOutline"/>
+            <ion-item lines="none">
                 <ion-label>{{order.store_name}}</ion-label>
+                <ion-text slot="end">{{order.date_time}}</ion-text>
             </ion-item>
             <ion-item lines="full">
+                <ion-icon slot="start" :icon="rocketOutline" color="primary"/>
                 <ion-text>
                     <ion-label>
                         <ion-chip color="medium">{{order.order_sum_total}}{{$heap.state.currencySign}}</ion-chip>
@@ -51,7 +54,7 @@
             </ion-item>
             </div>
         </ion-list>
-        <div v-if="!orderList && !jobList" style="display:flex;align-items:center;justify-content:center;height:100%">
+        <div v-if="(!orderList || orderList.length==0) && (!jobList || jobList.length==0)" style="display:flex;align-items:center;justify-content:center;height:100%">
             <div style="width:max-content;text-align:center">
                 <ion-icon :icon="sparklesOutline" size="large"></ion-icon>
                 <ion-label>Заказов нет</ion-label><br>
@@ -135,6 +138,7 @@ export default {
                         order.icon=storefrontOutline
                         break;
                 }
+                order.date=this.toLocDate(order.updated_at)
             }
             return this.orderList;
         },
@@ -149,6 +153,7 @@ export default {
                 } else {
                     order.distance_km='';
                 }
+                order.date_time=this.toLocDateTime(order.updated_at)
             }
             return this.jobList;
         }
@@ -161,6 +166,18 @@ export default {
         self.courierReadinessCheck();
     },
     methods:{
+        toLocDate( iso ){
+            const event = new Date(Date.parse(iso));
+            const options = { month: 'short', day: 'numeric' };
+
+            return event.toLocaleDateString(undefined, options);
+        },
+        toLocDateTime( iso ){
+            const event = new Date(Date.parse(iso));
+            const options = { month: 'short', day: 'numeric',hour:'numeric',minute:'numeric' };
+
+            return event.toLocaleDateString(undefined, options);
+        },
         courierReadinessCheck(){
             const courierJobsInclude=User.courier.status=='ready'?1:0;
             if(this.courierJobsInclude===courierJobsInclude){
@@ -229,8 +246,8 @@ export default {
                 const modal = await modalController.create({
                     component: CourierJobPreview,
                     componentProps:{orderData:order},
-                    initialBreakpoint: 0.5,
-                    breakpoints: [0, 0.5, 0.75]
+                    initialBreakpoint: 0.6,
+                    breakpoints: [0, 0.6, 0.75]
                     });
                 const dismissFn=function(){
                     modal.dismiss();

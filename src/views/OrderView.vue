@@ -123,11 +123,20 @@ export default({
                         this.$flash("Заказ удален");
                         this.order=null;
                         this.$router.push('order-list');
+                        Order.cart.itemDelete(order_id)//if copy of order there is in cart
                         return;
                     }
                     await this.itemGet();
                     if( order_stage_code=='customer_cart' ){
-                        Order.cart.itemSave(this.order)//fill local cart with remote cart
+                        let order={
+                            order_store_id:this.order.order_store_id,
+                            order_id:this.order.order_id,
+                            entries:this.order.entries,
+                            stage_current_name:this.order.stage_current_name,
+                            stage_next:this.order.stage_next,
+                            store:{store_name:this.order.store.store_name}
+                        }
+                        Order.cart.itemSet(order)//fill local cart with reduced remote version
                     }
                     return true;
                 }
