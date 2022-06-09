@@ -184,7 +184,7 @@ ion-chip .active-chip {
 
         <ion-item lines="none" style="font-size:0.8em">
           <ion-text>{{ storeItem.store_group_names }}</ion-text>
-          <store-opened-indicator storeItem="storeItem"/>
+          <store-opened-indicator :storeItem="storeItem"/>
         </ion-item>
         <ion-item lines="none" style="font-size:0.8em">
           <ion-text>Доставит <b style="color:var(--ion-color-primary)">{{$heap.getters.settings.app_title}}</b></ion-text>
@@ -590,7 +590,7 @@ export default defineComponent({
     },
   },
   ionViewDidEnter() {
-    if(this.storeItem==[]){
+    if(!this.storeItem?.length){
         this.itemGet();
     }
   },

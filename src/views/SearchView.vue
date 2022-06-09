@@ -26,7 +26,7 @@
             <ion-note slot="helper">{{store.store_description}}</ion-note>
           </ion-item>
           <div>
-            <store-opened-indicator storeItem="store"/>
+            <store-opened-indicator :storeItem="store"/>
           </div>
           <div style="margin:10px;display:grid;grid-template-columns:repeat(auto-fit, 160px)">
             <div v-for="productItem in store.matches" :key="productItem.product_id">                

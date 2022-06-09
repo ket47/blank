@@ -41,7 +41,7 @@ import {
 }                         from "@ionic/vue";
 import router             from '@/router';
 import heap               from '@/heap';
-import Topic              from '@/scripts/Topic.js'
+import User              from '@/scripts/User.js'
 import jQuery             from 'jquery';
 import UserAddressPicker  from '@/components/UserAddressPicker.vue';
 
@@ -90,20 +90,32 @@ export default{
       });
       return modal.present();
     },
-    locationListGet(){
-      var self=this;
-      jQuery.get(heap.state.hostname + "User/locationListGet",{includeGroupList:1}).done(function(response){
-        self.locationList=response.location_list;
-        self.locationGroupList=response.location_group_list;
-        if(self.locationList){
-          for(let loc of self.locationList){
+    async locationListGet(){
+      try{
+        let new_location_main=null
+        const response=await jQuery.get(heap.state.hostname + "User/locationListGet",{includeGroupList:1})
+        this.locationList=response.location_list;
+        this.locationGroupList=response.location_group_list;
+        if(this.locationList){
+          for(let loc of this.locationList){
             if(loc.is_main!=1)continue;
-              heap.state.user.location_main=loc;
+              new_location_main=loc;
           }
         }
-      });
+        if( !new_location_main ){
+          /**
+           * for some reason main location is not present so reload user data
+           */
+          User.get()
+          return
+        }
+        if(new_location_main && new_location_main?.location_id!=heap.state.user.location_main?.location_id){
+          heap.state.user.location_main=new_location_main
+          this.$topic.publish('userMainLocationSet',heap.state.user.location_main)
+        }
+      }catch{/** */}
     },
-    locationCreate(group_id,location){
+    async locationCreate(group_id,location){
       if( !location ){
         return;
       }
@@ -115,14 +127,19 @@ export default{
         location_latitude:location.location_latitude,
         location_longitude:location.location_longitude
       };
-      var self=this;
-      jQuery.post(heap.state.hostname + "User/locationCreate",request).done(function(response){
-        self.locationListGet();
-      }).fail(function(xhr){
-        if( xhr.responseJSON && xhr.responseJSON.messages.error=='limit_exeeded' ){
-          self.$flash("Больше адресов добавить нельзя");
+      try{
+        await jQuery.post(heap.state.hostname + "User/locationCreate",request)
+        this.locationListGet();
+      } catch(err){
+        const exception=err.responseJSON;
+        const exception_code=exception.messages.error;
+        switch(exception_code){
+            case 'limit_exeeded':
+                this.$flash("Больше адресов добавить нельзя");
+                break;
         }
-      });
+        return false
+      }
     },
     async locationSetMain( location_id, index ){
       var self=this;
@@ -136,14 +153,14 @@ export default{
       };
       router.go(-1);
       await jQuery.post(heap.state.hostname + "User/locationSetMain",{location_id});
-      Topic.publish('userMainLocationSet',heap.state.user.location_main)
+      this.$topic.publish('userMainLocationSet',heap.state.user.location_main)
     },
-    locationDelete( location_id, index ){
-      var self=this;
-      self.locationList.splice(index,1);
-      jQuery.post(heap.state.hostname + "User/locationDelete",{location_id}).done(function(response){
-        self.locationListGet();
-      });
+    async locationDelete( location_id, index ){
+      try{
+        this.locationList.splice(index,1);
+        await jQuery.post(heap.state.hostname + "User/locationDelete",{location_id})
+      }catch{/** */}
+      this.locationListGet();
     }
   },
   data(){
