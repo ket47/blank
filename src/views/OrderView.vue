@@ -126,6 +126,9 @@ export default({
                         return;
                     }
                     await this.itemGet();
+                    if( order_stage_code=='customer_cart' ){
+                        Order.cart.itemSave(this.order)//fill local cart with remote cart
+                    }
                     return true;
                 }
             }catch(err){

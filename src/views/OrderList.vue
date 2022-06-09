@@ -181,7 +181,7 @@ export default {
             }
             let order_group_type='customer_finish';
             if( listType=='active' ){
-                order_group_type='!customer_finish';
+                order_group_type='active_only';
             }
             this.orderList=await Order.api.listLoad(order_group_type);
             this.jobList=null;

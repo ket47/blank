@@ -172,7 +172,7 @@ ion-icon{
             <ion-skeleton-text animated></ion-skeleton-text>
           </ion-item>   
         </div>
-        <div v-else-if="user.storeList">
+        <div v-else-if="user.storeList.length>0">
           <ion-item v-for="store in user.storeList" :key="store.store_id" detail button @click="$router.push(`store-edit-${store.store_id}`)">
             <ion-icon :icon="storefrontOutline" slot="start"></ion-icon>
             {{store.store_name||'- - -'}}
