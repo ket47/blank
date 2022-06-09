@@ -437,11 +437,10 @@ export default defineComponent({
 
       this.productListPrepare(response.product_list);
       this.groupOtherAdd()
-
       let self=this
       setTimeout(()=>{
         self.groupSelect();
-      })
+      }, 0)
     },
     productListPrepare(product_list) {
       this.storeProducts = {};
@@ -500,6 +499,7 @@ export default defineComponent({
     groupSelect(){
       let parent_group_id=this.query.parent_group_id
       let sub_group_id=this.query.sub_group_id
+      console.log('parent_group_id1: '+parent_group_id);
       if( sub_group_id ){
         parentloop:for(let parent in this.storeGroups){
           for(let sub in this.storeGroups[parent].children){
@@ -515,6 +515,8 @@ export default defineComponent({
       } else {
         parent_group_id = Object.keys(this.storeGroups)[0]
       }
+      
+      console.log('parent_group_id2: '+parent_group_id);
       this.groupSelectParent(parent_group_id)
       if(sub_group_id){
         this.groupSelectSub(sub_group_id)
@@ -590,15 +592,11 @@ export default defineComponent({
     },
   },
   ionViewDidEnter() {
-    if(this.storeItem==[]){
-        this.itemGet();
-    }
+    this.query = this.$route.query;
+    this.itemGet();
   },
   ionViewDidLeave(){
-      this.storeItem=[];
-  },
-  created() {
-    this.itemGet();
+    this.storeItem=[];
   },
   watch: {
     $route(currentRoute) {

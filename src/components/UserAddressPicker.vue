@@ -96,6 +96,8 @@ export default({
             zoom: 17,
             controls: []
         });
+        self.mapBoundaries = JSON.parse('['+self.mapBoundaries[0]+']');
+
         var suggestView = new ymaps.SuggestView('suggest',{boundedBy:self.mapBoundaries});
         suggestView.events.add('select',function(e){
             self.selectedAddress=e.get('item').displayName;
