@@ -45,6 +45,7 @@ ion-img{
   height: 200px;
   border-radius: 10px;
   margin: 0px 10px 10px 10px;
+  cursor: pointer;
 }
 #hcat_widget_info{
   background-color: #fffa;
