@@ -1,23 +1,3 @@
-<template>
-    <div id="hcat_widget_wrapper" v-if="productGroupList">
-        <ion-item button detail lines="none" color="light" @click="this.$router.push('store-'+primaryStoreData.store_id)">
-          <ion-title color="primary">{{primaryStoreData.store_name}}</ion-title>
-          <ion-note slot="helper">
-            Доставка за {{deliveryTime.timeMin}}-{{deliveryTime.timeMax}}мин
-          </ion-note>    
-        </ion-item>
-
-        <div id="hcat_widget_grid">
-            <div v-for="group in productGroupList" :key="group.group_id" @click="$router.push(`store-${primaryStoreData.store_id}?parent_group_id=${group.group_id}`)">
-                <ion-thumbnail>
-                    <ion-img :src="$heap.state.hostname + 'image/get.php/'+group.image_hash+'.250.250.webp'"/>
-                </ion-thumbnail>
-                <ion-label style="height:2em;text-align:center;padding: 3px;font-size:0.7em" color="dark">{{group.group_name}}</ion-label>
-            </div>
-        </div>
-    </div>
-</template>
-
 <style scoped>
 #hcat_widget_grid {
   cursor: pointer;
@@ -60,7 +40,42 @@ ion-img{
     margin-top: 10px;
     padding-bottom: 10px;
 }
+#hcat_widget_header{
+  background-position: top center;
+  height: 200px;
+  border-radius: 10px;
+  margin: 0px 10px 10px 10px;
+}
+#hcat_widget_info{
+  background-color: #fffa;
+  color:#333;
+  padding: 10px;
+  font-weight: 700;
+}
 </style>
+
+<template>
+    <div id="hcat_widget_wrapper" v-if="productGroupList">
+
+        <div id="hcat_widget_header" @click="this.$router.push('store-'+primaryStoreData.store_id)"  :style="`background-image:url(${$heap.state.hostname}image/get.php/${primaryStoreData.image_hash}.500.500.webp)`">
+          <div id="hcat_widget_info">
+            <ion-title size="large">{{primaryStoreData.store_name}}</ion-title>
+            <ion-title size="small">опорный поставщик</ion-title>
+          </div>
+        </div>
+          <store-opened-indicator :storeItem="primaryStoreData"/>
+          <ion-chip v-if="deliveryTime.timeMin" color="primary">доставка {{deliveryTime.timeMin}}-{{deliveryTime.timeMax}}мин</ion-chip>
+
+        <div id="hcat_widget_grid">
+            <div v-for="group in productGroupList" :key="group.group_id" @click="$router.push(`store-${primaryStoreData.store_id}?parent_group_id=${group.group_id}`)">
+                <ion-thumbnail>
+                    <ion-img :src="$heap.state.hostname + 'image/get.php/'+group.image_hash+'.250.250.webp'"/>
+                </ion-thumbnail>
+                <ion-label style="height:2em;text-align:center;padding: 3px;font-size:0.7em" color="dark">{{group.group_name}}</ion-label>
+            </div>
+        </div>
+    </div>
+</template>
 
 <script lang="js">
 import heap       from "@/heap";
@@ -73,9 +88,11 @@ import {
   IonNote,
   IonItem,
   IonLabel,
-  IonTitle
+  IonTitle,
+  IonChip
 } from "@ionic/vue"
 import { defineComponent } from 'vue';
+import StoreOpenedIndicator from '@/components/StoreOpenedIndicator.vue';
 
 export default defineComponent({
   components:{
@@ -84,7 +101,9 @@ export default defineComponent({
     IonNote,
     IonItem,
     IonLabel,
-      IonTitle
+    IonTitle,
+    IonChip,
+    StoreOpenedIndicator
   },
   data() {
     return {
@@ -107,7 +126,6 @@ export default defineComponent({
     })
     this.main_location_id=heap.state.user.location_main?heap.state.user.location_main.location_id:null
     this.productGroupListGet()
-            console.log('userMainLocationSet');
   },
   methods: {
     async productGroupListGet() {

@@ -97,7 +97,7 @@
           </ion-item>
           <ion-item>
             <ion-label color="primary">Единица*</ion-label>
-            <ion-select v-model="productItem.product_unit" name="product_unit" slot="end">
+            <ion-select v-model="productItem.product_unit" name="product_unit" slot="end"  @ionChange="saveForm">
               <ion-select-option value="шт">штука</ion-select-option>
               <ion-select-option value="кг">килограмм</ion-select-option>
               <ion-select-option value="м">метр</ion-select-option>
@@ -123,7 +123,7 @@
           <ion-input v-model="productItem.product_price" name="product_price" type="number" inputmode="numeric" slot="end"/>
         </ion-item>
         <ion-item>
-          <ion-label color="success">Цена акционная</ion-label>
+          <ion-text color="success">Цена акционная</ion-text>
           <ion-input v-model="productItem.product_promo_price" name="product_promo_price" type="number" inputmode="numeric" slot="end" color="success"/>
         </ion-item>
         <ion-item>
@@ -412,9 +412,6 @@ export default  {
       return true
     },
     saveForm(ev){
-      console.log(ev)
-
-      
       const field_name=ev.target.name;
       const field_value=this.productItem[field_name]=ev.target.value
       if( !this.checkPromoPrice(field_name) ){

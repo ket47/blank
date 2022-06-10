@@ -21,7 +21,6 @@ main {
 ion-searchbar{
     visibility: visible;
     margin: 1em 0;
-    color: var(--ion-text-main) !important;
     --border-radius: 10px !important;
 }
 

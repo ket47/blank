@@ -51,12 +51,7 @@ ion-card{
             <ion-img v-if="store_item.image_hash" :src="$heap.state.hostname +'/image/get.php/' +store_item.image_hash +'.300.300.webp'"/>
         </div>
       </a>
-        <ion-chip v-if="store_item.is_opened==1" color="success">Открыт до {{ store_item.store_time_closes }}:00</ion-chip>
-        <ion-chip v-else color="danger">
-          <span v-if="store_item.is_working==0">Временно не работает</span>
-          <span v-else-if="store_item.store_next_time_opens>0">Закрыт до {{ store_item.store_next_time_opens }}:00</span>
-          <span v-else>Закрыт</span>
-        </ion-chip>
+        <store-opened-indicator :storeItem="store_item"/>
 
         <ion-chip v-if="store_item.deliveryTime.timeMin" color="primary">{{store_item.deliveryTime.timeMin}}-{{store_item.deliveryTime.timeMax}}мин</ion-chip>
         <ion-item lines="none">
@@ -83,6 +78,7 @@ import {
 import jQuery       from "jquery";
 import heap         from "@/heap";
 import Utils        from '@/scripts/Utils.js'
+import StoreOpenedIndicator from '@/components/StoreOpenedIndicator.vue';
 
 export default {
   components: {
@@ -94,7 +90,8 @@ export default {
     IonCardHeader,
     IonCardTitle,
     IonCardContent,
-    IonSkeletonText
+    IonSkeletonText,
+    StoreOpenedIndicator,
   },
   data() {
     return {

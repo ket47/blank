@@ -29,7 +29,7 @@
                 Сумма заказа 
                 <ion-text slot="end">{{order.order_sum_product}}{{$heap.state.currencySign}}</ion-text>
             </ion-item>
-            <ion-item button detail>
+            <ion-item button detail @click="modalPromoPick()">
                 <ion-icon :icon="giftOutline" slot="start" color="primary"></ion-icon>
                 Выберите акцию
             </ion-item>
@@ -129,6 +129,7 @@ import {
 }                               from "@ionic/vue";
 import UserAddressWidget        from '@/components/UserAddressWidget.vue';
 import OrderPaymentCardModal    from '@/components/OrderPaymentCardModal.vue';
+import PromoPickerComp          from '@/components/PromoPickerComp.vue'
 
 export default({
     components: { 
@@ -285,7 +286,23 @@ export default({
                     router.push('order-'+this.order.order_id);
                 }
             }
-        }
+        },
+        async modalPromoPick() {
+            const modal = await modalController.create({
+                component: PromoPickerComp,
+                showBackdrop:true,
+                backdropDismiss:true,
+                initialBreakpoint: 0.6,
+                breakpoints: [0, 0.6, 0.75],
+                componentProps:{
+                    promo_order_id:this.order.order_id
+                },
+            });
+            modal.onDidDismiss().then(promo => {
+                //
+            });
+            return modal.present();
+        },
     }
 })
 </script>

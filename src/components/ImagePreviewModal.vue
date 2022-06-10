@@ -1,7 +1,7 @@
 
 <template>
   <ion-header>
-      <ion-toolbar>
+      <ion-toolbar color="secondary">
           <ion-title>Просмотр фотографии</ion-title>
           <ion-icon :icon="closeOutline" @click="closeModal();" slot="end" size="large"></ion-icon>
       </ion-toolbar>
