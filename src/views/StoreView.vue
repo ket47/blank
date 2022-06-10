@@ -509,15 +509,17 @@ export default defineComponent({
           }
         }
       }
+      console.log(sub_group_id)
       if( parent_group_id ){
         sub_group_id=Object.keys(this.storeGroups[parent_group_id].children)[0]
       } else {
         parent_group_id = Object.keys(this.storeGroups)[0]
       }
       
+      
       this.groupSelectParent(parent_group_id)
       if(sub_group_id){
-        this.groupSelectSub(sub_group_id)
+          this.groupSelectSub(sub_group_id)
       }
     },
     groupSelectParent(parent_group_id){
@@ -533,13 +535,14 @@ export default defineComponent({
       if(this.groupSelectedSubId == sub_group_id){
         return
       }
+      console.log(sub_group_id)
       this.groupSelectedSubId = sub_group_id
       document.querySelectorAll(".groups-container ion-chip").forEach(chip=>{
         chip.classList.remove("active-chip");
       });
       try{
         this.$refs["group-chip-" + sub_group_id][0].classList.add("active-chip");
-      }catch{/** */}
+      }catch{ console.log('error') }
       this.scrollTo(sub_group_id);
     },
     groupSliderChanged(event) {
@@ -557,18 +560,21 @@ export default defineComponent({
       if (!this.$refs["group-" + sub_group_id]?.[0] ) {
         return;
       }
-      const offset=document.querySelector("ion-content").shadowRoot.querySelector("main").scrollTop;
+      const offset=document.querySelector("ion-content.store-page").shadowRoot.querySelector("main").scrollTop;
       const anchor=this.$refs["group-" + sub_group_id][0].$el.getBoundingClientRect().top;
       var elementPosition = offset + anchor - this.offsetModificator - (window.innerHeight/4);
       var first_group_id = Object.keys(this.storeGroups[this.groupSelectedParentId].children)[0];
       if(first_group_id == sub_group_id){
         elementPosition = offset+anchor - this.offsetModificator;
       }
+      console.log('scrollTo')
+      console.log(elementPosition)
       document
-        .querySelector("ion-content")
+        .querySelector("ion-content.store-page")
         .shadowRoot.querySelector("main")
         .scrollTo({ top: elementPosition, behavior: "smooth" });
     },
+    
     onScroll(event) {
       const offsetTop=document.querySelector(".product-list-slider")?.offsetTop;
       const offsetHeight=document.querySelector(".group-fixed-block")?.offsetHeight;
