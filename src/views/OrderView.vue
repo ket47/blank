@@ -14,8 +14,6 @@
             <order-history-comp :orderData="order"/>
             <image-tile-comp v-if="order" :images="order?.images" :image_holder_id="order?.order_id" controller="Order" ref="orderImgs"/>
             
-            
-            
             <ion-popover :is-open="isOpenDeliveryRejectionPopover" @didDismiss="isOpenDeliveryRejectionPopover=false">
                 <ion-content>
                 <ion-list>

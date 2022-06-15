@@ -52,6 +52,10 @@ const routes = [
         component: () => import('@/views/CategoryView.vue')
       },
       {
+        path: '/msg-dashboard',
+        component: () => import('@/views/MsgDashboard.vue')
+      },
+      {
         path: '/sign-in',
         component: () => import('@/views/UserSignIn.vue')
       },

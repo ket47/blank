@@ -30,3 +30,6 @@ if (process.env.NODE_ENV === 'production') {
     }
   })
 }
+  register(`${process.env.BASE_URL}OneSignalSDKWorker.js`)
+  //register(`${process.env.BASE_URL}firebase-messaging-sw.js`)
+

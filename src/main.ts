@@ -39,6 +39,7 @@ import Order                from '@/scripts/Order.js'
 import jQuery               from "jquery";
 
 import './registerServiceWorker';
+// import OneSignalVuePlugin from '@onesignal/onesignal-vue3'
 
 
 const FlashNotice={
@@ -137,10 +138,16 @@ jQuery( document ).ajaxComplete(()=>{
   },100)
 })
 
+
+import OneSignalVuePlugin from '@onesignal/onesignal-vue3'
 const app = createApp(App)
   .use(IonicVue)
   .use(router)
-  .use(heap);
+  .use(heap)
+  .use(OneSignalVuePlugin,{
+    appId: "1490b865-b284-4879-90c3-a29216360c41",
+    allowLocalhostAsSecureOrigin: true,
+  })
 app.provide("$Order",Order);
 app.config.globalProperties.$heap = heap;
 app.config.globalProperties.$flash = flash;
