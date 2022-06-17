@@ -4,6 +4,7 @@ import heap  from '@/heap';
 import Topic from '@/scripts/Topic';
 import { Geolocation } from '@capacitor/geolocation';
 import { toastController }  from '@ionic/vue';
+import { initializeApp } from "firebase/app";
 
 const User = {
     init(){
@@ -12,6 +13,8 @@ const User = {
     async settingsGet(){
         const settings=await jQuery.get( heap.state.hostname + "User/itemSettingsGet")
         heap.commit('setSettings', settings);
+        Topic.publish('settingsGet',settings);
+       // User.firebase.init(settings.firebase)
     },
     async get( mode='all' ){
         if( !heap.state.settings ){
@@ -248,6 +251,12 @@ const User = {
             }
             console.log('trackingStop',User.geo.clock);
             Geolocation.clearWatch({id:User.geo.clock});
+        }
+    },
+    firebase:{
+        init(stngs){
+            initializeApp(stngs);
+            console.log(stngs)
         }
     }
 }

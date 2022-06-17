@@ -139,15 +139,21 @@ jQuery( document ).ajaxComplete(()=>{
 })
 
 
-import OneSignalVuePlugin from '@onesignal/onesignal-vue3'
+navigator.serviceWorker.onmessage = (event) => {
+  if(event.data.data.type === 'event'){
+    Topic.publish('pushRecieved',event.data.data)
+  }
+  if(event.data.data.type === 'flash'){
+    flash(event.data.body)
+  }
+  alert(event.data.data.body,event.data.data.title)
+};
+
+
 const app = createApp(App)
   .use(IonicVue)
   .use(router)
   .use(heap)
-  .use(OneSignalVuePlugin,{
-    appId: "1490b865-b284-4879-90c3-a29216360c41",
-    allowLocalhostAsSecureOrigin: true,
-  })
 app.provide("$Order",Order);
 app.config.globalProperties.$heap = heap;
 app.config.globalProperties.$flash = flash;

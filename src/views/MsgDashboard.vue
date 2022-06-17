@@ -1,118 +1,114 @@
 <template>
-  <base-layout pageTitle="Сообщения">
-      mesajlar
-      <button @click="subscribe()">SUBSCRIBE</button>
+  <base-layout pageTitle="Уведомления">
+      <ion-card v-if="permission=='denied'" color="danger">
+        <ion-card-header>
+          <ion-card-title>Уведомления заблокированы вами</ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          К сожалению, мы не сможем уведомлять вас о статусах заказов 
+          <p>
+            <ion-button @click="subscribe()" expand="full">Подписаться на уведомления</ion-button>
+          </p>
+        </ion-card-content>
+      </ion-card>
+      <ion-card v-if="permission=='granted'" color="success">
+        <ion-card-header>
+          <ion-card-title>Уведомления разрешены</ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <p>Вам будут приходить уведомления об изменениях статусов заказов</p>
+        </ion-card-content>
+      </ion-card>
+      <ion-card v-if="permission=='default'" color="warning">
+        <ion-card-header>
+          <ion-card-title>Уведомления не разрешены</ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          Чтобы вовремя узнавать об изменениях статусов заказов, подпишитесь на уведомления
+          <p>
+            <ion-button @click="subscribe()" expand="full">Подписаться на уведомления</ion-button>
+          </p>
+        </ion-card-content>        
+      </ion-card>
+
   </base-layout>
 </template>
 <script>
-//import { initializeApp } from "firebase/app";
-//import { getMessaging, getToken } from "firebase/messaging";
+import { initializeApp } from "firebase/app";
+import { getMessaging, getToken } from "firebase/messaging";
 
-//import {IOneSignal} from 'onesignal-vue'
 
-// import 'firebase/app'
-// import 'firebase/messaging'
+import {
+  IonButton,
+  IonCard,
+  IonCardHeader,
+  IonCardTitle,
+  IonCardSubtitle,
+  IonCardContent
+}             from "@ionic/vue"
 import jQuery from 'jquery'
 
 export default {
+  components:{
+  IonButton,
+  IonCard,
+  IonCardHeader,
+  IonCardTitle,
+  IonCardSubtitle,
+  IonCardContent
+  },
   data(){
     return {
-      messaging:{}
+      permission:Notification.permission
     }
   },
   methods: {
-    async saveNotificationToken(token) {
-      if( !(this.$heap.state.user.user_id>0) ){
-        this.$flash("Необходимо авторизироваться")
-        this.$router.push("sign-in")
+    async saveNotificationToken(){
+      if( !(this.$heap.state.user.user_id>0) || !this.$heap.state.settings?.firebase ){
         return
       }
       try{
+        const vapidKey=this.$heap.state.settings.firebase.vapidKey
+        const messaging = getMessaging();
+        const token=await getToken(messaging, {vapidKey});
         const request={
           type:'webpush',
           registration_id:token,
           user_agent:navigator.userAgent
         }
-        const response=await jQuery.post(`${this.$heap.state.hostname}MessageSub/itemCreate`,request)
-        console.log('saveNotificationToken',response)
+        await jQuery.post(`${this.$heap.state.hostname}MessageSub/itemCreate`,request)
       }catch(err){
         console.log(err)
       }
     },
     async subscribe(){
-      this.$OneSignal.setExternalUserId(this.$heap.state.user.user_id);
-      this.$OneSignal.showNativePrompt();
-      // try{
-      //   const permission=await Notification.requestPermission()
-      //   console.log(permission,'Notification permission granted.')
-      //   const messaging = getMessaging();
-      //   const token=await getToken(messaging, {vapidKey: "BLzv4oK1EGxAxwPtlAXvMNzaYvMJK1qvx92D0f1U89wlUPxUU4gAtes7c__wcTwvmEyds6e7-p0Oy4bVYZo1Igg"});
-      //   this.saveNotificationToken(token)
-      // }catch(err){
-      //   this.$alert("Не удалось подключить уведомления")
-      //   console.log('Unable to get permission to notify.', err)
-      // }
+      try{
+        this.permission=await Notification.requestPermission()
+        if(this.permission=='granted'){
+          this.saveNotificationToken()
+        }
+      }catch(err){
+        this.$flash("Вы не разрешили уведомлять вас")
+      }
     },
-
-    async setupPush() {
-
-
-
-
-      this.$OneSignal.on('subscriptionChange', function(isSubscribed) {
-        console.log("The user's subscription state is now:", isSubscribed);
-      });
-
-      //this.$OneSignal.showNativePrompt();
-
-      // // I recommend to put these into your environment.ts
-      // this.oneSignal.startInit('YOUR ONESIGNAL APP ID', 'YOUR ANDROID ID');
-  
-      // this.oneSignal.inFocusDisplaying(this.oneSignal.OSInFocusDisplayOption.None);
-  
-      // // Notifcation was received in general
-      // this.oneSignal.handleNotificationReceived().subscribe(data => {
-      //   let msg = data.payload.body;
-      //   let title = data.payload.title;
-      //   let additionalData = data.payload.additionalData;
-      //   this.showAlert(title, msg, additionalData.task);
-      // });
-  
-      // // Notification was really clicked/opened
-      // this.oneSignal.handleNotificationOpened().subscribe(data => {
-      //   // Just a note that the data is a different place here!
-      //   let additionalData = data.notification.payload.additionalData;
-  
-      //   this.showAlert('Notification opened', 'You already read this before', additionalData.task);
-      // });
-  
-      // this.oneSignal.endInit();
-    },
-    },
-  mounted() {
-    this.setupPush()
-    // const firebaseConfig = {
-    //   apiKey: "AIzaSyDHDeSPsSoJHE_HYKQ_vgOvSfJIN_8Y2Uc",
-    //   authDomain: "tezkel-8e371.firebaseapp.com",
-    //   projectId: "tezkel-8e371",
-    //   storageBucket: "tezkel-8e371.appspot.com",
-    //   messagingSenderId: "359468869452",
-    //   appId: "1:359468869452:web:8db6fe690d192b427891e9",
-
-    // };
-    // const app = initializeApp(firebaseConfig);
-    // this.messaging = getMessaging(app);
-
-
-    // const self=this
-    // this.messaging.onTokenRefresh(async function (newToken) {
-    //   try{
-    //     await self.messaging.getToken({vapidKey: "BLzv4oK1EGxAxwPtlAXvMNzaYvMJK1qvx92D0f1U89wlUPxUU4gAtes7c__wcTwvmEyds6e7-p0Oy4bVYZo1Igg"});
-    //     self.saveNotificationToken(newToken)
-    //   } catch(err){
-    //     console.log('Unable to retrieve refreshed token ', err)
-    //   }
-    // });
+    init(){
+      initializeApp(this.$heap.state.settings.firebase);
+    }
+  },
+  created() {
+    const self=this
+    this.$topic.on('settingsGet',function(){
+      self.init()
+      //self.saveNotificationToken()
+    })
+    this.$topic.on('userGet',function(){
+      //self.saveNotificationToken()
+    })
+  },
+  watch:{
+    'Notification.permission':function(){
+      this.permission=Notification.permission
+    }
   }
 }
 </script>

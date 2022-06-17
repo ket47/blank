@@ -20,6 +20,9 @@
                     <ion-item :button="true" :detail="false" @click="action_rejected_reason('ОТКАЗ КУРЬЕРА: Отказ клиента')">
                         <ion-label>Отказ клиента</ion-label>
                     </ion-item>
+                    <ion-item :button="true" :detail="false" @click="action_rejected_reason('ОТКАЗ КУРЬЕРА: Заказ не готов/не соответствует')">
+                        <ion-label>Заказ не готов/не соответствует</ion-label>
+                    </ion-item>
                     <ion-item :button="true" :detail="false" @click="action_rejected_reason('ОТКАЗ КУРЬЕРА: Поломка в пути')">
                         <ion-label>Поломка в пути</ion-label>
                     </ion-item>

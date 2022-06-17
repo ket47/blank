@@ -22,10 +22,7 @@ module.exports = {
       name:"Tezkel доставка",
       short_name:"Tezkel",
       background_color: "#009dcd",
-      gcm_sender_id:"359468869452"
-    },
-    workboxOptions: {
-      exclude: [/OneSignal.*\.js$/],
-    },
+      //gcm_sender_id:"359468869452"
+    }
   }
 }
