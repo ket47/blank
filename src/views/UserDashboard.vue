@@ -60,6 +60,10 @@ ion-icon{
               <ion-icon :icon="cartOutline" slot="start" color="primary"></ion-icon>
               <ion-label>Мои заказы</ion-label>
           </ion-item>
+          <ion-item lines="full" button detail @click="$router.push('msg-dashboard')">
+              <ion-icon :icon="notificationsOutline" slot="start" color="primary"></ion-icon>
+              <ion-label>Настройка уведомлений</ion-label>
+          </ion-item>
         </div>
 
         <ion-item-group v-if="isAdmin">
@@ -249,7 +253,8 @@ import {
   chevronForwardOutline,
   documentTextOutline,
   informationCircleOutline,
-  storefrontOutline
+  storefrontOutline,
+  notificationsOutline,
 } from "ionicons/icons";
 
 import User     from "@/scripts/User.js";
@@ -289,7 +294,8 @@ export default {
       chevronForwardOutline,
       documentTextOutline,
       informationCircleOutline,
-      storefrontOutline
+      storefrontOutline,
+      notificationsOutline,
     };
   },
   data() {

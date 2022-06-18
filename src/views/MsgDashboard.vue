@@ -11,14 +11,16 @@
           </p>
         </ion-card-content>
       </ion-card>
-      <ion-card v-if="permission=='granted'" color="success">
+
+      <ion-card v-if="registered" color="success">
         <ion-card-header>
-          <ion-card-title>Уведомления разрешены</ion-card-title>
+          <ion-card-title>Вы подписаны на уведомления</ion-card-title>
         </ion-card-header>
         <ion-card-content>
           <p>Вам будут приходить уведомления об изменениях статусов заказов</p>
         </ion-card-content>
       </ion-card>
+
       <ion-card v-if="permission=='default'" color="warning">
         <ion-card-header>
           <ion-card-title>Уведомления не разрешены</ion-card-title>
@@ -59,7 +61,8 @@ export default {
   },
   data(){
     return {
-      permission:Notification.permission
+      permission:Notification.permission,
+      registered:false
     }
   },
   methods: {
@@ -77,6 +80,7 @@ export default {
           user_agent:navigator.userAgent
         }
         await jQuery.post(`${this.$heap.state.hostname}MessageSub/itemCreate`,request)
+        this.registered=true;
       }catch(err){
         console.log(err)
       }
@@ -95,20 +99,15 @@ export default {
       initializeApp(this.$heap.state.settings.firebase);
     }
   },
-  created() {
+  mounted() {
     const self=this
     this.$topic.on('settingsGet',function(){
       self.init()
       //self.saveNotificationToken()
     })
     this.$topic.on('userGet',function(){
-      //self.saveNotificationToken()
+      self.saveNotificationToken()
     })
   },
-  watch:{
-    'Notification.permission':function(){
-      this.permission=Notification.permission
-    }
-  }
 }
 </script>

@@ -139,15 +139,15 @@ jQuery( document ).ajaxComplete(()=>{
 })
 
 
-navigator.serviceWorker.onmessage = (event) => {
-  if(event.data.data.type === 'event'){
-    Topic.publish('pushRecieved',event.data.data)
-  }
-  if(event.data.data.type === 'flash'){
-    flash(event.data.body)
-  }
-  alert(event.data.data.body,event.data.data.title)
-};
+// navigator.serviceWorker.onmessage = (event) => {
+//   if(event.data.data.type === 'event'){
+//     Topic.publish('pushRecieved',event.data.data)
+//   }
+//   if(event.data.data.type === 'flash'){
+//     flash(event.data.body)
+//   }
+//   alert(event.data.data.body,event.data.data.title)
+// };
 
 
 const app = createApp(App)

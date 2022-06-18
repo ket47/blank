@@ -14,7 +14,7 @@ const User = {
         const settings=await jQuery.get( heap.state.hostname + "User/itemSettingsGet")
         heap.commit('setSettings', settings);
         Topic.publish('settingsGet',settings);
-       // User.firebase.init(settings.firebase)
+        User.firebase.init(settings.firebase)
     },
     async get( mode='all' ){
         if( !heap.state.settings ){
@@ -255,8 +255,14 @@ const User = {
     },
     firebase:{
         init(stngs){
-            initializeApp(stngs);
-            console.log(stngs)
+            //initializeApp(stngs);
+            // navigator.serviceWorker.onmessage = (event) => {
+            //     if(event.data.type === 'pong'){
+            //         alert(event.data.data.body,event.data.data.title)
+            //     }
+                
+            //   };
+            // navigator.serviceWorker.controller.postMessage('ping');
         }
     }
 }
