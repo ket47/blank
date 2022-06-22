@@ -6,16 +6,28 @@
       </ion-toolbar>
   </ion-header>
   <ion-content>
+    <ion-list v-if="promoList==null">
+        <ion-item lines="none" v-for="skeleton in [1,2,3]" :key="skeleton">
+            <ion-icon slot="start" :icon="giftOutline" color="primary"/>
+            <ion-skeleton-text style="width:70%"></ion-skeleton-text>
+            <ion-skeleton-text slot="end" style="width:50px"></ion-skeleton-text>
+        </ion-item>
+    </ion-list>
+
     <ion-list>
-        <ion-item v-for="promo in promoList" :key="promo.promo_id" button detail @click="promoPick(promo)">
+        <ion-item v-for="promo in promoList" :key="promo.promo_id" button @click="promoPick(promo)">
             <ion-icon slot="start" :icon="giftOutline" color="primary"/>
             <ion-text>{{promo.promo_name}}</ion-text>
             <ion-text slot="end" color="success">{{promo.promo_value}}{{$heap.state.currencySign}}</ion-text>
         </ion-item>
-        <ion-item button detail @click="promoPick({})">
-            <ion-icon slot="start" :icon="banOutline"/>
+        
+        <ion-item button @click="promoPick({})">
+            <ion-icon slot="start" :icon="banOutline" color="danger"/>
             <ion-text>Без скидки</ion-text>
             <ion-text slot="end">0{{$heap.state.currencySign}}</ion-text>
+        </ion-item>
+        <ion-item button detail @click="$router.push('user-promo');$topic.publish('dismissModal')">
+            <ion-text>Показать все ваши скидки</ion-text>
         </ion-item>
     </ion-list>
   </ion-content>
@@ -31,6 +43,7 @@ import {
   IonItem,
   IonText,
   modalController,
+  IonSkeletonText,
 }                       from '@ionic/vue'
 import {
     giftOutline,
@@ -48,6 +61,7 @@ export default {
   IonList,
   IonItem,
   IonText,
+  IonSkeletonText,
     },
     setup(){
         return {
@@ -67,7 +81,10 @@ export default {
     methods:{
         async listGet(){
             try{
-                this.promoList=await jQuery.post(`${this.$heap.state.hostname}Promo/listGet`)
+                const request={
+                    type:'active'
+                }
+                this.promoList=await jQuery.post(`${this.$heap.state.hostname}Promo/listGet`,request)
             }catch{/** */}
         },
         promoPick(promo){

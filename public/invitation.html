@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width,minimum-scale=1.0, maximum-scale=1.0,initial-scale=1,user-scalable=no">
+        <meta property="og:title" content="Присоединяйтесь к Tezkel" />
+        <meta property="og:description" content="Получите 5 подарочных сертификатов по 200руб" />
+        <meta property="og:image" content="/img/logo-full.png" />
+        <link rel="icon" type="image/png" href="/favicon.png">
+        <title>Присоединяйтесь и получите 5 сертификатов по 200руб</title>
+        <script>
+            const parts=location.href.split('?')
+            const searchParams = new URLSearchParams(parts[1]);
+            if(searchParams.has('inviter_user_id')){
+                localStorage.inviter_user_id=searchParams.get('inviter_user_id')
+            }
+        </script>
+    </head>
+    <body style="background-color: #009dcd">
+        <h1>Экспресс доставка Tezkel</h1>
+        <img src="/img/logo-full.png" style="width: 100%"/>
+        <p>
+            Зарегистрируйтесь и получите 5 подарочных сертификатов по 200руб
+        </p>
+        <a href="/#/sign-up">Регистрация</a>
+    </body>
+</html>

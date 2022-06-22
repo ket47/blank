@@ -150,7 +150,8 @@ import {
     checkmarkOutline,
     cubeOutline,
     walletOutline,
-    banOutline
+    banOutline,
+    giftOutline
 }                       from 'ionicons/icons';
 import CartAddButtons   from '@/components/CartAddButtons.vue';
 
@@ -187,7 +188,8 @@ export default({
             checkmarkOutline,    
             cubeOutline, 
             banOutline,
-            walletOutline
+            walletOutline,
+            giftOutline
         };
     },
     data(){

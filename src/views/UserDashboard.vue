@@ -60,6 +60,10 @@ ion-icon{
               <ion-icon :icon="cartOutline" slot="start" color="primary"></ion-icon>
               <ion-label>Мои заказы</ion-label>
           </ion-item>
+          <ion-item lines="full" button detail @click="$router.push('user-promo')">
+              <ion-icon :icon="giftOutline" slot="start" color="primary"></ion-icon>
+              <ion-label>Мои скидки</ion-label>
+          </ion-item>
           <ion-item lines="full" button detail @click="$router.push('msg-dashboard')">
               <ion-icon :icon="notificationsOutline" slot="start" color="primary"></ion-icon>
               <ion-label>Настройка уведомлений</ion-label>
@@ -255,6 +259,7 @@ import {
   informationCircleOutline,
   storefrontOutline,
   notificationsOutline,
+  giftOutline,
 } from "ionicons/icons";
 
 import User     from "@/scripts/User.js";
@@ -296,6 +301,7 @@ export default {
       informationCircleOutline,
       storefrontOutline,
       notificationsOutline,
+      giftOutline,
     };
   },
   data() {

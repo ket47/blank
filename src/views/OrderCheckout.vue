@@ -2,6 +2,14 @@
     ion-list{
         box-shadow: 0px -5px 5px #eee;
     }
+    .righttop_badge{
+        margin-left:-10px;
+        margin-top:-10px;
+        position: relative;
+    }
+    .righttop_badge ion-badge{
+        position: absolute;
+    }
 </style>
 <template>
     <base-layout :pageTitle="`Оформление заказа`"  :pageDefaultBackLink="order?`/order-${order.order_id}`:`order-list`">
@@ -29,9 +37,20 @@
                 Сумма заказа 
                 <ion-text slot="end">{{order.order_sum_product}}{{$heap.state.currencySign}}</ion-text>
             </ion-item>
-            <ion-item button detail @click="modalPromoPick()">
-                <ion-icon :icon="giftOutline" slot="start" color="primary"></ion-icon>
-                Выберите акцию
+            <ion-item v-if="promo" button @click="promoPick()" color="success">
+                <div slot="start">
+                    <ion-icon :icon="giftOutline" color="primary" style="font-size:1.5em"></ion-icon>
+                    <sup class="righttop_badge"><ion-badge v-if="promoCount" color="warning">{{promoCount}}</ion-badge></sup>
+                </div>
+                {{promo.promo_name}}
+                <ion-text slot="end">-{{order.order_sum_promo}}{{$heap.state.currencySign}}</ion-text>
+            </ion-item>
+            <ion-item v-else button detail @click="promoPick()">
+                <div slot="start">
+                    <ion-icon :icon="giftOutline" color="primary" style="font-size:1.5em"></ion-icon>
+                    <sup class="righttop_badge"><ion-badge v-if="promoCount" color="warning">{{promoCount}}</ion-badge></sup>
+                </div>
+                 Выберите скидку 
             </ion-item>
             <ion-item v-if="order?.order_sum_tax>0">
                 <ion-icon :icon="pieChartOutline" slot="start" color="primary"></ion-icon>
@@ -66,7 +85,7 @@
             </ion-item>
 
             <ion-item lines="none">
-                <ion-text style="font-size:0.7em">
+                <ion-text style="font-size:0.9em">
                     Я согласен(на) с <a href="#/page-customer_contract" @click="$router.push('/page-customer_contract')">офертой об оказании услуг доставки</a>
                 </ion-text>
                 <ion-checkbox slot="end" v-model="termsAccepted"/>
@@ -126,6 +145,7 @@ import {
     IonCardHeader,
     IonCardContent,
     IonCardTitle,
+    IonBadge,
 }                               from "@ionic/vue";
 import UserAddressWidget        from '@/components/UserAddressWidget.vue';
 import OrderPaymentCardModal    from '@/components/OrderPaymentCardModal.vue';
@@ -150,6 +170,7 @@ export default({
     IonCardHeader,
     IonCardContent,
     IonCardTitle,
+    IonBadge,
     },
     setup(){
         return {cardOutline,cashOutline,giftOutline,cubeOutline,walletOutline,pieChartOutline,storefrontOutline,ordersIcon,rocketOutline,documentTextOutline};
@@ -157,6 +178,8 @@ export default({
     data(){
         return {
             order:null,
+            promo:null,
+            promoCount:0,
             deliveryTime:{},
             paymentType:'payment_card',
             termsAccepted:1,
@@ -168,7 +191,9 @@ export default({
             if( !this.order ){
                 return false
             }
-            console.log(this.order.order_sum_product*1,this.order.store.store_minimal_order*1)
+            if(this.order.order_sum_total<this.order.order_sum_promo*2){
+                return `Сумма к оплате со скидкой ${this.order.order_sum_promo}${this.$heap.state.currencySign} должна быть больше чем ${this.order.order_sum_promo*2}${this.$heap.state.currencySign}`
+            }
             if(this.order.order_sum_product*1<=this.order.store.store_minimal_order*1){
                 return `Сумма заказа у "${this.order.store.store_name}" должна быть больше чем ${this.order.store.store_minimal_order}${this.$heap.state.currencySign}`
             }
@@ -194,6 +219,12 @@ export default({
         this.checkoutDataGet();
     },
     methods:{
+        async itemLoad(){
+            try{
+                this.order=await jQuery.post(`${this.$heap.state.hostname}Order/itemGet`,{order_id:this.order.order_id})
+                this.$heap.commit('setCurrentOrder',this.order)
+            }catch{/** */}
+        },
         async checkoutDataGet(){
             this.order=this.$heap.state.currentOrder;
             if( !this.order ){
@@ -205,18 +236,19 @@ export default({
                 router.push('order-'+this.order.order_id);
                 return;
             }
-            const preparation=null;//use default prep time
-            this.distance= await this.distanceGet();
-            if(this.distance){
-                this.deliveryTime=Utils.deliveryTimeCalculate(this.distance,preparation);
-            }
+            this.storeIsReady=await this.storeReadinessCheck()
+            this.deliveryTime= await this.deliveryTimeGet();
+            this.promo=await this.promoGet()
+            this.promoCount=await this.promoCountGet()
+        },
+        async storeReadinessCheck(){
             try{
-                this.storeIsReady=await jQuery.post(`${this.$heap.state.hostname}Store/itemIsReady`,{store_id:this.order.order_store_id})
+                return await jQuery.post(`${this.$heap.state.hostname}Store/itemIsReady`,{store_id:this.order.order_store_id})
             } catch{
-                this.storeIsReady=0
+                return false
             }
         },
-        async distanceGet(){
+        async deliveryTimeGet(){
             const request={
                 start_holder:'store',
                 start_holder_id:this.order.order_store_id,
@@ -224,7 +256,9 @@ export default({
                 finish_holder_id:this.order.owner_id
             };
             try{
-                return await jQuery.post( this.$heap.state.hostname + "Location/distanceHolderGet", request );
+                const preparation=null;//use default prep time
+                const distance= await jQuery.post( this.$heap.state.hostname + "Location/distanceHolderGet", request );
+                return Utils.deliveryTimeCalculate(distance,preparation);
             } catch{/** */}
         },
         async orderDescriptionChanged(){
@@ -287,22 +321,61 @@ export default({
                 }
             }
         },
-        async modalPromoPick() {
+        async promoPick() {
             const modal = await modalController.create({
                 component: PromoPickerComp,
                 showBackdrop:true,
                 backdropDismiss:true,
                 initialBreakpoint: 0.6,
                 breakpoints: [0, 0.6, 0.75],
-                componentProps:{
-                    promo_order_id:this.order.order_id
-                },
+                // componentProps:{
+                //     promo_order_id:this.order.order_id
+                // },
             });
-            modal.onDidDismiss().then(promo => {
-                //
+            modal.present();
+            this.$topic.on('dismissModal',()=>{
+                modal.dismiss();
             });
-            return modal.present();
+            const selectedPromo=await modal.onDidDismiss()
+            this.promoLink(selectedPromo.data)
+            if( selectedPromo?.data?.promo_id ){
+                this.promo=selectedPromo.data
+            } else {
+                this.promo=null
+            }
         },
+        async promoLink(selectedPromo){
+            try{
+                const request={
+                    promo_id:selectedPromo?.promo_id,
+                    order_id:this.order.order_id
+                }
+                await jQuery.post(`${this.$heap.state.hostname}Promo/itemLink`,request)
+                this.itemLoad()
+            } catch(err){
+                //
+            }
+        },
+        async promoGet(){
+            try{
+                const request={
+                    order_id:this.order.order_id
+                }
+                return await jQuery.post(`${this.$heap.state.hostname}Promo/itemLinkGet`,request)
+            }catch(err){
+                //
+            }
+        },
+        async promoCountGet(){
+            try{
+                const request={
+                    mode:'count'
+                }
+                return await jQuery.post(`${this.$heap.state.hostname}Promo/listGet`,request)
+            }catch(err){
+                //
+            }
+        }
     }
 })
 </script>

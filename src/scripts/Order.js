@@ -20,13 +20,22 @@ const Order = {
             return jQuery.post( heap.state.hostname + "Order/itemSync", JSON.stringify(order) );
         },
         async itemStageCreate(order_id,new_stage){
+            this.listCount()
             return jQuery.post( heap.state.hostname + "Order/itemStageCreate",{order_id,new_stage} );
         },
         async listCartGet(){
             return jQuery.post( heap.state.hostname + "Order/listCartGet" );
         },
         async listLoad(order_group_type){
-            return jQuery.post( heap.state.hostname + "Order/listGet",{order_group_type} );
+            const list = await jQuery.post( heap.state.hostname + "Order/listGet",{order_group_type} );
+            if(order_group_type=='active_only'){
+                Topic.publish('activeOrderCountChanged',list.length)
+            }
+            return list
+        },
+        async listCount(){
+            const count=await jQuery.post( heap.state.hostname + "Order/listCountGet" );
+            Topic.publish('activeOrderCountChanged',count)
         },
         async listJobGet( courier_id ){
             return jQuery.post( heap.state.hostname + "Courier/listJobGet", {courier_id} );

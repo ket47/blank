@@ -12,15 +12,6 @@
         </ion-card-content>
       </ion-card>
 
-      <ion-card v-if="registered" color="success">
-        <ion-card-header>
-          <ion-card-title>Вы подписаны на уведомления</ion-card-title>
-        </ion-card-header>
-        <ion-card-content>
-          <p>Вам будут приходить уведомления об изменениях статусов заказов</p>
-        </ion-card-content>
-      </ion-card>
-
       <ion-card v-if="permission=='default'" color="warning">
         <ion-card-header>
           <ion-card-title>Уведомления не разрешены</ion-card-title>
@@ -32,6 +23,23 @@
           </p>
         </ion-card-content>        
       </ion-card>
+
+      <div v-if="registered">
+
+        <ion-card color="success">
+          <ion-card-header>
+            <ion-card-title>Вы подписаны на уведомления</ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            <p>Вам будут приходить некоторые уведомления</p>
+          </ion-card-content>
+        </ion-card>
+        <ion-list>
+          <ion-item-divider>Темы уведомлений</ion-item-divider>
+          <ion-item>Статусы заказов</ion-item>
+          <ion-item>Начисленные бонусы</ion-item>
+        </ion-list>
+      </div>
 
   </base-layout>
 </template>
@@ -46,7 +54,10 @@ import {
   IonCardHeader,
   IonCardTitle,
   IonCardSubtitle,
-  IonCardContent
+  IonCardContent,
+  IonList,
+  IonItem,
+  IonItemDivider,
 }             from "@ionic/vue"
 import jQuery from 'jquery'
 
@@ -57,7 +68,10 @@ export default {
   IonCardHeader,
   IonCardTitle,
   IonCardSubtitle,
-  IonCardContent
+  IonCardContent,
+  IonList,
+  IonItem,
+  IonItemDivider,
   },
   data(){
     return {
@@ -67,7 +81,7 @@ export default {
   },
   methods: {
     async saveNotificationToken(){
-      if( !(this.$heap.state.user.user_id>0) || !this.$heap.state.settings?.firebase ){
+      if( !(this.$heap.state.user.user_id>0) || !this.$heap.state.settings?.firebase || this.registered ){
         return
       }
       try{
@@ -96,6 +110,9 @@ export default {
       }
     },
     init(){
+      if(!this.$heap.state?.settings?.firebase){
+        return
+      }
       initializeApp(this.$heap.state.settings.firebase);
     }
   },
@@ -103,11 +120,13 @@ export default {
     const self=this
     this.$topic.on('settingsGet',function(){
       self.init()
-      //self.saveNotificationToken()
+      self.saveNotificationToken()
     })
     this.$topic.on('userGet',function(){
       self.saveNotificationToken()
     })
+    self.init()
+    self.saveNotificationToken()
   },
 }
 </script>

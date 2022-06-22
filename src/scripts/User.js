@@ -2,6 +2,7 @@
 import jQuery from "jquery";
 import heap  from '@/heap';
 import Topic from '@/scripts/Topic';
+import Order from '@/scripts/Order';
 import { Geolocation } from '@capacitor/geolocation';
 import { toastController }  from '@ionic/vue';
 import { initializeApp } from "firebase/app";
@@ -31,6 +32,9 @@ const User = {
             heap.commit('setUser', response);
             Topic.publish('userGet',response);
         });
+        if( user?.user_id>0 ){
+            Order.api.listCount()
+        }
         if( User.isCourier() ){
             await User.courier.get();
         }
@@ -255,7 +259,7 @@ const User = {
     },
     firebase:{
         init(stngs){
-            //initializeApp(stngs);
+            initializeApp(stngs);
             // navigator.serviceWorker.onmessage = (event) => {
             //     if(event.data.type === 'pong'){
             //         alert(event.data.data.body,event.data.data.title)

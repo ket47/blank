@@ -73,6 +73,11 @@ const routes = [
         props: true
       },
       {
+        path: '/user-promo',
+        component: () => import('@/views/UserPromoList.vue'),
+        props: true
+      },
+      {
         path: '/verify-phone',
         name:'UserVerifyPhone',
         component: () => import('@/views/UserVerifyPhone.vue'),

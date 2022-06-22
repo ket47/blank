@@ -163,7 +163,8 @@ ion-icon{
         </ion-tab-button>
 
         <ion-tab-button tab="tab3" href="/order-list" routerDirection="backward">
-          <ion-icon :icon="ordersIcon"/>
+            <ion-icon :icon="ordersIcon"/>
+            <ion-badge color="warning" style="font-size:1.5em" v-if="activeOrderCount">{{activeOrderCount}}</ion-badge>
           <ion-label>Заказы</ion-label>
         </ion-tab-button>
 
@@ -192,6 +193,7 @@ import {
   IonIcon,
   IonLabel,
   IonRouterOutlet,
+  IonBadge,
 }                   from "@ionic/vue";
 import personIcon   from "@/assets/icons/account.svg";
 import ordersIcon   from "@/assets/icons/orders.svg";
@@ -208,11 +210,23 @@ export default defineComponent({
   IonIcon,
   IonLabel,
   IonRouterOutlet,
+  IonBadge,
   },
   setup() {
     return {
       personIcon,ordersIcon,searchIcon,homeIcon
     };
   },
+  data(){
+    return {
+      activeOrderCount:0
+    }
+  },
+  created(){
+    const self=this
+    this.$topic.on('activeOrderCountChanged',count=>{
+      self.activeOrderCount=count
+    })
+  }
 })
 </script>

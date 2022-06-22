@@ -196,7 +196,8 @@ export default  {
         user_pass: this.user_pass,
         user_pass_confirm: this.user_pass_confirm,
         user_name: this.user_name,
-        user_email:this.user_email
+        user_email:this.user_email,
+        inviter_user_id:localStorage.inviter_user_id??0
       }
       
       try{
