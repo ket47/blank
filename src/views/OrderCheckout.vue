@@ -40,7 +40,7 @@
             <ion-item v-if="promo" button @click="promoPick()" color="success">
                 <div slot="start">
                     <ion-icon :icon="giftOutline" color="primary" style="font-size:1.5em"></ion-icon>
-                    <sup class="righttop_badge"><ion-badge v-if="promoCount" color="warning">{{promoCount}}</ion-badge></sup>
+                    <sup class="righttop_badge"><ion-badge v-if="promoCount>0" color="secondary">{{promoCount}}</ion-badge></sup>
                 </div>
                 {{promo.promo_name}}
                 <ion-text slot="end">-{{order.order_sum_promo}}{{$heap.state.currencySign}}</ion-text>
@@ -48,7 +48,7 @@
             <ion-item v-else button detail @click="promoPick()">
                 <div slot="start">
                     <ion-icon :icon="giftOutline" color="primary" style="font-size:1.5em"></ion-icon>
-                    <sup class="righttop_badge"><ion-badge v-if="promoCount" color="warning">{{promoCount}}</ion-badge></sup>
+                    <sup class="righttop_badge"><ion-badge v-if="promoCount>0" color="secondary">{{promoCount}}</ion-badge></sup>
                 </div>
                  Выберите скидку 
             </ion-item>
@@ -62,7 +62,7 @@
                 Доставка 
                 <ion-text slot="end">{{order?.order_sum_delivery??0}}{{$heap.state.currencySign}}</ion-text>
             </ion-item>
-            <ion-item>
+            <ion-item v-if="order?.order_sum_total>0">
                 <ion-icon :icon="walletOutline" slot="start" color="primary"></ion-icon>
                 Итого к оплате
                 <ion-text slot="end" color="primary">{{order?.order_sum_total}}{{$heap.state.currencySign}}</ion-text>
@@ -194,7 +194,7 @@ export default({
             if(this.order.order_sum_total<this.order.order_sum_promo*2){
                 return `Сумма к оплате со скидкой ${this.order.order_sum_promo}${this.$heap.state.currencySign} должна быть больше чем ${this.order.order_sum_promo*2}${this.$heap.state.currencySign}`
             }
-            if(this.order.order_sum_product*1<=this.order.store.store_minimal_order*1){
+            if(this.order.order_sum_product*1<this.order.store.store_minimal_order*1){
                 return `Сумма заказа у "${this.order.store.store_name}" должна быть больше чем ${this.order.store.store_minimal_order}${this.$heap.state.currencySign}`
             }
             if(this.order.order_sum_total*1<=this.order.order_sum_delivery*1){

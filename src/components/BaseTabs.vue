@@ -164,7 +164,7 @@ ion-icon{
 
         <ion-tab-button tab="tab3" href="/order-list" routerDirection="backward">
             <ion-icon :icon="ordersIcon"/>
-            <ion-badge color="warning" style="font-size:1.5em" v-if="activeOrderCount">{{activeOrderCount}}</ion-badge>
+            <ion-badge color="warning" style="font-size:1.5em" v-if="activeOrderCount>0">{{activeOrderCount}}</ion-badge>
           <ion-label>Заказы</ion-label>
         </ion-tab-button>
 

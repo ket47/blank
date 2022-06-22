@@ -68,7 +68,7 @@
             </div>
         </ion-list>
 
-        <ion-list v-if="compPromoList.length==0">
+        <ion-list v-if="promoList==null">
             <div v-for="skeleton in [1,2,3]" :key="skeleton">
             <ion-item lines="none">
                 <ion-icon slot="start" :icon="giftOutline" color="medium"/>

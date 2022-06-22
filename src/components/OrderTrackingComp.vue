@@ -98,11 +98,9 @@ export default({
     data(){
         return {
             job:null,
-            refreshInterval:1000*60
+            refreshInterval:1000*60,
+            clock:null,
         };
-    },
-    mounted(){
-        this.jobGet()
     },
     computed:{
         courier_finish_distance_km(){
@@ -121,14 +119,14 @@ export default({
     methods:{
         async jobGet(){
             if( !this.isDelivering() ){
-                console.log(this.orderData)
                 return
             }
             try{
                 this.job=await Order.api.itemJobTrack(this.orderData.order_id);
                 if(this.job.group_type=='delivery_start'){
+                    clearTimeout(this.clock)
                     const self=this
-                    setTimeout(()=>{self.jobGet()},this.refreshInterval)
+                    this.clock=setTimeout(()=>{self.jobGet()},this.refreshInterval)
                 }
             } catch(err){
                 const message=err.responseJSON?.messages?.error;
@@ -147,6 +145,11 @@ export default({
                 return true
             }
             return false
+        }
+    },
+    watch:{
+        'orderData':function(){
+            this.jobGet()
         }
     }
 })
