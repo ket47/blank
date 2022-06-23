@@ -13,7 +13,8 @@
             <order-tracking-comp :orderData="order"/>
             <order-history-comp :orderData="order"/>
             <image-tile-comp v-if="order" :images="order?.images" :image_holder_id="order?.order_id" controller="Order" ref="orderImgs"/>
-            
+            <msg-subscription-comp/>
+
             <ion-popover :is-open="isOpenDeliveryRejectionPopover" @didDismiss="isOpenDeliveryRejectionPopover=false">
                 <ion-content>
                 <ion-list>
@@ -59,6 +60,7 @@ import OrderTrackingComp    from '@/components/OrderTrackingComp.vue'
 import OrderObjectionModal  from '@/components/OrderObjectionModal.vue'
 import OrderEntryAdd        from '@/components/OrderEntryAdd.vue'
 import ImageTileComp        from '@/components/ImageTileComp.vue'
+import MsgSubscriptionComp  from '@/components/MsgSubscriptionComp.vue'
 
 
 export default({
@@ -66,6 +68,7 @@ export default({
     OrderComp,
     OrderHistoryComp,
     OrderTrackingComp,
+    MsgSubscriptionComp,
     OrderEntryAdd,
     ImageTileComp,
     IonLabel,
@@ -238,6 +241,12 @@ export default({
         self.itemGet();
         this.$topic.on('orderSumChanged',()=>{
             self.itemGet();
+        })
+        
+        this.$topic.on('pushStageChanged',data=>{
+            if( self.order.order_id==data.order_id && self.order.stage_current!=data.stage ){
+                self.itemGet();
+            }
         })
     }
 })

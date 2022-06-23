@@ -139,15 +139,19 @@ jQuery( document ).ajaxComplete(()=>{
 })
 
 
-// navigator.serviceWorker.onmessage = (event) => {
-//   if(event.data.data.type === 'event'){
-//     Topic.publish('pushRecieved',event.data.data)
-//   }
-//   if(event.data.data.type === 'flash'){
-//     flash(event.data.body)
-//   }
-//   alert(event.data.data.body,event.data.data.title)
-// };
+navigator.serviceWorker.onmessage = (event) => {
+  if(event.data.data.topic){
+    Topic.publish(event.data.data.topic,event.data.data)
+  } else
+  if(event.data.data.type === 'flash'){
+    flash(event.data.body)
+  } else
+  if(event.data.data.body && event.data.data.title){
+    alert(event.data.data.body,event.data.data.title)
+  } else {
+    console.log('UNHANDLED WEBPUSH',event.data)
+  }
+};
 
 
 const app = createApp(App)

@@ -47,7 +47,6 @@
 import { initializeApp } from "firebase/app";
 import { getMessaging, getToken } from "firebase/messaging";
 
-
 import {
   IonButton,
   IonCard,
@@ -81,6 +80,9 @@ export default {
   },
   methods: {
     async saveNotificationToken(){
+      if(this.permission!='granted'){
+        return
+      }
       if( !(this.$heap.state.user.user_id>0) || !this.$heap.state.settings?.firebase || this.registered ){
         return
       }

@@ -235,6 +235,9 @@ const User = {
                 )){
                     return;
                 }
+                if( User.geo.lastPosition?.coords && !position?.coords?.speed ){
+                    return
+                }
                 User.geo.lastPosition=position;
                 const request={
                     location_longitude:position.coords.longitude,
@@ -247,7 +250,6 @@ const User = {
                     console.log('geolocation format error',request);
                 }
             });
-            console.log('trackingStart',User.geo.clock);
         },
         trackingStop(){
             if( !User.geo.clock ){
