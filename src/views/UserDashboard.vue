@@ -8,9 +8,9 @@ ion-icon{
     page-title="Личный кабинет"
     pageDefaultBackLink="/home"
   >
-    <div v-if="isSignedIn()" class="user-dashboard-header">
+    <div class="user-dashboard-header">
       <ion-list>
-        <ion-item lines="full" class="avatar-row">
+        <ion-item v-if="isSignedIn()" lines="full" class="avatar-row">
           <ion-avatar slot="start">
             <ion-img v-if="user.user_avatar_name" :src="$heap.state.hostname +'img/avatar/' +user.user_avatar_name +'.png'"/>
           </ion-avatar>
@@ -21,7 +21,7 @@ ion-icon{
             </router-link>
           </ion-label>
         </ion-item>
-        <ion-item v-if="user.user_phone" lines="full">
+        <!--<ion-item v-if="user.user_phone" lines="full">
           <ion-icon slot="start" :icon="callOutline" color="primary" />
           <ion-label>{{ user.user_phone }}</ion-label>
         </ion-item>
@@ -30,28 +30,24 @@ ion-icon{
             <ion-icon :icon="mailOutline"></ion-icon>
           </ion-thumbnail>
           <ion-label>{{ user.user_emailOutline }}</ion-label>
+        </ion-item>-->
+        <ion-item v-if="isSignedIn()" @click="signOut" lines="full" button detail>
+            <ion-icon :icon="exitOutline" slot="start" color="primary"></ion-icon>
+            <ion-label>Выйти</ion-label>
+        </ion-item>
+        <ion-item v-else lines="full" button detail @click="$router.push('sign-in')">
+            <ion-icon :icon="logInOutline" slot="start" color="primary"></ion-icon>
+            <ion-label>Войти</ion-label>
         </ion-item>
       </ion-list>
     </div>
 
     <ion-list>
-      <ion-item-group>
+      <ion-item-group v-if="isSignedIn()">
         <ion-item-divider>
           <ion-label>Пользователь</ion-label>
         </ion-item-divider>
-        <ion-item v-if="!isSignedIn()" lines="full" button detail @click="$router.push('sign-in')">
-            <ion-icon :icon="logInOutline" slot="start" color="primary"></ion-icon>
-            <ion-label>Войти</ion-label>
-        </ion-item>
-        <ion-item v-if="!isSignedIn()" lines="full" button detail @click="$router.push('sign-up')">
-            <ion-icon :icon="personCircleOutline" slot="start" color="primary"></ion-icon>
-            <ion-label>Зарегистрироваться</ion-label>
-        </ion-item>
-        <div v-if="isSignedIn()">
-          <ion-item @click="signOut" lines="full" button detail>
-              <ion-icon :icon="exitOutline" slot="start" color="primary"></ion-icon>
-              <ion-label>Выйти</ion-label>
-          </ion-item>
+        <div>
           <ion-item lines="full" button detail @click="$router.push('user-addresses')">
               <ion-icon :icon="locationOutline" slot="start" color="primary"></ion-icon>
               <ion-label>Мои адреса</ion-label>

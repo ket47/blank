@@ -29,9 +29,9 @@
                             </ion-chip>
                         </ion-label>
                     </ion-text>
-                    <ion-thumbnail slot="end" v-if="order.image_hash">
+                    <ion-avatar slot="end" v-if="order.image_hash">
                         <ion-img style="border-radius:10px;" :src="`${$heap.state.hostname}image/get.php/${order.image_hash}.150.150.webp`"/>
-                    </ion-thumbnail>
+                    </ion-avatar>
                 </ion-item>
             </div>
         </ion-list>
@@ -77,7 +77,6 @@ import {
     IonChip,
     IonNote,
     IonImg,
-    IonThumbnail,
 }                   from '@ionic/vue';
 import {
     storefrontOutline,
@@ -107,7 +106,6 @@ export default {
     IonChip,
     IonNote,
     IonImg,
-    IonThumbnail,
     },
     setup() {
       return { sparklesOutline,storefrontOutline,timeOutline,ordersIcon,rocketOutline,ribbonOutline,checkmarkOutline, };

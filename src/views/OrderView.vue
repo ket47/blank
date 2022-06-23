@@ -244,7 +244,7 @@ export default({
         })
         
         this.$topic.on('pushStageChanged',data=>{
-            if( self.order.order_id==data.order_id && self.order.stage_current!=data.stage ){
+            if( self.order?.order_id==data?.order_id && self.order.stage_current!=data.stage ){
                 self.itemGet();
             }
         })

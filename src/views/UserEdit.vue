@@ -1,79 +1,59 @@
 <template>
-  <base-layout page-title="Мой профиль"  page-default-back-link="/user-dashboard" :errorMessage="error">
+  <base-layout page-title="Мой профиль"  page-default-back-link="/user-dashboard">
         <ion-list>
+          <ion-radio-group v-model="fields.user_avatar_name">
           <ion-item>
-            <ion-label position="stacked" color="primary">Аватар</ion-label>
-            <ion-radio-group :value="fields.user_avatar_name">
-              <ion-list style="margin-top:5px">
-                <ion-item>
-                  <ion-thumbnail>
-                    <img :src="$heap.state.hostname+'img/avatar/man.png'" />
-                  </ion-thumbnail>
-                  <ion-label>Муж.</ion-label>
-                  <ion-radio value="man" @ionFocus="save('user_avatar_name', $event.target.value)"></ion-radio>
-                </ion-item>
-                <ion-item>
-                  <ion-thumbnail>
-                    <img :src="$heap.state.hostname+'img/avatar/woman.png'" />
-                  </ion-thumbnail>
-                  <ion-label>Жен.</ion-label>
-                  <ion-radio value="woman" @ionFocus="save('user_avatar_name', $event.target.value)"></ion-radio>
-                </ion-item>
-              </ion-list>
-            </ion-radio-group>
+            <ion-thumbnail slot="start"><img :src="$heap.state.hostname+'img/avatar/man.png'" /></ion-thumbnail>
+            <ion-label>аватар 1</ion-label>
+            <ion-radio slot="end" value="man" @ionFocus="save('user_avatar_name', $event.target.value)"></ion-radio>
           </ion-item>
-
           <ion-item>
-            <ion-label position="stacked" color="primary">Имя</ion-label>
+            <ion-thumbnail slot="start"><img :src="$heap.state.hostname+'img/avatar/woman.png'" /></ion-thumbnail>
+            <ion-label>аватар 2</ion-label>
+            <ion-radio slot="end" value="woman" @ionFocus="save('user_avatar_name', $event.target.value)"></ion-radio>
+          </ion-item>
+          </ion-radio-group>
+          <ion-item-divider>
+            <ion-label>Данные пользователя</ion-label>
+          </ion-item-divider>
+          <ion-item>
+            <ion-label position="stacked" color="primary">Ваш псевдоним</ion-label>
             <ion-input 
               v-model="fields.user_name" 
               name="user_name" 
               type="text" 
-              :value="fields.user_name"
               @change="save('user_name', $event.target.value)" 
-              placeholder="Имя"
+              placeholder="как к вам обращаться?"
               required
             ></ion-input>
           </ion-item>
 
           <ion-item>
-            <ion-label position="stacked" color="primary">Фамилия</ion-label>
+            <ion-label position="stacked" color="primary">Фамилия (не обязательно)</ion-label>
             <ion-input 
               v-model="fields.user_surname" 
               name="user_surname" 
               type="text" 
-              :value="fields.user_surname"
               @change="save('user_surname', $event.target.value)" 
-              placeholder="Фамилия"
+              placeholder="Фамилия (не обязательно)"
             ></ion-input>
           </ion-item>
-
+          <!--
           <ion-item>
             <ion-label position="stacked" color="primary">Отчество</ion-label>
             <ion-input 
               v-model="fields.user_middlename" 
               name="user_middlename" 
               type="text" 
-              :value="fields.user_middlename"
               @change="save('user_middlename', $event.target.value)" 
               placeholder="Отчество"
             ></ion-input>
           </ion-item>
-          
+          -->
           <ion-item>
             <ion-label position="stacked" color="primary">Телефон</ion-label>
-            <ion-input
+            <ion-input readonly
               v-model="fields.user_phone"
-              name="user_phone"
-              type="numeric"
-              inputmode="tel"
-              :value="fields.user_phone"
-              @input="$event.target.value = phoneValidate($event);"
-              @change="save('user_phone', $event.target.value)"
-              placeholder="7(978)-000-00-00"
-              spellcheck="false"
-              autocapitalize="off"
-              required
             ></ion-input>
             <ion-button slot="end" v-if="fields.user_phone && (!fields.user_phone_verified || fields.user_phone_verified === '0')" @click="phoneVerify" expand="block">Подтвердить</ion-button>
             <ion-button slot="end" v-if="fields.user_phone && fields.user_phone_verified && fields.user_phone_verified !== '0'" expand="block" disabled="true">Подтверждено</ion-button>
@@ -85,7 +65,6 @@
               v-model="fields.user_email" 
               name="user_email" 
               type="email" 
-              :value="fields.user_email"
               @change ="save('user_email', $event.target.value)" 
               placeholder="Электронная почта"
             ></ion-input>
@@ -93,78 +72,198 @@
 
         </ion-list>
 
+
+          <ion-item-divider>
+            <ion-label>Пароль пользователя</ion-label>
+          </ion-item-divider>
         <ion-row responsive-sm>
           <ion-col>
-            <ion-button @click="passwordReset" expand="block">Сбросить пароль</ion-button>
+            <ion-button @click="passwordReset()" expand="block"><ion-icon :icon="keyOutline" slot="start"/>Сбросить</ion-button>
+          </ion-col>
+          <ion-col>
+            <ion-button id="passwordPromptButton" expand="block"><ion-icon :icon="keyOutline" slot="start"/>Изменить</ion-button>
           </ion-col>
         </ion-row>
+
+
+    <ion-modal ref="passwordPrompt" trigger="passwordPromptButton" :initial-breakpoint="0.40" :breakpoints="[0, 0.40, 0.8]">
+      <ion-header>
+        <ion-toolbar color="secondary">
+          <ion-title>Новый пароль</ion-title>
+          <ion-icon :icon="closeOutline" @click="()=>{this.$refs.passwordPrompt.$el.dismiss();}" slot="end" size="large"></ion-icon>
+        </ion-toolbar>
+      </ion-header>
+      <ion-content class="ion-padding">
+        <ion-item>
+          <ion-label position="stacked">Новый пароль</ion-label>
+          <ion-input v-model="fields.user_pass" type="text" placeholder="пароль"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label position="stacked">Новый пароль (повтор)</ion-label>
+          <ion-input v-model="fields.user_pass_confirm" type="text" placeholder="пароль (повтор)"></ion-input>
+        </ion-item>
+        <ion-button @click="passwordSave()" expand="full">Изменить</ion-button>
+      </ion-content>
+    </ion-modal>
+
   </base-layout>
 </template>
 
 <script>
-import router from '../router';
-import jQuery from "jquery";
-import heap from '../heap';
 
+import {
+  IonList,
+  IonItem,
+  IonLabel,
+  IonThumbnail,
+  IonRadio,
+  IonRadioGroup,
+  IonInput,
+  IonCol,
+  IonRow,
+  IonItemDivider,
+  IonButton,
+  IonModal,
+  IonHeader,
+  IonTitle,
+  IonContent,
+  IonIcon,
+  IonToolbar,
 
+}                   from '@ionic/vue'
+import {
+  closeOutline,
+  keyOutline
+}                   from 'ionicons/icons';
+import jQuery       from "jquery";
+//import User         from '@/scripts/User'
 
 export default  {
-  name: 'SignIn',
+  components:{
+  IonList,
+  IonItem,
+  IonLabel,
+  IonThumbnail,
+  IonRadio,
+  IonRadioGroup,
+  IonInput,
+  IonCol,
+  IonRow,
+  IonItemDivider,
+  IonButton,
+  IonModal,
+  IonHeader,
+  IonTitle,
+  IonContent,
+  IonIcon,
+  IonToolbar,
+  },
+  setup(){
+    return {closeOutline,keyOutline}
+  },
   data(){
     return {
-      error: '',
-      submitted: false,
       config: {
         phoneMask: '+0(000)-000-00-00'
       },
-      fields: heap.state.user,
-      modalOpen: false
+      fields: this.$heap.state.user,
+      passwordPromptShow:false
     }
   },
   computed: {
-    phoneValid() {
+    isPhoneValid() {
       return this.fields.user_phone.replace(/\D/g,"").length == 11;
     }
   },
   methods:{
     async save(field_name, field_value) {
-      this.submitted = true;
       if(field_name == 'user_phone'){
-        if(!this.phoneValid){
+        if(!this.isPhoneValid){
           return false;
         }
         field_value = field_value.replace(/\D/g,"");
       }
       var requestData = {};
-      requestData.user_id = heap.state.user.user_id;
+      requestData.user_id = this.$heap.state.user.user_id;
       requestData[field_name] = field_value;
-      try{
-        await jQuery.post( heap.state.hostname + "User/itemUpdate", JSON.stringify(requestData))
-        this.getUserData()
-      }catch{/** */}
+      await this.itemUpdate(requestData)
+      this.fields[field_name] = field_value
     },
-    getUserData(){
-      var self = this;
-      jQuery.post( heap.state.hostname + "User/itemGet")
-        .done(function(response) {
-            heap.commit('setUser', response);
-            self.fields = response;
-        })
-        .fail(function(err) {
-            self.error = err.responseJSON.messages.error;
-        });
+    async itemUpdate(requestData) {
+      try{
+        await jQuery.post( `${this.$heap.state.hostname}User/itemUpdate`, JSON.stringify(requestData))
+        //User.get()
+        return true
+      }catch(err){
+        let exception_code='unknown';
+        try{
+          const invalid_field=Object.keys(JSON.parse(err.responseJSON.messages.error))[0]
+          const invalid_reason=Object.values(JSON.parse(err.responseJSON.messages.error))[0]
+          exception_code=invalid_field+'_'+invalid_reason
+        }catch{/** */}
+          switch(exception_code){
+            case 'user_phone_notunique':
+              this.$flash("Пользователь с таким телефоном уже зарегистрирован");
+              break;
+            case 'user_phone_required':
+            case 'user_phone_invalid':
+            case 'user_phone_short':
+              this.$flash("Проверьте номер телефона");
+              break;
+            case 'user_name_required':
+            case 'user_name_short':
+              this.$flash("Проверьте ваш псевдоним");
+              break;
+            case 'user_email_invalid':
+              this.$flash("Проверьте ваш е-маил");
+              break;
+            case 'user_email_notunique':
+              this.$flash("Такой е-маил уже используется");
+              break;
+            case 'user_pass_short':
+              this.$flash("Пароль слишком короткий");
+              break;
+            case 'user_pass_notmatches':
+              this.$flash("Пароль не совпадает с подтверждением");
+              break;
+          }
+          return false
+        }
     },
     phoneVerify(){
-      var self = this;
-      jQuery.post( heap.state.hostname + "User/phoneVerificationSend", {user_phone: this.fields.user_phone.replace(/\D/g,"")})
-        .done(function() {
-            router.push({name: 'UserVerifyPhone', params: {phone: self.fields.user_phone.replace(/\D/g,"")}});
-        })
-        .fail(function(err) {
-            self.error = err.responseJSON.messages.error;
-        });
+      const user_phone=this.fields.user_phone.replace(/\D/g,"")
+      try{
+        jQuery.post( `${this.$heap.state.hostname}User/phoneVerificationSend`, {user_phone})
+        this.$router.push({name: 'UserVerifyPhone', params: {phone: user_phone}});
+      }catch{/** */}
     },
-    phoneValidate(ev) {
+    async passwordSave(){
+      if(this.fields.user_pass!=this.fields.user_pass_confirm){
+        this.$flash("Пароль и подтверждение не совпадают")
+        return
+      }
+      const requestData={
+        user_id:this.$heap.state.user.user_id,
+        user_pass:this.fields.user_pass,
+      }
+      const updated=await this.itemUpdate(requestData)
+      if( updated ){
+        this.$refs.passwordPrompt.$el.dismiss()
+        this.$flash("Пароль изменен")
+      }
+    },
+    async passwordReset(){
+      const request={
+        user_phone:this.fields.user_phone,
+        user_email:this.fields.user_email,
+        user_name:this.fields.user_name
+      }
+      try{
+        await jQuery.post( `${this.$heap.state.hostname}User/passwordReset`, request)
+        this.$alert("Вам был выслан новый пароль","Пароль сброшен")
+      }catch{/** */}
+    },
+    isPhoneValidate(ev) {
       this.fields.user_phone = ev.target.value;
       this.fields.user_phone = this.fields.user_phone.replace(/\D/g,"");
       if(this.fields.user_phone.length > 11){
@@ -188,12 +287,11 @@ export default  {
       return this.fields.user_phone;
     },
   },
-  watch: {
-    '$route' (to, from) {
-      if(to.path != from.path) { 
-        this.fields = heap.state.user
-      }
-    }
-  }
+  created(){
+    const self=this
+    this.$topic.on('userGet',user=>{
+      self.fields=user
+    })
+  },
 }
 </script>
