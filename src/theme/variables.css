@@ -3,7 +3,7 @@ http://ionicframework.com/docs/theming/ */
 
 /** Ionic CSS Variables **/
 :root {
-  --ion-font-family:"Comfortaa";
+  --ion-font-family:"Comfortaa",serif;
 
   /** backgrounds **/
   --ion-background-primary: var(--ion-color-primary);

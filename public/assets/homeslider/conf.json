@@ -3,21 +3,24 @@
         {
             "title":"",
             "description":"",
-            "image":"./assets/homeslider/1.jpg",
+            "alt":"Отдыхай и покупай",
+            "image":"./assets/homeslider/1.avif",
             "color":"#009dcd",
             "link":""
         },
         {
             "title":"",
             "description":"",
-            "image":"./assets/homeslider/2.jpg",
+            "alt":"Бесконечные бонусы",
+            "image":"./assets/homeslider/2.avif",
             "color":"#009dcd",
             "link":""
         },
         {
             "title":"",
             "description":"",
-            "image":"./assets/homeslider/3.jpg",
+            "alt":"Турбо доставка",
+            "image":"./assets/homeslider/3.avif",
             "color":"#009dcd",
             "link":""
         }

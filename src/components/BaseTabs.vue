@@ -152,23 +152,23 @@ ion-icon{
     <ion-tabs>
       <ion-router-outlet></ion-router-outlet>
       <ion-tab-bar class="bottom-bar" slot="bottom">
-        <ion-tab-button tab="tab1" href="/home" routerDirection="backward" selected>
+        <ion-tab-button tab="tab1" id="tab1" href="/home" routerDirection="backward" selected>
           <ion-icon :icon="homeIcon"/>
           <ion-label>Главная</ion-label>
         </ion-tab-button>
 
-        <ion-tab-button tab="tab2" href="/search" routerDirection="backward">
+        <ion-tab-button tab="tab2" id="tab2" href="/search" routerDirection="backward">
           <ion-icon :icon="searchIcon"/>
           <ion-label>Поиск</ion-label>
         </ion-tab-button>
 
-        <ion-tab-button tab="tab3" href="/order-list" routerDirection="backward">
+        <ion-tab-button tab="tab3" id="tab3" href="/order-list" routerDirection="backward">
             <ion-icon :icon="ordersIcon"/>
             <ion-badge color="warning" style="font-size:1.5em" v-if="activeOrderCount>0">{{activeOrderCount}}</ion-badge>
           <ion-label>Заказы</ion-label>
         </ion-tab-button>
 
-        <ion-tab-button tab="tab4" href="/user-dashboard" routerDirection="backward">
+        <ion-tab-button tab="tab4" id="tab4" href="/user-dashboard" routerDirection="backward">
           <ion-icon :icon="personIcon"/>
           <ion-label>Аккаунт</ion-label>
         </ion-tab-button>

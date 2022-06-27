@@ -233,24 +233,24 @@ ion-chip .active-chip {
           v-for="group_item in storeGroups"
           :key="group_item.group_id"
           :value="group_item.group_id"
-          @click="groupSelectParent(group_item.group_id)"
+          @click="groupSelectParent(group_item.group_id,1)"
           :ref="'group-tab-' + group_item.group_id"
         >
           <ion-label>{{ group_item.group_name }}</ion-label>
         </ion-segment-button>
       </ion-segment>
-      <ion-row v-if="storeGroups[groupSelectedParentId]" class="groups-container">
+      <div v-if="storeGroups[groupSelectedParentId]" class="groups-container">
         <ion-chip
           color="primary"
-          v-show="storeProducts[group_item.group_id]"
+          v-show="1||storeProducts[group_item.group_id]"
           v-for="group_item in storeGroups[groupSelectedParentId].children"
           :key="group_item.group_id"
-          :ref="'group-chip-' + group_item.group_id"
-          @click="scrollTo(group_item.group_id)"
+          :ref="`group-chip-${group_item.group_id}`"
+          @click="groupSelectSub(group_item.group_id)"
         >
           <ion-label color="primary">{{ group_item.group_name }}</ion-label>
         </ion-chip>
-      </ion-row>
+      </div>
     </div>
 
     <ion-searchbar class="search-container" v-model="searchRequest" placeholder="Поиск в этом предприятии"
@@ -261,7 +261,7 @@ ion-chip .active-chip {
         })
       "/>
 
-    <group-list v-if="storeGroups" :groupList="storeGroups" :onClick="(group_id) => {groupSelectParent(group_id) }"></group-list>
+    <group-list v-if="storeGroups" :groupList="storeGroups" :onClick="(group_id) => {groupSelectParent(group_id,true) }"></group-list>
 
     <swiper v-if="storeGroups" pager="true" :options="slideOpts" class="product-list-slider" @slideChange="groupSliderChanged($event)">
       
@@ -509,20 +509,20 @@ export default defineComponent({
           }
         }
       }
-      console.log(sub_group_id)
-      if( parent_group_id ){
-        sub_group_id=Object.keys(this.storeGroups[parent_group_id].children)[0]
-      } else {
+      if( !parent_group_id ){
         parent_group_id = Object.keys(this.storeGroups)[0]
       }
       
-      
-      this.groupSelectParent(parent_group_id)
+      const selectFirstChip=sub_group_id?false:true
+      this.groupSelectParent(parent_group_id,selectFirstChip)
       if(sub_group_id){
-          this.groupSelectSub(sub_group_id)
+        const self=this
+        setTimeout(()=>{
+          self.groupSelectSub(sub_group_id)
+        },0)
       }
     },
-    groupSelectParent(parent_group_id){
+    groupSelectParent(parent_group_id,selectFirstChip=false){
       if(this.groupSelectedParentId == parent_group_id){
         return
       }
@@ -530,27 +530,40 @@ export default defineComponent({
       const swiper = document.querySelector('.product-list-slider').swiper;
       const slide_index = Object.keys(this.storeGroups).indexOf(this.groupSelectedParentId);
       swiper.slideTo(slide_index,100,false);
+
+      try{
+        if(selectFirstChip){
+          const first_sub_group_id=Object.keys(this.storeGroups[parent_group_id].children)[0];
+          const self=this
+          setTimeout(()=>{
+            self.groupSelectSub(first_sub_group_id)
+          },0)
+        }
+      } catch(err){/** */}
+      
     },
     groupSelectSub(sub_group_id){
       if(this.groupSelectedSubId == sub_group_id){
-        return
+        //return
       }
-      console.log(sub_group_id)
+
       this.groupSelectedSubId = sub_group_id
       document.querySelectorAll(".groups-container ion-chip").forEach(chip=>{
         chip.classList.remove("active-chip");
       });
       try{
-        this.$refs["group-chip-" + sub_group_id][0].classList.add("active-chip");
-      }catch{ console.log('error') }
+        this.$refs[`group-chip-${sub_group_id}`][0].$el.classList.add("active-chip");
+      }catch(err){ 
+        /** */
+      }
       this.scrollTo(sub_group_id);
     },
     groupSliderChanged(event) {
       const slideIndex=event.activeIndex
       const parent_groud_id = Object.keys(this.storeGroups)[slideIndex];
-      const sub_group_id =  Object.keys(this.storeGroups[parent_groud_id].children)[0];
-      this.groupSelectParent(parent_groud_id);
-      this.groupSelectSub(sub_group_id);
+      //const sub_group_id =  Object.keys(this.storeGroups[parent_groud_id].children)[0];
+      this.groupSelectParent(parent_groud_id,1);
+      //this.groupSelectSub(sub_group_id);
     },
 
 
@@ -567,8 +580,6 @@ export default defineComponent({
       if(first_group_id == sub_group_id){
         elementPosition = offset+anchor - this.offsetModificator;
       }
-      console.log('scrollTo')
-      console.log(elementPosition)
       document
         .querySelector("ion-content.store-page")
         .shadowRoot.querySelector("main")

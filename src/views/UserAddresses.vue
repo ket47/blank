@@ -2,7 +2,7 @@
   <base-layout page-title="Мои адреса" page-default-back-link="/user-dashboard"  ref="UserAddressPage">
         <ion-list v-if="locationList.length" lines="full">
           <ion-item v-for="(location,i) in locationList" :key="location.location_id">
-              <ion-img slot="start" :src="`${$heap.state.hostname}/image/get.php/${location.image_hash}.32.32.png`" />
+              <ion-img slot="start" alt="location icon" :src="`${$heap.state.hostname}/image/get.php/${location.image_hash}.32.32.png`" />
               <ion-label @click="locationSetMain(`${location.location_id}`,`${i}`)" style="white-space:normal;cursor:pointer;">{{ location.location_address }}</ion-label>
               <ion-icon slot="end" :icon="trash" @click="locationDelete(`${location.location_id}`,`${i}`)"></ion-icon>
           </ion-item>
