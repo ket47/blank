@@ -92,9 +92,6 @@
 <script>
 import {
   IonIcon,
-  IonToolbar,
-  IonHeader,
-  IonContent,
   IonTitle,
   IonList,
   IonItem,
@@ -120,9 +117,6 @@ import jQuery           from 'jquery'
 export default {
     components:{
   IonIcon,
-  IonToolbar,
-  IonHeader,
-  IonContent,
   IonTitle,
   IonList,
   IonItem,
@@ -206,7 +200,7 @@ export default {
                     this.$alert("Ссылка с приглашением скопирована. Теперь вы можете поделиться ей с друзьями в социальных сетях или мессенджерах.","Готово");
                 }
             }catch(err){
-                console.log(err)
+                //console.log(err)
             }
         },
         helpNotActive(){

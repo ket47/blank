@@ -76,8 +76,6 @@ import {
   IonChip,
   IonLabel,
   IonList,
-  IonFab,
-  IonFabButton
 }                       from '@ionic/vue'
 import ImageSlider      from '@/components/ImageSlider'
 import CartAddButtons   from '@/components/CartAddButtons'
@@ -97,8 +95,6 @@ export default  {
     IonChip,
     IonLabel,
     IonList,
-    IonFab,
-    IonFabButton
   },
   setup(){
     return {CartHeader,compassOutline,cartOutline,pricetagOutline,giftOutline,walletOutline,chatboxEllipsesOutline,settingsOutline}
@@ -161,7 +157,7 @@ export default  {
         try{
           this.productItem=await jQuery.post( heap.state.hostname + "Product/itemGet", { product_id: this.productId })
         }catch{
-          console.log('weird error is here')
+          //console.log('weird error is here')
         }
       },
       cartCommentUpdate(comment){

@@ -86,8 +86,6 @@ import Utils      from "@/scripts/Utils.js"
 import {
   IonImg,
   IonThumbnail,
-  IonNote,
-  IonItem,
   IonLabel,
   IonTitle,
   IonChip
@@ -99,8 +97,6 @@ export default defineComponent({
   components:{
     IonImg,
     IonThumbnail,
-    IonNote,
-    IonItem,
     IonLabel,
     IonTitle,
     IonChip,

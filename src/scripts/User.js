@@ -255,7 +255,6 @@ const User = {
             if( !User.geo.clock ){
                 return;
             }
-            console.log('trackingStop',User.geo.clock);
             Geolocation.clearWatch({id:User.geo.clock});
         }
     },

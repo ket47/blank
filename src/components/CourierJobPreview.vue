@@ -169,9 +169,7 @@ export default({
                 let job=await Order.api.itemJobGet(this.orderData.order_id);
                 job.finish_location_address=job.finish_location_address.split(',').reverse().join(',');
                 this.job=job;
-                console.log(this.job)
             } catch(err){
-                console.log(err)
                 const message=err.responseJSON?.messages?.error;
                 if(message=='notfound'){
                     this.$flash("Задание не найдено");

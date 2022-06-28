@@ -474,7 +474,6 @@ export default  {
       }catch{/** */}
     },
     showProductInStore(){
-      console.log(this.productItem)
       let sub_group_id=0;
       try{
         sub_group_id=this.productItem.member_of_groups.group_ids.split(',')[0];

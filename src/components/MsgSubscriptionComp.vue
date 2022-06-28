@@ -16,9 +16,6 @@ import { getMessaging, getToken } from "firebase/messaging";
 import {
   IonButton,
   IonCard,
-  IonCardHeader,
-  IonCardTitle,
-  IonCardSubtitle,
   IonCardContent,
 }             from "@ionic/vue"
 import jQuery from 'jquery'
@@ -27,9 +24,6 @@ export default {
   components:{
   IonButton,
   IonCard,
-  IonCardHeader,
-  IonCardTitle,
-  IonCardSubtitle,
   IonCardContent,
   },
   data(){

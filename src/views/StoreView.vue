@@ -297,14 +297,12 @@ import {
   IonCol,
   IonIcon,
   IonRow,
-  IonNote,
   IonGrid,
   IonLabel,
   IonSegmentButton,
   IonSegment,
   IonChip,
   IonSearchbar,
-  IonButton,
   IonAccordion,
   IonAccordionGroup,
   IonList,
@@ -351,14 +349,12 @@ export default defineComponent({
     IonCol,
     IonIcon,
     IonRow,
-    IonNote,
     IonGrid,
     IonLabel,
     IonSegmentButton,
     IonSegment,
     IonChip,
     IonSearchbar,
-    IonButton,
     IonAccordion,
     IonAccordionGroup,
     IonList,
@@ -407,7 +403,7 @@ export default defineComponent({
         heap.commit('setCurrentStore',this.storeItem);
         this.itemGetInProgress=false
       } catch(err){
-        console.log(err)
+        //console.log(err)
       }
     },
    itemPrepare(storeItem) {

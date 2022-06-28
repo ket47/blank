@@ -38,10 +38,8 @@ import {
   IonContent,
   IonBackButton,
   IonButtons,
-  IonImg,
   IonRefresher,
   IonRefresherContent,
-  IonSpinner,
   IonFab,
   IonIcon
 }                           from "@ionic/vue";
@@ -67,14 +65,15 @@ export default defineComponent({
     IonContent,
     IonBackButton,
     IonButtons,
-    IonImg,
     IonRefresher,
     IonRefresherContent,
-    IonSpinner,
     IonFab,
     IonIcon,
     CartHeader,
     TezkelLoader
+  },
+  setup(){
+    document.title="Hello"
   },
   computed:{
     isInteractingWithServer(){

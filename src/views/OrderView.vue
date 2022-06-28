@@ -45,11 +45,7 @@ import {
     IonLabel,
     IonIcon,
     IonContent,
-    IonAccordion,
-    IonAccordionGroup,
     IonItem,
-    IonText,
-    IonNote,
     IonList,
     IonPopover
 }                           from '@ionic/vue';
@@ -58,7 +54,7 @@ import OrderComp            from '@/components/OrderComp.vue';
 import OrderHistoryComp     from '@/components/OrderHistoryComp.vue';
 import OrderTrackingComp    from '@/components/OrderTrackingComp.vue'
 import OrderObjectionModal  from '@/components/OrderObjectionModal.vue'
-import OrderEntryAdd        from '@/components/OrderEntryAdd.vue'
+//import OrderEntryAdd        from '@/components/OrderEntryAdd.vue'
 import ImageTileComp        from '@/components/ImageTileComp.vue'
 import MsgSubscriptionComp  from '@/components/MsgSubscriptionComp.vue'
 
@@ -69,16 +65,12 @@ export default({
     OrderHistoryComp,
     OrderTrackingComp,
     MsgSubscriptionComp,
-    OrderEntryAdd,
+    //OrderEntryAdd,
     ImageTileComp,
     IonLabel,
     IonIcon,
     IonContent,
-    IonAccordion,
-    IonAccordionGroup,
     IonItem,
-    IonText,
-    IonNote,
     IonList,
     IonPopover
     },
@@ -176,18 +168,18 @@ export default({
             this.$heap.commit('setCurrentOrder',this.order);
             this.$router.push('order-checkout');
         },
-        async action_add(){
-            const modal = await modalController.create({
-                component: OrderEntryAdd,
-                componentProps:{store_id:this.order.order_store_id,order_id:this.order_id},
-                initialBreakpoint: 0.50,
-                breakpoints: [0.50, 1],
-                canDissmiss:true,
-                });
-            modal.present()     
-            const product=await modal.onDidDismiss();     
-            this.itemGet()  
-        },
+        // async action_add(){
+        //     const modal = await modalController.create({
+        //         component: OrderEntryAdd,
+        //         componentProps:{store_id:this.order.order_store_id,order_id:this.order_id},
+        //         initialBreakpoint: 0.50,
+        //         breakpoints: [0.50, 1],
+        //         canDissmiss:true,
+        //         });
+        //     modal.present()     
+        //     const product=await modal.onDidDismiss();     
+        //     this.itemGet()  
+        // },
         async action_objection(){
             const modal = await modalController.create({
                 component: OrderObjectionModal,

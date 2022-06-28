@@ -66,13 +66,11 @@ import {
   IonIcon,
   IonTabBar,
   IonTabButton,
-  IonImg,
   IonLabel,
   IonRow,
   IonCol,
   IonGrid,
   IonFab,
-  IonSpinner
 } from "@ionic/vue";
 import TezkelLoader   from "@/components/TezkelLoader.vue"
 import FooterDesktop  from "@/components/FooterDesktop";
@@ -122,14 +120,12 @@ export default {
     IonIcon,
     IonTabBar,
     IonTabButton,
-    IonImg,
     IonLabel,
     IonRow,
     IonCol,
     IonGrid,
     CartBodyModal,
     IonFab,
-    IonSpinner,
     FooterDesktop,
     TezkelLoader
   },
