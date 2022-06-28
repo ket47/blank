@@ -28,6 +28,7 @@ const User = {
             if(mode=='full'){
                 User.courier.data=response.courier
                 User.courier.parseStatus()
+                User.supplier.storeList=response.storeList
             }
             heap.commit('setUser', response);
             Topic.publish('userGet',response);

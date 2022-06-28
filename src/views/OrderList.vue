@@ -54,13 +54,12 @@
             </ion-item>
             </div>
         </ion-list>
-        <div v-if="(!orderList || orderList.length==0) && (!jobList || jobList.length==0)" style="display:flex;align-items:center;justify-content:center;height:100%">
+        <div v-if="(!orderList || orderList.length==0) && (!jobList || jobList.length==0)" style="display:flex;align-items:center;justify-content:center;height:70%">
             <div style="width:max-content;text-align:center">
                 <ion-icon :icon="sparklesOutline" size="large"></ion-icon>
                 <ion-label>Заказов нет</ion-label><br>
             </div>
         </div>
-
   </base-layout>
 </template>
 <script>

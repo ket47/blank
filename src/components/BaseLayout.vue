@@ -72,9 +72,6 @@ export default defineComponent({
     CartHeader,
     TezkelLoader
   },
-  setup(){
-    document.title="Hello"
-  },
   computed:{
     isInteractingWithServer(){
       return this.$heap.state.isInteractingWithServer

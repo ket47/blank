@@ -39,6 +39,10 @@ ion-icon{
             <ion-icon :icon="logInOutline" slot="start" color="primary"></ion-icon>
             <ion-label>Войти</ion-label>
         </ion-item>
+        <ion-item v-if="!isSignedIn()" lines="full" button detail @click="$router.push('sign-up')">
+            <ion-icon :icon="personAddOutline" slot="start" color="primary"></ion-icon>
+            <ion-label>Зарегистрироваться</ion-label>
+        </ion-item>
       </ion-list>
     </div>
 
@@ -62,7 +66,7 @@ ion-icon{
           </ion-item>
           <ion-item lines="full" button detail @click="$router.push('msg-dashboard')">
               <ion-icon :icon="notificationsOutline" slot="start" color="primary"></ion-icon>
-              <ion-label>Настройка уведомлений</ion-label>
+              <ion-label>Мои уведомления</ion-label>
           </ion-item>
         </div>
 
@@ -170,14 +174,14 @@ ion-icon{
         <ion-item-divider>
           <ion-label>Поставщик</ion-label>
         </ion-item-divider>
-        <div v-if="!user.storeList">
+        <div v-if="!storeList">
           <ion-item>
             <ion-icon :icon="storefrontOutline" slot="start"></ion-icon>
             <ion-skeleton-text animated></ion-skeleton-text>
           </ion-item>   
         </div>
-        <div v-else-if="user.storeList.length>0">
-          <ion-item v-for="store in user.storeList" :key="store.store_id" detail button @click="$router.push(`store-edit-${store.store_id}`)">
+        <div v-else-if="storeList.length>0">
+          <ion-item v-for="store in storeList" :key="store.store_id" detail button @click="$router.push(`store-edit-${store.store_id}`)">
             <ion-icon :icon="storefrontOutline" slot="start"></ion-icon>
             {{store.store_name||'- - -'}}
           </ion-item>        
@@ -255,6 +259,7 @@ import {
   storefrontOutline,
   notificationsOutline,
   giftOutline,
+  personAddOutline
 } from "ionicons/icons";
 
 import User     from "@/scripts/User.js";
@@ -296,13 +301,14 @@ export default {
       storefrontOutline,
       notificationsOutline,
       giftOutline,
+      personAddOutline,
     };
   },
   data() {
     return {
       user: heap.state.user,
       courierStatus:User.courier.status,
-      storeList:null
+      storeList:User.supplier.storeList
     };
   },
   ionViewDidEnter(){
@@ -315,6 +321,9 @@ export default {
     });
     Topic.on('userGet',(data)=>{
       self.user=data;
+      if(data.storeList){
+        self.storeList=data.storeList
+      }
     });
   },
   computed: {

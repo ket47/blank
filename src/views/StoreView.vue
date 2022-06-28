@@ -161,12 +161,7 @@ ion-chip .active-chip {
 </style>
 
 <template>
-  <base-layout
-    page-default-back-link="/home"
-    page-class="store-page"
-    :contentOnScroll="onScroll"
-    :page-title="this.storeItem.store_name??'Магазин'"
-  >
+  <base-layout pageDefaultBackLink="/home" page-class="store-page" :contentOnScroll="onScroll" :page-title="this.storeItem.store_name??'Магазин'">
   <div style="background-color:var(--ion-background-shade)">
     <div class="store-info">
       <image-slider :imageList="storeItem.images" :imgHeight="200"></image-slider>
