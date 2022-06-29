@@ -1,6 +1,6 @@
 <template>
   <base-layout page-title="Подтверждение телефона" page-default-back-link="/home">
-      <ion-card>
+      <ion-card color="light">
         <ion-card-header>
           <ion-card-title color="primary">
             Подтверждение номера телефона
@@ -75,22 +75,28 @@ export default  {
   data(){
     return {
       verification_code:null,
-      user_phone:this.$route.query.user_phone||''
+      user_phone:this.$route.params.user_phone||this.$route.query.user_phone||''
     }
   },
-  async mounted(){
-    this.user_phone=this.$route.query.user_phone||'';
-    if(!this.user_phone){
-      return;
-    }
-    let requestData = {
-      user_phone: this.user_phone
-    }
-    try{
-      await jQuery.post( `${this.$heap.state.hostname}User/phoneVerificationSend`, requestData)
-    }catch{/** */}
+  created(){
+    this.smsSend();
+  },
+  ionViewDidEnter(){
+    this.smsSend();
   },
   methods:{
+    smsSend(){
+      this.user_phone=this.$route.params.user_phone||this.$route.query.user_phone||'';
+      if(!this.user_phone){
+        return;
+      }
+      let requestData = {
+        user_phone: this.user_phone
+      }
+      try{
+        jQuery.post( `${this.$heap.state.hostname}User/phoneVerificationSend`, requestData)
+      }catch{/** */}
+    },
     async onSubmit() {
       if( !this.verification_code || String(this.verification_code).length!=4 ){
         return

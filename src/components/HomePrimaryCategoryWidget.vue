@@ -118,7 +118,7 @@ export default defineComponent({
       self.productGroupListGet()
     })
     this.$topic.on('userGet',user=>{
-      self.main_location_id=user.location_main.location_id;
+      self.main_location_id=user.location_main?.location_id;
       self.productGroupListGet()
     })
     this.main_location_id=heap.state.user.location_main?heap.state.user.location_main.location_id:null

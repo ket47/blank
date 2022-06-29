@@ -10,14 +10,14 @@
           Вы уже вошли в систему с номером телефона <b>{{$heap.state.user.user_phone}}</b>
         </ion-card-content>
       </ion-card>
-      <ion-card v-else>
+      <ion-card v-else color="light">
         <ion-card-header>
           <ion-card-title color="primary">
             Простая регистрация
           </ion-card-title>
         </ion-card-header>
         <ion-card-content>
-          Для регистрации необходим только ваш номер мобильного телефона
+          Для регистрации необходим только ваш номер мобильного телефона и имя, чтобы обращаться к вам. 
         </ion-card-content>
       </ion-card>
       
@@ -26,13 +26,13 @@
           <ion-item>
             <ion-grid style="width:100%">
               <ion-row>
-                <ion-col size="5">
+                <ion-col size="4">
                   <ion-label position="stacked" color="primary">Код</ion-label>
                   <ion-select :value="user_phone_prefix">
                     <ion-select-option value="7" selected>+7 </ion-select-option>
                   </ion-select>
                 </ion-col>
-                <ion-col size="7">
+                <ion-col size="8">
                   <ion-label position="stacked" color="primary">Мобильный телефон*</ion-label>
                   <ion-input
                     v-model="user_phone"
@@ -48,35 +48,6 @@
             </ion-grid>
             <ion-text color="danger" slot="helper">
               <p v-show="!phoneValid && submitted == true" padding-left>Неверный номер телефона</p>
-            </ion-text>
-          </ion-item>
-
-          <ion-item>
-            <ion-label position="stacked" color="primary">Пароль (Минимум 4 символа)*</ion-label>
-            <ion-input 
-              v-model="user_pass" 
-              name="password" 
-              type="password" 
-              autocorrect="off"
-              placeholder="Пароль (Минимум 4 символа)"
-              required
-            ></ion-input>
-            <ion-text color="danger" slot="helper">
-              <p v-show="!passwordValid && submitted == true" padding-left>Пароль должен содержать не менее 4 символов.</p>
-            </ion-text>
-          </ion-item>
-
-          <ion-item>
-            <ion-label position="stacked" color="primary">Повтор пароля*</ion-label>
-            <ion-input 
-              v-model="user_pass_confirm"
-              type="password" 
-              autocorrect="off"
-              placeholder="Повтор пароля"
-              required
-            ></ion-input>
-            <ion-text color="danger" slot="helper">
-              <p v-show="user_pass!=user_pass_confirm && submitted == true" padding-left>Пароль не совпадает с подтверждением</p>
             </ion-text>
           </ion-item>
 
@@ -105,6 +76,42 @@
             ></ion-input>
           </ion-item>
         </ion-list>
+
+          <ion-card v-if="user_pass==genpass" style="background-color:var(--ion-color-primary-tint)">
+            <ion-card-content>
+              Мы придумали пароль <ion-chip style="font-family:monospace,serif">{{user_pass}}</ion-chip> для вас, но вы можете использовать свой вариант. Пароль будет сохранен на этом устройстве.
+            </ion-card-content>
+          </ion-card>
+          <ion-item>
+            <ion-label position="stacked" color="primary">Пароль (минимум 4 символа)*</ion-label>
+            <ion-input 
+              v-model="user_pass" 
+              name="password" 
+              type="text" 
+              autocorrect="off"
+              placeholder="пароль (минимум 4 символа)"
+              required
+              style="font-family:monospace,serif"
+            ></ion-input>
+            <ion-text color="danger" slot="helper">
+              <p v-show="!passwordValid && submitted == true" padding-left>Пароль должен содержать не менее 4 символов.</p>
+            </ion-text>
+          </ion-item>
+<!--
+          <ion-item>
+            <ion-label position="stacked" color="primary">Пароль повтор*</ion-label>
+            <ion-input 
+              v-model="user_pass_confirm"
+              type="password" 
+              autocorrect="off"
+              placeholder="пароль повтор"
+              required
+            ></ion-input>
+            <ion-text color="danger" slot="helper">
+              <p v-show="user_pass!=user_pass_confirm && submitted == true" padding-left>Пароль не совпадает с подтверждением</p>
+            </ion-text>
+          </ion-item>
+-->
 
         <ion-row responsive-sm>
           <ion-col>
@@ -141,6 +148,7 @@ import {
   IonCardHeader,
   IonCardTitle,
   IonCardContent,
+  IonChip,
 }                               from '@ionic/vue';
 import User                     from '@/scripts/User.js'
 import jQuery                   from "jquery";
@@ -162,16 +170,19 @@ export default  {
   IonCardHeader,
   IonCardTitle,
   IonCardContent,
+  IonChip,
   },
   data(){
+    const genpass=this.passGenerate()
     return {
       submitted: false,
-      user_pass:null,
+      genpass:genpass,
+      user_pass:genpass,
       user_pass_confirm:null,
       user_phone:null,
       user_phone_prefix:'7',
       user_name:null,
-      user_email:null
+      user_email:null,
     }
   },
   computed: {
@@ -188,13 +199,13 @@ export default  {
   methods:{
     async onSubmit() {
       this.submitted = true;
-      if( this.user_pass!=this.user_pass_confirm || !this.phoneValid || !this.passwordValid || !this.usernameValid){
+      if( !this.phoneValid || !this.passwordValid || !this.usernameValid){//this.user_pass!=this.user_pass_confirm || 
         return
       }
       let requestData = {
         user_phone: this.user_phone_prefix+this.user_phone,
         user_pass: this.user_pass,
-        user_pass_confirm: this.user_pass_confirm,
+        user_pass_confirm: this.user_pass,
         user_name: this.user_name,
         user_email:this.user_email,
         inviter_user_id:localStorage.inviter_user_id??0
@@ -202,8 +213,8 @@ export default  {
       
       try{
         await User.signUp(requestData);
-        localStorage.signInData = JSON.stringify({user_phone: this.user_phone_prefix+this.user_phone,user_pass: this.user_pass});
         this.phoneVerify()
+        localStorage.signInData = JSON.stringify({user_phone: this.user_phone_prefix+this.user_phone,user_pass: this.user_pass});
       } catch(err){
         let exception_code='unknown';
         try{
@@ -244,7 +255,16 @@ export default  {
             this.$flash("Не удалось войти зарегистрироваться");
         }
       }
-      
+    },
+    passGenerate(){
+      let pass=''
+      const length=4
+      const alphabet = 'abcdefghijklmnopqrstuvwxyz1234567890'
+      for(let i=0;i<length;i++){
+        const index=Math.floor(Math.random()*alphabet.length)
+        pass+=alphabet[index]
+      }
+      return pass
     },
     phoneFormat(){
       if( !this.user_phone ){
@@ -268,6 +288,6 @@ export default  {
         this.$flash("Не удалось выслать смс с подтверждением")
       }
     },
-  }
+  },
 }
 </script>

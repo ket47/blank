@@ -103,10 +103,9 @@ import {
   IonList,
   modalController
 }                               from '@ionic/vue';
-import ModalUsernameConfirm     from '@/components/ModalUsernameConfirm.vue'
+import UserPasswordReset     from '@/components/UserPasswordReset.vue'
 import User                     from '@/scripts/User.js'
 import router                   from '@/router';
-import jQuery                   from "jquery";
 
 export default{
   components:{
@@ -211,7 +210,7 @@ export default{
       var self = this;
       const modal = await modalController
         .create({
-          component: ModalUsernameConfirm,
+          component: UserPasswordReset,
           componentProps: {
             phone: self.user_phone
           },

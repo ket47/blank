@@ -71,7 +71,7 @@ export default {
     },
     async passwordReset(){
       let requestData = {
-        user_phone: '+'+this.phone.replace(/\D/g,""),
+        user_phone: '+'+this.userphone.replace(/\D/g,""),
         user_name:  this.username
       }
       try{

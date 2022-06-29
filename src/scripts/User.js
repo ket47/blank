@@ -88,11 +88,8 @@ const User = {
             return {user_id: -1};
         } catch{/** */}
     },
-    async signUp(requestData, callback){
+    async signUp(requestData){
         return await jQuery.post( heap.state.hostname + "User/signUp", requestData)
-        .then(function() {
-            callback({success: true, message: ''});
-        });
     },
     isOnline(){
         return 1;//should check connection and login status
