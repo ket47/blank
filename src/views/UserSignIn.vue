@@ -214,8 +214,8 @@ export default{
           componentProps: {
             phone: self.user_phone
           },
-          initialBreakpoint: 0.3,
-          breakpoints: [0.3, 0.6]
+          initialBreakpoint: 0.5,
+          breakpoints: [0.5, 0.75]
         })
       return modal.present();
     },
