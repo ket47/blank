@@ -28,7 +28,9 @@
       </ion-list>
     </div>
     <div v-else>
-      Ничего не найдено
+      <ion-card color="light">
+        <ion-card-content>Ничего не найдено</ion-card-content>
+      </ion-card>
     </div>
   </base-layout>
 </template>
@@ -42,6 +44,8 @@ import {
   IonNote,
   IonItem,
   IonList,
+  IonCard,
+  IonCardContent
 }                       from '@ionic/vue'
 import jQuery           from 'jquery'
 import Utils            from '@/scripts/Utils.js'
@@ -58,6 +62,8 @@ export default  {
   IonNote,
   IonItem,
   IonList,
+  IonCard,
+  IonCardContent,
   ProductItem
   },
   data(){
@@ -91,10 +97,13 @@ export default  {
         const found=await jQuery.get(this.$heap.state.hostname+'Search/listGet',request)
         this.found=this.storeListCalculate(found)
       }catch{
-        this.found='void'
+        this.found=null
       }
     },
     storeListCalculate(found){
+      if( !found.product_matches?.length ){
+        return null
+      }
       for(let i in found.product_matches){
         found.product_matches[i].deliveryTime=Utils.deliveryTimeCalculate(found.product_matches[i].distance,found.product_matches[i].store_time_preparation)
       }

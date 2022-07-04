@@ -10,15 +10,13 @@
       </ion-card>
 </template>
 <script>
-import { initializeApp } from "firebase/app";
-import { getMessaging, getToken } from "firebase/messaging";
+import User from '@/scripts/User'
 
 import {
   IonButton,
   IonCard,
   IonCardContent,
 }             from "@ionic/vue"
-import jQuery from 'jquery'
 
 export default {
   components:{
@@ -33,33 +31,11 @@ export default {
     }
   },
   methods: {
-    async saveNotificationToken(){
-      if(this.permission!='granted'){
-        return
-      }
-      if( !(this.$heap.state.user.user_id>0) || !this.$heap.state.settings?.firebase || this.registered ){
-        return
-      }
-      try{
-        const vapidKey=this.$heap.state.settings.firebase.vapidKey
-        const messaging = getMessaging();
-        const token=await getToken(messaging, {vapidKey});
-        const request={
-          type:'webpush',
-          registration_id:token,
-          user_agent:navigator.userAgent
-        }
-        await jQuery.post(`${this.$heap.state.hostname}MessageSub/itemCreate`,request)
-        this.registered=true;
-      }catch(err){
-        console.log(err)
-      }
-    },
     async subscribe(){
       try{
         this.permission=await Notification.requestPermission()
         if(this.permission=='granted'){
-          this.saveNotificationToken()
+          User.firebase.saveNotificationToken()
         }
       }catch(err){
         this.$flash("Вы не разрешили уведомлять вас")
@@ -68,12 +44,6 @@ export default {
     reject(){
       localStorage.pushNotificationsWasRejected=this.wasRejected=1
     },
-    mounted(){
-      if(!this.$heap.state?.settings?.firebase){
-        return
-      }
-      initializeApp(this.$heap.state.settings.firebase);
-    }
   },
 }
 </script>

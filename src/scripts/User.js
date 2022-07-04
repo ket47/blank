@@ -5,17 +5,19 @@ import Topic from '@/scripts/Topic';
 import Order from '@/scripts/Order';
 import { Geolocation } from '@capacitor/geolocation';
 import { toastController }  from '@ionic/vue';
+
 import { initializeApp } from "firebase/app";
+import { getMessaging, getToken } from "firebase/messaging";
 
 const User = {
     init(){
         this.geo.trackingStart();
+        this.firebase.init()
     },
     async settingsGet(){
         const settings=await jQuery.get( heap.state.hostname + "User/itemSettingsGet")
         heap.commit('setSettings', settings);
         Topic.publish('settingsGet',settings);
-        User.firebase.init(settings.firebase)
     },
     async get( mode='all' ){
         if( !heap.state.settings ){
@@ -257,16 +259,34 @@ const User = {
         }
     },
     firebase:{
-        init(stngs){
-            initializeApp(stngs);
-            // navigator.serviceWorker.onmessage = (event) => {
-            //     if(event.data.type === 'pong'){
-            //         alert(event.data.data.body,event.data.data.title)
-            //     }
-                
-            //   };
-            // navigator.serviceWorker.controller.postMessage('ping');
-        }
+        tokenSaved:false,
+        init(){
+            Topic.on('userGet',(user)=>{
+                if( !User.firebase.tokenSaved && user.user_id>0 && heap.state.settings.firebase ){//user signed in
+                    initializeApp(heap.state.settings.firebase);
+                    User.firebase.saveNotificationToken()
+                }
+            })
+        },
+        async saveNotificationToken(){
+            if(Notification.permission!='granted'){
+                return
+            }
+            try{
+                const vapidKey=heap.state.settings.firebase.vapidKey
+                const messaging = getMessaging();
+                const token=await getToken(messaging, {vapidKey});
+                const request={
+                    type:'webpush',
+                    registration_id:token,
+                    user_agent:navigator.userAgent
+                }
+                await jQuery.post(`${heap.state.hostname}MessageSub/itemCreate`,request)
+                User.firebase.tokenSaved=true;
+            }catch(err){
+                console.log(err)
+            }
+        },
     }
 }
 User.init();

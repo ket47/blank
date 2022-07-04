@@ -377,6 +377,7 @@ export default  {
       try{
         request['validity']=this.validity_perc
         await jQuery.post( heap.state.hostname + "Product/itemUpdate", JSON.stringify(request))
+        this.$flash("сохранено")
         return true
       } catch(err){
         const validationErrors=err.responseJSON.messages.error

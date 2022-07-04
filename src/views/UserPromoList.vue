@@ -11,12 +11,12 @@
                 <p>В качестве благодарности, мы начислим вам 5 скидок по 100руб.</p>
                 <ion-accordion-group>
                     <ion-accordion>
-                        <ion-item slot="header">
+                        <ion-item slot="header" color="light">
                             <ion-text slot="end" color="medium">подробнее</ion-text>
                         </ion-item>
-                        <ion-text slot="content">
+                        <p slot="content" style="padding:10px">
                             После регистрации нового клиента по вашему приглашению, мы начислим вам 5 скидок по 100руб. Эти скидки будут активироваться по мере того, как приглашённый вами друг, будет использовать свои скидки.
-                        </ion-text>
+                        </p>
                     </ion-accordion>
                 </ion-accordion-group>
                 <p>
@@ -36,7 +36,7 @@
                 Доступные
             </ion-segment-button>
             <ion-segment-button value="inactive">
-                Не активные
+                Неактивные
             </ion-segment-button>
         </ion-segment>
 
@@ -167,6 +167,7 @@ export default {
             try{
                 this.promoList=[]
                 const request={
+                    user_id:this.$heap.state.user.user_id,
                     type:this.promoType
                 }
                 this.promoList=await jQuery.post(`${this.$heap.state.hostname}Promo/listGet`,request)

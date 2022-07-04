@@ -637,6 +637,7 @@ export default  {
       try{
         request['validity']=this.validity_perc
         await jQuery.post( heap.state.hostname + "Store/itemUpdate", JSON.stringify(request))
+        this.$flash("сохранено")
       } catch(err){
         this.$flash("Не удалось сохранить изменение")
         this.itemGet()

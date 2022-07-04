@@ -64,10 +64,12 @@ ion-icon{
               <ion-icon :icon="giftOutline" slot="start" color="primary"></ion-icon>
               <ion-label>Мои скидки</ion-label>
           </ion-item>
+          <!--
           <ion-item lines="full" button detail @click="$router.push('msg-dashboard')">
               <ion-icon :icon="notificationsOutline" slot="start" color="primary"></ion-icon>
               <ion-label>Мои уведомления</ion-label>
           </ion-item>
+          -->
         </div>
 
         <ion-item-group v-if="isAdmin">
