@@ -199,9 +199,9 @@ import personIcon   from "@/assets/icons/account.svg";
 import ordersIcon   from "@/assets/icons/orders.svg";
 import searchIcon   from "@/assets/icons/search.svg";
 import homeIcon     from "@/assets/icons/home.svg";
-import { defineComponent } from "@vue/runtime-core";
+import Order        from '@/scripts/Order'
 
-export default defineComponent({
+export default{
   components: {
   IonPage,
   IonTabBar,
@@ -227,6 +227,9 @@ export default defineComponent({
     this.$topic.on('activeOrderCountChanged',count=>{
       self.activeOrderCount=count
     })
+    this.$topic.on('pushStageChanged',data=>{
+        Order.api.listCount()
+    })
   }
-})
+}
 </script>
