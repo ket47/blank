@@ -172,6 +172,7 @@ ion-icon{
           <ion-icon :icon="personIcon"/>
           <ion-label>Аккаунт</ion-label>
         </ion-tab-button>
+        
         <div class="tab-indicator-container">
           <div class="tab-indicator">
             <div class="tab-indicator-content">
@@ -179,6 +180,7 @@ ion-icon{
             </div>
           </div>
         </div>
+
       </ion-tab-bar>
     </ion-tabs>
   </ion-page>

@@ -323,7 +323,6 @@ import StoreOpenedIndicator from '@/components/StoreOpenedIndicator.vue';
 import jQuery             from "jquery";
 import heap               from "@/heap";
 import Utils              from "@/scripts/Utils.js";
-import { defineComponent } from "@vue/runtime-core";
 
 
 
@@ -338,7 +337,7 @@ const slideOpts = {
   touchStartForcePreventDefault: true,
 };
 
-export default defineComponent({
+export default{
   components: {
     IonText,
     IonCol,
@@ -609,5 +608,5 @@ export default defineComponent({
       this.storeId = currentRoute.params.id;
     },
   },
-})
+}
 </script>
