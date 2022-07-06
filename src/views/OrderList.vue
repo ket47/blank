@@ -157,7 +157,7 @@ export default {
     },
     created(){
         let self=this;
-        Topic.on('courierStatusChange',function(){
+        this.$topic.on('courierStatusChange',function(){
             self.courierReadinessCheck();
         });
         self.courierReadinessCheck();

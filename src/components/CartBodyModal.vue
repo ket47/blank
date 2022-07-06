@@ -81,6 +81,7 @@ export default{
     clearCart(order_id){
       this.closeModal();
       this.clearHighlightedProducts();
+      this.$router.push('order-list');
       return Order.cart.itemDelete(order_id);
     },
     clearHighlightedProducts(){

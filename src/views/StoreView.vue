@@ -503,7 +503,7 @@ export default{
         parent_group_id = Object.keys(this.storeGroups)[0]
       }
       
-      const selectFirstChip=sub_group_id?false:true
+      const selectFirstChip=false;//sub_group_id?false:true
       this.groupSelectParent(parent_group_id,selectFirstChip)
       if(sub_group_id){
         const self=this

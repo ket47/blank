@@ -29,7 +29,13 @@ const Order = {
         async listLoad(order_group_type){
             const list = await jQuery.post( heap.state.hostname + "Order/listGet",{order_group_type} );
             if(order_group_type=='active_only'){
-                Topic.publish('activeOrderCountChanged',list.length)
+                let activeOrderCount=0;
+                for(let i in list){
+                    if(list[i].stage_current!='customer_cart'){
+                        activeOrderCount++
+                    }
+                }
+                Topic.publish('activeOrderCountChanged',activeOrderCount)
             }
             return list
         },
@@ -198,8 +204,8 @@ const Order = {
         itemDelete(order_id){
             const existingOrder=this.itemGetById(order_id);
             if( existingOrder ){
-                if(existingOrder.order_id){
-                    Order.api.itemDelete(existingOrder.order_id)
+                if(existingOrder.data.order_id){
+                    Order.api.itemStageCreate(existingOrder.data.order_id,'customer_purged')
                 }
                 heap.state.cartList.splice(existingOrder.order_index,1);
                 Order.cart.listSave();
