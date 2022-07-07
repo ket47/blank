@@ -162,12 +162,20 @@ export default  {
   },
   data(){
     return {
+      other_courier_id:this.$route?.query?.courier_id,
       courier:null,
       isAdmin:User.isAdmin(),
       contractAccepted:0,
       is_deleted:0,
       is_disabled:0,
     }
+  },
+  ionViewDidEnter(){
+    if(this.other_courier_id==this.$route?.query?.courier_id){
+      return
+    }
+    this.other_courier_id=this.$route?.query?.courier_id
+    this.itemGet()
   },
   mounted(){
     this.itemGet();
@@ -200,7 +208,11 @@ export default  {
   },
   methods:{
     async itemGet(){
-      this.courier=await User.courier.get();
+      if(this.other_courier_id){
+        this.courier=await jQuery.post( heap.state.hostname + "Courier/itemGet",{courier_id:this.other_courier_id})
+      } else {
+        this.courier=await User.courier.get();
+      }
       this.itemParseFlags()
     },
     itemParseFlags(){
@@ -271,7 +283,7 @@ export default  {
         }
       }
       
-    }
+    },
   },
 }
 </script>

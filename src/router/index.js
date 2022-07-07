@@ -139,7 +139,10 @@ const routes = [
         path: '/error-offline',
         component: () => import('@/views/ErrorOffline.vue')
       },
-
+      {
+        path: '/admin-moderation',
+        component: () => import('@/views/AdminModeration.vue')
+      },
   ]
   },
 ]
