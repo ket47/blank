@@ -46,11 +46,11 @@ ion-card{
 
   <ion-list v-if="storeList && storeList.length>0" class="store-list"  style="box-shadow: 0px 0px 15px #0004;">
     <ion-card button v-for="store_item in storeList" :key="store_item.store_id" @click="$router.push(`store-${store_item.store_id}`)"  :class="store_item.is_opened==0?'closed':''">
-      <a :href="'#/store-' + store_item.store_id" @click="$router.push(`store-${store_item.store_id}`);">
+      <router-link :to="`store-${store_item.store_id}`">
         <div class="crop-to-fit">
             <ion-img v-if="store_item.image_hash" :src="$heap.state.hostname +'/image/get.php/' +store_item.image_hash +'.300.300.webp'"/>
         </div>
-      </a>
+      </router-link>
         <store-opened-indicator :storeItem="store_item"/>
 
         <ion-chip v-if="store_item.deliveryTime.timeMin" color="primary">{{store_item.deliveryTime.timeMin}}-{{store_item.deliveryTime.timeMax}}мин</ion-chip>

@@ -212,15 +212,19 @@ ion-icon{
         </ion-item-divider>
         <ion-item lines="full" button detail @click="$router.push('page-about')">
             <ion-icon :icon="informationCircleOutline" slot="start" color="primary"></ion-icon>
-            <ion-label>О нас</ion-label>
+            <ion-text>О нас</ion-text>
         </ion-item>
         <ion-item lines="full" button detail @click="$router.push('page-rules')">
             <ion-icon :icon="informationCircleOutline" slot="start" color="primary"></ion-icon>
-            <ion-label>Правила пользования</ion-label>
+            <ion-text>Правила пользования</ion-text>
         </ion-item>
         <ion-item lines="full" button detail @click="$router.push('page-privacy_policy')">
             <ion-icon :icon="informationCircleOutline" slot="start" color="primary"></ion-icon>
-            <ion-label>Политика конфиденциальности</ion-label>
+            <ion-text>Политика конфиденциальности</ion-text>
+        </ion-item>
+        <ion-item lines="none">
+            <ion-icon :icon="informationCircleOutline" slot="start" color="primary"></ion-icon>
+            <ion-label>Версия {{version}}</ion-label>
         </ion-item>
       </ion-item-group>
 
@@ -316,7 +320,8 @@ export default {
     return {
       user: heap.state.user,
       courierStatus:User.courier.status,
-      storeList:User.supplier.storeList
+      storeList:User.supplier.storeList,
+      version:document.lastModified
     };
   },
   ionViewDidEnter(){

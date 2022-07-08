@@ -47,14 +47,12 @@
 </template>
 <script>
 import {
-  IonButton,
   IonContent, 
   IonInfiniteScroll, 
   IonInfiniteScrollContent,
   IonItem,
   IonLabel,
   IonList,
-  IonPage,
   IonSegmentButton,
   IonSegment,
   IonImg,
@@ -71,14 +69,12 @@ import ImagePreviewModal    from '@/components/ImagePreviewModal'
 
 export default {
     components: {
-        IonButton,
         IonContent, 
         IonInfiniteScroll, 
         IonInfiniteScrollContent,
         IonItem,
         IonLabel,
         IonList,
-        IonPage,
         IonSegmentButton,
         IonSegment,
         IonImg,

@@ -13,6 +13,7 @@ const User = {
     init(){
         this.geo.trackingStart();
         this.firebase.init()
+        console.log('lastmodif',document.lastModified)
     },
     async settingsGet(){
         const settings=await jQuery.get( heap.state.hostname + "User/itemSettingsGet")
