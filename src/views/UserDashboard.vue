@@ -216,7 +216,15 @@ ion-icon{
         </ion-item>
         <ion-item lines="full" button detail @click="$router.push('page-rules')">
             <ion-icon :icon="informationCircleOutline" slot="start" color="primary"></ion-icon>
-            <ion-text>Правила пользования</ion-text>
+            <ion-text>Для клиентов</ion-text>
+        </ion-item>
+        <ion-item lines="full" button detail @click="$router.push('page-rules')">
+            <ion-icon :icon="informationCircleOutline" slot="start" color="primary"></ion-icon>
+            <ion-text>Для поставщиков</ion-text>
+        </ion-item>
+        <ion-item lines="full" button detail @click="$router.push('page-rules')">
+            <ion-icon :icon="informationCircleOutline" slot="start" color="primary"></ion-icon>
+            <ion-text>Для курьеров</ion-text>
         </ion-item>
         <ion-item lines="full" button detail @click="$router.push('page-privacy_policy')">
             <ion-icon :icon="informationCircleOutline" slot="start" color="primary"></ion-icon>
@@ -321,7 +329,7 @@ export default {
       user: heap.state.user,
       courierStatus:User.courier.status,
       storeList:User.supplier.storeList,
-      version:document.lastModified
+      version:this.toLocDateTime(document.lastModified)
     };
   },
   ionViewDidEnter(){
@@ -360,6 +368,12 @@ export default {
           this.$flash("Анкета удалена или не активна")
         }
       }
+    },
+    toLocDateTime( iso ){
+        const event = new Date(Date.parse(iso));
+        const options = { month: 'short', day: 'numeric',hour:'numeric',minute:'numeric',year:'numeric' };
+
+        return event.toLocaleDateString(undefined, options);
     },
   },
   watch: {

@@ -6,30 +6,18 @@ module.exports = {
     themeColor: "#009dcd",
     msTileColor: "#009dcd",
     appleMobileWebAppCapable: true,
-    appleMobileWebAppStatusBarStyle:'white',
+    appleMobileWebAppStatusBarStyle: 'white',
+    workboxOptions: {
+      skipWaiting: true,
+      clientsClaim: true
+    },
     manifestOptions: {
-      name:"Tezkel доставка",
-      short_name:"Tezkel",
+      name: "Tezkel экспресс доставка",
+      short_name: "Tezkel",
       background_color: "#009dcd",
       categories: ["ecommerce", "delivery", "маркетплэйс", "доставка"],
-      orientation:"portrait-primary",
-      // screenshots : [
-      //   {
-      //     "src": "screenshot1.webp",
-      //     "sizes": "1280x720",
-      //     "type": "image/webp",
-      //     "platform": "wide",
-      //     "label": "Homescreen of Awesome App"
-      //   },
-      //   {
-      //     "src": "screenshot2.webp",
-      //     "sizes": "1280x720",
-      //     "type": "image/webp",
-      //     "platform": "narrow",
-      //     "label": "List of Awesome Resources available in Awesome App"
-      //   }
-      // ],
-      shortcuts : [
+      orientation: "portrait-primary",
+      shortcuts: [
         {
           "name": "Главная",
           "url": "#/home",
@@ -50,10 +38,36 @@ module.exports = {
           "url": "#/user-dashboard",
           "description": "Управление настройками пользователя"
         }
+      ],
+      icons: [
+        {
+          "src": "./img/icons/monochrome.png",
+          "type": "image/png",
+          "purpose": "monochrome"
+        },
+        {
+          "src": "./img/icons/android-chrome-192x192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        },
+        {
+          "src": "./img/icons/android-chrome-512x512.png",
+          "sizes": "512x512",
+          "type": "image/png"
+        },
+        {
+          "src": "./img/icons/android-chrome-maskable-192x192.png",
+          "sizes": "192x192",
+          "type": "image/png",
+          "purpose": "maskable"
+        },
+        {
+          "src": "./img/icons/android-chrome-maskable-512x512.png",
+          "sizes": "512x512",
+          "type": "image/png",
+          "purpose": "maskable"
+        }
       ]
     },
-    workboxOptions: {
-      skipWaiting: true
-    }
   },
 }
