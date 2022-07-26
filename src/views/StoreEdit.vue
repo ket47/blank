@@ -799,7 +799,8 @@ export default  {
     async apiTokenShow(){
       const request={
         'owner_id':this.$heap.state?.user?.user_id,
-        'token_type':'store'
+        'token_holder':'store',
+        'token_holder_id':this.storeId
       }
       try{
         this.apiToken=await jQuery.post(heap.state.hostname + "Token/itemActiveGet",request)
