@@ -33,6 +33,7 @@
 import CKEditor from "@ckeditor/ckeditor5-vue";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import "@ckeditor/ckeditor5-build-classic/build/translations/ru";
+//import SourceEditing from '@ckeditor/ckeditor5-source-editing/src/sourceediting';
 import {documentTextOutline,codeOutline,bookmarkOutline} from 'ionicons/icons';
 
 import { 
@@ -61,7 +62,8 @@ export default {
     IonGrid,
     IonRow,
     IonCol,
-    ckeditor: CKEditor.component },
+    ckeditor: CKEditor.component 
+  },
   setup() {
     return { documentTextOutline, codeOutline, bookmarkOutline };
   },
@@ -76,6 +78,7 @@ export default {
       },
       editorConfig: {
         language: "ru",
+        //plugins: [ SourceEditing ],
       },
     };
   },

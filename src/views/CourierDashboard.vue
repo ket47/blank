@@ -97,11 +97,9 @@ ion-text{
         <ion-item-divider>
           <ion-label>Информация</ion-label>
         </ion-item-divider>
-        <ion-item lines="none" button detail @click="$router.push('/page-courier_contract')">
+        <ion-item lines="none" button detail @click="$router.push('/page-rules-courier')">
           <ion-icon :src="documentTextOutline" slot="start"></ion-icon>
-          <ion-text>
-            Оферта об оказании услуг доставки
-          </ion-text>
+          <router-link :to="page-rules-courier">Правила пользования для курьера</router-link>
         </ion-item>
       </ion-list>
     </div>
