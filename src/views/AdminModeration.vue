@@ -16,9 +16,8 @@
                 Курьеры
             </ion-segment-button>
         </ion-segment>
-        <ion-content>
+        <div>
             <ion-searchbar v-if="moderationType=='stores' || moderationType=='couriers'" placeholder="Фильтр" v-model="filter"/>
-
             <ion-list v-if="listComputed.length>0">
                 <ion-item v-for="item in listComputed" :key="item.item_id" button detail @click="itemEdit(item)">
                     <ion-thumbnail slot="start" :class="item.class">
@@ -42,7 +41,7 @@
             <ion-infinite-scroll @ionInfinite="listLoadMore($event)" id="moderation-infinite-scroll">
                 <ion-infinite-scroll-content loading-spinner="bubbles" loading-text="Loading more data..."></ion-infinite-scroll-content>
             </ion-infinite-scroll>
-        </ion-content>
+        </div>
     </base-layout>
 </template>
 <script>
