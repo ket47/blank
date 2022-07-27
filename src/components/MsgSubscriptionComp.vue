@@ -3,8 +3,10 @@
         <ion-card-content>
           Чтобы вовремя узнавать об изменениях статусов заказов, подпишитесь на уведомления
           <p>
+            <!--
             <ion-button @click="reject()" color="light">Отказаться</ion-button>
-            <ion-button @click="subscribe()">Подписаться</ion-button>
+            -->
+            <ion-button @click="subscribe()" expand="block">Подписаться</ion-button>
           </p>
         </ion-card-content>        
       </ion-card>
@@ -27,7 +29,7 @@ export default {
   data(){
     return {
       permission:Notification.permission,
-      wasRejected:localStorage.pushNotificationsWasRejected
+      wasRejected:0//localStorage.pushNotificationsWasRejected
     }
   },
   methods: {

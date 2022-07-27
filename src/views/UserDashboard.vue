@@ -45,7 +45,7 @@ ion-icon{
         </ion-item>
       </ion-list>
     </div>
-
+    <msg-subscription-comp/>
     <ion-list>
       <ion-item-group v-if="isSignedIn">
         <ion-item-divider>
@@ -178,7 +178,7 @@ ion-icon{
 
       <ion-item-group v-if="isSignedIn">
         <ion-item-divider>
-          <ion-label>Поставщик</ion-label>
+          <ion-label>Продавец</ion-label>
         </ion-item-divider>
         <div v-if="!storeList">
           <ion-item>
@@ -195,13 +195,13 @@ ion-icon{
         <div v-else>
           <ion-item lines="none">
             <ion-text>
-              <ion-label>Пока вы не поставщик</ion-label>
+              <ion-label>Пока вы не продавец</ion-label>
               <ion-note>Зарегистрируйте свой магазин или ресторан</ion-note>
             </ion-text>
           </ion-item>
           <ion-item @click="$router.push(`supplier-dashboard`)" lines="full">
             <ion-icon :icon="storefrontOutline" slot="start"></ion-icon>
-            <ion-button slot="end" color="light">Стать поставщиком</ion-button>
+            <ion-button slot="end" color="light">Стать продавцем</ion-button>
           </ion-item>
         </div>
       </ion-item-group>
@@ -214,17 +214,17 @@ ion-icon{
             <ion-icon :icon="informationCircleOutline" slot="start" color="primary"></ion-icon>
             <ion-text>О нас</ion-text>
         </ion-item>
-        <ion-item lines="full" button detail @click="$router.push('page-rules')">
+        <ion-item lines="full" button detail @click="$router.push('page-rules-customer')">
             <ion-icon :icon="informationCircleOutline" slot="start" color="primary"></ion-icon>
-            <ion-text>Для клиентов</ion-text>
+            <ion-text>Правила пользования</ion-text>
         </ion-item>
-        <ion-item lines="full" button detail @click="$router.push('page-rules')">
+        <ion-item lines="full" button detail @click="$router.push('page-rules-supplier')">
             <ion-icon :icon="informationCircleOutline" slot="start" color="primary"></ion-icon>
-            <ion-text>Для поставщиков</ion-text>
+            <ion-text>Правила пользования для продавца</ion-text>
         </ion-item>
-        <ion-item lines="full" button detail @click="$router.push('page-rules')">
+        <ion-item lines="full" button detail @click="$router.push('page-rules-courier')">
             <ion-icon :icon="informationCircleOutline" slot="start" color="primary"></ion-icon>
-            <ion-text>Для курьеров</ion-text>
+            <ion-text>Правила пользования для курьера</ion-text>
         </ion-item>
         <ion-item lines="full" button detail @click="$router.push('page-privacy_policy')">
             <ion-icon :icon="informationCircleOutline" slot="start" color="primary"></ion-icon>
@@ -232,7 +232,7 @@ ion-icon{
         </ion-item>
         <ion-item lines="none">
             <ion-icon :icon="informationCircleOutline" slot="start" color="primary"></ion-icon>
-            <ion-label>Версия {{version}}</ion-label>
+            <ion-label>Версия приложения {{version}}</ion-label>
         </ion-item>
       </ion-item-group>
 
@@ -284,6 +284,7 @@ import {
 import User     from "@/scripts/User.js";
 import Topic    from '@/scripts/Topic.js';
 import heap     from "@/heap";
+import MsgSubscriptionComp  from '@/components/MsgSubscriptionComp.vue'
 
 export default {
   components: {
@@ -298,7 +299,8 @@ export default {
   IonNote,
   IonText,
   IonButton,
-  IonSkeletonText
+  IonSkeletonText,
+  MsgSubscriptionComp
   },
   setup() {
     return {

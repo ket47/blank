@@ -313,6 +313,21 @@
         <ion-label>Добавить администратора</ion-label>
       </ion-item>
     </ion-list>
+
+    <ion-list v-if="storeItem">
+      <ion-item-divider>
+          <ion-label>API токен</ion-label>
+      </ion-item-divider>
+      <ion-item>
+        <ion-icon :src="keyOutline" slot="start" color="primary"/>
+        
+        <ion-label v-if="apiToken" @click="apiTokenCopy()">{{apiToken.token_hash}}</ion-label>
+        <ion-label v-else>**** **** ****</ion-label>
+
+        <ion-icon v-if="apiToken" :src="copyOutline" slot="end" color="dark" @click="apiTokenCopy()"/>
+        <ion-icon v-else :src="eyeOutline" slot="end" color="dark" @click="apiTokenShow()"/>
+      </ion-item>
+    </ion-list>
   </base-layout>
 </template>
 
@@ -352,7 +367,10 @@ import {
   addOutline,
   checkmarkCircleOutline,
   chevronBack,
-  closeCircle
+  closeCircle,
+  keyOutline,
+  eyeOutline,
+  copyOutline,
 }                     from 'ionicons/icons'
 import imageTileComp  from '@/components/ImageTileComp.vue'
 import UserAddressPicker from '@/components/UserAddressPicker.vue'
@@ -397,7 +415,10 @@ export default  {
       addOutline,
       checkmarkCircleOutline,
       chevronBack,
-      closeCircle
+      closeCircle,
+      keyOutline,
+      eyeOutline,
+      copyOutline,
       }
   },
   data(){
@@ -412,7 +433,8 @@ export default  {
       is_primary:0,
       validity:0,
       validity_perc:100,
-      validity_min:80
+      validity_min:80,
+      apiToken:null,
     }
   },
   computed: {
@@ -773,6 +795,23 @@ export default  {
         await jQuery.post(heap.state.hostname + "Store/locationDelete",{location_id})
         this.itemGet()
       }catch{/** */}
+    },
+    async apiTokenShow(){
+      const request={
+        'owner_id':this.$heap.state?.user?.user_id,
+        'token_holder':'store',
+        'token_holder_id':this.storeId
+      }
+      try{
+        this.apiToken=await jQuery.post(heap.state.hostname + "Token/itemActiveGet",request)
+      } catch{/** */}
+    },
+    apiTokenCopy(){
+      if(this.apiToken.token_hash){
+        navigator.clipboard.writeText(this.apiToken.token_hash);
+        this.$flash("Токен скопирован")
+      }
+      
     }
   },
 }

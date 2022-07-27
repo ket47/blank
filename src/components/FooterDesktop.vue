@@ -25,7 +25,7 @@
             <ion-label>Все права защищены. 2022 iSellSoft © </ion-label>
           </div>
           <div>
-            <router-link to="/page-rules">
+            <router-link to="/page-rules-customer">
               <ion-label>Правила пользования</ion-label>
             </router-link>
             <router-link to="/page-privacy_policy">
