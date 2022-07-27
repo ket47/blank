@@ -210,7 +210,7 @@ ion-icon{
         <ion-item-divider>
           <ion-label>Информация</ion-label>
         </ion-item-divider>
-        <ion-item lines="full" button detail @click="$router.push('page-about')">
+        <ion-item lines="full" button detail @click="$router.push('about-us')">
             <ion-icon :icon="informationCircleOutline" slot="start" color="primary"></ion-icon>
             <ion-text>О нас</ion-text>
         </ion-item>

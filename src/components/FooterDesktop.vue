@@ -12,7 +12,7 @@
           <ion-title>Быстро и удобно</ion-title>
         </div>
         <div>
-          <router-link to="/page-about">
+          <router-link to="/about-us">
             <ion-label>О нас</ion-label>
           </router-link>
           <router-link to="/page-howtoorder">

@@ -128,6 +128,10 @@ const routes = [
         component: () => import('@/views/TextPageEdit.vue')
       },
       {
+        path: '/about-us',
+        component: () => import('@/views/AboutUs.vue')
+      },
+      {
         path: '/text-list',
         component: () => import('@/views/TextListView.vue')
       },
