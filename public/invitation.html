@@ -15,13 +15,81 @@
                 localStorage.inviter_user_id=searchParams.get('inviter_user_id')
             }
         </script>
+        <style>
+            body{
+                font-family:"Segoe UI",serif;
+                margin: 0;
+            }
+            #main_container{
+                background: radial-gradient(#56abdd, #009dcd, #0085ae);
+                position: absolute;
+                height: 100%;
+                width: 100%;
+                display: grid;
+                align-items: center;
+                text-align: center;
+            }
+            #main_container .background-image{
+                position: fixed;
+                top: -50%;
+                left: -50%;
+                width: 200%;
+                height: 200%;
+                background-image: url(../img/tezkel_logo_background.png);
+                background-size: 90px;
+                opacity: 0.1;
+                background-position-y: 0;
+                -webkit-animation: 8s linear 0s infinite backgroundPatternMovement;
+                animation: 8s linear 0s infinite backgroundPatternMovement;
+            }
+            @keyframes backgroundPatternMovement {
+                from { background-position-x: 0; }
+                to { background-position-x: 90px; }
+            }
+            #main_container #main_content{
+                padding: 1em;
+                display: block;
+                max-width: 450px;
+                margin: 0 auto;
+                color: white;
+                position: relative;
+            }
+            #main_container #main_content h3{
+
+            }
+            #main_container #main_content h3 b{
+                font-weight: 601;
+                font-size: 27px;
+                color: #ffca0c;
+                text-shadow: 0px 0px 2px #9f4f08;
+            }
+            #main_container #main_content a.button{
+                text-decoration: none;
+                text-transform: uppercase;
+                background-color: #ffc701;
+                padding: 8px 14px;
+                border-radius: 5px;
+                color: #fff;
+                font-weight: bold;
+                width: 100%;
+                display: block;
+                box-sizing: border-box;
+                text-shadow: 0px 0px 3px #ae8b0f;
+                border: 2px solid white;
+            }
+        </style>
     </head>
-    <body style="background-color: #009dcd">
-        <h1>Экспресс доставка Tezkel</h1>
-        <img src="/img/logo-full.png" style="width: 100%"/>
-        <p>
-            Зарегистрируйтесь и получите 5 подарочных сертификатов по 200руб
-        </p>
-        <a href="/#/sign-up">Регистрация</a>
+    <body>
+        <div id="main_container">
+            <div class="background-image"></div>
+            <div id="main_content">
+                <h1>Сервис экспресс-доставки</h1>
+                <img src="/img/logo_full_transparent.png" style="width: 100%"/>
+                <h3>
+                    Зарегистрируйтесь и получите <b>5</b> подарочных сертификатов по <b>200руб</b>
+                </h3>
+                <a class="button" href="/#/sign-up">Регистрация ➜</a>
+            </div>
+        </div>
     </body>
 </html>
