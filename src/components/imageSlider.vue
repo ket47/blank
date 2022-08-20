@@ -19,7 +19,7 @@
       <img :src="`${$heap.state.hostname}image/get.php/${image.image_hash}.1000.1000.webp`"/>
     </div>
   </div>
-  <swiper v-else :modules="modules" :autoplay='{delay: 3000, disableOnInteraction: false}' :loop="true" effect="fade">
+  <swiper v-else :modules="modules" :autoplay='{delay: 3000, disableOnInteraction: false}' :loop="true" effect="fade"  :style="`height: ${imgHeight||300}px;`">
     <swiper-slide v-for="image in imageList" :key="image.image_hash">
       <div class="crop-to-fit" :style="`height: ${imgHeight||300}px;`">
         <img :style="`min-height: ${imgHeight||300}px;`" :src="`${$heap.state.hostname}image/get.php/${image.image_hash}.${imgHeight*4||1200}.${imgHeight*4||1200}.webp`"/>

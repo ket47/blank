@@ -2,6 +2,7 @@
 #hcat_widget_grid {
     display: grid;
     margin-top:10px;
+    margin-bottom:10px;
     gap:6px;
     grid-template-columns: repeat(3,1fr);
     grid-template-rows: 130px;
@@ -24,10 +25,6 @@
     -moz-box-pack: center;
     justify-content: center;
 }
-#hcat_widget_wrapper{
-    background-color: #f5f5f5;
-    padding: 10px;
-}
 </style>
 <template>
     <div id="hcat_widget_grid">
@@ -35,7 +32,7 @@
             <ion-thumbnail style="width:70px;height:70px">
                 <ion-img style="border-radius:10px;border:1px solid #ddd" :src="`${$heap.state.hostname}image/get.php/${group.image_hash}.150.150.webp`"/>
             </ion-thumbnail>
-            <ion-label style="height:2em;text-align:center">{{group.group_name}}</ion-label>
+            <div style="height:2.5em;text-align:center;overflow:hidden;width:110px">{{group.group_name}}</div>
         </div>
     </div>
 </template>

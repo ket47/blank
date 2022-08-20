@@ -21,18 +21,19 @@
 
 <template>
   <base-layout :page-title="productItem?.product_name??'Товар'" :page-default-back-link="'/product-'+this.productId">
-    <ion-card :color="validity_perc<validity_min?'danger':''">
+    <ion-card :color="productItem?.validity<validity_min?'danger':''">
       <ion-card-header>
-        <ion-label>Анкета заполнена на {{validity_perc}}%</ion-label>
+        <ion-label>Анкета заполнена на {{productItem?.validity}}%</ion-label>
         <ion-progress-bar :value="validity"></ion-progress-bar>
       </ion-card-header>
-      <ion-card-content v-if="validity_perc<validity_min">
+      <ion-card-content v-if="productItem?.validity<validity_min">
         <ion-text>
           Вам необходимо заполнить анкету не меньше чем на {{validity_min}}% для рассмотрения модератором
+          <p v-if="productItem?.validity==0">Обратите внимание на то, что поля Название (больше 5 букв), Цена, Актуальный остаток (если ведется учет), Изображения товара обязательные</p>
         </ion-text>
       </ion-card-content>
     </ion-card>
-    <ion-card v-if="message&&validity_perc>validity_min">
+    <ion-card v-if="message&&productItem?.validity>validity_min">
       <ion-card-content :class="messageClass">
         {{message}}
       </ion-card-content>
@@ -86,6 +87,10 @@
           <ion-item>
             <ion-label color="primary">Артикул</ion-label>
             <ion-input v-model="productItem.product_code" name="product_code" slot="end" placeholder="код товара"/>
+          </ion-item>
+          <ion-item>
+            <ion-label color="primary">Штрихкод</ion-label>
+            <ion-input v-model="productItem.product_barcode" name="product_barcode" slot="end" placeholder="штрихкод"/>
           </ion-item>
           <ion-item v-if="is_counted">
             <ion-label color="primary">Остаток <span v-if="productItem.product_unit">({{productItem.product_unit}})</span></ion-label>
@@ -248,7 +253,6 @@ export default  {
       is_disabled:0,
       is_counted:0,
       validity:0,
-      validity_perc:100,
       validity_min:80
     }
   },
@@ -298,7 +302,6 @@ export default  {
       try{
         let productItem=await jQuery.post( heap.state.hostname + "Product/itemGet", { product_id: this.productId })
         this.productItem=this.itemPrepare(productItem)
-        this.itemValidityCalc()
         this.itemParseFlags()
         this.itemMarkGroups()
       }catch{
@@ -339,43 +342,8 @@ export default  {
         this.itemGet()
       }
     },
-    itemValidityCalc(){
-      const requiredFields=[
-        "product_name",
-        "product_description",
-        "product_code",
-        "product_unit",
-        "product_quantity_min",
-        "product_weight",
-        "product_price",
-        "images",
-        "member_of_groups.group_ids"
-        ]
-      const filedsTotal=requiredFields.length
-      let validTotal=0
-      for(const fields of requiredFields){
-        let is_valid=0
-        for(const field of fields.split('|')){
-          let value=null
-          const path=field.split('.')
-          if(path[1]){//notation with dot
-            value=this.productItem[path[0]][path[1]]
-          } else {
-            value=this.productItem[path[0]]
-          }
-          if(value?.length>0){
-            is_valid=1
-            break
-          }
-        }
-        validTotal+=is_valid
-      }
-      this.validity=validTotal/filedsTotal
-      this.validity_perc=Math.round(this.validity*100)
-    },
     async itemUpdate(request){
       try{
-        request['validity']=this.validity_perc
         await jQuery.post( heap.state.hostname + "Product/itemUpdate", JSON.stringify(request))
         this.$flash("сохранено")
         return true
@@ -427,7 +395,6 @@ export default  {
       }
       if( this.itemUpdate(request) ){
         this.productItem[field_name] = field_value;
-        this.itemValidityCalc()
         this.itemParseFlags()
       }
     },

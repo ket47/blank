@@ -58,6 +58,8 @@ import OrderObjectionModal  from '@/components/OrderObjectionModal.vue'
 import ImageTileComp        from '@/components/ImageTileComp.vue'
 import MsgSubscriptionComp  from '@/components/MsgSubscriptionComp.vue'
 
+import jQuery from 'jquery'
+
 
 export default({
     components: { 
@@ -93,6 +95,7 @@ export default({
             try{
                 this.orderIsLoading=true
                 this.order=await Order.api.itemGet(this.order_id);
+                this.itemDetailsGet();
             } catch(err) {
                 switch(err.status){
                     case 404:
@@ -103,6 +106,21 @@ export default({
                 }
             }
             this.orderIsLoading=false;
+        },
+        itemDetailsGet(){
+            if( this.order.stage_current=='supplier_corrected' ){
+                this.itemDetailsPrepaymentGet()
+            }
+        },
+        async itemDetailsPrepaymentGet(){
+            try{//cache?????
+                const prepayment_trans=await jQuery.post(this.$heap.state.hostname+'Order/itemDetailsPrepaymentGet',{'order_id':this.order_id})
+                //let order=this.order
+                this.order.order_sum_prepayed=prepayment_trans.trans_amount
+                //this.order=order
+            }catch(err){
+                //
+            }
         },
         async onStageCreate(order_id, order_stage_code){
             if( order_stage_code.includes('action') ){
@@ -153,6 +171,12 @@ export default({
                     case 'address_not_set':
                         this.$flash("Необходимо добавить адрес доставки")
                         this.$router.push('user-addresses');
+                        break;
+                    case 'order_sum_exceeded':
+                        this.$flash("Сумма заказа должна быть меньше предоплаты")
+                        break;
+                    default:
+                        this.$flash("Не удалось изменить статус заказа")
                         break;
                 }
                 return false

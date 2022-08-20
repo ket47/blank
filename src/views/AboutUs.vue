@@ -10,7 +10,7 @@
       <div class="header-image-container main-block">
         <div class="main-block-content">
           <div class="text" style="color: white">
-            <h2>Супер быстрая доставка в Симферополе</h2>
+            <h2>Супер быстрая доставка</h2>
             <h4>Роскошь, ставшая реальностью</h4>
             <ion-button href="/home">
               Хочу сделать заказ!
@@ -23,10 +23,10 @@
         <div class="main-block-content">
           <div class="landing-desc-col landing-desc-feature-col">
             <h2 style="text-align: left;">Сервис курьерской доставки</h2>
-            <p>Супер быстрая доставка товаров на дом в Симферополе теперь не роскошь, а вполне доступная для каждого услуга. 
+            <p>Супер быстрая доставка товаров на дом теперь не роскошь, а вполне доступная для каждого услуга. 
                 Экономия времени, разнообразный ассортимент и возможность получить любой товар ни выходя за пределы любимого домашнего очага, - все это возможно с Tezkel.
                 <br><br>
-                Tezkel – это служба экспресс-доставки товаров в Симферополе. Мы сотрудничаем со многими заведениями общественного питания и магазинами, 
+                Tezkel – это служба экспресс-доставки товаров. Мы сотрудничаем со многими заведениями общественного питания и магазинами, 
                 поэтому всего через полчаса после оформления заказа вы получите его в руки.
             </p>
           </div>
@@ -108,7 +108,7 @@
             <div class="benefit-item">
               <img src="/img/about_us/tezkel_anasayfa_icon_flex.png"/>
               <h4>Гибкость</h4>
-              <p>Мы осуществляем доставку по Симферополю и Симферопольскому району высокой сложности, а также предоставляем услугу размещения и реализации товаров на нашей площадке.</p>
+              <p>Мы осуществляем доставку высокой сложности, а также предоставляем услугу размещения и реализации товаров на нашей площадке.</p>
             </div>
           </div>
         </div>
@@ -127,15 +127,10 @@ import {
   IonPage, 
   IonContent, 
   IonButton,
+  IonButtons,
+  IonToolbar,
   IonBackButton,
   IonIcon,
-  IonCard,
-  IonCardHeader,
-  IonCardTitle,
-  IonCardContent,
-  IonList,
-  IonItem,
-  IonItemDivider
 } from "@ionic/vue"
 
 export default {
@@ -153,13 +148,8 @@ export default {
   IonButton,
   IonBackButton,
   IonIcon,
-  IonCard,
-  IonCardHeader,
-  IonCardTitle,
-  IonCardContent,
-  IonList,
-  IonItem,
-  IonItemDivider,
+  IonButtons,
+  IonToolbar,
   FooterDesktop
   }
 }

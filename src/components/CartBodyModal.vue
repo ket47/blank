@@ -78,18 +78,18 @@ export default{
     })
   },
   methods: {
-    clearCart(order_id){
+    clearCart(order_id,mode){
       this.closeModal();
       this.clearHighlightedProducts();
-      this.$router.push('order-list');
-      return Order.cart.itemDelete(order_id);
+      return Order.cart.itemDelete(order_id,mode);
     },
     clearHighlightedProducts(){
       document.querySelectorAll('.incart').forEach(item=>item.classList.remove("incart"));
     },
     async onStageCreate(order_id, order_stage_code){
         if(order_stage_code=='customer_purged'){
-          return this.clearCart(order_id);
+          this.$router.push('order-list');
+          return this.clearCart(order_id,'purge_on_server');
         }
         if(order_stage_code=='customer_action_confirm'){
           order_stage_code='customer_confirmed'
@@ -109,7 +109,10 @@ export default{
             }
             this.$router.push('/order-'+syncedOrder.order_id);
         } catch(err){
-                const exception=err.responseJSON;
+                const exception=err?.responseJSON;
+                if(!exception){
+                  return false;
+                }
                 const exception_code=exception.messages.error;
                 switch(exception_code){
                     case 'order_is_empty':

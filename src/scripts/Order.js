@@ -61,6 +61,7 @@ const Order = {
                 if( entry.entry_quantity==0 ){
                     return this.entryDelete(entry.entry_id);
                 }
+                entry.order_id=order_id
                 return this.entryUpdate(entry);
             }
             return this.entryCreate(entry,order_id);
@@ -77,6 +78,7 @@ const Order = {
         },
         async entryUpdate(entry){
             const request={
+                order_id:entry.order_id,
                 entry_id:entry.entry_id,
                 entry_quantity:entry.entry_quantity
             }
@@ -201,10 +203,10 @@ const Order = {
             }
             return false;
         },
-        itemDelete(order_id){
+        itemDelete(order_id,mode){
             const existingOrder=this.itemGetById(order_id);
             if( existingOrder ){
-                if(existingOrder.data.order_id){
+                if(existingOrder.data.order_id && mode=='purge_on_server'){
                     Order.api.itemStageCreate(existingOrder.data.order_id,'customer_purged')
                 }
                 heap.state.cartList.splice(existingOrder.order_index,1);

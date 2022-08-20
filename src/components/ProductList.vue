@@ -1,7 +1,7 @@
 <style scoped>
     .product_list_widget_grid {
     display: grid;
-    gap: 2%;
+    gap: 2px;
     grid-template-columns: repeat(auto-fit,160px);
     font-size: 0.8em;
     }

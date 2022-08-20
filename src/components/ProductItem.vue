@@ -39,7 +39,7 @@
             </div>
             <ion-img @click="$router.push(`product-${productItem.product_id}`)" :src="`${$heap.state.hostname}image/get.php/${productItem.image_hash}.200.200.webp`"/>
         </div>
-        <div style="height:3.5em;overflow:hidden">
+        <div style="height:4em;overflow:hidden">
             <span v-if="productItem.product_price!=productItem.product_final_price" style="color:var(--ion-color-danger)">
                 <s>{{productItem.product_price}}{{$heap.state.currencySign}}</s>&nbsp;&nbsp;
             </span>
@@ -49,7 +49,9 @@
             <span style="color:var(--ion-color-medium)">
                 {{productItem.product_unit}}
             </span>
-            <div style="color:black;" @click="$router.push(`product-${productItem.product_id}`)">{{ productItem.product_name }}</div>
+            <div style="color:black;height:2.4em;font-size:1em;overflow:hidden;line-height:1.2em" @click="$router.push(`product-${productItem.product_id}`)">
+                {{ productItem.product_name }}
+            </div>
         </div>
     </div>
 </template>

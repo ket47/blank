@@ -36,7 +36,7 @@ const User = {
             Topic.publish('userGet',response);
         });
         if( user?.user_id>0 ){
-            Order.api.listCount()
+            //Order.api.listCount()
         }
         if( User.isCourier() ){
             await User.courier.get();
@@ -264,7 +264,9 @@ const User = {
             Topic.on('userGet',(user)=>{
                 if( !User.firebase.tokenSaved && user.user_id>0 && heap.state.settings.firebase ){//user signed in
                     initializeApp(heap.state.settings.firebase);
-                    User.firebase.saveNotificationToken()
+                    setTimeout(function(){
+                        User.firebase.saveNotificationToken()
+                    },30*1000)
                 }
             })
         },

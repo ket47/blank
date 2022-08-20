@@ -86,7 +86,7 @@
 
             <ion-item lines="none">
                 <ion-text style="font-size:0.9em">
-                    Я согласен(на) с <router-link :to="page-rules-customer">офертой об оказании услуг доставки</router-link>
+                    Я согласен(на) с <router-link to="page-rules-customer">офертой об оказании услуг доставки</router-link>
                 </ion-text>
                 <ion-checkbox slot="end" v-model="termsAccepted"/>
             </ion-item>
@@ -303,7 +303,7 @@ export default({
                 order_id:this.order.order_id
             };
             try{
-                const result= await jQuery.post( this.$heap.state.hostname + "UniPayments/paymentStatusRequest", request );
+                const result= await jQuery.post( this.$heap.state.hostname + "CardAcquirer/statusGet", request );
                 if(result=='OK'){
                     router.push('order-'+this.order.order_id)
                 }
@@ -363,7 +363,9 @@ export default({
         async promoCountGet(){
             try{
                 const request={
-                    mode:'count'
+                    mode:'count',
+                    type:'active',
+                    user_id:this.$heap.state.user.user_id
                 }
                 return await jQuery.post(`${this.$heap.state.hostname}Promo/listGet`,request)
             }catch(err){

@@ -65,6 +65,11 @@
                 <ion-text color="medium">Итого: </ion-text>
                 <ion-label slot="end" color="primary"><b>{{ orderData.order_sum_total }}{{$heap.state.currencySign}}</b></ion-label>
             </ion-item>
+            <ion-item lines="none" v-if="orderData.order_sum_prepayed>0" color="warning">
+                <ion-icon :icon="cardOutline" slot="start" color="medium"></ion-icon>
+                <ion-text color="medium">Предоплата: </ion-text>
+                <ion-label slot="end" color="primary"><b>{{ orderData.order_sum_prepayed }}{{$heap.state.currencySign}}</b></ion-label>
+            </ion-item>
         </ion-list>
 
         <ion-card color="warning"  v-if="orderData.order_objection">
@@ -151,7 +156,8 @@ import {
     cubeOutline,
     walletOutline,
     banOutline,
-    giftOutline
+    giftOutline,
+    cardOutline
 }                       from 'ionicons/icons';
 import CartAddButtons   from '@/components/CartAddButtons.vue';
 
@@ -189,7 +195,8 @@ export default({
             cubeOutline, 
             banOutline,
             walletOutline,
-            giftOutline
+            giftOutline,
+            cardOutline
         };
     },
     data(){

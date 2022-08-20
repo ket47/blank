@@ -270,8 +270,8 @@ ion-chip .active-chip {
             :ref="'group-' + group_item.group_id"
             :data-group_id="group_item.group_id"
           >
-            <ion-col class="group-title" size="12">
-              <label><b>{{ group_item.group_name }}</b></label>
+            <ion-col class="group-title" size="12" style="padding:25px 0px 25px 0px">
+              <h4>{{ group_item.group_name }}</h4>
             </ion-col>
             <ion-col  size="12">
               <product-list :productList="storeProducts[group_item.group_id]"></product-list>
@@ -420,6 +420,7 @@ export default{
         this.groupTreeGet({ store_id: this.storeId });
         return;
       }
+      filter.limit=200;
       let response={};
       try{
         response=await jQuery.post(heap.state.hostname + "Product/listGet", filter)

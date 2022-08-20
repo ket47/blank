@@ -9,6 +9,9 @@
             <ion-segment-button value="images">
                 Картинки
             </ion-segment-button>
+            <ion-segment-button value="products">
+                Товары
+            </ion-segment-button>
             <ion-segment-button value="stores">
                 Магазины
             </ion-segment-button>
@@ -17,7 +20,7 @@
             </ion-segment-button>
         </ion-segment>
         <div>
-            <ion-searchbar v-if="moderationType=='stores' || moderationType=='couriers'" placeholder="Фильтр" v-model="filter"/>
+            <ion-searchbar v-if="moderationType=='stores' || moderationType=='products' || moderationType=='couriers'" placeholder="Фильтр" v-model="filter"/>
             <ion-list v-if="listComputed.length>0">
                 <ion-item v-for="item in listComputed" :key="item.item_id" button detail @click="itemEdit(item)">
                     <ion-thumbnail slot="start" :class="item.class">
@@ -46,7 +49,6 @@
 </template>
 <script>
 import {
-  IonContent, 
   IonInfiniteScroll, 
   IonInfiniteScrollContent,
   IonItem,
@@ -68,7 +70,6 @@ import ImagePreviewModal    from '@/components/ImagePreviewModal'
 
 export default {
     components: {
-        IonContent, 
         IonInfiniteScroll, 
         IonInfiniteScrollContent,
         IonItem,
@@ -106,8 +107,8 @@ export default {
         listComputed(){
             for(let item of this.items){
                 item.image_hash=item.image_hash||item.courier_photo_image_hash
-                item.item_id=item.image_id||item.store_id||item.courier_id
-                item.item_name=this.holders[item.image_holder]||item.store_name||item.user_name
+                item.item_id=item.image_id||item.store_id||item.courier_id||item.product_id
+                item.item_name=this.holders[item.image_holder]||item.store_name||item.user_name||item.product_name
                 item.date_time=this.toLocDateTime(item.updated_at)
                 item.class=item.deleted_at?'deleted':''
             }
@@ -137,12 +138,18 @@ export default {
                 let items
                 if(this.moderationType=='images'){
                     items=await jquery.post(`${this.$heap.state.hostname}Image/listGet`,request)
-                }
+                } else 
+                if(this.moderationType=='products'){
+                    request.name_query_fields='product_name,product_description,product_barcode,product_code'
+                    request.reverse='validity'
+                    const products=await jquery.post(`${this.$heap.state.hostname}Product/listGet`,request)
+                    items=products.product_list
+                } else
                 if(this.moderationType=='stores'){
                     request.name_query_fields='store_name,store_description'
                     request.reverse='validity'
                     items=await jquery.post(`${this.$heap.state.hostname}Store/listGet`,request)
-                }
+                } else 
                 if(this.moderationType=='couriers'){
                     request.name_query_fields='courier_vehicle,user_phone,user_name'
                     request.order='courier_list.updated_at'
@@ -181,6 +188,9 @@ export default {
         itemEdit(item){
             if( this.moderationType=='images' ){
                 this.imageEdit(item)
+            }
+            if( this.moderationType=='products' ){
+                this.$router.push('product-edit-'+item.product_id)
             }
             if( this.moderationType=='stores' ){
                 this.$router.push('store-edit-'+item.store_id)

@@ -55,7 +55,7 @@ export default{
   methods: {
     async postToIframe(){
         try{
-            this.paymentLink=await jQuery.post(this.$heap.state.hostname+'UniPayments/paymentLinkGet',this.order_data);
+            this.paymentLink=await jQuery.post(this.$heap.state.hostname+'CardAcquirer/paymentLinkGet',this.order_data);
         } catch(err){
             this.$flash("Нет возможности принять оплату картой");
             this.closeModal();
