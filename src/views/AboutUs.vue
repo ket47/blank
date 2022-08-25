@@ -12,7 +12,7 @@
           <div class="text" style="color: white">
             <h2>Супер быстрая доставка</h2>
             <h4>Роскошь, ставшая реальностью</h4>
-            <ion-button href="/home">
+            <ion-button href="/catalog">
               Хочу сделать заказ!
             </ion-button>
           </div>
@@ -68,7 +68,7 @@
         <div class="main-block-content">
           <h2>Необходимо оформлять заявки регулярно? Зарегистрируйтесь!</h2>
           <div class="actions">
-            <ion-button href="/sign-up">
+            <ion-button href="/user/sign-up">
               Зарегистрироваться
             </ion-button>
           </div>

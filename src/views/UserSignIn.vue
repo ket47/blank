@@ -70,7 +70,7 @@
         
         <ion-row responsive-sm>
           <ion-col>
-            <ion-button color="light" expand="block" @click="$router.push({path: `/sign-up`})">Зарегистрироваться</ion-button>
+            <ion-button color="light" expand="block" @click="$router.push({path: `/user/sign-up`})">Зарегистрироваться</ion-button>
           </ion-col>
         </ion-row>
         

@@ -24,7 +24,7 @@
 </style>
 
 <template>
-  <base-layout :page-title="this.storeItem?.store_name??'Мой магазин'" :page-default-back-link="'/store-'+this.storeId">
+  <base-layout :page-title="this.storeItem?.store_name??'Мой магазин'" :page-default-back-link="'store-'+this.storeId">
     <ion-card :color="validity_perc<validity_min?'danger':''">
       <ion-card-header>
         <ion-label>Анкета заполнена на {{validity_perc}}%</ion-label>
@@ -64,7 +64,7 @@
         На модерации
         <ion-toggle slot="end" v-model="is_disabled" @ionChange="itemDisable($event.target.checked?1:0)"></ion-toggle>
       </ion-item>
-      <ion-button @click="$router.push('/store-'+storeId)" expand="full">Открыть {{storeItem.store_name}}</ion-button>
+      <ion-button :to="'store-'+storeId" expand="full">Открыть {{storeItem.store_name}}</ion-button>
       <ion-item-divider>Добавление товара</ion-item-divider>
       <ion-item @click="productItemCreate()" button>
         <ion-icon :src="addOutline" slot="start"/>

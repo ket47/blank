@@ -39,7 +39,7 @@ ion-tab-bar.bottom-bar  ion-tab-button.tab-selected ion-label {
 }
 ion-tab-bar.bottom-bar  ion-tab-button.tab-selected ion-icon {
   transform: translateY(-65%);
-  --ionicon-stroke-width: 50px;
+  --ionicon-stroke-width: 35px;
   filter: grayscale(1) brightness(10);
 }
 ion-tab-bar.bottom-bar  .tab-indicator-container{
@@ -152,25 +152,25 @@ ion-icon{
     <ion-tabs>
       <ion-router-outlet></ion-router-outlet>
       <ion-tab-bar class="bottom-bar" slot="bottom">
-        <ion-tab-button tab="tab1" id="tab1" href="/home" routerDirection="backward" selected>
-          <ion-icon :icon="homeIcon"/>
-          <ion-label>Главная</ion-label>
+        <ion-tab-button tab="tab1" id="tab1" href="/catalog" routerDirection="backward" selected>
+          <ion-icon :icon="storefrontOutline"/>
+          <ion-label>Каталог</ion-label>
         </ion-tab-button>
 
         <ion-tab-button tab="tab2" id="tab2" href="/search" routerDirection="backward">
-          <ion-icon :icon="searchIcon"/>
+          <ion-icon :icon="searchOutline"/>
           <ion-label>Поиск</ion-label>
         </ion-tab-button>
 
-        <ion-tab-button tab="tab3" id="tab3" href="/order-list" routerDirection="backward">
-            <ion-icon :icon="ordersIcon"/>
+        <ion-tab-button tab="tab3" id="tab3" href="/order" routerDirection="backward">
+            <ion-icon :icon="readerOutline"/>
             <ion-badge color="warning" style="font-size:1.5em" v-if="activeOrderCount>0">{{activeOrderCount}}</ion-badge>
           <ion-label>Заказы</ion-label>
         </ion-tab-button>
 
-        <ion-tab-button tab="tab4" id="tab4" href="/user-dashboard" routerDirection="backward">
-          <ion-icon :icon="personIcon"/>
-          <ion-label>Аккаунт</ion-label>
+        <ion-tab-button tab="tab4" id="tab4" href="/user" routerDirection="backward">
+          <ion-icon :icon="personOutline"/>
+          <ion-label>Профиль</ion-label>
         </ion-tab-button>
         
         <div class="tab-indicator-container">
@@ -197,11 +197,18 @@ import {
   IonRouterOutlet,
   IonBadge,
 }                   from "@ionic/vue";
-import personIcon   from "@/assets/icons/account.svg";
-import ordersIcon   from "@/assets/icons/orders.svg";
-import searchIcon   from "@/assets/icons/search.svg";
-import homeIcon     from "@/assets/icons/home.svg";
+// import personIcon   from "@/assets/icons/account.svg";
+// import ordersIcon   from "@/assets/icons/orders.svg";
+// import searchIcon   from "@/assets/icons/search.svg";
+// import homeIcon     from "@/assets/icons/home.svg";
 import Order        from '@/scripts/Order'
+
+import {
+  storefrontOutline,
+  searchOutline,
+  personOutline,
+  readerOutline,
+}                   from 'ionicons/icons';
 
 export default{
   components: {
@@ -216,7 +223,10 @@ export default{
   },
   setup() {
     return {
-      personIcon,ordersIcon,searchIcon,homeIcon
+  storefrontOutline,
+  searchOutline,
+  personOutline,
+  readerOutline,
     };
   },
   data(){

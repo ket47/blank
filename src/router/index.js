@@ -5,7 +5,11 @@ import BaseTabs from '@/components/BaseTabs.vue'
 const routes = [
   {
     path: '/',
-    redirect: '/home'
+    redirect: '/catalog'
+  },
+  {
+    path: '/home',
+    redirect: '/catalog'
   },
   {
     path: '/',
@@ -13,140 +17,159 @@ const routes = [
     children: [
       {
         path: '',
-        redirect: '/home'
+        redirect: '/catalog'
       },
       {
-        path: '/home',
+        path: '/catalog',
         component: () => import('@/views/HomePage.vue')
       },
       {
-        path: '/search',
-        component: () => import('@/views/SearchView.vue')
-      },
-      {
-        path: '/courier-dashboard',
-        component:() => import('@/views/CourierDashboard.vue')
-      },
-      {
-        path: '/supplier-dashboard',
-        component:() => import('@/views/SupplierDashboard.vue')
-      },
-      {
-        path: '/product-edit-:id',
-        component: () => import('@/views/ProductEdit.vue')
-      },
-      {
-        path: '/product-:id',
-        component: () => import('@/views/ProductView.vue')
-      },
-      {
-        path: '/store-edit-:id',
+        path: '/catalog/store-edit-:id',
         component: () => import('@/views/StoreEdit.vue')
       },
       {
-        path: '/store-:id',
+        path: '/catalog/store-:id',
         component: () => import('@/views/StoreView.vue')
       },
       {
-        path: '/category-:id',
-        component: () => import('@/views/CategoryView.vue')
+        path: '/catalog/product-edit-:id',
+        component: () => import('@/views/ProductEdit.vue')
       },
       {
-        path: '/msg-dashboard',
-        component: () => import('@/views/MsgDashboard.vue')
+        path: '/catalog/product-:id',
+        component: () => import('@/views/ProductView.vue')
+      },
+
+
+
+
+
+      {
+        path: '/search/',
+        component: () => import('@/views/SearchView.vue')
       },
       {
-        path: '/sign-in',
-        component: () => import('@/views/UserSignIn.vue')
+        path: '/search/store-edit-:id',
+        component: () => import('@/views/StoreEdit.vue')
       },
       {
-        path: '/sign-up',
-        component: () => import('@/views/UserSignUp.vue')
+        path: '/search/store-:id',
+        component: () => import('@/views/StoreView.vue')
       },
       {
-        path: '/user-edit',
-        component: () => import('@/views/UserEdit.vue')
+        path: '/search/product-edit-:id',
+        component: () => import('@/views/ProductEdit.vue')
       },
       {
-        path: '/user-dashboard',
+        path: '/search/product-:id',
+        component: () => import('@/views/ProductView.vue')
+      },
+
+
+
+
+      {
+        path: '/user/',
+        redirect: '/user/user-dashboard'
+      },
+      {
+        path: '/user/user-dashboard',
         component: () => import('@/views/UserDashboard.vue'),
         props: true
       },
       {
-        path: '/user-promo',
+        path: '/user/courier-dashboard',
+        component:() => import('@/views/CourierDashboard.vue')
+      },
+      {
+        path: '/user/supplier-dashboard',
+        component:() => import('@/views/SupplierDashboard.vue')
+      },
+      {
+        path: '/user/sign-in',
+        component: () => import('@/views/UserSignIn.vue')
+      },
+      {
+        path: '/user/sign-up',
+        component: () => import('@/views/UserSignUp.vue')
+      },
+      {
+        path: '/user/user-edit',
+        component: () => import('@/views/UserEdit.vue')
+      },
+      {
+        path: '/user/user-promo',
         component: () => import('@/views/UserPromoList.vue'),
         props: true
       },
       {
-        path: '/verify-phone',
+        path: '/user/verify-phone',
         name:'UserVerifyPhone',
         component: () => import('@/views/UserVerifyPhone.vue'),
         props: true
       },
       {
-        path: '/reset-password',
+        path: '/user/reset-password',
         component: () => import('@/views/UserResetPassword.vue')
       },
       {
-        path: '/user-addresses',
+        path: '/user/user-addresses',
         component: () => import('@/views/UserAddresses.vue')
       },
       {
-        path: '/user-favourites',
-        component: () => import('@/views/UserFavourites.vue')
-      },
-      {
-        path: '/order-list',
-        component: () => import('@/views/OrderList.vue')
-      },
-      {
-        path: '/order-checkout',
-        component: () => import('@/views/OrderCheckout.vue')
-      },
-      {
-        path: '/order-:id',
-        component: () => import('@/views/OrderView.vue')
-      },
-      {
-        path: '/user-payment-methods',
-        component: () => import('@/views/UserPaymentMethods.vue')
-      },
-      {
-        path: '/user-notifications',
-        component: () => import('@/views/UserNotifications.vue')
-      },
-      {
-        path: '/help',
-        component: () => import('@/views/Help.vue')
-      },
-      {
-        path: '/confirm-password',
+        path: '/user/confirm-password',
         component: () => import('@/views/UserResetPasswordConfirm.vue')
       },
       {
-        path: '/text-edit-:id',
+        path: '/user/text-edit-:id',
         component: () => import('@/views/TextPageEdit.vue')
       },
+      {
+        path: '/user/text-list',
+        component: () => import('@/views/TextListView.vue')
+      },
+      {
+        path: '/user/page-:id',
+        component: () => import('@/views/TextPageView.vue')
+      },
+      {
+        path: '/user/admin-moderation',
+        component: () => import('@/views/AdminModeration.vue')
+      },
+
+
+      {
+        path: '/order/',
+        redirect: '/order/order-list'
+      },
+      {
+        path: '/order/order-list',
+        component: () => import('@/views/OrderList.vue')
+      },
+      {
+        path: '/order/order-checkout',
+        component: () => import('@/views/OrderCheckout.vue')
+      },
+      {
+        path: '/order/order-:id',
+        component: () => import('@/views/OrderView.vue')
+      },
+
+
+
       {
         path: '/about-us',
         component: () => import('@/views/AboutUs.vue')
       },
       {
-        path: '/text-list',
-        component: () => import('@/views/TextListView.vue')
-      },
-      {
-        path: '/page-:id',
-        component: () => import('@/views/TextPageView.vue')
-      },
-      {
         path: '/error-offline',
         component: () => import('@/views/ErrorOffline.vue')
       },
-      {
-        path: '/admin-moderation',
-        component: () => import('@/views/AdminModeration.vue')
-      },
+
+
+
+            
+
   ]
   },
 ]

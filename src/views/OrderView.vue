@@ -1,11 +1,11 @@
 <template>
-    <base-layout :pageTitle="`Заказ #${order_id}`" pageDefaultBackLink="/order-list">
+    <base-layout :pageTitle="`Заказ #${order_id}`">
 
             <div v-if="order=='notfound'" style="display:flex;align-items:center;justify-content:center;height:100%">
                 <div style="width:max-content;text-align:center">
                     <ion-icon :icon="sparklesOutline" size="large"></ion-icon>
                     <ion-label>Заказ не найден</ion-label><br>
-                    <a href="/order-list">список заказов</a>
+                    <a href="/order/order-list">список заказов</a>
                 </div>
             </div>
 

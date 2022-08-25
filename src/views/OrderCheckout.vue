@@ -223,7 +223,7 @@ export default({
             this.order=this.$heap.state.currentOrder;
             if( !this.order ){
                 this.$flash("Заказ не найден");
-                this.$router.push('/order-list')
+                this.$router.push('/order/order-list')
                 return
             }
             if( this.order.stage_current!="customer_confirmed" ){

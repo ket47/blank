@@ -4,7 +4,7 @@
 }
 </style>
 <template>
-    <base-layout pageDefaultBackLink="/home" page-title="Модерация">
+    <base-layout pageDefaultBackLink="/user/" page-title="Модерация">
         <ion-segment swipe-gesture="true" v-model="moderationType" @ionChange="listTypeChanged($event)">
             <ion-segment-button value="images">
                 Картинки
@@ -190,13 +190,13 @@ export default {
                 this.imageEdit(item)
             }
             if( this.moderationType=='products' ){
-                this.$router.push('product-edit-'+item.product_id)
+                this.$router.push('/catalog/product-edit-'+item.product_id)
             }
             if( this.moderationType=='stores' ){
-                this.$router.push('store-edit-'+item.store_id)
+                this.$router.push('/catalog/store-edit-'+item.store_id)
             }
             if( this.moderationType=='couriers' ){
-                this.$router.push('courier-dashboard?courier_id='+item.courier_id)
+                this.$router.push('/user/courier-dashboard?courier_id='+item.courier_id)
             }
         },
         async imageEdit(item){

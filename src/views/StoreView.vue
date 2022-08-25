@@ -161,14 +161,14 @@ ion-chip .active-chip {
 </style>
 
 <template>
-  <base-layout pageDefaultBackLink="/home" page-class="store-page" :contentOnScroll="onScroll" :page-title="this.storeItem.store_name??'Магазин'">
+  <base-layout pageDefaultBackLink="/catalog" page-class="store-page" :contentOnScroll="onScroll" :page-title="this.storeItem.store_name??'Магазин'">
   <div style="background-color:var(--ion-background-shade)">
     <div class="store-info">
       <image-slider :imageList="storeItem.images" :imgHeight="200"></image-slider>
         <ion-list>
         <ion-item lines="none">
           <ion-text color="primary" style="font-size:1.2em;">{{ storeItem.store_name }}</ion-text>
-          <router-link slot="end" :to="'/store-edit-' + storeItem.store_id" v-if="storeItem.is_writable==1">
+          <router-link slot="end" :to="'store-edit-' + storeItem.store_id" v-if="storeItem.is_writable==1">
             <ion-icon :icon="settingsOutline" style="font-size:24px"></ion-icon>
           </router-link>
         </ion-item>

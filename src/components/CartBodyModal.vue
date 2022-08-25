@@ -25,7 +25,7 @@
       <div style="width:max-content;text-align:center">
         <ion-icon :icon="sparklesOutline" size="large"></ion-icon>
         <ion-label>Корзина пуста </ion-label><br>
-        <a href="/home">на главную</a>
+        <a href="/catalog">на главную</a>
       </div>
     </div>
   </ion-content>

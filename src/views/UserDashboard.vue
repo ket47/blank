@@ -16,7 +16,7 @@ ion-icon{
           </ion-avatar>
           <ion-label>{{ user.user_name }}</ion-label>
           <ion-label slot="end">
-            <router-link class="section-button" to="/user-edit" slot="end">
+            <router-link class="section-button" to="/user/user-edit" slot="end">
               <ion-icon :icon="settingsOutline"></ion-icon>
             </router-link>
           </ion-label>
@@ -56,7 +56,7 @@ ion-icon{
               <ion-icon :icon="locationOutline" slot="start" color="primary"></ion-icon>
               <ion-label>Мои адреса</ion-label>
           </ion-item>
-          <ion-item lines="full" button detail @click="$router.push('order-list')">
+          <ion-item lines="full" button detail @click="$router.push('/order/order-list')">
               <ion-icon :icon="cartOutline" slot="start" color="primary"></ion-icon>
               <ion-label>Мои заказы</ion-label>
           </ion-item>
@@ -210,7 +210,7 @@ ion-icon{
         <ion-item-divider>
           <ion-label>Информация</ion-label>
         </ion-item-divider>
-        <ion-item lines="full" button detail @click="$router.push('about-us')">
+        <ion-item lines="full" button detail @click="$router.push('/about-us')">
             <ion-icon :icon="informationCircleOutline" slot="start" color="primary"></ion-icon>
             <ion-text>О нас</ion-text>
         </ion-item>
@@ -232,7 +232,7 @@ ion-icon{
         </ion-item>
         <ion-item lines="none">
             <ion-icon :icon="informationCircleOutline" slot="start" color="primary"></ion-icon>
-            <ion-label>Версия приложения {{version}}</ion-label>
+            <ion-text>Версия приложения {{version}}</ion-text>
         </ion-item>
       </ion-item-group>
 

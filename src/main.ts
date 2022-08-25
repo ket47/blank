@@ -106,13 +106,13 @@ jQuery( document ).ajaxError(( event, jqxhr, settings, thrownError )=>{
     } else {
       Topic.publish('dismissModal')
       flash('Вы не выполнили вход, пожалуйста авторизируйтесь');
-      router.push({path: `/sign-in`});
+      router.push({path: `/user//sign-in`});
     }
   } else
   if(status_code==401){
     flash('Вы не выполнили вход, пожалуйста авторизируйтесь');
     Topic.publish('dismissModal')
-    router.push({path: `/sign-in`});
+    router.push({path: `/user/sign-in`});
   }
 
   if(status_code==0){

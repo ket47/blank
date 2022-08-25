@@ -12,7 +12,7 @@
           <ion-col class="ion-left-column" size="3">
             <ion-icon class="toolbar_svg_logo ion-color ion-color-primary"  :icon="mainLogo"/>
             <ion-tab-bar>
-              <ion-tab-button tab="tab1" href="/home" routerDirection="backward">
+              <ion-tab-button tab="tab1" href="/catalog" routerDirection="backward">
                 <ion-row>
                   <ion-icon :icon="homeIcon"/>
                   <ion-label>Главная</ion-label>

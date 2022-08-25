@@ -24,7 +24,7 @@ ion-text{
 }
 </style>
 <template>
-  <base-layout page-title="Анкета курьера" page-default-back-link="/user-dashboard">
+  <base-layout page-title="Анкета курьера" page-default-back-link="/user/user-dashboard">
     <div v-if="!courier">
       <ion-card>
         <ion-item>
@@ -33,7 +33,9 @@ ion-text{
         <ion-item>
           <ion-text>
           Подавая заявку вы даете согласие на условия 
-          <a href="#/page-courier_contract" @click="$router.push('/page-courier_contract')">Оферта об оказании услуг доставки</a>
+          <router-link to="/user/page-courier_contract">
+            Оферта об оказании услуг доставки
+          </router-link>
           </ion-text>
           <ion-checkbox v-model="contractAccepted" slot="end"/>
         </ion-item>
@@ -97,9 +99,9 @@ ion-text{
         <ion-item-divider>
           <ion-label>Информация</ion-label>
         </ion-item-divider>
-        <ion-item lines="none" button detail @click="$router.push('/page-rules-courier')">
+        <ion-item lines="none" button detail @click="$router.push('/user/page-rules-courier')">
           <ion-icon :src="documentTextOutline" slot="start"></ion-icon>
-          <router-link :to="page-rules-courier">Правила пользования для курьера</router-link>
+          <router-link to="/user/page-rules-courier">Правила пользования для курьера</router-link>
         </ion-item>
       </ion-list>
     </div>

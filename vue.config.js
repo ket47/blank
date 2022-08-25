@@ -20,7 +20,7 @@ module.exports = {
       shortcuts: [
         {
           "name": "Главная",
-          "url": "#/home",
+          "url": "#/catalog",
           "description": "Магазины и рестораны поблизости"
         },
         {
@@ -30,12 +30,12 @@ module.exports = {
         },
         {
           "name": "Заказы",
-          "url": "#/order-list",
+          "url": "#/order",
           "description": "Все заказы и задания"
         },
         {
           "name": "Личный кабинет",
-          "url": "#/user-dashboard",
+          "url": "#/user",
           "description": "Управление настройками пользователя"
         }
       ],

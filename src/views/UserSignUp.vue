@@ -121,7 +121,7 @@
         
         <ion-row responsive-sm>
           <ion-col>
-          <router-link to="/sign-in">
+          <router-link to="/user/sign-in">
             <ion-button color="light" expand="block">Уже есть учетная запись?</ion-button>
           </router-link>
           </ion-col>

@@ -1,5 +1,5 @@
 <template>
-  <base-layout page-title="Confirm Password" page-default-back-link="/sign-in">
+  <base-layout page-title="Confirm Password">
       <form novalidate>
         <ion-list>
           <ion-item>

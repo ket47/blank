@@ -37,7 +37,7 @@
             <div style="position:relative;top:-50%;">
                 <cart-add-buttons buttonLayout="vertical" :productItem="productItem"></cart-add-buttons>
             </div>
-            <ion-img @click="$router.push(`product-${productItem.product_id}`)" :src="`${$heap.state.hostname}image/get.php/${productItem.image_hash}.200.200.webp`"/>
+            <ion-img @click="$router.push(`/catalog/product-${productItem.product_id}`)" :src="`${$heap.state.hostname}image/get.php/${productItem.image_hash}.200.200.webp`"/>
         </div>
         <div style="height:4em;overflow:hidden">
             <span v-if="productItem.product_price!=productItem.product_final_price" style="color:var(--ion-color-danger)">

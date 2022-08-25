@@ -5,12 +5,12 @@
 }
 </style>
 <template>
-  <base-layout page-title="Поиск товаров" pageDefaultBackLink="/home">
+  <base-layout page-title="Поиск товаров">
     <ion-searchbar class="search-container" v-model="query" @input="delayedListGet()" placeholder="начните искать"></ion-searchbar>
     <div v-if="found" style="background-color:var(--ion-color-light-tint);padding:10px">
       <ion-title>Найденные товары</ion-title>
       <ion-list v-for="store in found.product_matches" :key="store.store_id" style="border-radius:10px;margin-top:30px;">
-          <ion-item detail button @click="$router.push(`store-${store.store_id}`)" lines="full">
+          <ion-item detail button @click="$router.push(`/search/store-${store.store_id}`)" lines="full">
             <ion-thumbnail slot="start">
               <ion-img style="border-radius:10px" :src="`${$heap.state.hostname}image/get.php/${store.image_hash}.150.150.webp`"/>
             </ion-thumbnail>
@@ -29,7 +29,10 @@
     </div>
     <div v-else>
       <ion-card color="light">
-        <ion-card-content>Ничего не найдено</ion-card-content>
+        <ion-card-header>
+          <ion-card-title>Ничего не найдено.</ion-card-title>
+        </ion-card-header>
+        <ion-card-content>Возможно у нас нет того что вы ищите или вы находитель слишком далеко</ion-card-content>
       </ion-card>
     </div>
   </base-layout>
@@ -45,7 +48,9 @@ import {
   IonItem,
   IonList,
   IonCard,
-  IonCardContent
+  IonCardContent,
+  IonCardTitle,
+  IonCardHeader,
 }                       from '@ionic/vue'
 import jQuery           from 'jquery'
 import Utils            from '@/scripts/Utils.js'
@@ -64,6 +69,8 @@ export default  {
   IonList,
   IonCard,
   IonCardContent,
+  IonCardTitle,
+  IonCardHeader,
   ProductItem
   },
   data(){
@@ -79,7 +86,9 @@ export default  {
     this.delayedListGet()
     let self=this;
     this.$topic.on('userGet',user=>{
-      //self.delayedListGet()//repeated loadings
+      if(!this.found){
+        self.listGet()//repeated loadings
+      }
     })
   },
   methods:{

@@ -20,17 +20,17 @@
           </router-link>
           </div>
           <div>
-          <router-link to="/page-contacts">
+          <router-link to="/user/page-contacts">
             <ion-label>Контакты</ion-label>
           </router-link>
           </div>
           <div>
-          <router-link to="/page-rules-customer">
+          <router-link to="/user/page-rules-customer">
             <ion-label>Правила пользования</ion-label>
           </router-link>
           </div>
           <div>
-          <router-link to="/page-privacy_policy">
+          <router-link to="/user/page-privacy_policy">
             <ion-label>Политика конфиденциальности</ion-label>
           </router-link>
           </div>
