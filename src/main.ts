@@ -146,7 +146,7 @@ navigator.serviceWorker.onmessage = (event) => {
   if(event.data.data.type === 'flash'){
     flash(event.data.body)
   } else
-  if(event.data.data.body && event.data.data.title){
+  if(event.data.data.body){
     alert(event.data.data.body,event.data.data.title)
   } else {
     console.log('UNHANDLED WEBPUSH',event.data)

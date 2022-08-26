@@ -24,7 +24,7 @@
 </style>
 
 <template>
-  <base-layout :page-title="this.storeItem?.store_name??'Мой магазин'" :page-default-back-link="'store-'+this.storeId">
+  <base-layout :page-title="this.storeItem?.store_name??'Мой магазин'" :page-default-back-link="`store-`+storeId">
     <ion-card :color="validity_perc<validity_min?'danger':''">
       <ion-card-header>
         <ion-label>Анкета заполнена на {{validity_perc}}%</ion-label>
@@ -64,7 +64,7 @@
         На модерации
         <ion-toggle slot="end" v-model="is_disabled" @ionChange="itemDisable($event.target.checked?1:0)"></ion-toggle>
       </ion-item>
-      <ion-button :to="'store-'+storeId" expand="full">Открыть {{storeItem.store_name}}</ion-button>
+      <ion-button @click="$router.push('/catalog/store-'+storeId)" expand="full">Открыть {{storeItem.store_name}}</ion-button>
       <ion-item-divider>Добавление товара</ion-item-divider>
       <ion-item @click="productItemCreate()" button>
         <ion-icon :src="addOutline" slot="start"/>
@@ -84,11 +84,11 @@
           <ion-text>
             {{storeItem.store_name}}
             <div>
-              <ion-button @click="storeItem.store_name_new=storeItem.store_name;save('store_name_new',storeItem.store_name_new)">Изменить</ion-button>
+              <ion-button @click="is_name_edited=1;storeItem.store_name_new=storeItem.store_name;save('store_name_new',storeItem.store_name_new)">Изменить</ion-button>
             </div>
           </ion-text>
         </ion-item>
-        <ion-item v-if="storeItem.store_name_new||!storeItem.store_name">
+        <ion-item v-if="is_name_edited||!storeItem.store_name">
           <ion-label position="stacked" color="primary">Название непроверенное *</ion-label>
           <ion-input v-model="storeItem.store_name_new" name="store_name_new"/>
           <ion-icon v-if="isAdmin" :icon="checkmarkCircleOutline" slot="end" color="success" @click="fieldApprove('store_name')"/>
@@ -99,11 +99,11 @@
           <ion-text>
             {{storeItem.store_description}}
             <div>
-            <ion-button @click="storeItem.store_description_new=storeItem.store_description;save('store_description_new',storeItem.store_description_new)">Изменить</ion-button>
+            <ion-button @click="is_desc_edited=1;storeItem.store_description_new=storeItem.store_description;save('store_description_new',storeItem.store_description_new)">Изменить</ion-button>
             </div>
           </ion-text>
         </ion-item>
-        <ion-item v-if="storeItem.store_description_new||!storeItem.store_description">
+        <ion-item v-if="is_desc_edited||!storeItem.store_description">
           <ion-label position="stacked" color="primary">Описание непроверенное *</ion-label>
           <ion-textarea v-model="storeItem.store_description_new" name="store_description_new" rows="6"></ion-textarea>
           <ion-icon v-if="isAdmin" :icon="checkmarkCircleOutline" slot="end" color="success" @click="fieldApprove('store_description')"/>
@@ -298,7 +298,7 @@
       <ion-item-divider>
           <ion-label>Адинистраторы</ion-label>
       </ion-item-divider>
-      <ion-item v-if="$heap.state.user.user_id=storeItem.owner_id">
+      <ion-item v-if="$heap.state.user.user_id==storeItem.owner_id">
         <ion-icon :src="personOutline" slot="start" color="primary"/>
         <ion-label>Вы (Суперадмин)</ion-label>
       </ion-item>
@@ -306,9 +306,9 @@
       <ion-item v-for="owner in ownerList" :key="owner.user_id">
         <ion-icon :src="personOutline" slot="start" color="primary"/>
         <ion-label>{{owner.user_phone}}</ion-label>
-        <ion-icon :src="trashOutline" slot="end" @click="ownerDelete(owner.user_id)"/>
+        <ion-icon v-if="$heap.state.user.user_id==storeItem.owner_id" :src="trashOutline" slot="end" @click="ownerDelete(owner.user_id)"/>
       </ion-item>
-      <ion-item button @click="ownerAdd()">
+      <ion-item v-if="$heap.state.user.user_id==storeItem.owner_id" button @click="ownerAdd()">
         <ion-icon :src="addOutline" slot="start" color="primary"/>
         <ion-label>Добавить администратора</ion-label>
       </ion-item>
@@ -427,6 +427,8 @@ export default  {
       storeItem: null,
       storeGroupList:null,
       ownerList:null,
+      is_name_edited:0,
+      is_desc_edited:0,
       is_deleted:0,
       is_disabled:0,
       is_working:0,
@@ -798,7 +800,6 @@ export default  {
     },
     async apiTokenShow(){
       const request={
-        'owner_id':this.$heap.state?.user?.user_id,
         'token_holder':'store',
         'token_holder_id':this.storeId
       }
@@ -811,7 +812,6 @@ export default  {
         navigator.clipboard.writeText(this.apiToken.token_hash);
         this.$flash("Токен скопирован")
       }
-      
     }
   },
 }

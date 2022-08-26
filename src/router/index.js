@@ -103,6 +103,11 @@ const routes = [
         props: true
       },
       {
+        path: '/user/user-invoice',
+        component: () => import('@/views/UserInvoiceList.vue'),
+        props: true
+      },
+      {
         path: '/user/verify-phone',
         name:'UserVerifyPhone',
         component: () => import('@/views/UserVerifyPhone.vue'),
@@ -127,10 +132,6 @@ const routes = [
       {
         path: '/user/text-list',
         component: () => import('@/views/TextListView.vue')
-      },
-      {
-        path: '/user/page-:id',
-        component: () => import('@/views/TextPageView.vue')
       },
       {
         path: '/user/admin-moderation',
@@ -160,6 +161,10 @@ const routes = [
       {
         path: '/about-us',
         component: () => import('@/views/AboutUs.vue')
+      },
+      {
+        path: '/page-:id',
+        component: () => import('@/views/TextPageView.vue')
       },
       {
         path: '/error-offline',

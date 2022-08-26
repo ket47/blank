@@ -15,7 +15,7 @@
               <ion-tab-button tab="tab1" href="/catalog" routerDirection="backward">
                 <ion-row>
                   <ion-icon :icon="homeIcon"/>
-                  <ion-label>Главная</ion-label>
+                  <ion-label>Каталог</ion-label>
                 </ion-row>
               </ion-tab-button>
               <ion-tab-button tab="tab2" href="/search" routerDirection="backward">
@@ -24,16 +24,16 @@
                   <ion-label>Поиск</ion-label>
                 </ion-row>
               </ion-tab-button>
-              <ion-tab-button tab="tab3" href="/order-list" routerDirection="backward">
+              <ion-tab-button tab="tab3" href="/order" routerDirection="backward">
                 <ion-row>
                   <ion-icon :icon="ordersIcon"/>
                   <ion-label>Заказы</ion-label>
                 </ion-row>
               </ion-tab-button>
-              <ion-tab-button tab="tab4" href="/user-dashboard" routerDirection="backward">
+              <ion-tab-button tab="tab4" href="/user" routerDirection="backward">
                 <ion-row>
                   <ion-icon :icon="personIcon"/>
-                  <ion-label>Аккаунт</ion-label>
+                  <ion-label>Профиль</ion-label>
                 </ion-row>
               </ion-tab-button>
             </ion-tab-bar>

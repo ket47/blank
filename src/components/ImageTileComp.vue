@@ -53,7 +53,7 @@ ion-avatar{
             </div>
         </div>
     </div>
-    <input type="file" :id="fileUploaderId" accept="image/*" @change="uploadImage($event)" style="display:none">
+    <input type="file" :id="fileUploaderId" accept=".png, .jpg, .jpeg, .webp, .gif" @change="uploadImage($event)" style="display:none">
 </template>
 <script>
 import {
@@ -195,6 +195,10 @@ export default {
             } catch(err){
                 if(err?.responseJSON?.messages?.error=='limit_exeeded'){
                     this.$flash("Уже загружено максимальное количество фото");
+                    return;
+                }
+                if(err?.responseJSON?.messages?.error=='no_valid_images'){
+                    this.$flash("Формат файла не поддерживается");
                     return;
                 }
                 this.$flash("Не удалось загрузить фото");

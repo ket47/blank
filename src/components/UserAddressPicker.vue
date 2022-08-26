@@ -22,6 +22,7 @@ import {
     IonSearchbar,
     IonHeader,
     IonIcon,
+    IonTitle,
     modalController
 }                           from "@ionic/vue";
 import { loadYmap }         from "vue-yandex-maps";
@@ -35,6 +36,7 @@ export default({
     IonSearchbar,
     IonHeader,
     IonIcon,
+    IonTitle
     },
     setup() {
         const closeModal = function(){

@@ -4,10 +4,7 @@ ion-icon{
 }
 </style>
 <template>
-  <base-layout
-    page-title="Личный кабинет"
-    pageDefaultBackLink="/home"
-  >
+  <base-layout page-title="Личный кабинет">
     <div class="user-dashboard-header">
       <ion-list>
         <ion-item v-if="isSignedIn" lines="full" class="avatar-row">
@@ -52,7 +49,7 @@ ion-icon{
           <ion-label>Пользователь</ion-label>
         </ion-item-divider>
         <div>
-          <ion-item lines="full" button detail @click="$router.push('user-addresses')">
+          <ion-item lines="full" button detail @click="$router.push('/user/user-addresses')">
               <ion-icon :icon="locationOutline" slot="start" color="primary"></ion-icon>
               <ion-label>Мои адреса</ion-label>
           </ion-item>
@@ -63,6 +60,10 @@ ion-icon{
           <ion-item lines="full" button detail @click="$router.push('user-promo')">
               <ion-icon :icon="giftOutline" slot="start" color="primary"></ion-icon>
               <ion-label>Мои скидки</ion-label>
+          </ion-item>
+          <ion-item lines="full" button detail @click="$router.push('user-invoice')">
+              <ion-icon :icon="receiptOutline" slot="start" color="primary"></ion-icon>
+              <ion-label>Мои чеки</ion-label>
           </ion-item>
           <!--
           <ion-item lines="full" button detail @click="$router.push('msg-dashboard')">
@@ -187,7 +188,7 @@ ion-icon{
           </ion-item>   
         </div>
         <div v-else-if="storeList.length>0">
-          <ion-item v-for="store in storeList" :key="store.store_id" detail button @click="$router.push(`store-edit-${store.store_id}`)">
+          <ion-item v-for="store in storeList" :key="store.store_id" detail button @click="$router.push(`/catalog/store-edit-${store.store_id}`)">
             <ion-icon :icon="storefrontOutline" slot="start"></ion-icon>
             {{store.store_name||'- - -'}}
           </ion-item>        
@@ -279,6 +280,7 @@ import {
   giftOutline,
   personAddOutline,
   ribbonOutline,
+  receiptOutline,
 } from "ionicons/icons";
 
 import User     from "@/scripts/User.js";
@@ -324,6 +326,7 @@ export default {
       giftOutline,
       personAddOutline,
       ribbonOutline,
+      receiptOutline,
     };
   },
   data() {

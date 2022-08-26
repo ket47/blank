@@ -170,7 +170,7 @@ export default({
                         break;
                     case 'address_not_set':
                         this.$flash("Необходимо добавить адрес доставки")
-                        this.$router.push('user-addresses');
+                        this.$router.push('/user/user-addresses');
                         break;
                     case 'order_sum_exceeded':
                         this.$flash("Сумма заказа должна быть меньше предоплаты")
@@ -190,7 +190,7 @@ export default({
         },
         async action_checkout(){
             this.$heap.commit('setCurrentOrder',this.order);
-            this.$router.push('order-checkout');
+            this.$router.push('/order/order-checkout');
         },
         // async action_add(){
         //     const modal = await modalController.create({

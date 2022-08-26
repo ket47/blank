@@ -33,7 +33,7 @@ ion-text{
         <ion-item>
           <ion-text>
           Подавая заявку вы даете согласие на условия 
-          <router-link to="/user/page-courier_contract">
+          <router-link to="/page-courier_contract">
             Оферта об оказании услуг доставки
           </router-link>
           </ion-text>
@@ -101,7 +101,7 @@ ion-text{
         </ion-item-divider>
         <ion-item lines="none" button detail @click="$router.push('/user/page-rules-courier')">
           <ion-icon :src="documentTextOutline" slot="start"></ion-icon>
-          <router-link to="/user/page-rules-courier">Правила пользования для курьера</router-link>
+          <router-link to="/page-rules-courier">Правила пользования для курьера</router-link>
         </ion-item>
       </ion-list>
     </div>

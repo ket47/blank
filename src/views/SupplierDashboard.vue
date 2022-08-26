@@ -36,7 +36,7 @@ ion-text{
         <ion-item>
           <ion-text>
           Подавая заявку вы даете согласие на условия 
-          <router-link :to="page-rules-supplier">Договор поставки товаров и услуг</router-link>
+          <router-link to="/page-rules-supplier">Договор поставки товаров и услуг</router-link>
           </ion-text>
           <ion-checkbox v-model="contractAccepted" slot="end"/>
         </ion-item>
