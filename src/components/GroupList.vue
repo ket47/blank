@@ -41,14 +41,12 @@
 import { 
   IonImg,
   IonThumbnail,
-  IonLabel,
 }                          from "@ionic/vue";
 import { defineComponent } from "@vue/runtime-core";
 export default defineComponent({
     components:{
         IonImg,
         IonThumbnail,
-        IonLabel,
     },
     props: ['groupList', 'onClick']
 })

@@ -89,7 +89,7 @@ export default  {
           this.$flash("Не удалось создать магазин или ресторан")
           return
         }
-        this.$router.push(`store-edit-${store_id}`)
+        this.$router.push(`/catalog/store-edit-${store_id}`)
       }catch(err){
         const message=err.responseJSON?.messages?.error;
         if( message=='limit_exeeded' ){

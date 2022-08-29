@@ -64,7 +64,7 @@
         <ion-icon :src="chevronBack" slot="start"/>
         Показать в магазине
       </ion-item>
-      <ion-item button @click="$router.push('store-edit-'+productItem.store_id)">
+      <ion-item button @click="$router.push('/catalog/store-edit-'+productItem.store_id)">
         <ion-icon :src="chevronBack" slot="start"/>
         Управление магазином
       </ion-item>

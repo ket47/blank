@@ -168,7 +168,7 @@ ion-chip .active-chip {
         <ion-list>
         <ion-item lines="none">
           <ion-text color="primary" style="font-size:1.2em;">{{ storeItem.store_name }}</ion-text>
-          <router-link slot="end" :to="'store-edit-' + storeItem.store_id" v-if="storeItem.is_writable==1">
+          <router-link slot="end" :to="'/catalog/store-edit-' + storeItem.store_id" v-if="storeItem.is_writable==1">
             <ion-icon :icon="settingsOutline" style="font-size:24px"></ion-icon>
           </router-link>
         </ion-item>
