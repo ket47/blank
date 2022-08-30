@@ -7,7 +7,7 @@
       </ion-toolbar>
   </ion-header>
   <ion-content>
-    <iframe :src="paymentLink" id="paymentFrame1" style="width: 100%; height: 600px;border:none" @load="onLoad()"></iframe>
+    <iframe :src="paymentLink" id="paymentFrame1" style="width: 100%; height: calc( 100% - 5px );border:none" @load="onLoad()"></iframe>
     <div v-if="loadAnimation" style="position:fixed;top:200px;left:calc( 50% - 50px )">
       <img :src="loading"/>
     </div>
