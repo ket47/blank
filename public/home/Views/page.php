@@ -284,7 +284,7 @@
 <style>
     @font-face {   
         font-family: 'Comfortaa';
-        src: url('Views/fonts/Comfortaa-VariableFont_wght.ttf');
+        src: url('/home/Views/fonts/Comfortaa-VariableFont_wght.ttf');
         font-display: swap;
     }
     body{

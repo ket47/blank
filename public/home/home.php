@@ -7,7 +7,7 @@ $expire_after=time()-3*60*60;//3 hours
 if( file_exists('home.html') && !$uri_page ){
     $delta=filectime('home.html')-$expire_after;
     if( $delta>0 ){
-        //require 'home.html';die;
+        require 'home.html';die;
     }
 }
 function parseDotEnv(){
