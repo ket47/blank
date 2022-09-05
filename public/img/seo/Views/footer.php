@@ -1,59 +1,34 @@
-<!DOCTYPE html>
-<html>
 
-<head>
-    <title><?=$store->store_name?> на Tezkel</title>
-    <meta name="description" content="<?=$store->store_description?>">
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta property="og:title" content="<?=$store->store_name?> на Tezkel" />
-    <meta property="og:description" content="<?=$store->store_description?>" />
-    <meta property="og:image" content="/img/icons/android-chrome-512x512.png" />
-    
-    <link rel="icon" type="image/png" sizes="32x32" href="/img/icons/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/img/icons/favicon-16x16.png">
-    <link rel="icon" type="image/svg" href="/img/icons/favicon.svg">
-    <link rel="manifest" href="/manifest.json">
-    <link rel="apple-touch-icon" href="/img/icons/apple-touch-icon-152x152.png">
-    <link rel="mask-icon" href="/img/icons/safari-pinned-tab.svg" color="#009dcd">
-    <meta name="theme-color" content="#009dcd">
-    <meta name="apple-mobile-web-app-capable" content="no">
-    <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <meta name="apple-mobile-web-app-title" content="tezkel">
-    <meta name="msapplicatTileImage" content="/img/icons/msapplicaticon-144x144.png">
-    <meta name="msapplicatTileColor" content="#009dcd">
-</head>
-
-<body>
-<script>
-    function go(hash){
-        document.cookie='skipto=app;'
-        location.href='/#'+hash;
-        location.reload();
-    }
-</script>
-    <div class="store-item" onclick="go('/catalog/store-<?=$store->store_id ?>')">
-        <div class="store-left">
-            <div class="image"><img src="<?=$image_host?>/<?=$store->image_hash?>.250.250.jpg" alt="<?=$store->store_name?>"/></div>
+    <footer class="desktop-footer md footer-md footer-collapse-fade" role="contentinfo">
+        <!---->
+        <div class="desktop-footer-container">
+            <div class="desktop-footer-top">
+                <a href="" class="">
+                    <div>
+                        <img src="/img/logo_full_transparent.png" class="md" style="width: 150px; height: auto;"></img>
+                         <div><label class="md title-default">Быстро и удобно</label></div>
+                    </div>
+                </a>
+            </div>
+            <div class="desktop-footer-bottom">
+                <div style="padding-top: 15px;">
+                    <label class="sc-label-md-h sc-label-md-s md">Все права защищены. 2021-<?=date('Y')?> iSellSoft © </label>
+                </div>
+                <div>
+                    <a href="https://uniteller.ru" target="_new">
+                        <img src="/img/uniteller.png" class="md" style="width: 200px; height: auto;"></img>
+                    </a>
+                </div>
+            </div>
         </div>
-        <div class="store-right">
-            <div class="phone"><?=$store->store_phone?></div>
-            <a href="/storeItem/<?=$store->store_id ?>">
-                <h3 class="title"><?=$store->store_name?></h3>
-            </a>
-            <div class="description"><?=$store->store_description?></div>
-            <hr>
-            <div class="address"><?=$store->location_address?></div>
-        </div>
-    </div>
+    </footer>
 </body>
 
 </html>
 <style>
     @font-face {   
         font-family: 'Comfortaa';
-        src: url('Views/fonts/Comfortaa-VariableFont_wght.ttf');
+        src: url('/seo/Views/fonts/Comfortaa-VariableFont_wght.ttf');
         font-display: swap;
     }
     body{
@@ -517,4 +492,71 @@
             display: none;
         }
     }
+
+
+    
+    .store-item{
+        min-height: 60%;
+        width: 90%;
+        margin: 20% auto;
+        background-color: white;
+        border-radius: 10px;
+        overflow: hidden;
+        font-size: 14px;
+        display: grid;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+    }
+    .store-item .store-left{
+        
+    }
+    .store-item .store-left .image{
+        overflow: hidden;
+    }
+    .store-item .store-left .image img{
+        min-height: 150px;
+        width: auto;
+        border-radius: 10px;
+    }
+    .store-item .store-right{
+        padding: 0.5em;
+    }
+    .store-item .store-right .store-name{
+        display: inline-block;
+        padding: 7px 10px;
+        background-color: #eefcf4;
+        border-radius: 22px;
+        color: rgb(40, 186, 98);
+        min-height: 1em;
+    }
+    .store-item .store-right .name a{
+        margin: 5px 0;
+        min-height: 2.4em;
+        height: 2.4em;
+        font-size: 1em;
+        overflow: hidden;
+        line-height: 1.2em;
+        margin: 5px 0;
+        text-overflow: ellipsis;
+        font-weight: 900;
+        text-decoration: none;
+        color: #009dcd;
+    }
+    .store-item .store-right .description{
+        color: gray;
+        min-height: 2.4em;
+        height: 2.4em;
+        font-size: 1em;
+        overflow: hidden;
+        line-height: 1.2em;
+        margin: 5px 0;
+        text-overflow: ellipsis;
+    }
+    .store-item .store-right .address{
+        font-size: 12px;
+    }
+
+
+    
 </style>

@@ -58,6 +58,9 @@ class HomeModel{
         $limit=$filter['limit']?$this->db->esc($filter['limit']):12;
         $offset=$filter['page']*$limit;
 
+        $store_case=isset($filter['store_id'])?"AND store_id={$filter['store_id']}":"";
+
+
         $sql="
             SELECT
                 product_id,
@@ -78,6 +81,7 @@ class HomeModel{
             WHERE
                 product_list.is_disabled=0
                 AND product_list.deleted_at IS NULL
+                $store_case
             ORDER BY product_list.updated_at DESC
             LIMIT $limit OFFSET $offset
         ";

@@ -211,23 +211,23 @@ ion-icon{
         <ion-item-divider>
           <ion-label>Информация</ion-label>
         </ion-item-divider>
-        <ion-item lines="full" button detail @click="$router.push('/about-us')">
+        <ion-item lines="full" button detail @click="$router.push('/page/about-us')">
             <ion-icon :icon="informationCircleOutline" slot="start" color="primary"></ion-icon>
             <ion-text>О нас</ion-text>
         </ion-item>
-        <ion-item lines="full" button detail @click="$router.push('/page-rules-customer')">
+        <ion-item lines="full" button detail @click="$router.push('/page/rules-customer')">
             <ion-icon :icon="informationCircleOutline" slot="start" color="primary"></ion-icon>
             <ion-text>Правила пользования</ion-text>
         </ion-item>
-        <ion-item lines="full" button detail @click="$router.push('/page-rules-supplier')">
+        <ion-item lines="full" button detail @click="$router.push('/page/rules-supplier')">
             <ion-icon :icon="informationCircleOutline" slot="start" color="primary"></ion-icon>
             <ion-text>Правила пользования для продавца</ion-text>
         </ion-item>
-        <ion-item lines="full" button detail @click="$router.push('/page-rules-courier')">
+        <ion-item lines="full" button detail @click="$router.push('/page/rules-courier')">
             <ion-icon :icon="informationCircleOutline" slot="start" color="primary"></ion-icon>
             <ion-text>Правила пользования для курьера</ion-text>
         </ion-item>
-        <ion-item lines="full" button detail @click="$router.push('/page-privacy_policy')">
+        <ion-item lines="full" button detail @click="$router.push('/page/privacy_policy')">
             <ion-icon :icon="informationCircleOutline" slot="start" color="primary"></ion-icon>
             <ion-text>Политика конфиденциальности</ion-text>
         </ion-item>
