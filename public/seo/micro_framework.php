@@ -1,6 +1,6 @@
 <?php
 spl_autoload_register(function ($class_name) {
-    include_once $class_name . '.php';
+    include_once __DIR__.'/'.str_replace('\\','/',$class_name) . '.php';
 });
 function handleCors(){
     header("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, access-control-allow-origin");
