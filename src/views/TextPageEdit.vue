@@ -16,7 +16,7 @@
     <ion-grid style="width:100%">
         <ion-row>
             <ion-col>
-                <ion-button @click="$router.push('text-list')" color="light">К списку страниц</ion-button>
+                <ion-button @click="$router.push('/user/text-list')" color="light">К списку страниц</ion-button>
             </ion-col>
             <ion-col style="text-align:right">
                 <ion-button @click="itemDelete()" color="danger">Удалить</ion-button>
@@ -99,7 +99,7 @@ export default {
           }
       } else {
           this.$flash('Страница для администраторов')
-          this.$router.push('/home')
+          this.$router.push('/catalog')
       }
   },
   methods:{
@@ -133,7 +133,7 @@ export default {
           try{
               await jQuery.post(this.$heap.state.hostname+'Page/itemDelete',{page_id})
               this.$flash("Страница удалена")
-              this.$router.push('/text-list')
+              this.$router.push('/user/text-list')
           } catch{/** */}
       }
   }

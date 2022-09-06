@@ -86,7 +86,7 @@
 
             <ion-item lines="none">
                 <ion-text style="font-size:0.9em">
-                    Я согласен(на) с <router-link to="/page/rules-customer">офертой об оказании услуг доставки</router-link>
+                    Я согласен(на) с <router-link to="/page-rules-customer">офертой об оказании услуг доставки</router-link>
                 </ion-text>
                 <ion-checkbox slot="end" v-model="termsAccepted"/>
             </ion-item>

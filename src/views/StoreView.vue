@@ -173,23 +173,23 @@ ion-chip .active-chip {
           </router-link>
         </ion-item>
         <ion-item lines="none">
-          <ion-text style="text-align:justify" color="medium">{{storeItem.store_description}}</ion-text>
+          <ion-text style="font-size:0.9em;text-align:justify" color="medium">{{storeItem.store_description}}</ion-text>
         </ion-item>
         <ion-item lines="none"></ion-item>
 
-        <ion-item lines="none">
+        <ion-item lines="none" style="font-size:0.8em">
           <ion-text>{{ storeItem.store_group_names }}</ion-text>
           <store-opened-indicator :storeItem="storeItem"/>
         </ion-item>
-        <ion-item lines="none">
+        <ion-item lines="none" style="font-size:0.8em">
           <ion-text>Доставит <b style="color:var(--ion-color-primary)">{{$heap.getters.settings.app_title}}</b></ion-text>
-          <ion-chip slot="end" v-if="storeItem?.deliveryTime?.timeMin" color="primary">
+          <ion-chip slot="end" v-if="storeItem.deliveryTime" color="primary">
             {{storeItem.deliveryTime.timeMin}}-{{storeItem.deliveryTime.timeMax}}мин
           </ion-chip>
         </ion-item>
-        <ion-item lines="none">
-          <ion-text slot="start" v-if="$heap.getters.settings.delivery.fee>0">доставка <ion-text color="secondary">{{$heap.getters.settings.delivery.fee}}₽</ion-text></ion-text>
-          <ion-text slot="end" v-if="storeItem.store_minimal_order>0">заказ от <ion-text color="secondary">{{storeItem.store_minimal_order}}₽</ion-text></ion-text>
+        <ion-item lines="none" style="font-size:0.8em" v-if="storeItem.deliveryTime">
+          <ion-text slot="start">доставка <ion-text color="secondary">{{$heap.getters.settings.delivery.fee}}₽</ion-text></ion-text>
+          <ion-text slot="end">заказ от <ion-text color="secondary">{{storeItem.store_minimal_order}}₽</ion-text></ion-text>
         </ion-item>
       </ion-list>
 

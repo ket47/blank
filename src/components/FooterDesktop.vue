@@ -7,30 +7,30 @@
       </div>
       -->
       <div class="desktop-footer-top">
-        <router-link to="/home">
+        <router-link to="/">
         <div>
-          <ion-img src="./img/logo_full_transparent.png" style="width:150px;height:auto"/>
+          <ion-img src="/img/logo_full_transparent.png" style="width:150px;height:auto"/>
           <ion-title>Быстро и удобно</ion-title>
         </div>
         </router-link>
         <div>
           <div>
-          <router-link to="/about-us">
+          <router-link to="/page/about-us">
             <ion-label>О нас</ion-label>
           </router-link>
           </div>
           <div>
-          <router-link to="/page-contacts">
+          <router-link to="/page/contacts">
             <ion-label>Контакты</ion-label>
           </router-link>
           </div>
           <div>
-          <router-link to="/page-rules-customer">
+          <router-link to="/page/rules-customer">
             <ion-label>Правила пользования</ion-label>
           </router-link>
           </div>
           <div>
-          <router-link to="/page-privacy_policy">
+          <router-link to="/page/privacy_policy">
             <ion-label>Политика конфиденциальности</ion-label>
           </router-link>
           </div>
@@ -38,11 +38,11 @@
       </div>
       <div class="desktop-footer-bottom">
           <div style="padding-top:15px">
-            <ion-label>Все права защищены. 2022 iSellSoft © </ion-label>
+            <ion-label>Все права защищены. 2021-{{year}} iSellSoft © </ion-label>
           </div>
           <div>
             <a href="https://uniteller.ru" target="_new">
-              <ion-img src="./img/uniteller.png" style="width:200px;height:auto"/>
+              <ion-img src="/img/uniteller.png" style="width:200px;height:auto"/>
             </a>
           </div>
       </div>
@@ -64,6 +64,11 @@ export default defineComponent({
     IonLabel,
     IonImg,
     IonTitle
+  },
+  data(){
+    return {
+      year:(new Date()).getUTCFullYear()
+    }
   },
   computed:{
     cartListTotal(){
