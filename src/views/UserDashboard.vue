@@ -141,7 +141,7 @@ ion-icon{
             </ion-text>
           </ion-item>
           <ion-item style="--background:var(--ion-color-warning-tint)" button lines="full" @click="courierStatusSet('ready')">
-            <ion-icon src="./assets/icon/delivery-man.svg" slot="start"></ion-icon>
+            <ion-icon :icon="rocketOutline" slot="start"></ion-icon>
             <ion-button slot="end">Начать смену</ion-button>
           </ion-item>
         </div>
@@ -154,7 +154,7 @@ ion-icon{
             </ion-text>
           </ion-item>
           <ion-item style="--background:var(--ion-color-warning-tint)" button lines="full">
-            <ion-icon src="./assets/icon/delivery-man.svg" slot="start"></ion-icon>
+            <ion-icon :icon="rocketOutline" slot="start"></ion-icon>
           </ion-item>
         </div>
 
@@ -166,8 +166,8 @@ ion-icon{
             </ion-text>
           </ion-item>
           <ion-item button lines="full" @click="$router.push('courier-dashboard')">
-            <ion-icon src="./assets/icon/delivery-man.svg" slot="start"></ion-icon>
-            <ion-button slot="end" color="light">Заполнить анкету</ion-button>
+            <ion-icon :icon="rocketOutline" slot="start"></ion-icon>
+            <ion-button slot="end" color="light">Стать курьером</ion-button>
           </ion-item>
         </div>
         <ion-item v-else lines="full" button detail @click="$router.push('courier-dashboard')">
@@ -202,7 +202,7 @@ ion-icon{
           </ion-item>
           <ion-item @click="$router.push(`supplier-dashboard`)" lines="full">
             <ion-icon :icon="storefrontOutline" slot="start"></ion-icon>
-            <ion-button slot="end" color="light">Стать продавцем</ion-button>
+            <ion-button slot="end" color="light">Стать продавцом</ion-button>
           </ion-item>
         </div>
       </ion-item-group>
@@ -281,6 +281,7 @@ import {
   personAddOutline,
   ribbonOutline,
   receiptOutline,
+  rocketOutline,
 } from "ionicons/icons";
 
 import User     from "@/scripts/User.js";
@@ -327,6 +328,7 @@ export default {
       personAddOutline,
       ribbonOutline,
       receiptOutline,
+      rocketOutline,
     };
   },
   data() {
