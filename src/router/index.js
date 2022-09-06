@@ -163,10 +163,6 @@ const routes = [
         component: () => import('@/views/AboutUs.vue')
       },
       {
-        path: '/supplier-guide',
-        component: () => import('@/views/SupplierGuide.vue')
-      },
-      {
         path: '/page-:id',
         component: () => import('@/views/TextPageView.vue')
       },
