@@ -1,5 +1,5 @@
 <template>
-  <base-layout pageDefaultBackLink="/home" page-title="Заказы">
+  <base-layout pageDefaultBackLink="/" page-title="Заказы">
         <ion-segment swipe-gesture="true" v-model="orderType" @ionChange="listTypeChanged($event)">
             <ion-segment-button value="jobs" v-if="courierJobsInclude">
                 Задания
