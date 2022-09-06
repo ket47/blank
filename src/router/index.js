@@ -1,15 +1,15 @@
-import { createRouter, createWebHistory, } from '@ionic/vue-router';
+import { createRouter, createWebHashHistory, } from '@ionic/vue-router';
 
 import BaseTabs from '@/components/BaseTabs.vue'
-
-const already_visited_app=localStorage?.already_visited_app?true:false;
-const homePath=already_visited_app?'/catalog':'/page/about-us';
-localStorage.already_visited_app=1;
 
 const routes = [
   {
     path: '/',
-    redirect: homePath
+    redirect: '/catalog'
+  },
+  {
+    path: '/home',
+    redirect: '/catalog'
   },
   {
     path: '/',
@@ -159,11 +159,11 @@ const routes = [
 
 
       {
-        path: '/page/about-us',
+        path: '/about-us',
         component: () => import('@/views/AboutUs.vue')
       },
       {
-        path: '/page/:id',
+        path: '/page-:id',
         component: () => import('@/views/TextPageView.vue')
       },
       {
@@ -180,7 +180,7 @@ const routes = [
 ]
 
 const router = createRouter({
-  history: createWebHistory(process.env.BASE_URL),
+  history: createWebHashHistory(process.env.BASE_URL),
   routes
 })
 export default router
