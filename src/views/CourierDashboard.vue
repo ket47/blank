@@ -10,7 +10,6 @@ ion-text{
   color:black;
   padding:20px;
   border-radius:10px;
-  font-size: 12px;;
 }
 .disabled{
   background-color: var(--ion-color-light-shade);
@@ -26,20 +25,20 @@ ion-text{
 <template>
   <base-layout page-title="Анкета курьера" page-default-back-link="/user/user-dashboard">
     <div v-if="!courier">
-      <ion-card>
-        <ion-item>
-          <ion-label>Подача заявки</ion-label>
-        </ion-item>
-        <ion-item>
-          <ion-text>
-          Подавая заявку вы даете согласие на условия 
-          <router-link to="/page-courier_contract">
-            Оферта об оказании услуг доставки
-          </router-link>
-          </ion-text>
-          <ion-checkbox v-model="contractAccepted" slot="end"/>
-        </ion-item>
-        <ion-button expand="full" @click="itemCreate()" :disabled="!contractAccepted">Стать курьером</ion-button>
+      <ion-card color="light">
+        <ion-card-header>
+          <ion-card-title>Пока вы не курьер</ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <ion-item lines="none">
+            <ion-text>
+              Подавая заявку вы даете согласие на условия 
+              <router-link to="/page/rules-courier">Оферта об оказании услуг доставки</router-link>
+            </ion-text>
+            <ion-checkbox slot="end" v-model="contractAccepted"/>
+          </ion-item>
+        <ion-button expand="block" @click="itemCreate()" :disabled="!contractAccepted">Стать курьером</ion-button>
+        </ion-card-content>
       </ion-card>
     </div>
 
@@ -80,7 +79,7 @@ ion-text{
             <ion-input v-model="courier.courier_tax_num" placeholder="Ваш ИНН"/>
           </ion-item>
           <ion-item lines="full">
-            <ion-label position="stacked" color="primary">Коментарий</ion-label>
+            <ion-label position="stacked" color="primary">Комментарий</ion-label>
             <ion-textarea v-model="courier.courier_comment" placeholder="Цвет, номер авто"></ion-textarea>
           </ion-item>
         </ion-list>
@@ -99,9 +98,9 @@ ion-text{
         <ion-item-divider>
           <ion-label>Информация</ion-label>
         </ion-item-divider>
-        <ion-item lines="none" button detail @click="$router.push('/user/page-rules-courier')">
+        <ion-item lines="none" button detail @click="$router.push('/page/rules-courier')">
           <ion-icon :src="documentTextOutline" slot="start"></ion-icon>
-          <router-link to="/page-rules-courier">Правила пользования для курьера</router-link>
+          <router-link to="/page/rules-courier">Правила пользования для курьера</router-link>
         </ion-item>
       </ion-list>
     </div>
@@ -113,7 +112,10 @@ import {
   IonTextarea,
   IonInput,
   IonCard,
+  IonCardHeader,
+  IonCardTitle,
   IonCardContent,
+
   IonLabel,
   IonItem,
   IonButton,
@@ -141,7 +143,10 @@ export default  {
   IonTextarea,
   IonInput,
   IonCard,
+  IonCardHeader,
+  IonCardTitle,
   IonCardContent,
+
   IonLabel,
   IonItem,
   IonButton,
