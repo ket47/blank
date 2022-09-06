@@ -30,7 +30,7 @@ ion-card{
       Поэтому магазинов и ресторанов в вашем районе может быть не так много.</p>
       Позвоните нам по телефону <a href="callto:+79785451935">+7 (978) 54-51-935</a> и мы поможем оформить ваше предприятие в нашем сервисе.
       <ion-button onclick="location.href='callto:+79785451935'" expand="block" color="success">Позвонить</ion-button>
-      <ion-button onclick="$router.push('/page/supplier-guide')" expand="block">Как стать продавцом</ion-button>
+      <ion-button :onclick="$router.push('/page/supplier-guide')" expand="block">Как стать продавцом</ion-button>
     </ion-card-content>
   </ion-card>
 
