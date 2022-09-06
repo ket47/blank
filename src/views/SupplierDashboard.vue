@@ -10,7 +10,6 @@ ion-text{
   color:black;
   padding:20px;
   border-radius:10px;
-  font-size: 12px;;
 }
 .disabled{
   background-color: var(--ion-color-light-shade);
@@ -24,23 +23,25 @@ ion-text{
 }
 </style>
 <template>
-  <base-layout page-title="Анкета поставщика" page-default-back-link="/user-dashboard">
-      <ion-card>
-        <ion-item>
-          <ion-label>Пока вы не поставщик</ion-label>
-        </ion-item>
-        <ion-item lines="full">
+  <base-layout page-title="Анкета продавца" page-default-back-link="/user-dashboard">
+      <ion-card color="light">
+        <ion-card-header>
+          <ion-card-title>Пока вы не продавец</ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <ion-item lines="full">
             <ion-label position="stacked" color="primary">Название магазина или ресторана*</ion-label>
             <ion-input v-model="store_name" placeholder="Название*"></ion-input>
           </ion-item>
-        <ion-item>
-          <ion-text>
-          Подавая заявку вы даете согласие на условия 
-          <router-link to="/page-rules-supplier">Договор поставки товаров и услуг</router-link>
-          </ion-text>
-          <ion-checkbox v-model="contractAccepted" slot="end"/>
-        </ion-item>
-        <ion-button expand="full" @click="itemCreate()" :disabled="!contractAccepted || !store_name">Стать поставщиком</ion-button>
+          <ion-item lines="none">
+            <ion-text>
+              Подавая заявку вы даете согласие на условия 
+              <router-link to="/page/rules-supplier">Договор поставки товаров и услуг</router-link>
+            </ion-text>
+            <ion-checkbox slot="end" v-model="contractAccepted"/>
+          </ion-item>
+        <ion-button expand="block" @click="itemCreate()" :disabled="!contractAccepted || !store_name">Стать продавцом</ion-button>
+        </ion-card-content>
       </ion-card>
 
   </base-layout>
@@ -50,6 +51,10 @@ ion-text{
 import {
   IonInput,
   IonCard,
+  IonCardHeader,
+  IonCardTitle,
+  IonCardContent,
+
   IonLabel,
   IonItem,
   IonButton,
@@ -64,6 +69,10 @@ export default  {
   components: {
   IonInput,
   IonCard,
+  IonCardHeader,
+  IonCardTitle,
+  IonCardContent,
+
   IonLabel,
   IonItem,
   IonButton,
