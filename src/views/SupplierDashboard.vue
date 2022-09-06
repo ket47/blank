@@ -23,10 +23,10 @@ ion-text{
 }
 </style>
 <template>
-  <base-layout page-title="Анкета продавца" page-default-back-link="/user-dashboard">
-      <ion-card color="light">
+  <base-layout page-title="Панель управления продавца" page-default-back-link="/user/user-dashboard">
+      <ion-card color="light" v-if="$heap.state.user.user_id>1">
         <ion-card-header>
-          <ion-card-title>Пока вы не продавец</ion-card-title>
+          <ion-card-title>Регистрация нового магазина</ion-card-title>
         </ion-card-header>
         <ion-card-content>
           <ion-item lines="full">
@@ -41,6 +41,30 @@ ion-text{
             <ion-checkbox slot="end" v-model="contractAccepted"/>
           </ion-item>
         <ion-button expand="block" @click="itemCreate()" :disabled="!contractAccepted || !store_name">Стать продавцом</ion-button>
+        </ion-card-content>
+      </ion-card>
+      <ion-card color="light" v-else>
+        <ion-card-header>
+          <ion-card-title>Необходимо зарегистрироваться</ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          Чтобы стать продавцом, нужно быть зарегистрированным пользователем. Вы можете зарегистрироваться за 2 минуты.
+        <ion-button expand="block" href="/user/sign-up">Зарегистрироваться</ion-button>
+        </ion-card-content>
+      </ion-card>
+
+
+
+      <ion-card color="light" v-if="storeList?.length>0">
+        <ion-card-header>
+          <ion-card-title>Зарегистрированые магазины</ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+
+          <ion-item v-for="store in storeList" :key="store.store_id" detail button @click="$router.push(`/catalog/store-edit-${store.store_id}`)">
+            <ion-icon :icon="storefrontOutline" slot="start"></ion-icon>
+            {{store.store_name||store.store_name_new||'- - -'}}
+          </ion-item>        
         </ion-card-content>
       </ion-card>
 
@@ -59,8 +83,13 @@ import {
   IonItem,
   IonButton,
   IonCheckbox,
-  IonText
+  IonText,
+  IonIcon
 }                   from "@ionic/vue";
+
+import {
+  storefrontOutline,
+} from "ionicons/icons";
 import jQuery       from "jquery";
 import heap         from '@/heap';
 import User         from '@/scripts/User.js';
@@ -77,14 +106,31 @@ export default  {
   IonItem,
   IonButton,
   IonCheckbox,
-  IonText
+  IonText,
+  IonIcon,
+  },
+  setup() {
+    return {
+      storefrontOutline,
+    };
   },
   data(){
     return {
       supprier:User.supplier.status,
       store_name:null,
-      contractAccepted:0
+      contractAccepted:0,
+      storeList:null
     }
+  },
+  mounted(){
+    const self=this;
+    this.listGet();
+    this.$topic.on('userGet',function(){
+      if(self.storeList){
+        return;
+      }
+      self.listGet();
+    });
   },
   methods:{
     async itemCreate(){
@@ -106,6 +152,9 @@ export default  {
         }
         this.$flash("Не удалось создать магазин или ресторан")
       }
+    },
+    async listGet(){
+      this.storeList=await User.supplier.listGet()
     }
   },
 }

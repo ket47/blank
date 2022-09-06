@@ -190,7 +190,7 @@ ion-icon{
         <div v-else-if="storeList.length>0">
           <ion-item v-for="store in storeList" :key="store.store_id" detail button @click="$router.push(`/catalog/store-edit-${store.store_id}`)">
             <ion-icon :icon="storefrontOutline" slot="start"></ion-icon>
-            {{store.store_name||'- - -'}}
+            {{store.store_name||store.store_name_new||'- - -'}}
           </ion-item>        
         </div>
         <div v-else>

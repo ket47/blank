@@ -12,7 +12,7 @@
           <div class="text" style="color: white">
             <h2>Супер быстрая доставка</h2>
             <h4>Роскошь, ставшая для продавцов реальностью</h4>
-            <router-link to="/catalog">
+            <router-link to="/user/supplier-dashboard">
               <ion-button color="secondary"><span class="button-text">Присоединиться</span></ion-button>
             </router-link>
           </div>
