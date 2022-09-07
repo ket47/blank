@@ -175,6 +175,9 @@ export default({
                     case 'order_sum_exceeded':
                         this.$flash("Сумма заказа должна быть меньше предоплаты")
                         break;
+                    case 'order_sum_zero':
+                        this.$flash("Нельзя завершить пустой заказ, от него можно отказаться.")
+                        break;
                     default:
                         this.$flash("Не удалось изменить статус заказа")
                         break;
@@ -241,7 +244,7 @@ export default({
             this.$refs.orderImgs.take_photo();
         },
         action_call_customer(){
-            window.open(`tel:+${this.order.customer.user_phone}`)
+            location.href=`tel:+${this.order.customer.user_phone}`
         },
     },
     ionViewDidEnter() {
