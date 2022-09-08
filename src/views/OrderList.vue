@@ -144,13 +144,13 @@ export default {
                 if( !order.location_address ){
                     order.location_address='';
                 }
-                order.location_address=order.location_address.split(',').reverse().join(',');
+                //order.location_address=order.location_address.split(',').reverse().join(',');
                 if( order.distance ){
                     order.distance_km=Math.round(order.distance/1000)+'км';
                 } else {
                     order.distance_km='';
                 }
-                order.date_time=this.toLocDateTime(order.updated_at)
+                order.date_time=this.toLocDateTime(order.created_at)
             }
             return this.jobList;
         }

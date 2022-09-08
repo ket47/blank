@@ -305,7 +305,9 @@
 
       <ion-item v-for="owner in ownerList" :key="owner.user_id">
         <ion-icon :src="personOutline" slot="start" color="primary"/>
-        <ion-label>{{owner.user_phone}}</ion-label>
+        <ion-label>
+          {{owner.user_phone}}
+        </ion-label>
         <ion-icon v-if="$heap.state.user.user_id==storeItem.owner_id" :src="trashOutline" slot="end" @click="ownerDelete(owner.user_id)"/>
       </ion-item>
       <ion-item v-if="$heap.state.user.user_id==storeItem.owner_id" button @click="ownerAdd()">

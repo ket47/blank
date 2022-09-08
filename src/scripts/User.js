@@ -253,7 +253,7 @@ const User = {
         },
         trackingStop(){
             if( !User.geo.clock ){
-                return;
+                //return;
             }
             Geolocation.clearWatch({id:User.geo.clock});
         }
