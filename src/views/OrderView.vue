@@ -1,5 +1,5 @@
 <template>
-    <base-layout :pageTitle="`Заказ #${order_id}`">
+    <base-layout :pageTitle="`Заказ #${order_id}`" pageDefaultBackLink="/order/order-list/">
 
             <div v-if="order=='notfound'" style="display:flex;align-items:center;justify-content:center;height:100%">
                 <div style="width:max-content;text-align:center">

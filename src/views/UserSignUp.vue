@@ -66,7 +66,7 @@
           </ion-item>
 
           <ion-item>
-            <ion-label position="stacked" color="primary">Ваш е-маил (не обязательно)</ion-label>
+            <ion-label position="stacked" color="primary">Ваш е-маил (желательно заполнить)</ion-label>
             <ion-input 
               v-model="user_email"
               name="email"
