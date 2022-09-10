@@ -188,7 +188,7 @@ ion-chip .active-chip {
           </ion-chip>
         </ion-item>
         <ion-item lines="none">
-          <ion-text slot="start" v-if="$heap.getters.settings.delivery.fee>0">доставка <ion-text color="secondary">{{$heap.getters.settings.delivery.fee}}₽</ion-text></ion-text>
+          <ion-text slot="start" v-if="$heap.getters.settings.delivery?.fee>0">доставка <ion-text color="secondary">{{$heap.getters.settings.delivery.fee}}₽</ion-text></ion-text>
           <ion-text slot="end" v-if="storeItem.store_minimal_order>0">заказ от <ion-text color="secondary">{{storeItem.store_minimal_order}}₽</ion-text></ion-text>
         </ion-item>
       </ion-list>

@@ -20,16 +20,24 @@
 </style>
 
 <template>
-  <base-layout :page-title="productItem?.product_name??'Товар'">
+  <base-layout :page-title="productItem?.product_name??'Товар'" pageDefaultBackLink="/catalog/">
     <ion-card :color="productItem?.validity<validity_min?'danger':''">
       <ion-card-header>
         <ion-label>Анкета заполнена на {{productItem?.validity}}%</ion-label>
-        <ion-progress-bar :value="validity"></ion-progress-bar>
+        <ion-progress-bar :value="productItem?.validity/100"></ion-progress-bar>
       </ion-card-header>
       <ion-card-content v-if="productItem?.validity<validity_min">
         <ion-text>
           Вам необходимо заполнить анкету не меньше чем на {{validity_min}}% для рассмотрения модератором
-          <p v-if="productItem?.validity==0">Обратите внимание на то, что поля Название (больше 5 букв), Цена, Актуальный остаток (если ведется учет), Изображения товара обязательные</p>
+          <p v-if="productItem?.validity==0">Обратите внимание на то, что поля 
+            <ul>
+              <li>Название (больше 5 букв), </li>
+              <li>Цена, </li>
+              <li>Актуальный остаток (если ведется учет), </li>
+              <li>Изображения товара</li>
+            </ul>
+            обязательные
+          </p>
         </ion-text>
       </ion-card-content>
     </ion-card>

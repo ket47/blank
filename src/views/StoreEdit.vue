@@ -298,19 +298,16 @@
       <ion-item-divider>
           <ion-label>Адинистраторы</ion-label>
       </ion-item-divider>
-      <ion-item v-if="$heap.state.user.user_id==storeItem.owner_id">
-        <ion-icon :src="personOutline" slot="start" color="primary"/>
-        <ion-label>Вы (Суперадмин)</ion-label>
-      </ion-item>
-
       <ion-item v-for="owner in ownerList" :key="owner.user_id">
-        <ion-icon :src="personOutline" slot="start" color="primary"/>
+        <ion-icon v-if="storeItem.owner_id==owner.user_id" :src="ribbonOutline" slot="start" color="primary"/>
+        <ion-icon v-else :src="personOutline" slot="start" color="primary"/>
         <ion-label>
-          {{owner.user_phone}}
+          {{owner.user_phone}} {{owner.user_name}} 
+          <span v-if="storeItem.owner_id==owner.user_id">(Суперадмин)</span>
         </ion-label>
-        <ion-icon v-if="$heap.state.user.user_id==storeItem.owner_id" :src="trashOutline" slot="end" @click="ownerDelete(owner.user_id)"/>
+        <ion-icon v-if="isStoreSuperadmin && storeItem.owner_id!=owner.user_id" :src="trashOutline" slot="end" @click="ownerDelete(owner.user_id)"/>
       </ion-item>
-      <ion-item v-if="$heap.state.user.user_id==storeItem.owner_id" button @click="ownerAdd()">
+      <ion-item v-if="isStoreSuperadmin" button @click="ownerAdd()">
         <ion-icon :src="addOutline" slot="start" color="primary"/>
         <ion-label>Добавить администратора</ion-label>
       </ion-item>
@@ -373,6 +370,7 @@ import {
   keyOutline,
   eyeOutline,
   copyOutline,
+  ribbonOutline,
 }                     from 'ionicons/icons'
 import imageTileComp  from '@/components/ImageTileComp.vue'
 import UserAddressPicker from '@/components/UserAddressPicker.vue'
@@ -421,6 +419,7 @@ export default  {
       keyOutline,
       eyeOutline,
       copyOutline,
+      ribbonOutline,
       }
   },
   data(){
@@ -447,6 +446,9 @@ export default  {
     },
     isAdmin(){
       return User.isAdmin();
+    },
+    isStoreSuperadmin(){
+      return this.$heap.state.user.user_id==this.storeItem.owner_id || User.isAdmin()
     },
     message(){
       if(!this.storeItem){
