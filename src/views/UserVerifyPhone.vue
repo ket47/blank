@@ -1,5 +1,5 @@
 <template>
-  <base-layout page-title="Подтверждение телефона" page-default-back-link="/home">
+  <base-layout page-title="Подтверждение телефона" pageDefaultBackLink="/user">
       <ion-card color="light">
         <ion-card-header>
           <ion-card-title color="primary">

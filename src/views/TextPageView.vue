@@ -1,5 +1,5 @@
 <template>
-    <base-layout :pageTitle="page?.page_title||$heap.state.settings.app_title">
+    <base-layout :pageTitle="page?.page_title||$heap.state.settings.app_title" pageDefaultBackLink="/user">
         <div v-if="page=='error'" style="padding:20px">
             <h6>Страница не найдена</h6>
         </div>

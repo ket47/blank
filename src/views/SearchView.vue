@@ -5,7 +5,7 @@
 }
 </style>
 <template>
-  <base-layout page-title="Поиск товаров">
+  <base-layout page-title="Поиск товаров" pageDefaultBackLink="/search">
     <ion-searchbar class="search-container" v-model="query" @input="delayedListGet()" placeholder="начните искать"></ion-searchbar>
     <div v-if="found" style="background-color:var(--ion-color-light-tint);padding:10px">
       <ion-title>Найденные товары</ion-title>

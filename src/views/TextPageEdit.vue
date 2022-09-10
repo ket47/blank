@@ -1,5 +1,5 @@
 <template>
-  <base-layout pageTitle="Редактирование страницы">
+  <base-layout pageTitle="Редактирование страницы" pageDefaultBackLink="/user">
     <ion-list>
         <ion-item>
             <ion-icon slot="start" :icon="bookmarkOutline"/>

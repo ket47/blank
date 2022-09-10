@@ -1,5 +1,5 @@
 <template>
-    <base-layout page-title="Нет связи с интернетом">
+    <base-layout page-title="Нет связи с интернетом"  pageDefaultBackLink="/catalog">
         <ion-card>
             <ion-card-header>
                 <ion-card-title>Нет связи с интернетом</ion-card-title>

@@ -1,5 +1,5 @@
 <template>
-  <base-layout pageTitle="Страницы" pageDefaultBackLink="/home">
+  <base-layout pageTitle="Страницы" pageDefaultBackLink="/user/user-dashboard">
     <ion-list>
       <ion-item v-for="page in pageList" :key="page.page_id" detail button @click="$router.push('text-edit-' + page.page_id)">
         <ion-icon slot="start" :icon="documentTextOutline"/>

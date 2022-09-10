@@ -8,6 +8,10 @@ localStorage.already_visited_app=1;
 
 const routes = [
   {
+    path: '/home',
+    redirect: '/'
+  },
+  {
     path: '/',
     redirect: homePath
   },

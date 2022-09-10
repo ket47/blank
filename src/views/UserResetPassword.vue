@@ -1,5 +1,5 @@
 <template>
-  <base-layout page-title="Reset Password" page-default-back-link="/home">
+  <base-layout page-title="Reset Password" pageDefaultBackLink="/user">
       <form novalidate>
         <ion-list>
           <ion-item>

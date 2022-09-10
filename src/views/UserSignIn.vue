@@ -4,7 +4,7 @@
   }
 </style>
 <template>
-  <base-layout page-title="Вход в систему"  page-default-back-link="/home">
+  <base-layout page-title="Вход в систему" pageDefaultBackLink="/user">
     <ion-card v-if="$heap.state.user.user_id>0" style="background-color:var(--ion-color-success-tint)">
       <ion-card-header>
         <ion-card-title color="primary">

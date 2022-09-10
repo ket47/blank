@@ -1,5 +1,5 @@
 <template>
-  <base-layout :page-title="productItem?.product_name " :page-default-back-link="'store-'+productItem?.store_id" :cartComponent="CartHeader">
+  <base-layout :page-title="productItem?.product_name "  pageDefaultBackLink="/catalog" :cartComponent="CartHeader">
       <image-slider v-if="productItem" :imageList="productItem.images" imgHeight="200"/>
       <ion-list v-if="productItem">
         <ion-list-header>

@@ -1,5 +1,5 @@
 <template>
-  <base-layout page-title="Мой профиль"  page-default-back-link="/user/user-dashboard">
+  <base-layout page-title="Мой профиль" pageDefaultBackLink="/user">
         <ion-list>
           <ion-radio-group v-model="fields.user_avatar_name">
           <ion-item>

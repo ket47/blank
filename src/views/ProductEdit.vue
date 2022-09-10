@@ -20,7 +20,7 @@
 </style>
 
 <template>
-  <base-layout :page-title="productItem?.product_name??'Товар'" pageDefaultBackLink="/catalog/">
+  <base-layout :page-title="productItem?.product_name??'Товар'" pageDefaultBackLink="/catalog">
     <ion-card :color="productItem?.validity<validity_min?'danger':''">
       <ion-card-header>
         <ion-label>Анкета заполнена на {{productItem?.validity}}%</ion-label>

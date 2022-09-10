@@ -412,10 +412,6 @@ export default{
     async productListGet(filter = {}) {
       filter.store_id = this.storeId;
       filter.is_active = 1;
-      if(this.storeItem.is_writable==1){
-        filter.is_disabled=1
-        filter.is_deleted=1
-      }
       if (filter.name_query && filter.name_query == "") {
         this.groupTreeGet({ store_id: this.storeId });
         return;

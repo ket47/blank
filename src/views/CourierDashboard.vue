@@ -23,7 +23,7 @@ ion-text{
 }
 </style>
 <template>
-  <base-layout page-title="Анкета курьера" page-default-back-link="/user/user-dashboard">
+  <base-layout page-title="Анкета курьера"  pageDefaultBackLink="/user">
     <div v-if="!courier">
       <ion-card color="light">
         <ion-card-header>

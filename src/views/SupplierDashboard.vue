@@ -23,7 +23,7 @@ ion-text{
 }
 </style>
 <template>
-  <base-layout page-title="Панель управления продавца" page-default-back-link="/user/user-dashboard">
+  <base-layout page-title="Панель управления продавца"  pageDefaultBackLink="/user/user-dashboard">
       <ion-card color="light" v-if="$heap.state.user.user_id>1">
         <ion-card-header>
           <ion-card-title>Регистрация нового магазина</ion-card-title>

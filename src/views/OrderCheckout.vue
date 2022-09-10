@@ -12,7 +12,7 @@
     }
 </style>
 <template>
-    <base-layout :pageTitle="`Оформление заказа`"  :pageDefaultBackLink="order?`/order/order-${order.order_id}`:`/order/order-list`">
+    <base-layout :pageTitle="`Оформление заказа`" pageDefaultBackLink="/order/order-list">
         <user-address-widget :deliveryTime="deliveryTime" showComment="1"></user-address-widget>
 
         <ion-list v-if="order">

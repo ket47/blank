@@ -1,5 +1,5 @@
 <template>
-    <base-layout pageTitle="Мои чеки">
+    <base-layout pageTitle="Мои чеки" pageDefaultBackLink="/user">
         <ion-list v-if="invoiceList?.length>0">
             <ion-item v-for="invoice in invoiceList" :key="invoice.trans_id" button @click="billOpen(invoice?.trans_data?.Registration?.Link)">
                 <ion-icon :icon="receiptOutline" slot="start" color="primary"></ion-icon>
