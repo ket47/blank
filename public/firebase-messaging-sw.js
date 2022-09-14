@@ -18,7 +18,7 @@ firebase.initializeApp({
 const messaging = firebase.messaging();
 messaging.onBackgroundMessage(async (payload) => {
   console.log('payload',payload)
-  const cl=await clients.matchAll({includeUncontrolled: true, type: 'window'});
+  const cl=await clients.matchAll({includeUncontrolled: false, type: 'window'});
   if( cl.length ){
     cl.forEach(client => client.postMessage(payload));
     return false;
@@ -28,7 +28,8 @@ messaging.onBackgroundMessage(async (payload) => {
       body: payload.data.body,
       icon: payload.data.icon,
       link: payload.data.link,
-      vibrate: [200, 100, 200]
+      vibrate: [200, 100, 200],
+      renotify:true
     };
     return self.registration.showNotification(notificationTitle,notificationOptions);
   }

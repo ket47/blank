@@ -4,7 +4,7 @@ ion-icon{
 }
 </style>
 <template>
-  <base-layout page-title="Личный кабинет" pageDefaultBackLink="/user">
+  <base-layout page-title="Личный кабинет">
     <div class="user-dashboard-header">
       <ion-list>
         <ion-item v-if="isSignedIn" lines="full" class="avatar-row">

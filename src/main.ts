@@ -81,9 +81,14 @@ const FlashNotice={
 const flash= ( message:string )=>{
   FlashNotice.push(message);
 }
+
+let globalAlertPrompt;
 const alert = async (message:string,title:string)=>{
   Topic.publish('dismissModal')
-  const alert = await alertController
+  if(globalAlertPrompt){
+    globalAlertPrompt.dismiss()
+  }
+  globalAlertPrompt = await alertController
       .create({
         header: title,
         message: message,
@@ -95,7 +100,7 @@ const alert = async (message:string,title:string)=>{
           },
         ],
       });
-    return alert.present();
+    return globalAlertPrompt.present();
 }
 
 jQuery( document ).ajaxError(( event, jqxhr, settings, thrownError )=>{
