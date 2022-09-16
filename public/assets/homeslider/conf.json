@@ -4,7 +4,7 @@
             "title":"",
             "description":"",
             "alt":"Отдыхай и покупай",
-            "image":"./assets/homeslider/1.avif",
+            "image":"./assets/homeslider/1.jpg",
             "color":"#009dcd",
             "link":""
         },
@@ -12,7 +12,7 @@
             "title":"",
             "description":"",
             "alt":"Бесконечные бонусы",
-            "image":"./assets/homeslider/2.avif",
+            "image":"./assets/homeslider/2.jpg",
             "color":"#009dcd",
             "link":""
         },
@@ -20,7 +20,7 @@
             "title":"",
             "description":"",
             "alt":"Турбо доставка",
-            "image":"./assets/homeslider/3.avif",
+            "image":"./assets/homeslider/3.jpg",
             "color":"#009dcd",
             "link":""
         }

@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
-    "target": "esnext",
-    "module": "esnext",
+    "target": "ES2015",
+    "module": "ES2015",
     "strict": true,
     "jsx": "preserve",
     "importHelpers": true,
@@ -22,7 +22,7 @@
       ]
     },
     "lib": [
-      "esnext",
+      "ES2015",
       "dom",
       "dom.iterable",
       "scripthost"
@@ -34,8 +34,10 @@
     "src/**/*.vue",
     "tests/**/*.ts",
     "tests/**/*.tsx",
-    "src/scripts/*.js"
-, "src/router/index.js", "src/heap/index.js"  ],
+    "src/scripts/*.js", 
+    "src/router/index.js", 
+    "src/heap/index.js"  
+  ],
   "exclude": [
     "node_modules"
   ]

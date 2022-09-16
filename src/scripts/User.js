@@ -47,7 +47,10 @@ const User = {
         if(localStorage.sessionId){
             User.sessionIdUse(localStorage.sessionId);
         }
-        const userData=await User.get();
+        let userData
+        try{
+            userData=await User.get();
+        }catch{/** */}
         if( userData?.user_id>1 ){
             return userData;
         }

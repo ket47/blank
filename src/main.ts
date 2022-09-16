@@ -143,21 +143,21 @@ jQuery( document ).ajaxComplete(()=>{
   },100)
 })
 
-
-navigator.serviceWorker.onmessage = (event) => {
-  if(event.data.data.topic){
-    Topic.publish(event.data.data.topic,event.data.data)
-  } else
-  if(event.data.data.type === 'flash'){
-    flash(event.data.body)
-  } else
-  if(event.data.data.body){
-    alert(event.data.data.body,event.data.data.title)
-  } else {
-    console.log('UNHANDLED WEBPUSH',event.data)
-  }
-};
-
+if( 'serviceWorker' in navigator){
+  navigator.serviceWorker.onmessage = (event) => {
+    if(event.data.data.topic){
+      Topic.publish(event.data.data.topic,event.data.data)
+    } else
+    if(event.data.data.type === 'flash'){
+      flash(event.data.body)
+    } else
+    if(event.data.data.body){
+      alert(event.data.data.body,event.data.data.title)
+    } else {
+      console.log('UNHANDLED WEBPUSH',event.data)
+    }
+  };
+}
 
 const app = createApp(App)
   .use(IonicVue)
