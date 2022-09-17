@@ -1,6 +1,6 @@
 <?php
 namespace Models;
-include 'Db.php';
+require_once 'Db.php';
 class CatalogModel{
 
     function __construct(){
@@ -19,7 +19,8 @@ class CatalogModel{
                 store_description,
                 store_phone,
                 location_address,
-                image_hash
+                image_hash,
+                store_list.updated_at
             FROM
                 store_list
                     LEFT JOIN
@@ -104,7 +105,8 @@ class CatalogModel{
                 store_name,
                 product_price,
                 ROUND(IF(IFNULL(`product_promo_price`,0)>0 AND `product_price`>`product_promo_price` AND `product_promo_start` < NOW() AND `product_promo_finish` > NOW(),`product_promo_price`,`product_price`)) product_final_price,
-                image_hash
+                image_hash,
+                product_list.updated_at
             FROM
                 product_list
                     LEFT JOIN

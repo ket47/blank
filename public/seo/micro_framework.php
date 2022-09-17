@@ -55,6 +55,9 @@ parseDotEnv();
 
 try{
     $uri=$_SERVER['REQUEST_URI'];
+    if( strpos($uri,'index.php')!==false ){
+        $uri=explode('index.php',$uri)[1];
+    }
     $uri_parts=explode('/',explode('?',$uri)[0]);
     @list($uri_first,$uri_controller,$uri_method_and_id)=$uri_parts;
     @list($uri_method,$uri_id)=explode('-',$uri_method_and_id);
