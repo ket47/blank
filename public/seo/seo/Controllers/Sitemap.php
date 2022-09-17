@@ -80,7 +80,7 @@ class Sitemap{
     private function ymlProductsWrite($xml,$store_id){
         $CatalogModel=new \Models\CatalogModel();
         $products=$CatalogModel->productListGet([
-            'limit'=>5,
+            'limit'=>500,
             'store_id'=>$store_id
         ]);
         foreach($products as $product){
