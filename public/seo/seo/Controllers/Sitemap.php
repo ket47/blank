@@ -50,6 +50,7 @@ class Sitemap{
     }
 
     public function ymlFeed(){
+        header("Content-Type:text/xml");
         $CatalogModel=new \Models\CatalogModel();
         $stores=$CatalogModel->storeListGet([
             'limit'=>500

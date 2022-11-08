@@ -141,7 +141,15 @@ const routes = [
         path: '/user/admin-moderation',
         component: () => import('@/views/AdminModeration.vue')
       },
-
+      {
+        path: '/user/admin-tariff-list',
+        component: () => import('@/views/AdminTariffList.vue')
+      },
+      {
+        path: '/user/admin-tariff-edit-:id',
+        component: () => import('@/views/AdminTariffEdit.vue')
+      },
+      
 
       {
         path: '/order/',

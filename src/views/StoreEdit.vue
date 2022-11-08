@@ -313,6 +313,24 @@
       </ion-item>
     </ion-list>
 
+    <ion-list v-if="isAdmin">
+      <ion-item-divider>
+          <ion-label>Тарифы</ion-label>
+      </ion-item-divider>
+      <ion-item v-for="tariff in tariffListComputed" :key="tariff.tariff_id">
+        <ion-icon :src="briefcaseOutline" slot="start" color="primary"/>
+        <div>
+          <p>{{tariff.tariff_name}}</p>
+          <ion-note>{{tariff.start_dmy}} - {{tariff.finish_dmy}}</ion-note>
+        </div>
+        <ion-icon :src="trashOutline" slot="end" @click="tariffDelete(tariff.tariff_id)"/>
+      </ion-item>
+      <ion-item v-if="isAdmin" button @click="tariffPick()">
+        <ion-icon :src="addOutline" slot="start" color="primary"/>
+        <ion-label>Добавить тариф</ion-label>
+      </ion-item>
+    </ion-list>
+
     <ion-list v-if="storeItem">
       <ion-item-divider>
           <ion-label>API токен</ion-label>
@@ -352,6 +370,7 @@ import {
   IonAvatar,
   IonButton,
   IonProgressBar,
+  IonNote,
   modalController
   }                   from '@ionic/vue'
 import {
@@ -371,9 +390,11 @@ import {
   eyeOutline,
   copyOutline,
   ribbonOutline,
+  briefcaseOutline,
 }                     from 'ionicons/icons'
 import imageTileComp  from '@/components/ImageTileComp.vue'
 import UserAddressPicker from '@/components/UserAddressPicker.vue'
+import AdminTariffPicker from '@/components/AdminTariffPicker.vue'
 import heap           from '@/heap';
 import jQuery         from "jquery";
 import User           from '@/scripts/User.js'
@@ -400,6 +421,7 @@ export default  {
   IonAvatar,
   IonButton,
   IonProgressBar,
+  IonNote,
   imageTileComp
     },
   setup(){
@@ -420,6 +442,7 @@ export default  {
       eyeOutline,
       copyOutline,
       ribbonOutline,
+      briefcaseOutline,
       }
   },
   data(){
@@ -428,6 +451,7 @@ export default  {
       storeItem: null,
       storeGroupList:null,
       ownerList:null,
+      tariffList:null,
       is_name_edited:0,
       is_desc_edited:0,
       is_deleted:0,
@@ -483,6 +507,16 @@ export default  {
       }
       return 'active';
     },
+    tariffListComputed(){
+      if(!this.tariffList){
+        return this.tariffList
+      }
+      for(let tariff of this.tariffList){
+          tariff.start_dmy=this.toLocDate(tariff.start_at)
+          tariff.finish_dmy=this.toLocDate(tariff.finish_at)
+      }
+      return this.tariffList;
+    },
   },
   created(){
     this.listGroupGet()
@@ -490,12 +524,18 @@ export default  {
     this.ownerListGet()
   },
   methods:{
+    toLocDate( iso ){
+        const event = new Date(Date.parse(iso));
+        const options = { month: 'short', day: 'numeric', year:'numeric' };
+        return event.toLocaleDateString(undefined, options);
+    },
     async itemGet(){
       try{
         this.storeItem=await jQuery.post( heap.state.hostname + "Store/itemGet", { store_id: this.storeId })
         this.itemParseFlags()
         this.itemMarkGroups()
         this.itemValidityCalc()
+        this.tariffListGet()
       }catch{
         //
       }
@@ -816,6 +856,62 @@ export default  {
         navigator.clipboard.writeText(this.apiToken.token_hash);
         this.$flash("Токен скопирован")
       }
+    },
+    async tariffListGet(){
+      const request={
+        'store_id':this.storeId
+      }
+      try{
+        this.tariffList=await jQuery.post(heap.state.hostname + "Admin/Tariff/storeTariffListGet",request)
+      } catch{
+        this.tariffList=null
+      }
+    },
+    async tariffDelete(tariff_id){
+      if(!confirm("Вы уверенны?")){
+        return
+      }
+      const request={
+        'store_id':this.storeId,
+        'tariff_id':tariff_id
+      }
+      try{
+        await jQuery.post(heap.state.hostname + "Admin/Tariff/storeTariffDelete",request)
+        this.tariffListGet()
+      } catch{/** */}
+    },
+    async tariffAdd(new_tariff_data){
+      try{
+        await jQuery.post(heap.state.hostname + "Admin/Tariff/storeTariffAdd",new_tariff_data)
+        this.tariffListGet()
+      }
+      catch(err){
+          const exception=err.responseJSON;
+          const exception_code=exception.messages.error;
+          switch(exception_code){
+              case 'forbidden':
+                  this.$flash("Не достаточно прав");
+                  break;
+          }
+          return false
+      }
+    },
+    async tariffPick(){
+      if(!this.isAdmin){
+        return;
+      }
+      const modal = await modalController.create({
+        component: AdminTariffPicker,
+        showBackdrop:true,
+        backdropDismiss:true,
+        componentProps:{
+          store_id:this.storeId
+        },
+      });
+      modal.onDidDismiss().then(new_tariff_data => {
+        this.tariffAdd(new_tariff_data.data);
+      });
+      return modal.present();
     }
   },
 }

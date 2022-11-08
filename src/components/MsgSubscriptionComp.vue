@@ -27,13 +27,18 @@ export default {
   IonCardContent,
   },
   data(){
+    let perm=("Notification" in window)?Notification.permission:'notsupported';
     return {
-      permission:Notification.permission,
+      permission:perm,
       wasRejected:0//localStorage.pushNotificationsWasRejected
     }
   },
   methods: {
     async subscribe(){
+      if( !("Notification" in window) ){
+        this.$flash("Ваше устройство не поддерживает уведомления")
+        return
+      }
       try{
         this.permission=await Notification.requestPermission()
         if(this.permission=='granted'){

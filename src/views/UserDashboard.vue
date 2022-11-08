@@ -85,6 +85,10 @@ ion-icon{
               <ion-icon :icon="ribbonOutline" slot="start" color="primary"></ion-icon>
               <ion-label>Модерация элементов</ion-label>
           </ion-item>
+          <ion-item @click="$router.push('/user/admin-tariff-list')" lines="full" button detail>
+              <ion-icon :icon="briefcaseOutline" slot="start" color="primary"></ion-icon>
+              <ion-label>Список тарифов</ion-label>
+          </ion-item>
         </ion-item-group>
         <!--
         <ion-item lines="full" button detail>
@@ -282,6 +286,7 @@ import {
   ribbonOutline,
   receiptOutline,
   rocketOutline,
+  briefcaseOutline,
 } from "ionicons/icons";
 
 import User     from "@/scripts/User.js";
@@ -329,6 +334,7 @@ export default {
       ribbonOutline,
       receiptOutline,
       rocketOutline,
+      briefcaseOutline,
     };
   },
   data() {

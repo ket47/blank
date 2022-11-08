@@ -135,7 +135,7 @@ export default {
                         order.icon=storefrontOutline
                         break;
                 }
-                order.date=this.toLocDate(order.updated_at)
+                order.date=this.toLocDate(order.created_at)
             }
             return this.orderList;
         },
@@ -170,6 +170,12 @@ export default {
             return event.toLocaleDateString(undefined, options);
         },
         toLocDateTime( iso ){
+            // const date_time=String(iso).split(/\sT/)
+            // date_Ymd=date_time[0].split('-')
+            // time_His=date_time[1].split(':')
+            // return `${date_Ymd[2]}.${date_Ymd[2]}.${date_Ymd[2]} ${time_His[0]}:${time_His[1]}`;
+
+
             const event = new Date(Date.parse(iso));
             const options = { month: 'short', day: 'numeric',hour:'numeric',minute:'numeric' };
 
