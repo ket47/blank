@@ -10,6 +10,7 @@ ion-tab-bar.bottom-bar  {
   position: relative;
   padding-inline-end: 0;
   box-shadow: 0px -3px 10px #ccc;
+  justify-content: space-around;
 }
 ion-tab-bar.bottom-bar  ion-tab-button{
   --padding-start: 0;
@@ -31,7 +32,7 @@ ion-tab-bar.bottom-bar  ion-tab-button.tab-selected {
   height: var(--tab-witdh);
 }
 ion-tab-bar.bottom-bar  ion-tab-button.tab-selected ion-label {
-  transform: translateY(-5px);
+  transform: translateY(1px);
   opacity: 1;
   line-height: inherit;
   min-height: unset;
@@ -154,23 +155,23 @@ ion-icon{
       <ion-tab-bar class="bottom-bar" slot="bottom">
         <ion-tab-button tab="tab1" id="tab1" href="/catalog" routerDirection="root" selected>
           <ion-icon :icon="storefrontOutline"/>
-          <ion-label>Каталог</ion-label>
+          <ion-label><b>Каталог</b></ion-label>
         </ion-tab-button>
 
         <ion-tab-button tab="tab2" id="tab2" href="/search" routerDirection="root">
           <ion-icon :icon="searchOutline"/>
-          <ion-label>Поиск</ion-label>
+          <ion-label><b>Поиск</b></ion-label>
         </ion-tab-button>
 
         <ion-tab-button tab="tab3" id="tab3" href="/order" routerDirection="root">
             <ion-icon :icon="readerOutline"/>
             <ion-badge color="warning" style="font-size:1.5em" v-if="activeOrderCount>0">{{activeOrderCount}}</ion-badge>
-          <ion-label>Заказы</ion-label>
+          <ion-label><b>Заказы</b></ion-label>
         </ion-tab-button>
 
         <ion-tab-button tab="tab4" id="tab4" href="/user" routerDirection="root">
           <ion-icon :icon="personOutline"/>
-          <ion-label>Профиль</ion-label>
+          <ion-label><b>Профиль</b></ion-label>
         </ion-tab-button>
         
         <div class="tab-indicator-container">

@@ -1,29 +1,74 @@
+<style>
+
+ion-accordion-group .accordion-collapsed .product-description,
+ion-accordion-group .accordion-collapsing .product-description{
+  text-overflow: ellipsis;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  position: relative;
+  transition: all 300ms cubic-bezier(0.25, 0.8, 0.5, 1) 0s;
+  line-height: 1.4;
+}
+ion-accordion-group .accordion-expanded .product-description,
+ion-accordion-group .accordion-expanding .product-description{
+  display: inline-block;
+  line-height: 1.4;
+}
+.product-images {
+  position: relative;
+  box-shadow: 0px 0px 15px -5px #0006;
+  border-radius: 0 0 15px 15px;
+  z-index: 2;
+}
+.product-subactions{
+  position: absolute;
+  bottom: 0;
+  z-index: 100;
+  background: none;
+}
+</style>
+
 <template>
   <base-layout :page-title="productItem?.product_name "  pageDefaultBackLink="/catalog" :cartComponent="CartHeader">
-      <image-slider v-if="productItem" :imageList="productItem.images" imgHeight="200"/>
+      <div class="product-images">
+        <image-slider v-if="productItem" :imageList="productItem.images"  :imgHeight="400" />
+        <ion-list class="product-subactions">
+          <ion-item v-if="productItem?.is_writable"  lines="none"> 
+            <ion-chip color="dark">
+              <ion-icon slot="end" :src="settingsOutline" color="primary" @click="$router.push('product-edit-'+productId)"/>
+              <ion-text>Редактировать</ion-text>
+            </ion-chip>
+          </ion-item>
+        </ion-list>  
+      </div>
       <ion-list v-if="productItem">
-        <ion-list-header>
-          <h2>
-            {{ productItem.product_name }} <span v-if="!isAvailable">(Нет в наличии)</span>
-          </h2>
+        <ion-list-header style="font-size:1.2em;">
+          <h3 style="font-size:1.2em;">
+            <b>{{ productItem.product_name }}</b> <span v-if="!isAvailable">(Нет в наличии)</span>
+          </h3>
         </ion-list-header>
-        <ion-item lines="none">
-          <ion-text color="medium">{{productItem.product_description}}</ion-text>
-          <ion-icon v-if="productItem?.is_writable" slot="end" :src="settingsOutline" color="primary" @click="$router.push('product-edit-'+productId)"/>
-        </ion-item>
-        <ion-item lines="none"></ion-item>
-        <ion-item>
-          <ion-icon slot="start" color="primary" :src="compassOutline"/>
-          <ion-chip v-for="group in categories" :key="group.group_id">{{group.group_name}}</ion-chip>
+        <ion-accordion-group style="width:100%">
+          <ion-accordion>
+            <ion-item slot="header" lines="none">
+              <ion-text  class="product-description" color="medium">{{productItem.product_description}}</ion-text>
+            </ion-item>
+            <ion-item lines="none"></ion-item>
+          </ion-accordion>
+        </ion-accordion-group>
+        
+        <ion-item  lines="none">
+          <ion-chip :outline="true" color="primary" v-for="group in categories" :key="group.group_id">{{group.group_name}}</ion-chip>
         </ion-item>
 
-        <ion-item v-if="productItem.product_price!=productItem.product_final_price">
+        <ion-item lines="none" v-if="productItem.product_price!=productItem.product_final_price">
           <ion-icon slot="start" color="primary" :src="giftOutline"/>
           <ion-label>Акция до {{promoFinish}}</ion-label>
           <ion-label slot="end" color="success" style="font-size:1.2em">-{{promoPercent}}%</ion-label>
         </ion-item>
 
-        <ion-item>
+        <ion-item lines="none">
           <ion-icon slot="start" color="primary" :src="pricetagOutline"/>
           <ion-label>Цена за {{productItem.product_unit}}</ion-label>
           <ion-label slot="end" color="primary" style="font-size:1.2em">
@@ -33,20 +78,20 @@
             {{productItem.product_final_price}}{{$heap.state.currencySign}}
           </ion-label>
         </ion-item>
-        <ion-item>
+        <ion-item lines="none">
           <ion-icon slot="start" color="primary" :src="cartOutline"/>
           <ion-label v-if="inCart">В корзине {{productItem.product_unit}}</ion-label>
           <ion-label v-else>Не заказан</ion-label>
           <cart-add-buttons slot="end" buttonLayout="horizontal" display="inline" :productItem="productItem"></cart-add-buttons>
         </ion-item>
 
-        <ion-item v-if="inCart">
+        <ion-item lines="none" v-if="inCart">
           <ion-icon slot="start" color="primary" :src="walletOutline"/>
           <ion-label>Итог</ion-label>
           <ion-label slot="end" color="primary" style="font-size:1.2em">{{inCart}}{{$heap.state.currencySign}}</ion-label>
         </ion-item>
 
-        <ion-item v-if="inCartComment!=null">
+        <ion-item lines="none" v-if="inCartComment!=null">
           <ion-icon slot="start" color="primary" :src="chatboxEllipsesOutline"/>
           <ion-textarea v-model="inCartComment" @ionChange="cartCommentUpdate($event.target.value)" placeholder="заметка для продавца"></ion-textarea>
         </ion-item>
@@ -76,6 +121,8 @@ import {
   IonChip,
   IonLabel,
   IonList,
+  IonAccordion,
+  IonAccordionGroup,
 }                       from '@ionic/vue'
 import ImageSlider      from '@/components/ImageSlider'
 import CartAddButtons   from '@/components/CartAddButtons'
@@ -95,6 +142,8 @@ export default  {
     IonChip,
     IonLabel,
     IonList,
+    IonAccordion,
+    IonAccordionGroup,
   },
   setup(){
     return {CartHeader,compassOutline,cartOutline,pricetagOutline,giftOutline,walletOutline,chatboxEllipsesOutline,settingsOutline}

@@ -1,23 +1,8 @@
 <style scoped>
 #hcat_widget_grid {
-    display: grid;
-    margin-top:10px;
-    margin-bottom:10px;
-    gap:6px;
-    grid-template-columns: repeat(3,1fr);
-    grid-template-rows: 130px;
+    padding: 0 16px;
 }
-@media screen and (min-width: 600px) {
-    #hcat_widget_grid {
-        grid-template-columns: repeat(6,1fr);
-    }
-}
-@media screen and (min-width: 1000px) {
-    #hcat_widget_grid {
-        grid-template-columns: repeat(10,1fr);
-    }
-}
-#hcat_widget_grid>div{
+#hcat_widget_grid .swiper-slide{
     display: flex;
     flex-direction: column;
     -moz-box-align: center;
@@ -27,13 +12,18 @@
 }
 </style>
 <template>
-    <div id="hcat_widget_grid">
-        <div v-for="group in groupList" :key="group.group_id"  @click="() => {return onClick(group.group_id)}">
+    <swiper id="hcat_widget_grid"
+        :slides-per-view="3"
+        :space-between="0"
+    >
+        <swiper-slide v-for="group in groupList" :key="group.group_id"  @click="() => {return onClick(group.group_id)}">
             <ion-thumbnail style="width:70px;height:70px">
                 <ion-img style="border-radius:10px;border:1px solid #ddd" :src="`${$heap.state.hostname}image/get.php/${group.image_hash}.150.150.webp`"/>
             </ion-thumbnail>
-            <div style="height:2.5em;text-align:center;overflow:hidden;width:110px">{{group.group_name}}</div>
-        </div>
+            <div style="height:2.5em;text-align:center;overflow:hidden;width:115px; font-size: 12px; padding: 8px 0">{{group.group_name}}</div>
+        </swiper-slide>
+    </swiper>
+    <div id="hcat_widget_grid">
     </div>
 </template>
 
@@ -43,10 +33,13 @@ import {
   IonThumbnail,
 }                          from "@ionic/vue";
 import { defineComponent } from "@vue/runtime-core";
+  import { Swiper, SwiperSlide } from 'swiper/vue';
 export default defineComponent({
     components:{
         IonImg,
         IonThumbnail,
+        Swiper,
+        SwiperSlide
     },
     props: ['groupList', 'onClick']
 })

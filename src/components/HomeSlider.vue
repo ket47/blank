@@ -1,5 +1,5 @@
 <template>
-      <swiper :modules="modules" :autoplay='{delay: 6000, disableOnInteraction: false}' :loop="true" >
+      <swiper :modules="modules" :autoplay='{delay: 6000, disableOnInteraction: false}' :loop="true" class="home-swiper">
         <swiper-slide v-for="hslide in home_slides" :key="hslide.title" :style="`background-color:${hslide.color};`">
           <ion-img :src="hslide.image" class="home_slide_img" :alt="hslide.alt"/>
           <div class="home_slide">
@@ -11,6 +11,10 @@
 </template>
 
 <style scoped>
+  .home-swiper{
+    margin: 8px 16px;
+    border-radius: 8px;
+  }
   .home_slide{
     position:absolute;
     top:0px;

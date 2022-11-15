@@ -1,14 +1,23 @@
 <style scoped>
+  .delivery-adress{
+    
+  }
+  .delivery-time{
+
+  }
   .center{
-    height: 100%;
-    width: 100%;
-    border-top-right-radius: 40px;
-    border-bottom-right-radius: 40px;
-    background-color: white;
     display: flex;
     align-items: center;
-    box-shadow: 5px 0px 5px #0004;
-    overflow: hidden;
+    padding: 3px 16px;
+    justify-content: left;
+    font-size: 14px;
+  }
+  .center ion-icon{
+    margin: 0 3px;
+    font-size: 16px;
+  }
+  .center ion-icon[slot="start"]{
+    margin-left: -2px;
   }
   .rightend{
     height: 100%;
@@ -16,31 +25,30 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    justify-content: space-between;
   }
   .selector{
     display: flex;
-    background-color: var(--ion-color-secondary);
-    height: 40px;
-    box-shadow: 0px 0px 15px #0004;
-    -margin-bottom: 20px;
-  }
-  ion-img{
-    height: 24px;
-    margin: 7px;
+    margin: 5px 0;
   }
 </style>
 
 <template>
     <div v-if="isMainLocationSet" @click="selectDeliveryAddress()" class="selector">
-      <div class="center">
-        <ion-img v-if="location_main.image_hash" :src="$heap.state.hostname + 'image/get.php/'+location_main.image_hash+'.40.40.webp'"/>
-        <ion-text style="margin:5px;font-size: 0.7em;" color="dark">{{$heap.state.user?.location_main?.location_address}}</ion-text>
+      <div class="delivery-adress"  style="font-size: 1em;" >
+        <div class="center">
+          <ion-text size="small" color="medium" >Адрес</ion-text>
+          <ion-icon :icon="chevronDownOutline" color="medium"></ion-icon>
+        </div>
+        <div class="center">
+          <ion-icon slot="start" color="secondary" :icon="location"/>
+          <ion-text color="dark"><b>{{$heap.state.user?.location_main?.location_address}}</b></ion-text>
+        </div>
       </div>
-      <div class="rightend" v-if="deliveryTime">
+      <div class="delivery-time" v-if="deliveryTime">
         <ion-text style="font-size:24px;color:var(--ion-color-secondary-contrast)">{{deliveryTime.time}}</ion-text>
         <ion-note style="font-size:10px;color:var(--ion-color-secondary-contrast)">мин</ion-note>
       </div>
-      <div class="rightend" v-else></div>
     </div>
     <ion-item v-else detail button @click="selectDeliveryAddress()" class="selector">
       <ion-icon slot="start" style="color: var(--ion-color-primary)" :icon="location"/>
@@ -62,7 +70,11 @@ import {
   IonLabel,
   IonItem,
  }  from "@ionic/vue";
-import { location }             from "ionicons/icons";
+
+import { 
+  location, 
+  chevronDownOutline 
+}                               from "ionicons/icons";
 import heap                     from "@/heap";
 import router                   from '@/router';
 import Topic                    from '@/scripts/Topic.js'
@@ -80,7 +92,10 @@ export default {
       IonItem,
   },
   setup() {
-    return { location };
+    return { 
+      location, 
+      chevronDownOutline 
+    };
   },
   data() {
     return {

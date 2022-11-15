@@ -1,4 +1,18 @@
 
+    
+@media screen and (max-width: 740px) {
+
+  .desktop-main-container .ion-left-column {
+    display: none !important;
+  }
+  .desktop-main-container .ion-middle-column{
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+  ion-footer{
+    display: none !important;
+  }
+}
 @media screen and (min-width: 740px) {
   .desktop-main-container .desktop-template{
     max-width: var(--breakpoints-width);

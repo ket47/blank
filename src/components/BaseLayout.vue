@@ -3,11 +3,11 @@
     <ion-header :class="[pageClass]" style="z-index:0"><!-- ???z-index cancels box-shadow -->
       <ion-toolbar>
         <ion-buttons slot="start">
-          <ion-back-button :default-href="pageDefaultBackLink" color="light" style="padding:0px 10px"></ion-back-button>
+          <ion-back-button :default-href="pageDefaultBackLink" style="padding:0px 10px"></ion-back-button>
         </ion-buttons>
-        <ion-title v-if="pageTitle" size="small"><div style="line-height: 1.5;max-height:3em;text-overflow: ellipsis;">{{ pageTitle }}</div></ion-title>
+        <ion-title v-if="pageTitle" size="small"><div style="line-height: 1.5;max-height:3em;text-overflow: ellipsis;overflow: hidden;white-space: nowrap;font-weight: bold;">{{ pageTitle }}</div></ion-title>
         
-        <ion-icon  v-if="pageLogo" class="toolbar_svg_logo" style="color: white"  :icon="pageLogo"/>
+        <ion-icon  v-if="pageLogo" class="toolbar_svg_logo" style="color: var(--ion-color-primary)"  :icon="pageLogo"/>
         <div slot="end">
           <cart-header slot="end"></cart-header>
         </div>
@@ -87,12 +87,12 @@ export default defineComponent({
 
 <style>
 
-ion-header ion-toolbar {
+.ion-page ion-header ion-toolbar:last-of-type {
   --min-height: 56px;
-  --background: var(--ion-background-primary);
+  --background: var(--ion-background);
+  --border-width: 0;
 }
 ion-header ion-toolbar ion-title{
-  color: white;
   text-align: left;
   padding: 0 1em;
   font-size: 16px;

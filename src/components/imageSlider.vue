@@ -1,12 +1,15 @@
 <style scoped>
-    .crop-to-fit {
+    .swiper  .cropper.crop-to-fit{
       display: flex;
       justify-content: center;
       align-items: center;
       overflow: hidden;
       width: 100%;
     }
-    .crop-to-fit img {
+    .swiper .cropper:not(.crop-to-fit) img {
+      padding: 10%;
+    }
+    .swiper .cropper.crop-to-fit img {
       flex-shrink:0;
       min-width:100%;
       max-width: unset;
@@ -19,9 +22,9 @@
       <img :src="`${$heap.state.hostname}image/get.php/${image.image_hash}.1000.1000.webp`"/>
     </div>
   </div>
-  <swiper v-else :modules="modules" :autoplay='{delay: 3000, disableOnInteraction: false}' :loop="true" effect="fade"  :style="`height: ${imgHeight||300}px;`">
+  <swiper v-else :modules="modules" :autoplay='{delay: 3000, disableOnInteraction: false}' :loop="true" effect="fade"  :style="`height: ${imgHeight||300}px;`" >
     <swiper-slide v-for="image in imageList" :key="image.image_hash">
-      <div class="crop-to-fit" :style="`height: ${imgHeight||300}px;`">
+      <div :class="`${mode} cropper`" :style="`height: ${imgHeight||300}px;`">
         <img :style="`min-height: ${imgHeight||300}px;`" :src="`${$heap.state.hostname}image/get.php/${image.image_hash}.${imgHeight*4||1200}.${imgHeight*4||1200}.webp`"/>
       </div>
     </swiper-slide>
@@ -55,7 +58,7 @@ export default({
       IonFabButton,
       IonIcon
     },
-    props: ['imageList','imgHeight'],
+    props: ['imageList','imgHeight', 'mode'],
     setup() {
       return {
         modules: [Autoplay,EffectFade],

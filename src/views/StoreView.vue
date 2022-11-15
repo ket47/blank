@@ -1,27 +1,80 @@
 <style scoped>
 .store-info {
-  box-shadow: 0px 0px 15px -5px #0000005e;
-  background-color: var(--ion-background);
+  margin-top: -20px;
   position: relative;
+  z-index: 100;
+  border-top-left-radius: var(--ion-border-radius, 15px);
+  border-top-right-radius: var(--ion-border-radius, 15px);
+  padding-top: 20px;
 }
-
-.groups-container ion-chip {
+ion-accordion-group .accordion-collapsed .store-description,
+ion-accordion-group .accordion-collapsing .store-description{
+  text-overflow: ellipsis;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  position: relative;
+  transition: all 300ms cubic-bezier(0.25, 0.8, 0.5, 1) 0s;
+  line-height: 1.4;
+}
+ion-accordion-group .accordion-expanded .store-description,
+ion-accordion-group .accordion-expanding .store-description{
+  display: inline-block;
+  line-height: 1.4;
+}
+.delivery-variant{
+  background: var(--ion-color-success-shade);
+  padding: 0;
   border-radius: 10px;
-  background-color: white;
-  border: 1px solid #e6e6e6;
-  font-weight: 500;
-  padding: 10px 15px;
-  height: 35px;
+  display: inline-block;
+  margin: 8px 16px;
+  font-size: 14px;
+}
+.delivery-variant .delivery-variant-description{
+  background: var(--ion-color-success);
+  padding: 10px;
+  border-radius: 10px 0 0 10px;
+  color: white;
+}
+.delivery-variant .delivery-variant-description label{ 
+  display: block; 
+  margin-bottom: 5px;
+}
+.delivery-variant .delivery-variant-cost{
+  padding: 10px;
+  color: white;
+  font-size: 18px;
+}
+.groups-container{
+  border-bottom: 1px solid lightgray;
+  display: block ruby;
+}
+.groups-container ion-segment-button {
+  font-weight: bold;
+  margin: 0 5px;
+  text-transform: initial;
+  min-height: 35px;
+}
+.groups-container ion-segment-button.segment-button-checked ion-label {
+  color: white;
 }
 
-.groups-container ion-chip.active-chip {
+.sub-groups-container {
+  display: block ruby;
+}
+.sub-groups-container span ion-label {
+  margin: 0;
+}
+.sub-groups-container span.segment-button-checked {
   background-color: var(--ion-color-primary);
   border: none;
 }
-
-.groups-container ion-chip.active-chip ion-label {
+.sub-groups-container span.segment-button-checked ion-label {
   color: white;
 }
+
+
 .store-page .search-container {
   visibility: visible;
   margin: 1em 0;
@@ -36,6 +89,7 @@
 .store-page .product-list {
   margin-top: 1em;
   min-height: 80vh;
+  padding: 0 16px;
 }
 
 
@@ -100,15 +154,14 @@
   position: fixed;
   top: 56px;
   z-index: 10000;
-  width: 100%;
+  width: 100vw;
   background-color: white;
-  box-shadow: 1px 1px 5px #00000040;
+  border-bottom: 1px solid lightgray;
 }
 .group-fixed-block.hidden-block {
   display: none;
 }
 ion-segment {
-  --background: var(--ion-background-primary-dark);
   border-radius: 0;
 }
 ion-segment-button {
@@ -116,9 +169,6 @@ ion-segment-button {
   --indicator-color: orange;
 }
 
-ion-segment ion-label {
-  color: white;
-}
 ion-chip .active-chip {
   background-color: var(--ion-color-secondary);
   color: white;
@@ -137,7 +187,7 @@ ion-chip .active-chip {
   grid-template-columns: 100%;
   --background: white;
 }
-.desktop-main-container .group-fixed-block ion-segment ion-segment-button{
+.desktop-main-container .group-fixed-block ion-segment span{
   width: 100%;
   display: block;
   text-align: left;
@@ -148,7 +198,7 @@ ion-chip .active-chip {
   text-transform: capitalize;
   align-self: baseline;
 }
-.desktop-main-container .group-fixed-block .groups-container {
+.desktop-main-container .group-fixed-block .sub-groups-container {
   display: none;
 }
 
@@ -162,68 +212,72 @@ ion-chip .active-chip {
 
 <template>
   <base-layout pageDefaultBackLink="/catalog" page-class="store-page" :contentOnScroll="onScroll" :page-title="this.storeItem.store_name??'Магазин'">
-  <div style="background-color:var(--ion-background-shade)">
-    <div class="store-info">
-      <image-slider :imageList="storeItem.images" :imgHeight="200"></image-slider>
-        <ion-list>
+  <div>
+    <div class="store-info-container">
+      <image-slider :imageList="storeItem.images" :imgHeight="200" :mode="'crop-to-fit'"></image-slider>
+      <ion-list  class="store-info">
         <ion-item lines="none">
-          <ion-text color="primary" style="font-size:1.2em;">{{ storeItem.store_name }}</ion-text>
+          <ion-text style="font-size:1.2em;"><b>{{ storeItem.store_name }}</b></ion-text>
           <router-link slot="end" :to="'/catalog/store-edit-' + storeItem.store_id" v-if="storeItem.is_writable==1">
             <ion-icon :icon="settingsOutline" style="font-size:24px"></ion-icon>
           </router-link>
         </ion-item>
-        <ion-item lines="none">
-          <ion-text style="text-align:justify" color="medium">{{storeItem.store_description}}</ion-text>
-        </ion-item>
-        <ion-item lines="none"></ion-item>
+        <ion-accordion-group style="width:100%">
+          <ion-accordion>
+            <ion-item  slot="header" lines="none">
+              <ion-text  class="store-description" color="medium">{{storeItem.store_description}}</ion-text>
+            </ion-item>
 
-        <ion-item lines="none">
-          <ion-text>{{ storeItem.store_group_names }}</ion-text>
-          <store-opened-indicator :storeItem="storeItem"/>
-        </ion-item>
-        <ion-item lines="none">
-          <ion-text>Доставит <b style="color:var(--ion-color-primary)">{{$heap.getters.settings.app_title}}</b></ion-text>
-          <ion-chip slot="end" v-if="storeItem?.deliveryTime?.timeMin" color="primary">
-            {{storeItem.deliveryTime.timeMin}}-{{storeItem.deliveryTime.timeMax}}мин
-          </ion-chip>
-        </ion-item>
-        <ion-item lines="none">
-          <ion-text slot="start" v-if="$heap.getters.settings.delivery?.fee>0">доставка <ion-text color="secondary">{{$heap.getters.settings.delivery.fee}}₽</ion-text></ion-text>
-          <ion-text slot="end" v-if="storeItem.store_minimal_order>0">заказ от <ion-text color="secondary">{{storeItem.store_minimal_order}}₽</ion-text></ion-text>
-        </ion-item>
+            <ion-list slot="content">
+              <ion-item lines="none">
+                <ion-text><b>{{storeItem.store_company_name}}</b></ion-text>
+              </ion-item>
+              <ion-item lines="none">
+                <ion-label color="medium">ИНН</ion-label>
+                <ion-label color="medium">{{storeItem.store_tax_num}}</ion-label>
+              </ion-item>
+              <ion-item lines="none">
+                <ion-label color="medium">Телефон</ion-label>
+                <ion-label color="medium">{{storeItem.store_phone}}</ion-label>
+              </ion-item>
+              <ion-item lines="none">
+                <ion-text color="medium">{{storeItem.locations?.[0].location_address}}</ion-text>
+              </ion-item>
+            </ion-list>
+          </ion-accordion>
+        </ion-accordion-group>
+        <ion-grid>
+          <ion-row class="ion-justify-content-between">
+            <ion-col size="auto">
+              <store-opened-indicator :storeItem="storeItem"/>
+            </ion-col>
+            <ion-col size="auto">
+              <ion-chip color="medium"  background="transparent">
+                <label>{{ storeItem.store_group_names }}</label>
+              </ion-chip>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+        
+        <ion-grid class="delivery-variant">
+          <ion-row class="ion-justify-content-between ion-align-items-center">
+            <ion-col size="auto" class="delivery-variant-description">
+              <label><b>Доставит {{$heap.getters.settings.app_title}}</b></label>
+              <ion-text>15-20 минут</ion-text>
+            </ion-col>
+            <ion-col size="auto" class="delivery-variant-cost">
+              <ion-text v-if="$heap.getters.settings.delivery?.fee>0"><b>{{$heap.getters.settings.delivery.fee}}₽</b></ion-text>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
       </ion-list>
 
 
 
-
-      <ion-accordion-group style="width:100%">
-        <ion-accordion>
-          <ion-item slot="header">
-            <ion-label slot="end" color="medium">Еще</ion-label>
-          </ion-item>
-
-          <ion-list slot="content">
-            <ion-item lines="none">
-              <ion-text><b>{{storeItem.store_company_name}}</b></ion-text>
-            </ion-item>
-            <ion-item lines="none">
-              <ion-label color="medium">ИНН</ion-label>
-              <ion-label color="medium">{{storeItem.store_tax_num}}</ion-label>
-            </ion-item>
-            <ion-item lines="none">
-              <ion-label color="medium">Телефон</ion-label>
-              <ion-label color="medium">{{storeItem.store_phone}}</ion-label>
-            </ion-item>
-            <ion-item lines="none">
-              <ion-text color="medium">{{storeItem.locations?.[0].location_address}}</ion-text>
-            </ion-item>
-          </ion-list>
-        </ion-accordion>
-      </ion-accordion-group>
     </div>
 
     <div v-if="storeGroups" class="group-fixed-block hidden-block">
-      <ion-segment v-model="groupSelectedParentId" scrollable>
+      <ion-segment v-model="groupSelectedParentId" scrollable  class="groups-container">
         <ion-segment-button
           v-for="group_item in storeGroups"
           :key="group_item.group_id"
@@ -234,18 +288,18 @@ ion-chip .active-chip {
           <ion-label>{{ group_item.group_name }}</ion-label>
         </ion-segment-button>
       </ion-segment>
-      <div v-if="storeGroups[groupSelectedParentId]" class="groups-container">
-        <ion-chip
-          color="primary"
+      <ion-segment color="light"   v-if="storeGroups[groupSelectedParentId]" scrollable class="sub-groups-container">
+        <span
           v-show="1||storeProducts[group_item.group_id]"
           v-for="group_item in storeGroups[groupSelectedParentId].children"
           :key="group_item.group_id"
           :ref="`group-chip-${group_item.group_id}`"
           @click="groupSelectSub(group_item.group_id)"
         >
-          <ion-label color="primary">{{ group_item.group_name }}</ion-label>
-        </ion-chip>
-      </div>
+          <ion-chip :outline="true" color="primary">{{group_item.group_name}}</ion-chip>
+
+        </span>
+      </ion-segment>
     </div>
 
     <ion-searchbar class="search-container" v-model="searchRequest" placeholder="Поиск в этом предприятии"
@@ -256,8 +310,10 @@ ion-chip .active-chip {
         })
       "/>
 
+    <h4 style="margin: 8px 16px;"><b>Категории</b></h4>
     <group-list v-if="storeGroups" :groupList="storeGroups" :onClick="(group_id) => {groupSelectParent(group_id,true) }"></group-list>
 
+    <h4 style="margin: 8px 16px;"><b>Товары</b></h4>
     <swiper v-if="storeGroups" pager="true" :options="slideOpts" class="product-list-slider" @slideChange="groupSliderChanged($event)">
       
       {{storeGroups}}
@@ -270,8 +326,8 @@ ion-chip .active-chip {
             :ref="'group-' + group_item.group_id"
             :data-group_id="group_item.group_id"
           >
-            <ion-col class="group-title" size="12" style="padding:25px 0px 25px 0px">
-              <h4>{{ group_item.group_name }}</h4>
+            <ion-col class="group-title" size="12">
+              <h5 style="margin: 0;">{{ group_item.group_name }}</h5>
             </ion-col>
             <ion-col  size="12">
               <product-list :productList="storeProducts[group_item.group_id]"></product-list>
@@ -517,7 +573,8 @@ export default{
       const swiper = document.querySelector('.product-list-slider').swiper;
       const slide_index = Object.keys(this.storeGroups).indexOf(this.groupSelectedParentId);
       swiper.slideTo(slide_index,100,false);
-
+      var slide_height = swiper.slides[slide_index].querySelector('.product-list').clientHeight;
+      document.querySelector('.product-list-slider').style.height = slide_height + 'px';
       try{
         if(selectFirstChip){
           const first_sub_group_id=Object.keys(this.storeGroups[parent_group_id].children)[0];
@@ -543,6 +600,7 @@ export default{
       }catch(err){ 
         /** */
       }
+      
       this.scrollTo(sub_group_id);
     },
     groupSliderChanged(event) {

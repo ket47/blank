@@ -4,7 +4,7 @@
   justify-content: center;
   align-items: center;
   overflow: hidden;
-  height: 180px;
+  height: 150px;
 }
 
 .crop-to-fit ion-img {
@@ -15,8 +15,15 @@
 ion-card{
   border-radius: 10px;
 }
+ion-card .store-title{
+  --min-height: auto;
+  padding-top: 10px;
+}
 .closed ion-img{
   filter: grayscale(1);
+}
+.section-title{
+  margin: 0;
 }
 </style>
 
@@ -56,21 +63,40 @@ ion-card{
       К сожалению, не найдено подходящих магазинов и ресторанов. <br/>Возможно вы находитесь вне радиуса доставки.
     </ion-card-content>
   </ion-card>
-
-  <ion-list v-if="storeList && storeList.length>0" class="store-list"  style="box-shadow: 0px 0px 15px #0004;">
+  
+  <ion-grid  class="ion-justify-content-between ion-align-items-center" style="padding: 0 16px;">
+    <ion-row>
+      <ion-col size="10">
+        <h5 class="section-title">Магазины и рестораны</h5>
+      </ion-col>
+      <ion-col  size="2" class="ion-align-self-end">
+        <ion-icon style="font-size: 20px;" :icon="searchOutline"/>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+  <ion-list v-if="storeList && storeList.length>0" class="store-list" >
     <ion-card button v-for="store_item in storeList" :key="store_item.store_id" @click="$router.push(`/catalog/store-${store_item.store_id}`)"  :class="store_item.is_opened==0?'closed':''">
       <router-link :to="`/catalog/store-${store_item.store_id}`">
         <div class="crop-to-fit">
             <ion-img v-if="store_item.image_hash" :src="$heap.state.hostname +'/image/get.php/' +store_item.image_hash +'.300.300.webp'"/>
         </div>
       </router-link>
-        <store-opened-indicator :storeItem="store_item"/>
-
-        <ion-chip v-if="store_item.deliveryTime.timeMin" color="primary">{{store_item.deliveryTime.timeMin}}-{{store_item.deliveryTime.timeMax}}мин</ion-chip>
-        <ion-item lines="none">
-            <h3>{{store_item.store_name}}</h3>
+        <ion-item lines="none" class="store-title">
+            <b>{{store_item.store_name}}</b>
         </ion-item>
-
+        <ion-grid>
+          <ion-row class="ion-justify-content-between">
+            <ion-col size="auto">
+              <store-opened-indicator :storeItem="store_item"/>
+              </ion-col>
+            <ion-col size="auto">
+              <ion-chip v-if="store_item.deliveryTime.timeMin" color="medium"  background="transparent">
+                <ion-icon :icon="timeOutline" ></ion-icon> 
+                <label>{{store_item.deliveryTime.timeMin}}-{{store_item.deliveryTime.timeMax}}мин</label>
+              </ion-chip>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
     </ion-card>
   </ion-list>
 
@@ -82,6 +108,9 @@ import {
   IonImg,
   IonChip,
   IonItem,
+  IonGrid,
+  IonRow,
+  IonCol,
   IonCard,
   IonCardHeader,
   IonCardTitle,
@@ -89,6 +118,7 @@ import {
   IonSkeletonText,
   IonButton
 }                   from "@ionic/vue";
+import {  timeOutline, searchOutline }    from 'ionicons/icons'
 import jQuery       from "jquery";
 import heap         from "@/heap";
 import Utils        from '@/scripts/Utils.js'
@@ -99,6 +129,9 @@ export default {
     IonList,
     IonImg,
     IonChip,
+    IonGrid,
+    IonRow,
+    IonCol,
     IonItem,
     IonCard,
     IonCardHeader,
@@ -107,6 +140,12 @@ export default {
     IonSkeletonText,
     IonButton,
     StoreOpenedIndicator,
+  },
+  setup(){
+      return {
+        timeOutline,
+        searchOutline
+      }
   },
   data() {
     return {
