@@ -144,20 +144,39 @@
           <ion-label position="stacked" color="primary">Электронная почта</ion-label>
           <ion-input v-model="storeItem.store_email" name="store_email"/>
         </ion-item>
-        <ion-item>
-          <ion-row>
-            <ion-col>
-              <ion-label position="stacked" color="primary">Мин. заказ ({{$heap.state.currencySign}}) *</ion-label>
-              <ion-input v-model="storeItem.store_minimal_order" name="store_minimal_order"/>
-            </ion-col>
-            <ion-col>
-              <ion-label position="stacked" color="primary">Подготовка (минут) *</ion-label>
-              <ion-input v-model="storeItem.store_time_preparation" name="store_time_preparation"/>
-            </ion-col>
-          </ion-row>
-        </ion-item>
       </ion-item-group>
       </ion-list>
+
+    <ion-list>
+      <ion-item-divider>
+          <ion-label>Заказы и своя доставка</ion-label>
+      </ion-item-divider>
+      <ion-item>
+          <ion-icon :icon="cartOutline" slot="start" color="primary"></ion-icon>
+          <ion-text>Подготовка (минут)*</ion-text>
+          <ion-input slot="end" v-model="storeItem.store_time_preparation" name="store_time_preparation"/>
+      </ion-item>
+      <ion-item>
+          <ion-icon :icon="cartOutline" slot="start" color="primary"></ion-icon>
+          <ion-text>Мин. заказ ({{$heap.state.currencySign}})*</ion-text>
+          <ion-input slot="end" v-model="storeItem.store_minimal_order" name="store_minimal_order"/>
+      </ion-item>
+      <ion-item>
+          <ion-icon :icon="storefrontOutline" slot="start" color="primary"></ion-icon>
+          <ion-text>Самовывоз разрешен</ion-text>
+          <ion-toggle slot="end" v-model="storeItem.store_pickup_allow" @ionChange="save('store_pickup_allow',$event.target.checked?1:0)" name="store_pickup_allow"/>
+      </ion-item>
+      <ion-item>
+          <ion-icon :icon="rocketOutline" slot="start" color="primary"></ion-icon>
+          <ion-text>Своя доставка</ion-text>
+          <ion-toggle slot="end" v-model="storeItem.store_delivery_allow" @ionChange="save('store_delivery_allow',$event.target.checked?1:0)" name="store_delivery_allow"/>
+      </ion-item>
+      <ion-item v-if="storeItem.store_delivery_allow==1">
+          <ion-icon :icon="rocketOutline" slot="start" color="primary"></ion-icon>
+          <ion-text>Своя доставка ({{$heap.state.currencySign}})</ion-text>
+          <ion-input slot="end" v-model="storeItem.store_delivery_cost" name="store_delivery_cost"/>
+      </ion-item>
+    </ion-list>
 
       <ion-item-divider>
         <ion-label>Категории товаров и услуг *</ion-label>
@@ -294,6 +313,37 @@
       </ion-list>
     </form>
 
+
+
+    <ion-list v-if="isAdmin">
+      <ion-item-divider>
+          <ion-label>Тарифы</ion-label>
+      </ion-item-divider>
+      <ion-item v-for="tariff in tariffListComputed" :key="tariff.tariff_id">
+        <ion-icon :src="briefcaseOutline" slot="start" color="primary"/>
+        <div>
+          <p>{{tariff.tariff_name}}</p>
+          <ion-note>{{tariff.start_dmy}} - {{tariff.finish_dmy}}</ion-note>
+        </div>
+        <ion-icon :src="trashOutline" slot="end" @click="tariffDelete(tariff.tariff_id)"/>
+      </ion-item>
+      <ion-item v-if="isAdmin" button @click="tariffPick()">
+        <ion-icon :src="addOutline" slot="start" color="primary"/>
+        <ion-label>Добавить тариф</ion-label>
+      </ion-item>
+    </ion-list>
+
+
+
+
+
+
+
+
+
+
+
+
     <ion-list v-if="storeItem">
       <ion-item-divider>
           <ion-label>Адинистраторы</ion-label>
@@ -313,23 +363,6 @@
       </ion-item>
     </ion-list>
 
-    <ion-list v-if="isAdmin">
-      <ion-item-divider>
-          <ion-label>Тарифы</ion-label>
-      </ion-item-divider>
-      <ion-item v-for="tariff in tariffListComputed" :key="tariff.tariff_id">
-        <ion-icon :src="briefcaseOutline" slot="start" color="primary"/>
-        <div>
-          <p>{{tariff.tariff_name}}</p>
-          <ion-note>{{tariff.start_dmy}} - {{tariff.finish_dmy}}</ion-note>
-        </div>
-        <ion-icon :src="trashOutline" slot="end" @click="tariffDelete(tariff.tariff_id)"/>
-      </ion-item>
-      <ion-item v-if="isAdmin" button @click="tariffPick()">
-        <ion-icon :src="addOutline" slot="start" color="primary"/>
-        <ion-label>Добавить тариф</ion-label>
-      </ion-item>
-    </ion-list>
 
     <ion-list v-if="storeItem">
       <ion-item-divider>
@@ -391,6 +424,8 @@ import {
   copyOutline,
   ribbonOutline,
   briefcaseOutline,
+  cartOutline,
+  rocketOutline,
 }                     from 'ionicons/icons'
 import imageTileComp  from '@/components/ImageTileComp.vue'
 import UserAddressPicker from '@/components/UserAddressPicker.vue'
@@ -443,6 +478,8 @@ export default  {
       copyOutline,
       ribbonOutline,
       briefcaseOutline,
+      cartOutline,
+      rocketOutline,
       }
   },
   data(){

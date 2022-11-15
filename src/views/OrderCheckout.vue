@@ -16,7 +16,8 @@
         <user-address-widget :deliveryTime="deliveryTime" showComment="1"></user-address-widget>
 
         <ion-list v-if="order">
-            <ion-item-divider>Заказ</ion-item-divider>
+            <ion-item-divider>Заказ #{{order?.order_id}} из "{{order?.store.store_name}}"</ion-item-divider>
+            <!--
             <ion-item>
                 <ion-icon :icon="ordersIcon" slot="start" color="primary"></ion-icon>
                 Номер 
@@ -25,9 +26,58 @@
             <ion-item>
                 <ion-icon :icon="storefrontOutline" slot="start" color="primary"></ion-icon>
                 Из "{{order?.store.store_name}}"
-            </ion-item>            
+            </ion-item>
+            --> 
             <ion-item>
                 <ion-textarea rows="3" placeholder="комментарий к заказу" @change="orderDescriptionChanged()" v-model="order.order_description"></ion-textarea>
+            </ion-item>
+
+            <ion-item-divider v-if="storeIsReady">Способы доставки</ion-item-divider>
+            <ion-item button @click="tariffRuleSet(deliveryByCourierRule)" v-if="deliveryByCourierRule">
+                <ion-icon :icon="rocketOutline" slot="start" color="primary"></ion-icon>
+                <label for="delivery_by_courier">Доставит <b>{{$heap.state.settings.app_title}}</b></label>
+                <div slot="end">
+                    <input type="radio" name="deliveryBy" id="delivery_by_courier" value="courier"  :checked="deliveryByCourierRuleChecked">
+                </div>
+            </ion-item>
+            <ion-item button @click="tariffRuleSet(deliveryByStoreRule)" v-if="deliveryByStoreRule">
+                <ion-icon :icon="rocketOutline" slot="start"></ion-icon>
+                <label for="delivery_by_store">Доставит <b>{{order?.store.store_name}}</b></label>
+                <div slot="end">
+                    <input type="radio" name="deliveryBy" id="delivery_by_store" value="store" :checked="deliveryByStoreRuleChecked">
+                </div>
+            </ion-item>
+            <ion-item button @click="tariffRuleSet(pickupByCustomerRule)" v-if="pickupByCustomerRule">
+                <ion-icon :icon="storefrontOutline" slot="start"></ion-icon>
+                <label for="pickup_by_customer">Самовывоз</label>
+                <div slot="end">
+                    <input type="radio" name="deliveryBy" id="pickup_by_customer" value="store" :checked="pickupByCustomerRuleChecked">
+                </div>
+            </ion-item> 
+
+
+
+            <ion-item-divider v-if="storeIsReady">Способы оплаты</ion-item-divider>
+            <ion-item button @click="paymentType='use_card'" v-if="tariffRule.paymentByCard==1">
+                <ion-icon :icon="cardOutline" slot="start" color="primary"></ion-icon>
+                <label for="payment_card">Оплата картой</label>
+                <div slot="end">
+                    <input type="radio" name="paymentType" id="payment_card" value="card"  :checked="paymentType == 'use_card'">
+                </div>
+            </ion-item>
+            <ion-item button @click="paymentType='use_cash'" v-if="tariffRule.paymentByCash==1">
+                <ion-icon :icon="cashOutline" slot="start" color="primary"></ion-icon>
+                <label for="payment_cash">Оплата наличными</label>
+                <div slot="end">
+                    <input type="radio" name="paymentType" id="payment_cash" value="cash" :checked="paymentType == 'use_cash'">
+                </div>
+            </ion-item>
+            <ion-item button @click="paymentType='use_cash_store'" v-if="tariffRule.paymentByCashStore==1">
+                <ion-icon :icon="cashOutline" slot="start" color="primary"></ion-icon>
+                <label for="payment_cash_store">Оплата наличными продавцу</label>
+                <div slot="end">
+                    <input type="radio" name="paymentType" id="payment_cash_store" value="cash" :checked="paymentType == 'use_cash_store'">
+                </div>
             </ion-item>
 
 
@@ -52,37 +102,17 @@
                 </div>
                  Выберите скидку 
             </ion-item>
-            <ion-item v-if="order?.order_sum_tax>0">
-                <ion-icon :icon="pieChartOutline" slot="start" color="primary"></ion-icon>
-                Налоги 
-                <ion-text slot="end">{{order?.order_sum_tax}}{{$heap.state.currencySign}}</ion-text>
-            </ion-item>
-            <ion-item>
+            <ion-item v-if="order_sum_delivery>0">
                 <ion-icon :icon="rocketOutline" slot="start" color="primary"></ion-icon>
                 Доставка 
-                <ion-text slot="end">{{order?.order_sum_delivery??0}}{{$heap.state.currencySign}}</ion-text>
+                <ion-text slot="end">{{order_sum_delivery??0}}{{$heap.state.currencySign}}</ion-text>
             </ion-item>
-            <ion-item v-if="order?.order_sum_total>0">
+            <ion-item v-if="order_sum_total>0">
                 <ion-icon :icon="walletOutline" slot="start" color="primary"></ion-icon>
                 Итого к оплате
-                <ion-text slot="end" color="primary">{{order?.order_sum_total}}{{$heap.state.currencySign}}</ion-text>
+                <ion-text slot="end"><b>{{order_sum_total}}</b>{{$heap.state.currencySign}}</ion-text> 
             </ion-item>
 
-            <ion-item-divider>Способы оплаты</ion-item-divider>
-            <ion-item button @click="paymentType='payment_card'">
-                <ion-icon :icon="cardOutline" slot="start" color="primary"></ion-icon>
-                <label for="payment_card">Оплата картой</label>
-                <div slot="end">
-                    <input type="radio" name="paymentType" id="payment_card" value="card"  :checked="paymentType == 'payment_card'">
-                </div>
-            </ion-item>
-            <ion-item button @click="paymentType='payment_cash'" v-if="0">
-                <ion-icon :icon="cashOutline" slot="start" color="primary"></ion-icon>
-                <label for="payment_cash">Оплата наличными</label>
-                <div slot="end">
-                    <input type="radio" name="paymentType" id="payment_cash" value="cash" :checked="paymentType == 'payment_cash'">
-                </div>
-            </ion-item>
 
             <ion-item lines="none">
                 <ion-text style="font-size:0.9em">
@@ -167,17 +197,34 @@ export default({
     IonBadge,
     },
     setup(){
-        return {cardOutline,cashOutline,giftOutline,cubeOutline,walletOutline,pieChartOutline,storefrontOutline,ordersIcon,rocketOutline,documentTextOutline};
+        return {
+            cardOutline,
+            cashOutline,
+            giftOutline,
+            cubeOutline,
+            walletOutline,
+            pieChartOutline,
+            storefrontOutline,
+            ordersIcon,
+            rocketOutline,
+            documentTextOutline
+            };
     },
     data(){
         return {
             order:null,
+            order_sum_delivery:0,
+
             promo:null,
             promoCount:0,
             deliveryTime:{},
-            paymentType:'payment_card',
             termsAccepted:1,
-            storeIsReady:0
+            storeIsReady:0,
+            errNotfound:0,
+
+            paymentType:'use_card',
+            tariffRule:{},
+            tariffRuleList:[],
         }
     },
     computed:{
@@ -185,16 +232,16 @@ export default({
             if( !this.order ){
                 return false
             }
-            if(this.order.order_sum_total<this.order.order_sum_promo*2){
+            if(this.order_sum_total<this.order.order_sum_promo*2){
                 return `Сумма к оплате со скидкой ${this.order.order_sum_promo}${this.$heap.state.currencySign} должна быть больше чем ${this.order.order_sum_promo*2}${this.$heap.state.currencySign}`
             }
             if(this.order.order_sum_product*1<this.order.store.store_minimal_order*1){
                 return `Сумма заказа у "${this.order.store.store_name}" должна быть больше чем ${this.order.store.store_minimal_order}${this.$heap.state.currencySign}`
             }
-            if(this.order.order_sum_total*1<=this.order.order_sum_delivery*1){
-                return `Сумма к оплате должна быть больше чем ${this.order.order_sum_delivery}${this.$heap.state.currencySign}`
+            if(this.order_sum_total*1<=this.order_sum_delivery*1){
+                return `Сумма к оплате должна быть больше чем ${this.order_sum_delivery}${this.$heap.state.currencySign}`
             }
-            if(this.order.order_sum_total<=10){
+            if(this.order_sum_total<=10){
                 return `Сумма к оплате слишком маленькая`
             }
             if( this.storeIsReady==0 ){
@@ -203,8 +250,36 @@ export default({
             if( this.termsAccepted==0 ){
                 return `К сожалению, мы не можем доставить вам заказ, без согласия с условиями`
             }
+            if( this.errNotfound==1 ){
+                return `К сожалению, мы не можем доставить вам заказ, без согласия с условиями`
+            }
             return false
-        }
+        },
+
+        order_sum_total(){
+            return this.order.order_sum_product-this.order.order_sum_promo+this.order_sum_delivery
+        },
+
+        deliveryByCourierRule(){
+            return this.tariffRuleList?.filter(rule=>rule.deliveryByCourier==1).shift()
+        },
+        deliveryByCourierRuleChecked(){
+            return this.tariffRule.deliveryByCourier==1
+        },
+
+        deliveryByStoreRule(){
+            return this.tariffRuleList?.filter(rule=>rule.deliveryByStore==1).shift()
+        },
+        deliveryByStoreRuleChecked(){
+            return this.tariffRule.deliveryByStore==1
+        },
+
+        pickupByCustomerRule(){
+            return this.tariffRuleList?.filter(rule=>rule.pickupByCustomer==1).shift()
+        },
+        pickupByCustomerRuleChecked(){
+            return this.tariffRule.pickupByCustomer==1
+        }, 
     },
     mounted(){
         this.checkoutDataGet();
@@ -216,6 +291,9 @@ export default({
         async itemLoad(){
             try{
                 this.order=await jQuery.post(`${this.$heap.state.hostname}Order/itemGet`,{order_id:this.order.order_id})
+                if( this.order_sum_delivery==0 ){
+                    this.order_sum_delivery==this.order.order_sum_delivery
+                }
                 this.$heap.commit('setCurrentOrder',this.order)
             }catch{/** */}
         },
@@ -230,30 +308,44 @@ export default({
                 router.push('order-'+this.order.order_id);
                 return;
             }
-            this.storeIsReady=await this.storeReadinessCheck()
-            this.deliveryTime= await this.deliveryTimeGet();
-            this.promo=await this.promoGet()
-            this.promoCount=await this.promoCountGet()
-        },
-        async storeReadinessCheck(){
             try{
-                return await jQuery.post(`${this.$heap.state.hostname}Store/itemIsReady`,{store_id:this.order.order_store_id})
-            } catch{
+                const bulkResponse=await jQuery.post(`${this.$heap.state.hostname}Order/itemCheckoutDataGet`,{order_id:this.order.order_id})
+                this.deliveryTime=Utils.deliveryTimeCalculate(bulkResponse.Location_distanceHolderGet,null)
+                this.promo=bulkResponse.Promo_itemLinkGet
+                this.promoCount=bulkResponse.Promo_listGet
+                this.storeIsReady=Array.isArray(bulkResponse.Store_deliveryOptions)?1:0
+                this.tariffRuleList=bulkResponse.Store_deliveryOptions
+                this.tariffRuleSet(this.tariffRuleList[0]||{})
+            }
+            catch(err){
+                const exception=err?.responseJSON;
+                if(!exception){
+                  return false;
+                }
+                const exception_code=exception.messages.error;
+                switch(exception_code){
+                    case 'not_ready':
+                        this.storeIsReady=0
+                        break;
+                    case 'no_tariff':
+                        this.storeIsReady=0
+                        break;
+                    default:
+                        this.errNotfound=1
+                }
                 return false
             }
         },
-        async deliveryTimeGet(){
-            const request={
-                start_holder:'store',
-                start_holder_id:this.order.order_store_id,
-                finish_holder:'user',
-                finish_holder_id:this.order.owner_id
-            };
-            try{
-                const preparation=null;//use default prep time
-                const distance= await jQuery.post( this.$heap.state.hostname + "Location/distanceHolderGet", request );
-                return Utils.deliveryTimeCalculate(distance,preparation);
-            } catch{/** */}
+        tariffRuleSet( tariffRule ){
+            this.tariffRule=tariffRule
+            this.order_sum_delivery=tariffRule.order_sum_delivery
+            this.paymentType='use_card'
+            if(tariffRule.paymentByCashStore==1){
+                this.paymentType='use_cash_store'
+            } else
+            if(tariffRule.paymentByCash==1){
+                this.paymentType='use_cash'
+            }
         },
         async orderDescriptionChanged(){
             const request={
@@ -263,21 +355,70 @@ export default({
             Order.api.itemUpdate(request);
         },
         async proceed(){
-            if(this.paymentType=='payment_cash'){
-                //
+            const orderData={
+                order_id:this.order.order_id,
+                tariff_id:this.tariffRule.tariff_id,
+                deliveryByStore:this.deliveryByStoreRuleChecked?1:0 ,
+                deliveryByCourier:this.deliveryByCourierRuleChecked?1:0,
+                pickupByCustomer:this.pickupByCustomerRuleChecked?1:0,
+                paymentByCard:this.paymentType=='use_card'?1:0,
+                paymentByCash:this.paymentType=='use_cash'?1:0,
+                paymentByCashStore:this.paymentType=='use_cash_store'?1:0,
             }
-            if(this.paymentType=='payment_card'){
-                this.paymentFormOpen({
-                    order_id:this.order.order_id,
-                    order_sum_total:this.order.order_sum_total,
-                    user_id:this.order.owner_id
-                });
+            try{
+                await jQuery.post(`${this.$heap.state.hostname}Order/itemCheckoutDataSet`,JSON.stringify(orderData))
+
+            } catch(err){
+                const exception=err?.responseJSON;
+                if(!exception){
+                  return false;
+                }
+                const exception_code=exception.messages.error;
+                this.$flash("С заказом возникла проблема")
+                return false
             }
+            
+
+
+
+            console.log(orderData);
+
+
+
+
+
+
+
+
+
+
+
+            // if(this.paymentType=='payment_cash'){
+            //     try{
+            //         const stateChangeResult=await Order.api.itemStageCreate(this.order.order_id, 'customer_willpay_cash');
+            //         if(stateChangeResult=='ok'){
+            //             this.$router.push('order-'+this.order.order_id);
+            //         }
+            //     }catch(err){
+            //         const exception=err.responseJSON;
+            //         const exception_code=exception.messages.error;
+            //         switch(exception_code){
+            //             case 'cash_not_allowed':
+            //                 this.$flash("Неудалось выбрать наличную оплату");
+            //                 break;
+            //         }
+            //         return false
+            //     }
+            // }
+            // if(this.paymentType=='payment_card'){
+            //     this.paymentFormOpen({
+            //         order_id:this.order.order_id,
+            //         order_sum_total:this.order_sum_total,
+            //         user_id:this.order.owner_id
+            //     });
+            // }
         },
         async cancel(){
-            // try{
-            //     await Order.api.itemStageCreate(this.order.order_id, 'customer_cart');
-            // } catch(err){/* */}
             this.$router.push('order-'+this.order.order_id);
         },
         async paymentFormOpen( order_data ) {
@@ -371,7 +512,7 @@ export default({
             }catch(err){
                 //
             }
-        }
+        },
     }
 })
 </script>
