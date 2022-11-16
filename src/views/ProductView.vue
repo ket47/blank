@@ -36,8 +36,8 @@ ion-accordion-group .accordion-expanding .product-description{
         <image-slider v-if="productItem" :imageList="productItem.images"  />
         <ion-list class="product-subactions">
           <ion-item v-if="productItem?.is_writable"  lines="none"> 
-            <ion-chip color="dark">
-              <ion-icon slot="end" :src="settingsOutline" color="primary" @click="$router.push('product-edit-'+productId)"/>
+            <ion-chip color="dark" @click="$router.push('/catalog/product-edit-'+productId)">
+              <ion-icon color="primary" :src="settingsOutline"/>
               <ion-text>Редактировать</ion-text>
             </ion-chip>
           </ion-item>
@@ -126,6 +126,7 @@ import {
   IonAccordion,
   IonAccordionGroup,
 }                       from '@ionic/vue'
+
 import ImageSlider      from '@/components/ImageSlider'
 import CartAddButtons   from '@/components/CartAddButtons'
 import CartHeader       from '@/components/CartHeader'

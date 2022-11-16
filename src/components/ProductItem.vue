@@ -59,8 +59,11 @@
                     <b style="font-weight: bold; margin: 0; font-size: 1.4em">{{productItem.product_final_price}}</b>
                     <b style="font-weight: bold; margin: 0; font-size: 1.2em">{{$heap.state.currencySign}}</b>
                 </span>
-             / 
-                <span style="color:var(--ion-color-medium)">
+             /
+                <span v-if="productItem.product_unit=='порция'" style="color:var(--ion-color-medium)">
+                    {{weight_in_gramms}}г
+                </span>
+                <span v-else style="color:var(--ion-color-medium)">
                     {{productItem.product_unit}}
                 </span>
         </div>
@@ -89,6 +92,9 @@ export default {
                 return 'absent'
             }
             return ''
+        },
+        weight_in_gramms(){
+            return this.productItem.product_weight*1000
         }
     }
 }
