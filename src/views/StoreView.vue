@@ -56,19 +56,12 @@ ion-accordion-group .accordion-expanding .store-description{
   text-transform: initial;
   min-height: 35px;
 }
-.groups-container ion-segment-button.segment-button-checked ion-label {
-  color: white;
-}
 
 .sub-groups-container {
   display: block ruby;
 }
 .sub-groups-container span ion-label {
   margin: 0;
-}
-.sub-groups-container span.segment-button-checked {
-  background-color: var(--ion-color-primary);
-  border: none;
 }
 .sub-groups-container span.segment-button-checked ion-label {
   color: white;
@@ -160,13 +153,6 @@ ion-accordion-group .accordion-expanding .store-description{
 }
 .group-fixed-block.hidden-block {
   display: none;
-}
-ion-segment {
-  border-radius: 0;
-}
-ion-segment-button {
-  --color-checked: var(--ion-color-secondary);
-  --indicator-color: orange;
 }
 
 ion-chip .active-chip {
@@ -315,10 +301,8 @@ ion-chip .active-chip {
 
     <h4 style="margin: 8px 16px;"><b>Товары</b></h4>
     <swiper v-if="storeGroups" pager="true" :options="slideOpts" class="product-list-slider" @slideChange="groupSliderChanged($event)">
-      
       {{storeGroups}}
       <swiper-slide v-for="parent_group_item in storeGroups" :key="parent_group_item.group_id">
-
         <ion-grid class="product-list">
           <ion-row
             v-for="group_item in parent_group_item.children"
@@ -334,7 +318,6 @@ ion-chip .active-chip {
             </ion-col>
           </ion-row>
         </ion-grid>
-
       </swiper-slide>
     </swiper>
     
@@ -573,8 +556,6 @@ export default{
       const swiper = document.querySelector('.product-list-slider').swiper;
       const slide_index = Object.keys(this.storeGroups).indexOf(this.groupSelectedParentId);
       swiper.slideTo(slide_index,100,false);
-      var slide_height = swiper.slides[slide_index].querySelector('.product-list').clientHeight;
-      document.querySelector('.product-list-slider').style.height = slide_height + 'px';
       try{
         if(selectFirstChip){
           const first_sub_group_id=Object.keys(this.storeGroups[parent_group_id].children)[0];

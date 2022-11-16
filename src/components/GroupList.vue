@@ -13,7 +13,7 @@
 </style>
 <template>
     <swiper id="hcat_widget_grid"
-        :slides-per-view="3"
+        :slides-per-view="2.5"
         :space-between="0"
     >
         <swiper-slide v-for="group in groupList" :key="group.group_id"  @click="() => {return onClick(group.group_id)}">

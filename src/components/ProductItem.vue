@@ -16,12 +16,19 @@
 .product_list_item_img{
     border-radius: 10px;
     border: 2px solid var(--ion-color-light);
-    width:155px;
-    height:155px;
+    width:150px;
+    height:150px;
     overflow:hidden;
     align-items: center;
     justify-content: center;
     display:flex;
+    position: relative;
+}
+.product_list_item_img .blur-image{
+    height: 100%;
+    position: absolute;
+    z-index: -1;
+    filter: blur(2px);
 }
 .deleted .product_list_item_img{
     border: 4px solid red;
@@ -36,7 +43,8 @@
         <div class="product_list_item_img">
             <div style="position:relative;top:-50%;">
                 <cart-add-buttons buttonLayout="vertical" :productItem="productItem"></cart-add-buttons>
-            </div>
+            </div> 
+            <img class="blur-image" :src="`${$heap.state.hostname}image/get.php/${productItem.image_hash}.200.200.webp`"/>
             <ion-img @click="$router.push(`/catalog/product-${productItem.product_id}`)" :src="`${$heap.state.hostname}image/get.php/${productItem.image_hash}.200.200.webp`"/>
         </div>
         <div style="height:5em;overflow:hidden">

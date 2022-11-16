@@ -33,7 +33,7 @@ ion-accordion-group .accordion-expanding .product-description{
 <template>
   <base-layout :page-title="productItem?.product_name "  pageDefaultBackLink="/catalog" :cartComponent="CartHeader">
       <div class="product-images">
-        <image-slider v-if="productItem" :imageList="productItem.images"  :imgHeight="400" />
+        <image-slider v-if="productItem" :imageList="productItem.images"  />
         <ion-list class="product-subactions">
           <ion-item v-if="productItem?.is_writable"  lines="none"> 
             <ion-chip color="dark">
@@ -54,7 +54,9 @@ ion-accordion-group .accordion-expanding .product-description{
             <ion-item slot="header" lines="none">
               <ion-text  class="product-description" color="medium">{{productItem.product_description}}</ion-text>
             </ion-item>
-            <ion-item lines="none"></ion-item>
+            <ion-list slot="content">
+              <ion-item lines="none"></ion-item>
+            </ion-list>
           </ion-accordion>
         </ion-accordion-group>
         
