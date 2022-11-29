@@ -1,5 +1,5 @@
 <template>
-    <base-layout :pageTitle="`Заказ #${order_id}`" pageDefaultBackLink="/order/order-list/">
+    <base-layout :pageTitle="`Заказ #${order_id}`" pageDefaultBackLink="/order/order-list">
 
             <div v-if="order=='notfound'" style="display:flex;align-items:center;justify-content:center;height:100%">
                 <div style="width:max-content;text-align:center">
@@ -11,9 +11,10 @@
 
             <order-comp :orderData="order" @stageCreate="onStageCreate"/>
             <order-tracking-comp :orderData="order"/>
-            <order-history-comp :orderData="order"/>
             <image-tile-comp v-if="order" :images="order?.images" :image_holder_id="order?.order_id" controller="Order" ref="orderImgs"/>
+            <order-history-comp :orderData="order"/>
             <msg-subscription-comp/>
+            <order-meta-comp :orderId="order_id" v-if="order?.stage_current=='system_finish'"/>
 
             <ion-popover :is-open="isOpenDeliveryRejectionPopover" @didDismiss="isOpenDeliveryRejectionPopover=false">
                 <ion-content>
@@ -52,9 +53,10 @@ import {
 import Order                from '@/scripts/Order.js';
 import OrderComp            from '@/components/OrderComp.vue';
 import OrderHistoryComp     from '@/components/OrderHistoryComp.vue';
+import OrderMetaComp     from '@/components/OrderMetaComp.vue';
 import OrderTrackingComp    from '@/components/OrderTrackingComp.vue'
 import OrderObjectionModal  from '@/components/OrderObjectionModal.vue'
-//import OrderEntryAdd        from '@/components/OrderEntryAdd.vue'
+import OrderEntryAdd        from '@/components/OrderEntryAdd.vue'
 import ImageTileComp        from '@/components/ImageTileComp.vue'
 import MsgSubscriptionComp  from '@/components/MsgSubscriptionComp.vue'
 
@@ -65,9 +67,9 @@ export default({
     components: { 
     OrderComp,
     OrderHistoryComp,
+    OrderMetaComp,
     OrderTrackingComp,
     MsgSubscriptionComp,
-    //OrderEntryAdd,
     ImageTileComp,
     IonLabel,
     IonIcon,
@@ -101,7 +103,7 @@ export default({
                     case 404:
                         this.$flash("Заказ не найден");
                         this.order='notfound';
-                        this.$router.push('order-list');
+                        this.$router.push('/order/order-list');
                         break;
                 }
             }
@@ -114,10 +116,8 @@ export default({
         },
         async itemDetailsPrepaymentGet(){
             try{//cache?????
-                const prepayment_trans=await jQuery.post(this.$heap.state.hostname+'Order/itemDetailsPrepaymentGet',{'order_id':this.order_id})
-                //let order=this.order
-                this.order.order_sum_prepayed=prepayment_trans.trans_amount
-                //this.order=order
+                const response=await jQuery.post(this.$heap.state.hostname+'Order/itemDetailsPrepaymentGet',{'order_id':this.order_id})
+                this.order.order_sum_prepayed=response.order_sum_prepayed
             }catch(err){
                 //
             }
@@ -127,7 +127,9 @@ export default({
                 order_stage_code=order_stage_code.split('_').splice(1).join('_');
                 try{
                     this[order_stage_code](order_id);
-                }catch{/** */}
+                }catch{
+                    console.log('stage handler not found'+order_stage_code)
+                }
                 return;
             }
             try{
@@ -136,7 +138,7 @@ export default({
                     if( order_stage_code=='customer_purged' ){
                         this.$flash("Заказ удален");
                         this.order=null;
-                        this.$router.push('order-list');
+                        this.$router.push('/order/order-list');
                         Order.cart.itemDelete(order_id)//if copy of order there is in cart
                         return;
                     }
@@ -193,20 +195,20 @@ export default({
         },
         async action_checkout(){
             this.$heap.commit('setCurrentOrder',this.order);
-            this.$router.push('/order/order-checkout');
+            this.$router.push(`/order/order-checkout-${this.order_id}`);
         },
-        // async action_add(){
-        //     const modal = await modalController.create({
-        //         component: OrderEntryAdd,
-        //         componentProps:{store_id:this.order.order_store_id,order_id:this.order_id},
-        //         initialBreakpoint: 0.50,
-        //         breakpoints: [0.50, 1],
-        //         canDissmiss:true,
-        //         });
-        //     modal.present()     
-        //     const product=await modal.onDidDismiss();     
-        //     this.itemGet()  
-        // },
+        async action_add(){
+            const modal = await modalController.create({
+                component: OrderEntryAdd,
+                componentProps:{store_id:this.order.order_store_id,order_id:this.order_id},
+                initialBreakpoint: 0.50,
+                breakpoints: [0.50, 1],
+                canDissmiss:true,
+                });
+            modal.present()     
+            const product=await modal.onDidDismiss();     
+            this.itemGet()  
+        },
         async action_objection(){
             const modal = await modalController.create({
                 component: OrderObjectionModal,

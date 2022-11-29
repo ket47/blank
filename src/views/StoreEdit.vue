@@ -315,7 +315,7 @@
 
 
 
-    <ion-list v-if="isAdmin">
+    <ion-list v-if="storeItem && isAdmin">
       <ion-item-divider>
           <ion-label>Тарифы</ion-label>
       </ion-item-divider>
@@ -569,8 +569,12 @@ export default  {
         this.itemMarkGroups()
         this.itemValidityCalc()
         this.tariffListGet()
-      }catch{
-        //
+      } catch (err){
+        const message=err.responseJSON?.messages?.error;
+        if(message=='notfound'){
+          this.$flash("Не найден")
+          this.$router.push('/')
+        }
       }
     },
     itemMarkGroups(){

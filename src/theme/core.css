@@ -4,6 +4,16 @@
     font-display: swap;
 }
 
+.ios{
+    font-size: 13px;
+}
+ion-text{
+    font-size: 13px;
+}
+ion-label{
+    font-size: 15px;
+}
+
 ion-item-divider.md{
     box-shadow: 0px -5px 5px #cccc;
     margin-top: 10px;
@@ -17,6 +27,7 @@ main {
     align-items: center;
     justify-content: center;
     height: 100%;
+    font-size: 13px;
 }
 ion-searchbar{
     visibility: visible;

@@ -149,6 +149,14 @@ const routes = [
         path: '/user/admin-tariff-edit-:id',
         component: () => import('@/views/AdminTariffEdit.vue')
       },
+      {
+        path: '/user/courier-statistics',
+        component: () => import('@/views/user/CourierStatistics.vue')
+      },
+      {
+        path: '/user/supplier-statistics',
+        component: () => import('@/views/user/SupplierStatistics.vue')
+      },
       
 
       {
@@ -160,7 +168,7 @@ const routes = [
         component: () => import('@/views/OrderList.vue')
       },
       {
-        path: '/order/order-checkout',
+        path: '/order/order-checkout-:id',
         component: () => import('@/views/OrderCheckout.vue')
       },
       {

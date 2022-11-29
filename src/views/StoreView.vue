@@ -436,9 +436,16 @@ export default{
         heap.commit('setCurrentStore',this.storeItem);
         this.itemGetInProgress=false
       } catch(err){
-        //console.log(err)
-      }
-    },
+          const exception_code=err?.responseJSON?.messages?.error;
+          switch(exception_code){
+              case 'notfound':
+                  this.$flash("Продавец не найден")
+                  this.$router.push("/catalog/")
+                  break;
+          }
+          return false
+        }
+   },
    itemPrepare(storeItem) {
       if (storeItem.member_of_groups.group_names) {
         storeItem.store_group_names = storeItem.member_of_groups.group_names;

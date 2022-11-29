@@ -1,17 +1,17 @@
 <template>
     <base-layout pageTitle="Мои чеки" pageDefaultBackLink="/user">
         <ion-list v-if="invoiceList?.length>0">
-            <ion-item v-for="invoice in invoiceList" :key="invoice.trans_id" button @click="billOpen(invoice?.trans_data?.Registration?.Link)">
+            <ion-item v-for="invoice in invoiceList" :key="invoice.order_id" button @click="billOpen(invoice?.invoice_link)">
                 <ion-icon :icon="receiptOutline" slot="start" color="primary"></ion-icon>
                 <ion-grid>
                     <ion-col>
-                        <ion-row>Фискальный чек от {{invoice?.trans_data?.Registration?.FiscalData?.Date}}</ion-row>
+                        <ion-row>Фискальный чек от {{invoice?.invoice_date}}</ion-row>
                         <ion-row>
-                            заказ №{{invoice?.trans_data?.Check?.CheckId}} 
+                            заказ №{{invoice?.order_id}} 
                         </ion-row>
                     </ion-col>
                 </ion-grid>
-                <ion-label slot="end">{{invoice?.trans_amount}}{{$heap.state.currencySign}}</ion-label>
+                <ion-label slot="end">{{invoice?.order_sum_total}}{{$heap.state.currencySign}}</ion-label>
             </ion-item>
         </ion-list>
 
@@ -83,9 +83,9 @@ export default {
         async listGet(){
             try{
                 const request={
-                    trans_tags:'#orderInvoice',
+                    has_invoice:'1',
                 }
-                this.invoiceList=await jQuery.post(this.$heap.state.hostname+'Transaction/itemFind',request)
+                this.invoiceList=await jQuery.post(this.$heap.state.hostname+'Order/listGet',request)
                 console.log(this.invoiceList)
             } catch{/** */}
         },

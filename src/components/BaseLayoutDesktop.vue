@@ -12,27 +12,29 @@
           <ion-col class="ion-left-column" size="3">
             <ion-icon class="toolbar_svg_logo ion-color ion-color-primary"  :icon="mainLogo"/>
             <ion-tab-bar>
-              <ion-tab-button tab="tab1" href="/catalog" routerDirection="backward">
+              <ion-tab-button tab="tab1" href="/catalog/" routerDirection="root">
                 <ion-row>
-                  <ion-icon :icon="homeIcon"/>
+                  <ion-icon :icon="storefrontOutline"/>
                   <ion-label>Каталог</ion-label>
                 </ion-row>
               </ion-tab-button>
-              <ion-tab-button tab="tab2" href="/search" routerDirection="backward">
+              <ion-tab-button tab="tab2" href="/search/" routerDirection="root">
                 <ion-row>
-                  <ion-icon :icon="searchIcon"/>
+                  <ion-icon :icon="searchOutline"/>
                   <ion-label>Поиск</ion-label>
                 </ion-row>
               </ion-tab-button>
-              <ion-tab-button tab="tab3" href="/order" routerDirection="backward">
+              <ion-tab-button tab="tab3" href="/order/" routerDirection="root">
                 <ion-row>
-                  <ion-icon :icon="ordersIcon"/>
-                  <ion-label>Заказы</ion-label>
+                  <ion-icon :icon="readerOutline"/>
+                  <ion-label>Заказы
+                  <sup><ion-badge color="warning" style="font-size:0.7em" v-if="activeOrderCount>0">{{activeOrderCount}}</ion-badge></sup>
+                  </ion-label>
                 </ion-row>
               </ion-tab-button>
-              <ion-tab-button tab="tab4" href="/user" routerDirection="backward">
+              <ion-tab-button tab="tab4" href="/user/" routerDirection="root">
                 <ion-row>
-                  <ion-icon :icon="personIcon"/>
+                  <ion-icon :icon="personOutline"/>
                   <ion-label>Профиль</ion-label>
                 </ion-row>
               </ion-tab-button>
@@ -71,16 +73,19 @@ import {
   IonCol,
   IonGrid,
   IonFab,
+  IonBadge,
 } from "@ionic/vue";
 import TezkelLoader   from "@/components/TezkelLoader.vue"
 import FooterDesktop  from "@/components/FooterDesktop";
 import CartBodyModal  from '@/components/CartBodyModal.vue';
 import Order          from '@/scripts/Order.js'
 
-import personIcon     from "@/assets/icons/account.svg";
-import ordersIcon     from "@/assets/icons/orders.svg";
-import searchIcon     from "@/assets/icons/search.svg";
-import homeIcon       from "@/assets/icons/home.svg";
+import {
+  storefrontOutline,
+  searchOutline,
+  personOutline,
+  readerOutline,
+}                   from 'ionicons/icons';
 import mainLogo       from "@/assets/icons/tezkel_logo.svg";
 
 import {
@@ -90,10 +95,10 @@ import {
 export default {
   setup() {
     return {
-      personIcon,
-      ordersIcon,
-      searchIcon,
-      homeIcon,
+      storefrontOutline,
+      searchOutline,
+      personOutline,
+      readerOutline,
       cartOutline,
       mainLogo
     }
@@ -127,7 +132,20 @@ export default {
     CartBodyModal,
     IonFab,
     FooterDesktop,
-    TezkelLoader
+    TezkelLoader,
+    IonBadge,
   },
+  data(){
+    return {
+      activeOrderCount:0
+    }
+  },
+  async created(){
+    const self=this
+    this.$topic.on('pushStageChanged',data=>{
+      self.activeOrderCount=data?.orderActiveCount
+    })
+    this.activeOrderCount=await Order.api.listCount()
+  }
 };
 </script>

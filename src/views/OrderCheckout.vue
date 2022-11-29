@@ -16,7 +16,7 @@
         <user-address-widget :deliveryTime="deliveryTime" showComment="1"></user-address-widget>
 
         <ion-list v-if="order">
-            <ion-item-divider>Заказ #{{order?.order_id}} из "{{order?.store.store_name}}"</ion-item-divider>
+            <ion-item-divider>Заказ #{{order?.order_id}} из "{{order?.store?.store_name}}"</ion-item-divider>
             <!--
             <ion-item>
                 <ion-icon :icon="ordersIcon" slot="start" color="primary"></ion-icon>
@@ -25,7 +25,7 @@
             </ion-item>            
             <ion-item>
                 <ion-icon :icon="storefrontOutline" slot="start" color="primary"></ion-icon>
-                Из "{{order?.store.store_name}}"
+                Из "{{order?.store?.store_name}}"
             </ion-item>
             --> 
             <ion-item>
@@ -42,7 +42,7 @@
             </ion-item>
             <ion-item button @click="tariffRuleSet(deliveryByStoreRule)" v-if="deliveryByStoreRule">
                 <ion-icon :icon="rocketOutline" slot="start"></ion-icon>
-                <label for="delivery_by_store">Доставит <b>{{order?.store.store_name}}</b></label>
+                <label for="delivery_by_store">Доставит <b>{{order?.store?.store_name}}</b></label>
                 <div slot="end">
                     <input type="radio" name="deliveryBy" id="delivery_by_store" value="store" :checked="deliveryByStoreRuleChecked">
                 </div>
@@ -87,21 +87,37 @@
                 Сумма заказа 
                 <ion-text slot="end">{{order.order_sum_product}}{{$heap.state.currencySign}}</ion-text>
             </ion-item>
-            <ion-item v-if="promo" button @click="promoPick()" color="success">
-                <div slot="start">
-                    <ion-icon :icon="giftOutline" color="primary" style="font-size:1.5em"></ion-icon>
-                    <sup class="righttop_badge"><ion-badge v-if="promoCount>0" color="secondary">{{promoCount}}</ion-badge></sup>
-                </div>
-                {{promo.promo_name}}
-                <ion-text slot="end">-{{order.order_sum_promo}}{{$heap.state.currencySign}}</ion-text>
-            </ion-item>
-            <ion-item v-else button detail @click="promoPick()">
-                <div slot="start">
-                    <ion-icon :icon="giftOutline" color="primary" style="font-size:1.5em"></ion-icon>
-                    <sup class="righttop_badge"><ion-badge v-if="promoCount>0" color="secondary">{{promoCount}}</ion-badge></sup>
-                </div>
-                 Выберите скидку 
-            </ion-item>
+
+            <div v-if="deliveryByCourierRuleChecked">
+                <ion-item v-if="promo" button @click="promoPick()" color="success">
+                    <div slot="start">
+                        <ion-icon :icon="giftOutline" color="primary" style="font-size:1.5em"></ion-icon>
+                        <sup class="righttop_badge"><ion-badge v-if="promoCount>0" color="secondary">{{promoCount}}</ion-badge></sup>
+                    </div>
+                    {{promo.promo_name}}
+                    <ion-text slot="end">-{{order.order_sum_promo}}{{$heap.state.currencySign}}</ion-text>
+                </ion-item>
+                <ion-item v-else button detail @click="promoPick()">
+                    <div slot="start">
+                        <ion-icon :icon="giftOutline" color="primary" style="font-size:1.5em"></ion-icon>
+                        <sup class="righttop_badge"><ion-badge v-if="promoCount>0" color="secondary">{{promoCount}}</ion-badge></sup>
+                    </div>
+                    Выберите скидку 
+                </ion-item>
+            </div>
+            <div v-else>
+                <ion-item>
+                    <div slot="start">
+                        <ion-icon :icon="giftOutline" color="medium" style="font-size:1.5em"></ion-icon>
+                    </div>
+                    <ion-text color="medium">
+                    Скидка доступна при доставке <b>{{$heap.state.settings.app_title}}</b>
+                    </ion-text>
+                </ion-item>
+            </div>
+
+
+
             <ion-item v-if="order_sum_delivery>0">
                 <ion-icon :icon="rocketOutline" slot="start" color="primary"></ion-icon>
                 Доставка 
@@ -212,6 +228,7 @@ export default({
     },
     data(){
         return {
+            order_id:this.$route.params.id,
             order:null,
             order_sum_delivery:0,
 
@@ -235,8 +252,8 @@ export default({
             if(this.order_sum_total<this.order.order_sum_promo*2){
                 return `Сумма к оплате со скидкой ${this.order.order_sum_promo}${this.$heap.state.currencySign} должна быть больше чем ${this.order.order_sum_promo*2}${this.$heap.state.currencySign}`
             }
-            if(this.order.order_sum_product*1<this.order.store.store_minimal_order*1){
-                return `Сумма заказа у "${this.order.store.store_name}" должна быть больше чем ${this.order.store.store_minimal_order}${this.$heap.state.currencySign}`
+            if(this.order.order_sum_product*1<this.order?.store?.store_minimal_order*1){
+                return `Сумма заказа у "${this.order?.store?.store_name}" должна быть больше чем ${this.order?.store?.store_minimal_order}${this.$heap.state.currencySign}`
             }
             if(this.order_sum_total*1<=this.order_sum_delivery*1){
                 return `Сумма к оплате должна быть больше чем ${this.order_sum_delivery}${this.$heap.state.currencySign}`
@@ -245,13 +262,13 @@ export default({
                 return `Сумма к оплате слишком маленькая`
             }
             if( this.storeIsReady==0 ){
-                return `К сожалению, "${this.order.store.store_name}" не готов к заказам`
+                return `К сожалению, ${this.order?.store?.store_name||'продавец'} не готов к заказам`
             }
             if( this.termsAccepted==0 ){
                 return `К сожалению, мы не можем доставить вам заказ, без согласия с условиями`
             }
             if( this.errNotfound==1 ){
-                return `К сожалению, мы не можем доставить вам заказ, без согласия с условиями`
+                return `Заказ удален`
             }
             return false
         },
@@ -290,22 +307,25 @@ export default({
     methods:{
         async itemLoad(){
             try{
-                this.order=await jQuery.post(`${this.$heap.state.hostname}Order/itemGet`,{order_id:this.order.order_id})
+                this.order=await jQuery.post(`${this.$heap.state.hostname}Order/itemGet`,{order_id:this.order_id})
                 if( this.order_sum_delivery==0 ){
                     this.order_sum_delivery==this.order.order_sum_delivery
                 }
                 this.$heap.commit('setCurrentOrder',this.order)
-            }catch{/** */}
+            }catch(err){/** */}
         },
         async checkoutDataGet(){
             this.order=this.$heap.state.currentOrder;
             if( !this.order ){
+                await this.itemLoad()
+            }
+            if( !this.order ){
                 this.$flash("Заказ не найден");
-                this.$router.push('/order/order-list')
+                //this.$router.push('/order/order-list')
                 return
             }
             if( this.order.stage_current!="customer_confirmed" ){
-                router.push('order-'+this.order.order_id);
+                this.$router.push('order-'+this.order.order_id);
                 return;
             }
             try{
@@ -325,8 +345,6 @@ export default({
                 const exception_code=exception.messages.error;
                 switch(exception_code){
                     case 'not_ready':
-                        this.storeIsReady=0
-                        break;
                     case 'no_tariff':
                         this.storeIsReady=0
                         break;
@@ -345,6 +363,10 @@ export default({
             } else
             if(tariffRule.paymentByCash==1){
                 this.paymentType='use_cash'
+            }
+            if(tariffRule.deliveryByCourier!=1 && this.promo!=null){
+                this.promoLink({order_id:this.order_id})//unlinking promo if exists
+                this.promo=null
             }
         },
         async orderDescriptionChanged(){
@@ -377,46 +399,31 @@ export default({
                 this.$flash("С заказом возникла проблема")
                 return false
             }
-            
-
-
-
-            console.log(orderData);
-
-
-
-
-
-
-
-
-
-
-
-            // if(this.paymentType=='payment_cash'){
-            //     try{
-            //         const stateChangeResult=await Order.api.itemStageCreate(this.order.order_id, 'customer_willpay_cash');
-            //         if(stateChangeResult=='ok'){
-            //             this.$router.push('order-'+this.order.order_id);
-            //         }
-            //     }catch(err){
-            //         const exception=err.responseJSON;
-            //         const exception_code=exception.messages.error;
-            //         switch(exception_code){
-            //             case 'cash_not_allowed':
-            //                 this.$flash("Неудалось выбрать наличную оплату");
-            //                 break;
-            //         }
-            //         return false
-            //     }
-            // }
-            // if(this.paymentType=='payment_card'){
-            //     this.paymentFormOpen({
-            //         order_id:this.order.order_id,
-            //         order_sum_total:this.order_sum_total,
-            //         user_id:this.order.owner_id
-            //     });
-            // }
+            if(orderData.paymentByCard==1){
+                this.paymentFormOpen({
+                    order_id:this.order.order_id,
+                    order_sum_total:this.order_sum_total,
+                    user_id:this.order.owner_id
+                });
+                return;
+            }
+            try{
+                await Order.api.itemStageCreate(this.order.order_id,'customer_start');
+                this.$router.push('/order/order-'+this.order.order_id);
+            } catch(err){
+                    const exception_code=err?.responseJSON?.messages?.error;
+                    switch(exception_code){
+                        case 'order_is_empty':
+                            this.$alert("К сожалению, товара не осталось в наличии &#9785;","Заказ пуст");
+                            break;
+                        case 'address_not_set':
+                            this.$flash("Необходимо добавить адрес доставки")
+                            this.$topic.publish('dismissModal')
+                            this.$router.push('/user/user-addresses')
+                            break;
+                    }
+                    return false
+            }
         },
         async cancel(){
             this.$router.push('order-'+this.order.order_id);

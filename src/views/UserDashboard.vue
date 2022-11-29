@@ -121,7 +121,6 @@ ion-icon{
       <ion-item-group v-if="isSignedIn">
         <ion-item-divider>
           <ion-label>Курьер</ion-label>
-
         </ion-item-divider>
 
         <div v-if="courierStatus=='ready'">
@@ -169,15 +168,21 @@ ion-icon{
               <ion-note>Подайте заявку, чтобы стать курьером</ion-note>
             </ion-text>
           </ion-item>
-          <ion-item button lines="full" @click="$router.push('courier-dashboard')">
+          <ion-item button lines="full" @click="$router.push('/user/courier-dashboard')">
             <ion-icon :icon="rocketOutline" slot="start"></ion-icon>
             <ion-button slot="end" color="light">Стать курьером</ion-button>
           </ion-item>
         </div>
-        <ion-item v-else lines="full" button detail @click="$router.push('courier-dashboard')">
-            <ion-icon :icon="documentTextOutline" slot="start" color="primary"></ion-icon>
-            <ion-label>Анкета курьера</ion-label>
-        </ion-item>
+        <div v-else>
+          <ion-item lines="full" button detail @click="$router.push('/user/courier-dashboard')">
+              <ion-icon :icon="documentTextOutline" slot="start" color="primary"></ion-icon>
+              <ion-label>Анкета курьера</ion-label>
+          </ion-item>
+          <ion-item lines="full" button detail @click="$router.push('/user/courier-statistics')">
+              <ion-icon :icon="pieChartOutline" slot="start" color="primary"></ion-icon>
+              <ion-label>Статистика</ion-label>
+          </ion-item>
+        </div>
 
       </ion-item-group>
 
@@ -195,7 +200,13 @@ ion-icon{
           <ion-item v-for="store in storeList" :key="store.store_id" detail button @click="$router.push(`/catalog/store-edit-${store.store_id}`)">
             <ion-icon :icon="storefrontOutline" slot="start"></ion-icon>
             {{store.store_name||store.store_name_new||'- - -'}}
-          </ion-item>        
+          </ion-item>
+
+          <ion-item lines="full" button detail @click="$router.push('/user/supplier-statistics')">
+              <ion-icon :icon="pieChartOutline" slot="start" color="primary"></ion-icon>
+              <ion-label>Статистика</ion-label>
+          </ion-item>
+     
         </div>
         <div v-else>
           <ion-item lines="none">
@@ -204,7 +215,7 @@ ion-icon{
               <ion-note>Зарегистрируйте свой магазин или ресторан</ion-note>
             </ion-text>
           </ion-item>
-          <ion-item @click="$router.push(`supplier-dashboard`)" lines="full">
+          <ion-item @click="$router.push(`/user/supplier-dashboard`)" lines="full">
             <ion-icon :icon="storefrontOutline" slot="start"></ion-icon>
             <ion-button slot="end" color="light">Стать продавцом</ion-button>
           </ion-item>
@@ -218,6 +229,10 @@ ion-icon{
         <ion-item lines="full" button detail @click="$router.push('/page/about-us')">
             <ion-icon :icon="informationCircleOutline" slot="start" color="primary"></ion-icon>
             <ion-text>О нас</ion-text>
+        </ion-item>
+        <ion-item lines="full" button detail @click="$router.push('/page/contacts')">
+            <ion-icon :icon="informationCircleOutline" slot="start" color="primary"></ion-icon>
+            <ion-text>Контакты</ion-text>
         </ion-item>
         <ion-item lines="full" button detail @click="$router.push('/page/rules-customer')">
             <ion-icon :icon="informationCircleOutline" slot="start" color="primary"></ion-icon>
@@ -287,6 +302,8 @@ import {
   receiptOutline,
   rocketOutline,
   briefcaseOutline,
+
+  pieChartOutline,
 } from "ionicons/icons";
 
 import User     from "@/scripts/User.js";
@@ -335,6 +352,7 @@ export default {
       receiptOutline,
       rocketOutline,
       briefcaseOutline,
+      pieChartOutline,
     };
   },
   data() {

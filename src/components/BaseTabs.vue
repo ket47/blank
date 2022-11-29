@@ -153,23 +153,23 @@ ion-icon{
     <ion-tabs>
       <ion-router-outlet></ion-router-outlet>
       <ion-tab-bar class="bottom-bar" slot="bottom">
-        <ion-tab-button tab="tab1" id="tab1" href="/catalog" routerDirection="root" selected>
+        <ion-tab-button tab="tab1" id="tab1" href="/catalog/" routerDirection="root" selected>
           <ion-icon :icon="storefrontOutline"/>
           <ion-label><b>Каталог</b></ion-label>
         </ion-tab-button>
 
-        <ion-tab-button tab="tab2" id="tab2" href="/search" routerDirection="root">
+        <ion-tab-button tab="tab2" id="tab2" href="/search/" routerDirection="root">
           <ion-icon :icon="searchOutline"/>
           <ion-label><b>Поиск</b></ion-label>
         </ion-tab-button>
 
-        <ion-tab-button tab="tab3" id="tab3" href="/order" routerDirection="root">
+        <ion-tab-button tab="tab3" id="tab3" href="/order/" routerDirection="root">
             <ion-icon :icon="readerOutline"/>
             <ion-badge color="warning" style="font-size:1.5em" v-if="activeOrderCount>0">{{activeOrderCount}}</ion-badge>
           <ion-label><b>Заказы</b></ion-label>
         </ion-tab-button>
 
-        <ion-tab-button tab="tab4" id="tab4" href="/user" routerDirection="root">
+        <ion-tab-button tab="tab4" id="tab4" href="/user/" routerDirection="root">
           <ion-icon :icon="personOutline"/>
           <ion-label><b>Профиль</b></ion-label>
         </ion-tab-button>
@@ -235,14 +235,12 @@ export default{
       activeOrderCount:0
     }
   },
-  created(){
+  async created(){
     const self=this
-    this.$topic.on('activeOrderCountChanged',count=>{
-      self.activeOrderCount=count
-    })
     this.$topic.on('pushStageChanged',data=>{
-        Order.api.listCount()
+      self.activeOrderCount=data?.orderActiveCount
     })
+    this.activeOrderCount=await Order.api.listCount()
   }
 }
 </script>

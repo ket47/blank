@@ -370,7 +370,7 @@ export default  {
       }
     },
     checkPromoPrice(field_name){
-      if( this.productItem.product_price<=this.productItem.product_promo_price ){
+      if( this.productItem.product_price>0 && this.productItem.product_promo_price>0 && this.productItem.product_price<=this.productItem.product_promo_price ){
         if(field_name=='product_promo_price'){
           this.productItem.product_price=Number(this.productItem.product_promo_price)+1;
         }
@@ -382,7 +382,6 @@ export default  {
           product_promo_price:this.productItem.product_promo_price,
           product_price:this.productItem.product_price
         };
-        this.itemValidityCalc()
         this.itemUpdate(request)
         this.$flash("Акционная цена должна быть ниже основной. Внимание цена изменена!")
         return false

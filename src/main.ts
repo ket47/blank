@@ -92,13 +92,8 @@ const alert = async (message:string,title:string)=>{
       .create({
         header: title,
         message: message,
-        buttons: [
-          {
-            text: 'Ok',
-            role: 'cancel',
-            cssClass: 'secondary'
-          },
-        ],
+        translucent:true,
+        buttons: ['Ok'],
       });
     return globalAlertPrompt.present();
 }

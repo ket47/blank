@@ -72,7 +72,10 @@ ion-accordion-group .accordion-expanding .product-description{
 
         <ion-item lines="none">
           <ion-icon slot="start" color="primary" :src="pricetagOutline"/>
-          <ion-label>Цена за {{productItem.product_unit}}</ion-label>
+
+          <ion-label v-if="productItem.product_unit=='порция'">Цена за {{weight_in_gramms}}г</ion-label>
+          <ion-label v-else>Цена за {{productItem.product_unit}}</ion-label>
+
           <ion-label slot="end" color="primary" style="font-size:1.2em">
             <span v-if="productItem.product_price!=productItem.product_final_price" style="color:var(--ion-color-danger);font-size:0.75em">
                 <s>{{productItem.product_price}}{{$heap.state.currencySign}}</s>&nbsp;&nbsp;
@@ -82,7 +85,7 @@ ion-accordion-group .accordion-expanding .product-description{
         </ion-item>
         <ion-item lines="none">
           <ion-icon slot="start" color="primary" :src="cartOutline"/>
-          <ion-label v-if="inCart">В корзине {{productItem.product_unit}}</ion-label>
+          <ion-label v-if="inCart">В корзине ({{productItem.product_unit}})</ion-label>
           <ion-label v-else>Не заказан</ion-label>
           <cart-add-buttons slot="end" buttonLayout="horizontal" display="inline" :productItem="productItem"></cart-add-buttons>
         </ion-item>
@@ -202,6 +205,9 @@ export default  {
     },
     isAvailable(){
       return this.productItem.is_counted==1?(this.productItem.product_quantity-this.productItem.product_quantity_reserved)>0:true;
+    },
+    weight_in_gramms(){
+        return this.productItem.product_weight*1000
     }
   },
   methods: {

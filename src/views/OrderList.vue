@@ -11,7 +11,7 @@
                 Исполненые
             </ion-segment-button>
         </ion-segment>
-        <ion-list v-if="orderList">
+        <ion-list v-if="orderList?.length>0">
             <div v-for="order in orderListComputed" :key="order.order_id" @click="itemClick(order)">
                 <ion-item lines="none">
                     <ion-text slot="start">#{{order.order_id}}</ion-text>
@@ -54,7 +54,7 @@
             </ion-item>
             </div>
         </ion-list>
-        <div v-if="(!orderList || orderList.length==0) && (!jobList || jobList.length==0)" style="display:flex;align-items:center;justify-content:center;height:70%">
+        <div v-if="(!orderList || orderList.length==0) && (!jobList || jobList.length==0)" style="display:flex;align-items:center;justify-content:center;height:70vh">
             <div style="width:max-content;text-align:center">
                 <ion-icon :icon="sparklesOutline" size="large"></ion-icon>
                 <ion-label>Заказов нет</ion-label><br>
@@ -199,7 +199,7 @@ export default {
                 this.listJobLoad();
                 return;
             }
-            let order_group_type='customer_finish';
+            let order_group_type='system_finish';
             if( listType=='active' ){
                 order_group_type='active_only';
             }

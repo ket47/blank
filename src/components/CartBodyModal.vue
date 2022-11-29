@@ -104,7 +104,7 @@ export default{
             if(stateChangeResult=='ok' && order_stage_code=='customer_confirmed'){
               const confirmedOrder=await Order.api.itemGet(syncedOrder.order_id)
               this.$heap.commit('setCurrentOrder',confirmedOrder);
-              this.$router.push('/order/order-checkout');
+              this.$router.push(`/order/order-checkout-${syncedOrder.order_id}`);
               return;
             }
             this.$router.push('/order/order-'+syncedOrder.order_id);

@@ -157,7 +157,8 @@ import {
     walletOutline,
     banOutline,
     giftOutline,
-    cardOutline
+    cardOutline,
+    ribbonOutline,
 }                       from 'ionicons/icons';
 import CartAddButtons   from '@/components/CartAddButtons.vue';
 
@@ -196,7 +197,8 @@ export default({
             banOutline,
             walletOutline,
             giftOutline,
-            cardOutline
+            cardOutline,
+            ribbonOutline,
         };
     },
     data(){
@@ -236,6 +238,9 @@ export default({
                 if(this.orderData.stage_next[i][0]){
                     buttons[i]=this.orderData.stage_next[i];
                     buttons[i].icon=checkmarkOutline
+                    if(i.includes('admin')){
+                        buttons[i].icon=ribbonOutline
+                    } else 
                     if(i.includes('delivery')){
                         buttons[i].icon=rocketOutline
                     } else 

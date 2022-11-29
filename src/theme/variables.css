@@ -6,6 +6,7 @@ http://ionicframework.com/docs/theming/ */
   --ion-font-family:"Comfortaa",serif;
 
   /** backgrounds **/
+
   --ion-background-primary: var(--ion-color-primary);
   --ion-background-primary-dark: var(--ion-color-primary);
   --ion-background-shade:#f0f0f0;
@@ -88,43 +89,6 @@ http://ionicframework.com/docs/theming/ */
   --ion-color-light-shade: #d7d8da;
   --ion-color-light-tint: #f5f6f9;
  
-  --ion-color-step-50: #1e1e1e;
-  --ion-color-step-100: #2a2a2a;
-  --ion-color-step-150: #363636;
-  --ion-color-step-200: #414141;
-  --ion-color-step-250: #4d4d4d;
-  --ion-color-step-300: #595959;
-  --ion-color-step-350: #656565;
-  --ion-color-step-400: #717171;
-  --ion-color-step-450: #7d7d7d;
-  --ion-color-step-500: #898989;
-  --ion-color-step-550: #949494;
-  --ion-color-step-600: #a0a0a0;
-  --ion-color-step-650: #acacac;
-  --ion-color-step-700: #b8b8b8;
-  --ion-color-step-750: #c4c4c4;
-  --ion-color-step-800: #d0d0d0;
-  --ion-color-step-850: #3e3e3e;
-  --ion-color-step-900: #e7e7e7;
-  --ion-color-step-950: #f3f3f3;
-
-  --highlight-background: lightgray;
-  --ion-item-border-color: lightgray;
-  
-  --ion-text-color: rgb(58, 54, 54);
-  --color: rgb(58, 54, 54);
-  --ion-text-main: rgb(58, 54, 54);
-  --ion-card-color: rgb(58, 54, 54);
-  --ion-item-color: rgb(58, 54, 54);
-  --ion-toolvar-color: var(--ion-color-primary-contrast);
-
-
-
-
-  --padding-start: 0px;
-  --padding-end: 35px;
-  --inner-padding-end: 35px;
-  --ion-safe-area-right: 10px;
 }
 
 

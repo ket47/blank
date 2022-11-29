@@ -20,7 +20,6 @@ const Order = {
             return jQuery.post( heap.state.hostname + "Order/itemSync", JSON.stringify(order) );
         },
         async itemStageCreate(order_id,new_stage){
-            this.listCount()
             return jQuery.post( heap.state.hostname + "Order/itemStageCreate",{order_id,new_stage} );
         },
         async listCartGet(){
@@ -40,8 +39,7 @@ const Order = {
             return list
         },
         async listCount(){
-            const count=await jQuery.post( heap.state.hostname + "Order/listCountGet" );
-            Topic.publish('activeOrderCountChanged',count)
+            return await jQuery.post( heap.state.hostname + "Order/listCountGet" );
         },
         async listJobGet( courier_id ){
             return jQuery.post( heap.state.hostname + "Courier/listJobGet", {courier_id} );
