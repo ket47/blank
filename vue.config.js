@@ -17,7 +17,7 @@ module.exports = {
     manifestOptions: {
       name: "Tezkel экспресс доставка",
       short_name: "Tezkel",
-      background_color: "#009dcd",
+      background_color: "#fff",
       categories: ["ecommerce", "delivery", "маркетплэйс", "доставка"],
       orientation: "portrait-primary",
       shortcuts: [

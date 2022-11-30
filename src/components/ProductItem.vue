@@ -16,8 +16,8 @@
 .product_list_item_img{
     border-radius: 10px;
     border: 2px solid var(--ion-color-light);
-    width:150px;
-    height:150px;
+    width:145px;
+    height:145px;
     overflow:hidden;
     align-items: center;
     justify-content: center;

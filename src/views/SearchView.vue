@@ -23,7 +23,7 @@
           <div>
             <store-opened-indicator :storeItem="store"/>
           </div>
-          <div style="margin:10px;display:grid;grid-template-columns:repeat(auto-fit, 160px)">
+          <div style="display:grid;grid-template-columns:repeat(auto-fit, 150px)">
             <div v-for="productItem in store.matches" :key="productItem.product_id">                
               <product-item :productItem="productItem" :storeName="store.store_name"/>
             </div>
@@ -74,7 +74,6 @@ import {
   IonThumbnail,
   IonNote,
   IonItem,
-  IonList,
   IonCard,
   IonCardContent,
   IonCardTitle,
@@ -96,7 +95,6 @@ export default  {
   IonThumbnail,
   IonNote,
   IonItem,
-  IonList,
   IonCard,
   IonCardContent,
   IonCardTitle,
