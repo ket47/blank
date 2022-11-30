@@ -17,7 +17,7 @@
                     <ion-icon :src="cardOutline"/>
                     <ion-text>Опл. {{meta.payment_card_confirm_sum}}{{$heap.state.currencySign}}</ion-text>
                 </ion-chip>
-                <ion-chip color="primary">
+                <ion-chip v-if="meta.delivery_by_courier||meta.delivery_by_store||meta.pickup_by_customer " color="primary">
                     <ion-icon :src="rocketOutline"/>
                     <ion-text>
                     <span v-if="meta.delivery_by_courier">Курьер</span>

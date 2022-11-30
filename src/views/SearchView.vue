@@ -7,9 +7,10 @@
 <template>
   <base-layout page-title="Поиск товаров">
     <ion-searchbar class="search-container" v-model="query" @input="delayedListGet()" placeholder="начните искать"></ion-searchbar>
-    <div v-if="found" style="background-color:var(--ion-color-light-tint);padding:10px">
+    <div v-if="found">
       <ion-title>Найденные товары</ion-title>
-      <ion-list v-for="store in found.product_matches" :key="store.store_id" style="border-radius:10px;margin-top:30px;">
+      <ion-card v-for="store in found.product_matches" :key="store.store_id">
+        <ion-card-header>
           <ion-item detail button @click="$router.push(`/search/store-${store.store_id}`)" lines="full">
             <ion-thumbnail slot="start">
               <ion-img style="border-radius:10px" :src="`${$heap.state.hostname}image/get.php/${store.image_hash}.150.150.webp`"/>
@@ -17,6 +18,8 @@
             <p style="font-size:1.1em">{{store?.store_name}}</p>
             <ion-note slot="helper">{{store.store_description}}</ion-note>
           </ion-item>
+        </ion-card-header>
+        <ion-card-content>
           <div>
             <store-opened-indicator :storeItem="store"/>
           </div>
@@ -24,15 +27,40 @@
             <div v-for="productItem in store.matches" :key="productItem.product_id">                
               <product-item :productItem="productItem" :storeName="store.store_name"/>
             </div>
-          </div>
-      </ion-list>
+          </div>          
+        </ion-card-content>
+      </ion-card>
+    </div>
+    <div v-else-if="found==null">
+      <ion-title>Найденные товары</ion-title>
+      <ion-card>
+        <ion-card-header>
+          <ion-item detail lines="full">
+            <ion-thumbnail slot="start">
+              <ion-skeleton-text style="width:50px;height:50px" animated></ion-skeleton-text>
+            </ion-thumbnail>
+            <ion-skeleton-text style="width:300px;height:30px" animated></ion-skeleton-text>
+            <ion-note slot="helper"><ion-skeleton-text style="width:300px"></ion-skeleton-text></ion-note>
+          </ion-item>
+        </ion-card-header>
+        <ion-card-content>
+          <ion-chip>
+            <ion-skeleton-text style="width:100px"></ion-skeleton-text>
+          </ion-chip>
+          <div style="margin:10px;display:grid;grid-template-columns:repeat(auto-fit, 160px)">
+            <div v-for="i in [1,2,3,4]" :key="i">                
+              <ion-skeleton-text style="width:150px;height:150px" animated></ion-skeleton-text>
+            </div>
+          </div>          
+        </ion-card-content>
+      </ion-card>
     </div>
     <div v-else>
       <ion-card color="light">
         <ion-card-header>
           <ion-card-title>Ничего не найдено.</ion-card-title>
         </ion-card-header>
-        <ion-card-content>Возможно у нас нет того что вы ищите или вы находитель слишком далеко</ion-card-content>
+        <ion-card-content>Возможно у нас нет того что вы ищите или вы находитель за пределами зоны доставки</ion-card-content>
       </ion-card>
     </div>
   </base-layout>
@@ -51,6 +79,8 @@ import {
   IonCardContent,
   IonCardTitle,
   IonCardHeader,
+  IonSkeletonText,
+  IonChip,
 }                       from '@ionic/vue'
 import jQuery           from 'jquery'
 import Utils            from '@/scripts/Utils.js'
@@ -71,6 +101,8 @@ export default  {
   IonCardContent,
   IonCardTitle,
   IonCardHeader,
+  IonSkeletonText,
+  IonChip,
   ProductItem
   },
   data(){

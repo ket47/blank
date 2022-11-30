@@ -81,11 +81,6 @@
         </ion-item>
 
         <ion-item-group v-if="job">
-            <ion-item>
-                <ion-text>
-                    Бонус {{job.order_sum_delivery}}
-                </ion-text>
-            </ion-item>
             <ion-button @click="deliveryStart()" expand="full">Начать доставку</ion-button>
         </ion-item-group>
     </ion-list>

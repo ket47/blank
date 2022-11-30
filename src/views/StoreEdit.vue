@@ -946,7 +946,9 @@ export default  {
         },
       });
       modal.onDidDismiss().then(new_tariff_data => {
-        this.tariffAdd(new_tariff_data.data);
+        if(new_tariff_data?.data?.tariff_id){
+          this.tariffAdd(new_tariff_data.data);
+        }
       });
       return modal.present();
     }

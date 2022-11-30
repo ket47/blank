@@ -58,6 +58,7 @@
             <div style="width:max-content;text-align:center">
                 <ion-icon :icon="sparklesOutline" size="large"></ion-icon>
                 <ion-label>Заказов нет</ion-label><br>
+                <ion-note @click="$router.push('/catalog/')" style="cursor:pointer" color="primary">но вы можете создать новый</ion-note>
             </div>
         </div>
   </base-layout>
