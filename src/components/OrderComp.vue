@@ -72,6 +72,13 @@
             </ion-item>
         </ion-list>
 
+        <ion-card color="primary"  v-if="orderData.order_description">
+            <ion-card-header>
+                <ion-card-title>Комментарий</ion-card-title>
+            </ion-card-header>
+            <ion-card-content>{{orderData.order_description}}</ion-card-content>
+        </ion-card>
+
         <ion-card color="warning"  v-if="orderData.order_objection">
             <ion-card-header>
                 <ion-card-title>Проблема с заказом</ion-card-title>

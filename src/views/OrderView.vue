@@ -10,6 +10,7 @@
             </div>
 
             <order-comp :orderData="order" @stageCreate="onStageCreate"/>
+            <order-info-comp :orderData="order"/>
             <order-tracking-comp :orderData="order"/>
             <image-tile-comp v-if="order" :images="order?.images" :image_holder_id="order?.order_id" controller="Order" ref="orderImgs"/>
             <order-history-comp :orderData="order"/>
@@ -53,7 +54,8 @@ import {
 import Order                from '@/scripts/Order.js';
 import OrderComp            from '@/components/OrderComp.vue';
 import OrderHistoryComp     from '@/components/OrderHistoryComp.vue';
-import OrderMetaComp     from '@/components/OrderMetaComp.vue';
+import OrderInfoComp        from '@/components/OrderInfoComp.vue';
+import OrderMetaComp        from '@/components/OrderMetaComp.vue';
 import OrderTrackingComp    from '@/components/OrderTrackingComp.vue'
 import OrderObjectionModal  from '@/components/OrderObjectionModal.vue'
 import OrderEntryAdd        from '@/components/OrderEntryAdd.vue'
@@ -68,6 +70,7 @@ export default({
     OrderComp,
     OrderHistoryComp,
     OrderMetaComp,
+    OrderInfoComp,
     OrderTrackingComp,
     MsgSubscriptionComp,
     ImageTileComp,
