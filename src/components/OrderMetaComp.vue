@@ -32,7 +32,7 @@
                 <ion-list v-if="ledgerCalc.length>0">
                     <ion-item v-for="trans in ledgerCalc" :key="trans.trans_id">
                         <ion-text>{{trans.trans_description}}</ion-text>
-                        <ion-text slot="end">{{trans.trans_amount}}</ion-text>
+                        <ion-text slot="end" :color="trans.trans_amount>0?'normal':'danger'">{{trans.trans_amount}}</ion-text>
                     </ion-item>
                 </ion-list>
             </div>
