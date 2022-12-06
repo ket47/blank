@@ -21,7 +21,7 @@
                     <ion-chip color="primary" v-if="orderData.info.customer_location_address">
                         <ion-icon :src="locationOutline"/>
                         <a :href="`https://yandex.ru/maps/?pt=${orderData.info.customer_location_longitude},${orderData.info.customer_location_latitude}&z=19&l=map,trf`" target="_new">
-                            {{orderData.info.customer_location_address}} 
+                            {{orderData.info.customer_location_address}}{{orderData.info.customer_location_comment}} 
                         </a>
                     </ion-chip>
             </ion-item>
@@ -42,7 +42,7 @@
                     <ion-chip color="primary" v-if="orderData.info.courier_location_address">
                         <ion-icon :src="locationOutline"/>
                         <a :href="`https://yandex.ru/maps/?pt=${orderData.info.courier_location_longitude},${orderData.info.customer_location_latitude}&z=19&l=map,trf`" target="_new">
-                            {{orderData.info.courier_location_address}} 
+                            {{orderData.info.courier_location_address}} {{orderData.info.courier_location_comment}} 
                         </a>
                     </ion-chip>
             </ion-item>
@@ -63,7 +63,7 @@
                     <ion-chip color="primary" v-if="orderData.info.supplier_location_address">
                         <ion-icon :src="locationOutline"/>
                         <a :href="`https://yandex.ru/maps/?pt=${orderData.info.supplier_location_longitude},${orderData.info.supplier_location_latitude}&z=19&l=map,trf`" target="_new">
-                            {{orderData.info.supplier_location_address}} 
+                            {{orderData.info.supplier_location_address}} {{orderData.info.supplier_location_comment}} 
                         </a>
                     </ion-chip>
             </ion-item>
