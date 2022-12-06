@@ -9,7 +9,7 @@
                 </div>
             </div>
 
-            <order-comp :orderData="order" @stageCreate="onStageCreate"/>
+            <order-comp :orderData="order" @stageCreate="onStageCreate" @orderRefresh="itemGet"/>
             <order-info-comp :orderData="order"/>
             <order-tracking-comp :orderData="order"/>
             <image-tile-comp v-if="order" :images="order?.images" :image_holder_id="order?.order_id" controller="Order" ref="orderImgs"/>

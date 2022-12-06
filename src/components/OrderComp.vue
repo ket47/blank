@@ -41,7 +41,7 @@
                         <ion-text v-else color="primary">x {{entry.entry_quantity}}{{entry.product_unit}}</ion-text>
                     </div>
                     <div v-if="entry.entry_comment" style="grid-column: 1 / span 2">
-                        <ion-note>{{ entry.entry_comment }}</ion-note>
+                        <ion-icon color="medium" :src="chatboxEllipsesOutline" @click="itemCommentEdit(entry)"/> <ion-note>{{ entry.entry_comment }}</ion-note>
                     </div>
                 </div>
             </ion-item>
@@ -166,9 +166,10 @@ import {
     giftOutline,
     cardOutline,
     ribbonOutline,
+    chatboxEllipsesOutline,
 }                       from 'ionicons/icons';
 import CartAddButtons   from '@/components/CartAddButtons.vue';
-
+import jQuery from "jquery";
 export default({
     props:['orderData'],
     components: {
@@ -206,6 +207,7 @@ export default({
             giftOutline,
             cardOutline,
             ribbonOutline,
+            chatboxEllipsesOutline,
         };
     },
     data(){
@@ -279,6 +281,18 @@ export default({
             }
             this.$emit('stageCreate',order_id, order_stage_code);
         },
+        async itemCommentEdit(entry){
+            const new_comment=prompt("Комментарий к товару",entry.entry_comment??'')
+            const request={
+                order_id:entry.order_id,
+                entry_id:entry.entry_id,
+                entry_comment:new_comment
+            }
+            try{
+                const result=await jQuery.post( `${this.$heap.state.hostname}Entry/itemUpdate`, JSON.stringify(request) );
+                this.$emit('orderRefresh');
+            }catch{/** */}
+        }
     }
 })
 </script>

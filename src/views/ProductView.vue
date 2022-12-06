@@ -98,7 +98,7 @@ ion-accordion-group .accordion-expanding .product-description{
 
         <ion-item lines="none" v-if="inCartComment!=null">
           <ion-icon slot="start" color="primary" :src="chatboxEllipsesOutline"/>
-          <ion-textarea v-model="inCartComment" @ionChange="cartCommentUpdate($event.target.value)" placeholder="заметка для продавца"></ion-textarea>
+          <ion-textarea :value="inCartComment" @change="cartCommentUpdate($event.target.value)" placeholder="заметка для продавца"></ion-textarea>
         </ion-item>
       </ion-list>
   </base-layout>
