@@ -7,11 +7,11 @@
             <div slot="content" class="ion-padding">
                 <ion-chip v-if="meta.payment_card_fixate_sum>0">
                     <ion-icon :src="cardOutline"/>
-                    <ion-text>Блок {{meta.payment_card_fixate_sum}}{{$heap.state.currencySign}}</ion-text>
+                    <ion-text>Предоплата {{meta.payment_card_fixate_sum}}{{$heap.state.currencySign}}</ion-text>
                 </ion-chip>
                 <ion-chip v-if="meta.payment_card_refund_sum>0">
                     <ion-icon :src="cardOutline"/> 
-                    <ion-text>Разблокировано {{meta.payment_card_refund_sum}}{{$heap.state.currencySign}}</ion-text>
+                    <ion-text>Сдача {{meta.payment_card_refund_sum}}{{$heap.state.currencySign}}</ion-text>
                 </ion-chip>
                 <ion-chip v-if="meta.payment_card_confirm_sum>0">
                     <ion-icon :src="cardOutline"/>

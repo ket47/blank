@@ -29,7 +29,8 @@ ion-avatar{
 <template>
     <div>
         <ion-item lines="none"  @click="editMode=!editMode;editMode&&load()">
-            <ion-label color="imageList?.length?'':medium">Фотографии</ion-label>
+            <ion-label v-if="title" color="imageList?.length?'':medium">{{title}}</ion-label>
+            <ion-label v-else color="imageList?.length?'':medium">Фотографии</ion-label>
             <ion-icon v-if="editMode" slot="end" :icon="settingsSharp" color="primary"/>
             <ion-icon v-else slot="end" :icon="settingsOutline"/>
         </ion-item>
@@ -52,8 +53,8 @@ ion-avatar{
                 </div>
             </div>
         </div>
+        <input type="file" :id="fileUploaderId" accept=".png, .jpg, .jpeg, .webp, .gif" @change="uploadImage($event)" style="display:none">
     </div>
-    <input type="file" :id="fileUploaderId" accept=".png, .jpg, .jpeg, .webp, .gif" @change="uploadImage($event)" style="display:none">
 </template>
 <script>
 import {
@@ -79,7 +80,7 @@ import Topic                    from '@/scripts/Topic.js'
 import User                     from '@/scripts/User.js'
 
 export default {
-    props:['images','image_holder_id','controller'],
+    props:['images','image_holder','image_holder_id','controller','title'],
     components:{
     IonLabel,
     IonIcon,
@@ -94,7 +95,7 @@ export default {
         return {
             images_loaded:null,
             editMode:false,
-            fileUploaderId:(this.controller+this.image_holder_id)
+            fileUploaderId:((this.image_holder??this.controller)+this.image_holder_id)
         }
     },
     computed:{
@@ -158,7 +159,7 @@ export default {
         async load(){
             const request={
                 image_holder_id:this.image_holder_id,
-                image_holder:this.controller,
+                image_holder:this.image_holder??this.controller,
                 is_disabled:1,
                 is_deleted:1,
                 is_active:1
@@ -182,6 +183,9 @@ export default {
             let data = new FormData();
             data.append("files[]", event.target.files[0]); 
             data.set("image_holder_id", this.image_holder_id);
+            if(this.image_holder){
+                data.set("image_holder", this.image_holder);
+            }
             const request={
                 url : this.$heap.state.hostname + this.controller + "/fileUpload",
                 type: "POST",
