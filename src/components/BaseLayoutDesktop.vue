@@ -40,14 +40,15 @@
               </ion-tab-button>
             </ion-tab-bar>
           </ion-col>
-          <ion-col class="ion-middle-column" :size="cartListTotal>0?6:9">
+          <ion-col class="ion-middle-column" :size="9">
             <div class="page-content">
-                <h1 style="margin:30px" v-if="pageTitle">{{ pageTitle }}</h1>
-                <slot/>
+              <ion-toolbar>
+                <ion-title><h1 style="margin:30px" v-if="pageTitle">{{ pageTitle }}</h1></ion-title>
+                <cart-header slot="end"></cart-header>
+              </ion-toolbar>
+              <slot/>
+                
             </div>
-          </ion-col>
-          <ion-col class="ion-right-column" size="3" v-if="cartListTotal">
-            <cart-body-modal/>
           </ion-col>
         </ion-row>
       </ion-grid>
@@ -67,6 +68,8 @@ import {
   IonContent,
   IonIcon,
   IonTabBar,
+  IonToolbar,
+  IonTitle,
   IonTabButton,
   IonLabel,
   IonRow,
@@ -78,6 +81,7 @@ import {
 import TezkelLoader   from "@/components/TezkelLoader.vue"
 import FooterDesktop  from "@/components/FooterDesktop";
 import CartBodyModal  from '@/components/CartBodyModal.vue';
+import CartHeader     from "@/components/CartHeader";
 import Order          from '@/scripts/Order.js'
 
 import {
@@ -124,12 +128,15 @@ export default {
     IonContent,
     IonIcon,
     IonTabBar,
+    IonToolbar,
+    IonTitle,
     IonTabButton,
     IonLabel,
     IonRow,
     IonCol,
     IonGrid,
     CartBodyModal,
+    CartHeader,
     IonFab,
     FooterDesktop,
     TezkelLoader,

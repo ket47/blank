@@ -1,4 +1,39 @@
 <style scoped>
+
+.avatar-container{
+  width: 100px;
+}
+.avatar{
+  position: absolute;
+  width: 100px;
+  height: 100px;
+  bottom: 0px;
+  border-radius: 100%;
+  overflow: hidden;
+  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
+}
+.avatar img{
+  pointer-events: none;
+}
+
+@media only screen and (max-width: 740px) {
+  .avatar-container{
+    width: 80px;
+  }
+  .avatar{
+    width: 80px;
+    height: 80px;
+  }
+}
+@media only screen and (max-width: 370px) {
+  .avatar-container{
+    width: 50px;
+  }
+  .avatar{
+    width: 50px;
+    height: 50px;
+  }
+}
 .store-info {
   margin-top: -20px;
   position: relative;
@@ -6,6 +41,10 @@
   border-top-left-radius: var(--ion-border-radius, 15px);
   border-top-right-radius: var(--ion-border-radius, 15px);
   padding-top: 20px;
+  contain: initial;
+}
+.store-info ion-item{
+  overflow: visible;
 }
 ion-accordion-group .accordion-collapsed .store-description,
 ion-accordion-group .accordion-collapsing .store-description{
@@ -203,6 +242,11 @@ ion-chip .active-chip {
       <image-slider :imageList="storeItem.images" :imgHeight="200" :mode="'crop-to-fit'"></image-slider>
       <ion-list  class="store-info">
         <ion-item lines="none">
+          <div slot="start" class="avatar-container">
+            <div class="avatar">
+              <img alt="Silhouette of a person's head" :src="$heap.state.hostname+'image/get.php/'+storeItem.avatarImage+'.200.200.webp'" />
+            </div>
+          </div>
           <ion-text style="font-size:1.2em;"><b>{{ storeItem.store_name }}</b></ion-text>
           <router-link slot="end" :to="'/catalog/store-edit-' + storeItem.store_id" v-if="storeItem.is_writable==1">
             <ion-icon :icon="settingsOutline" style="font-size:24px"></ion-icon>
@@ -340,6 +384,7 @@ import {
   IonAccordion,
   IonAccordionGroup,
   IonList,
+  IonAvatar,
   IonItem
 }                         from "@ionic/vue";
 import { 
@@ -393,6 +438,7 @@ export default{
     IonList,
     IonItem,
     ImageSlider,
+    IonAvatar,
     StoreOpenedIndicator,
     Swiper,
     SwiperSlide,
@@ -431,6 +477,7 @@ export default{
         this.itemGetInProgress=true
         const store=await jQuery.post(`${heap.state.hostname}Store/itemGet`, {store_id: this.storeId,distance_include:1})
         this.storeItem = this.itemPrepare(store);
+        console.log(this.storeItem);
         this.storeId = store.store_id;
         this.groupTreeGet({ store_id: this.storeId });
         heap.commit('setCurrentStore',this.storeItem);
@@ -453,6 +500,10 @@ export default{
       try{
         storeItem.deliveryTime=Utils.deliveryTimeCalculate(storeItem.locations[0].distance,storeItem.store_time_preparation)
       }catch{/** */}
+      storeItem.avatarImage = '';
+      if (storeItem.avatar.length > 0) {
+        storeItem.avatarImage = storeItem.avatar[0].image_hash;
+      }
       return storeItem;
     },
     async productListGet(filter = {}) {
