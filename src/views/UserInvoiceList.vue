@@ -94,6 +94,7 @@ export default {
                 this.$flash("Невозможно открыть чек")
                 return;
             }
+            billLink=billLink.replace(/"/g,'');
             const modal = await modalController.create({
                 component: InvoiceModal,
                 componentProps:{billLink},

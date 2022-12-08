@@ -65,7 +65,11 @@ ion-icon{
               <ion-icon :icon="receiptOutline" slot="start" color="primary"></ion-icon>
               <ion-label>Мои чеки</ion-label>
           </ion-item>
-          <!--
+          <!--          <ion-item @click="$router.push('/user/user-cards')" lines="full" button detail>
+              <ion-icon :icon="cardOutline" slot="start" color="primary"></ion-icon>
+              <ion-label>Мои карты</ion-label>
+          </ion-item>
+
           <ion-item lines="full" button detail @click="$router.push('msg-dashboard')">
               <ion-icon :icon="notificationsOutline" slot="start" color="primary"></ion-icon>
               <ion-label>Мои уведомления</ion-label>
