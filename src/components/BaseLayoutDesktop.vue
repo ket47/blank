@@ -80,7 +80,7 @@ import {
 } from "@ionic/vue";
 import TezkelLoader   from "@/components/TezkelLoader.vue"
 import FooterDesktop  from "@/components/FooterDesktop";
-import CartBodyModal  from '@/components/CartBodyModal.vue';
+//import CartBodyModal  from '@/components/CartBodyModal.vue';
 import CartHeader     from "@/components/CartHeader";
 import Order          from '@/scripts/Order.js'
 
@@ -135,7 +135,7 @@ export default {
     IonRow,
     IonCol,
     IonGrid,
-    CartBodyModal,
+    //CartBodyModal,
     CartHeader,
     IonFab,
     FooterDesktop,
