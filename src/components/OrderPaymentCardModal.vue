@@ -2,7 +2,8 @@
 <template>
   <ion-header>
       <ion-toolbar color="secondary">
-          <ion-title slot="start">Оплата картой</ion-title>
+          <ion-title v-if="this.order_data=='card_registering'">Привязка новой карты</ion-title>
+          <ion-title v-else>Оплата картой</ion-title>
           <ion-icon :icon="closeOutline" @click="closeModal();" slot="end" size="large"></ion-icon>
       </ion-toolbar>
   </ion-header>
@@ -23,7 +24,7 @@ import {
   IonHeader,
   IonContent,
 }                           from "@ionic/vue";
-import {closeOutline}       from 'ionicons/icons';
+import {closeOutline,cardOutline}       from 'ionicons/icons';
 import loading              from '@/assets/icons/loading.svg';
 import jQuery               from 'jquery';
 
@@ -40,7 +41,7 @@ export default{
       const closeModal = function(){
           modalController.dismiss();
       };
-      return { closeModal, closeOutline,loading };
+      return { closeModal, closeOutline,cardOutline,loading };
   },
   data(){
     return {
@@ -55,7 +56,11 @@ export default{
   methods: {
     async postToIframe(){
         try{
-            this.paymentLink=await jQuery.post(this.$heap.state.hostname+'CardAcquirer/paymentLinkGet',this.order_data);
+          if(this.order_data=='card_registering'){
+            this.paymentLink=await jQuery.post(this.$heap.state.hostname+'CardAcquirer/cardRegisterLinkGet');
+            return;
+          }
+          this.paymentLink=await jQuery.post(this.$heap.state.hostname+'CardAcquirer/paymentLinkGet',this.order_data);
         } catch(err){
             this.$flash("Нет возможности принять оплату картой");
             this.closeModal();

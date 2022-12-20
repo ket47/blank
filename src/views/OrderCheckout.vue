@@ -10,6 +10,10 @@
     .righttop_badge ion-badge{
         position: absolute;
     }
+    .card_type{
+        width:24px;
+        height: auto;
+    }
 </style>
 <template>
     <base-layout :pageTitle="`Оформление заказа`" pageDefaultBackLink="/order/order-list">
@@ -29,7 +33,14 @@
             </ion-item>
             --> 
             <ion-item>
-                <ion-textarea rows="3" placeholder="комментарий к заказу" @change="orderDescriptionChanged()" v-model="order.order_description"></ion-textarea>
+                <ion-textarea rows="2" placeholder="комментарий к заказу" @change="orderDescriptionChanged()" v-model="order.order_description"></ion-textarea>
+            </ion-item>
+            
+            <ion-item>
+                <label for="store_correction_allow" style="font-size:0.9em" color="medium">
+                Разрешить изменять заказ
+                </label>
+                <ion-checkbox slot="end" id="store_correction_allow" v-model="storeCorrectionAllow"/>
             </ion-item>
 
             <ion-item-divider v-if="storeIsReady">Способы доставки</ion-item-divider>
@@ -58,13 +69,6 @@
 
 
             <ion-item-divider v-if="storeIsReady">Способы оплаты</ion-item-divider>
-            <ion-item button @click="paymentType='use_card'" v-if="tariffRule.paymentByCard==1">
-                <ion-icon :icon="cardOutline" slot="start" color="primary"></ion-icon>
-                <label for="payment_card">Оплата картой</label>
-                <div slot="end">
-                    <input type="radio" name="paymentType" id="payment_card" value="card"  :checked="paymentType == 'use_card'">
-                </div>
-            </ion-item>
             <ion-item button @click="paymentType='use_cash'" v-if="tariffRule.paymentByCash==1">
                 <ion-icon :icon="cashOutline" slot="start" color="primary"></ion-icon>
                 <label for="payment_cash">Оплата наличными</label>
@@ -79,6 +83,34 @@
                     <input type="radio" name="paymentType" id="payment_cash_store" value="cash" :checked="paymentType == 'use_cash_store'">
                 </div>
             </ion-item>
+
+
+
+            <div v-if="tariffRule.paymentByCard==1">
+                <ion-item button @click="paymentType='use_card'">
+                    <ion-icon :icon="cardOutline" slot="start" color="primary"></ion-icon>
+                    <label for="payment_card">Оплата картой без привязки</label>
+                    <div slot="end">
+                        <input type="radio" name="paymentType" id="payment_card" value="card"  :checked="paymentType == 'use_card'">
+                    </div>
+                </ion-item>
+                <ion-item v-if="bankCard?.card_type" button @click="paymentType='use_card_recurrent'">
+                    <ion-img v-if="bankCard.card_type=='mir'" class="card_type" :src="`/img/icons/card-${bankCard.card_type}.svg`" slot="start"/>
+                    <ion-img v-else-if="bankCard.card_type=='visa'" class="card_type" :src="`/img/icons/card-${bankCard.card_type}.svg`" slot="start"/>
+                    <ion-img v-else-if="bankCard.card_type=='mastercard'" class="card_type" :src="`/img/icons/card-${bankCard.card_type}.svg`" slot="start"/>
+                    <ion-icon v-else :src="cardOutline" slot="start" color="primary"/>
+                    
+                    <label for="use_card_recurrent">Оплата картой {{bankCard?.card_mask}}</label>
+                    <div slot="end">
+                        <input type="radio" name="paymentType" id="use_card_recurrent" value="registered_card"  :checked="paymentType == 'use_card_recurrent'">
+                    </div>
+                </ion-item>
+                <ion-item button detail @click="$router.push('/user/user-cards')">
+                    <ion-label v-if="bankCard?.card_type" color="medium">Выбрать другую карту</ion-label>
+                    <ion-label v-else color="medium">Привязать карту</ion-label>
+                </ion-item>
+            </div>
+
 
 
             <ion-item-divider>Итог</ion-item-divider>
@@ -138,19 +170,14 @@
             </ion-item>
 
         </ion-list>
-        <ion-grid>
-            <ion-row v-if="checkoutError">
-                <ion-col>
-                    <ion-card color="warning">
-                        <ion-card-content>{{checkoutError}}</ion-card-content>
-                    </ion-card>
-                </ion-col>
-            </ion-row>
-            <ion-row>
-                <ion-col><ion-button expand="block" color="medium" @click="cancel()">Вернуться</ion-button></ion-col>
-                <ion-col><ion-button expand="block" @click="proceed()" :disabled="checkoutError">Продолжить</ion-button></ion-col>
-            </ion-row>
-        </ion-grid>
+
+        <ion-card v-if="checkoutError" color="warning">
+            <ion-card-content>{{checkoutError}}</ion-card-content>
+        </ion-card>
+
+        <ion-button v-if="paymentType=='use_card' || paymentType=='use_card_recurrent'" expand="block" @click="proceed()" :disabled="checkoutError">Оплатить картой</ion-button>
+        <ion-button v-else expand="block" @click="proceed()" :disabled="checkoutError">Послать заказ</ion-button>
+
     </base-layout>
 </template>
 
@@ -182,13 +209,12 @@ import {
     IonList,
     IonText,
     IonButton,
-    IonCol,
-    IonRow,
-    IonGrid,
     IonCheckbox,
     IonCard,
     IonCardContent,
     IonBadge,
+    IonImg,
+    IonLabel,
 }                               from "@ionic/vue";
 import UserAddressWidget        from '@/components/UserAddressWidget.vue';
 import OrderPaymentCardModal    from '@/components/OrderPaymentCardModal.vue';
@@ -204,13 +230,12 @@ export default({
     IonList,
     IonText,
     IonButton,
-    IonCol,
-    IonRow,
-    IonGrid,
     IonCheckbox,
     IonCard,
     IonCardContent,
     IonBadge,
+    IonImg,
+    IonLabel,
     },
     setup(){
         return {
@@ -232,6 +257,8 @@ export default({
             order:null,
             order_sum_delivery:0,
 
+            storeCorrectionAllow:(localStorage.storeCorrectionAllow==0?0:1),
+
             promo:null,
             promoCount:0,
             deliveryTime:{},
@@ -240,6 +267,7 @@ export default({
             errNotfound:0,
 
             paymentType:'use_card',
+            bankCard:null,
             tariffRule:{},
             tariffRuleList:[],
         }
@@ -334,6 +362,7 @@ export default({
                 this.promo=bulkResponse.Promo_itemLinkGet
                 this.promoCount=bulkResponse.Promo_listGet
                 this.storeIsReady=Array.isArray(bulkResponse.Store_deliveryOptions)?1:0
+                this.bankCard=bulkResponse.bankCard;
                 this.tariffRuleList=bulkResponse.Store_deliveryOptions
                 this.tariffRuleSet(this.tariffRuleList[0]||{})
             }
@@ -358,6 +387,9 @@ export default({
             this.tariffRule=tariffRule
             this.order_sum_delivery=tariffRule.order_sum_delivery
             this.paymentType='use_card'
+            if(this.bankCard?.card_type){
+                this.paymentType='use_card_recurrent'
+            }
             if(tariffRule.paymentByCashStore==1){
                 this.paymentType='use_cash_store'
             } else
@@ -384,9 +416,12 @@ export default({
                 deliveryByCourier:this.deliveryByCourierRuleChecked?1:0,
                 pickupByCustomer:this.pickupByCustomerRuleChecked?1:0,
                 paymentByCard:this.paymentType=='use_card'?1:0,
+                paymentByCardRecurrent:this.paymentType=='use_card_recurrent'?1:0,
                 paymentByCash:this.paymentType=='use_cash'?1:0,
                 paymentByCashStore:this.paymentType=='use_cash_store'?1:0,
+                storeCorrectionAllow:this.storeCorrectionAllow?1:0
             }
+            localStorage.storeCorrectionAllow=this.storeCorrectionAllow?1:0;
             try{
                 await jQuery.post(`${this.$heap.state.hostname}Order/itemCheckoutDataSet`,JSON.stringify(orderData))
 
@@ -406,6 +441,17 @@ export default({
                     user_id:this.order.owner_id
                 });
                 return;
+            }
+            if(orderData.paymentByCardRecurrent==1){
+                const request={
+                    order_id:this.order.order_id,
+                    card_id:this.bankCard.card_id
+                }
+                try{
+                    await jQuery.post(`${this.$heap.state.hostname}CardAcquirer/paymentDo`,request)
+                } catch(err){
+                    console.error(err)
+                }
             }
             try{
                 await Order.api.itemStageCreate(this.order.order_id,'customer_start');

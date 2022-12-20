@@ -56,7 +56,7 @@
     </ion-item>
 
     <ion-item v-if="showComment && $heap.state.user.location_main">
-        <ion-textarea placeholder="комментарий к адресу" @change="locationCommentChanged()" v-model="$heap.state.user.location_main.location_comment"></ion-textarea>
+        <ion-textarea rows="1" placeholder="комментарий к адресу" @change="locationCommentChanged()" v-model="$heap.state.user.location_main.location_comment"></ion-textarea>
     </ion-item>
 </template>
 
@@ -64,7 +64,6 @@
 import { 
   IonIcon,
   IonTextarea,
-  IonImg,
   IonText,
   IonNote,
   IonLabel,
@@ -85,7 +84,6 @@ export default {
   components: {
       IonIcon,
       IonTextarea,
-      IonImg,
       IonText,
       IonNote,
       IonLabel,

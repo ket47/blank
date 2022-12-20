@@ -139,7 +139,7 @@ export default{
       if(this.currentQuantity+step<0){
         newQuantity=0;
       }
-      if( newQuantity==0 && this.orderData.order_id>0 && confirm("Удалить?")===false ){
+      if( newQuantity==0 && this.orderData?.order_id>0 && confirm("Удалить?")===false ){
           return;
       }
       return this.updateOrder(newQuantity);

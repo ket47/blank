@@ -100,7 +100,7 @@ export default({
             try{
                 this.orderIsLoading=true
                 this.order=await Order.api.itemGet(this.order_id);
-                this.itemDetailsGet();
+                //this.itemDetailsGet();
             } catch(err) {
                 switch(err.status){
                     case 404:
@@ -112,19 +112,19 @@ export default({
             }
             this.orderIsLoading=false;
         },
-        itemDetailsGet(){
-            if( this.order.stage_current=='supplier_corrected' ){
-                this.itemDetailsPrepaymentGet()
-            }
-        },
-        async itemDetailsPrepaymentGet(){
-            try{//cache?????
-                const response=await jQuery.post(this.$heap.state.hostname+'Order/itemDetailsPrepaymentGet',{'order_id':this.order_id})
-                this.order.order_sum_prepayed=response.order_sum_prepayed
-            }catch(err){
-                //
-            }
-        },
+        // itemDetailsGet(){
+        //     if( this.order.stage_current=='supplier_corrected' ){
+        //         this.itemDetailsPrepaymentGet()
+        //     }
+        // },
+        // async itemDetailsPrepaymentGet(){
+        //     try{//cache?????
+        //         const response=await jQuery.post(this.$heap.state.hostname+'Order/itemDetailsPrepaymentGet',{'order_id':this.order_id})
+        //         this.order.order_sum_prepayed=response.order_sum_prepayed
+        //     }catch(err){
+        //         //
+        //     }
+        // },
         async onStageCreate(order_id, order_stage_code){
             if( order_stage_code.includes('action') ){
                 order_stage_code=order_stage_code.split('_').splice(1).join('_');
@@ -182,6 +182,9 @@ export default({
                         break;
                     case 'order_sum_zero':
                         this.$flash("Нельзя завершить пустой заказ, от него можно отказаться.")
+                        break;
+                    case 'forbidden_bycustomer':
+                        this.$flash("Запрещено покупателем")
                         break;
                     default:
                         this.$flash("Не удалось изменить статус заказа")

@@ -157,6 +157,10 @@ const routes = [
         path: '/user/supplier-statistics',
         component: () => import('@/views/user/SupplierStatistics.vue')
       },
+      {
+        path: '/user/user-cards',
+        component: () => import('@/views/user/UserCards.vue')
+      },
       
 
       {
