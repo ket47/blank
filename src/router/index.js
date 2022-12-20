@@ -205,6 +205,10 @@ const routes = [
 
   ]
   },
+  {
+    path: '/catalog/store-:id/menu',
+    component: () => import('@/views/StoreMenu.vue')
+  }
 ]
 
 const router = createRouter({

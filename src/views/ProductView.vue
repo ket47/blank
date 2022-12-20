@@ -21,12 +21,16 @@ ion-accordion-group .accordion-expanding .product-description{
   box-shadow: 0px 0px 15px -5px #0006;
   border-radius: 0 0 15px 15px;
   z-index: 2;
+  min-height: 100px;
 }
 .product-subactions{
   position: absolute;
-  bottom: 0;
+  bottom: 10px;
+  left: 10px;
   z-index: 100;
-  background: none;
+}
+.product-images .swiper img{
+  border-radius: 10px;
 }
 </style>
 
@@ -34,14 +38,10 @@ ion-accordion-group .accordion-expanding .product-description{
   <base-layout :page-title="productItem?.product_name "  pageDefaultBackLink="/catalog" :cartComponent="CartHeader">
       <div class="product-images">
         <image-slider v-if="productItem" :imageList="productItem.images"  />
-        <ion-list class="product-subactions">
-          <ion-item v-if="productItem?.is_writable"  lines="none"> 
-            <ion-chip color="dark" @click="$router.push('/catalog/product-edit-'+productId)">
-              <ion-icon color="primary" :src="settingsOutline"/>
-              <ion-text>Редактировать</ion-text>
-            </ion-chip>
-          </ion-item>
-        </ion-list>  
+        <ion-chip color="dark" @click="$router.push('/catalog/product-edit-'+productId)" class="product-subactions">
+          <ion-icon color="primary" :src="settingsOutline"/>
+          <ion-text>Редактировать</ion-text>
+        </ion-chip>
       </div>
       <ion-list v-if="productItem">
         <ion-list-header style="font-size:1.2em;">

@@ -344,7 +344,7 @@ ion-chip .active-chip {
     <group-list v-if="storeGroups" :groupList="storeGroups" :onClick="(group_id) => {groupSelectParent(group_id,true) }"></group-list>
 
     <h4 style="margin: 8px 16px;"><b>Товары</b></h4>
-    <swiper v-if="storeGroups" pager="true" :options="slideOpts" class="product-list-slider" @slideChange="groupSliderChanged($event)">
+    <swiper v-if="storeGroups" pager="true" :options="slideOpts" class="product-list-slider" @slideChange="groupSliderChanged($event)" :style="`max-height: ${sliderMaxHeight}`">
       {{storeGroups}}
       <swiper-slide v-for="parent_group_item in storeGroups" :key="parent_group_item.group_id">
         <ion-grid class="product-list">
@@ -463,7 +463,8 @@ export default{
       storeItem: [],
       storeProducts: {},
       storeGroups: null,
-      groupSelectedParentId: 0,
+      groupSelectedParentId: -1,
+      sliderMaxHeight: 0,
       offsetModificator: 150,
       itemGetInProgress:false
     };
@@ -660,7 +661,7 @@ export default{
       const offset=document.querySelector("ion-content.store-page").shadowRoot.querySelector("main").scrollTop;
       const anchor=this.$refs["group-" + sub_group_id][0].$el.getBoundingClientRect().top;
       var elementPosition = offset + anchor - this.offsetModificator - (window.innerHeight/4);
-      var first_group_id = Object.keys(this.storeGroups[this.groupSelectedParentId].children)[0];
+      var first_group_id = Object.keys(this.storeGroups[this.groupSelectedParentId]?.children)[0] || 0;
       if(first_group_id == sub_group_id){
         elementPosition = offset+anchor - this.offsetModificator;
       }
@@ -701,6 +702,9 @@ export default{
     $route(currentRoute) {
       this.storeId = currentRoute.params.id;
     },
+    groupSelectedParentId() {
+      this.sliderMaxHeight = document.querySelector('.product-list-slider.swiper').style.maxHeight = document.querySelector('.product-list-slider .swiper-slide.swiper-slide-active').scrollHeight+'px'
+    }
   },
 }
 </script>

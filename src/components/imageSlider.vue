@@ -1,16 +1,12 @@
 <style scoped>
     .swiper  .cropper.crop-to-fit{
-      display: flex;
-      justify-content: center;
-      align-items: center;
       overflow: hidden;
       width: 100%;
     }
-    .swiper .cropper:not(.crop-to-fit) img {
+    .swiper .cropper:not(.crop-to-fit) {
       padding: 10%;
     }
     .swiper .cropper.crop-to-fit img {
-      min-width:100%;
       max-width: unset;
     }
 </style>
@@ -32,11 +28,6 @@
         <img :style="`min-height: ${imgHeight+'px;'||'100%; max-width: 400px;'}`" :src="`${$heap.state.hostname}image/get.php/${image.image_hash}.${imgHeight*4||1200}.${imgHeight*4||1200}.webp`"/>
       </div>
     </swiper-slide>
-    <ion-fab horizontal="end" vertical="top"  slot="fixed">
-      <ion-fab-button color="light">
-      <ion-icon :src="expand" size="large" @click="maximize()"/>
-      </ion-fab-button>
-    </ion-fab>
   </swiper>
 </template>
 
