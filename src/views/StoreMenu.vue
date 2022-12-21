@@ -42,6 +42,7 @@
   color: white;
   font-weight: bold;
   text-align: center;
+  max-width:900px
 }
 .store-menu-page .store-image-slider-container{
   position: relative;
@@ -227,10 +228,10 @@
         <div class="store-info-container">
           <div class="store-image-slider-container">
             <image-slider :imageList="storeItem.images" :imgHeight="200" :mode="'crop-to-fit'"></image-slider>
-            <div class="overlay" style="background-image: url(/img/store_menu_background.png); background-size: contain;"></div>
+            <div class="overlay" style="background-image: url(/img/store_menu_background.png);background-size: cover;background-position: center;"></div>
           </div>
           <div class="avatar">
-            <img alt="Silhouette of a person's head" :src="$heap.state.hostname+'image/get.php/'+storeItem.avatarImage+'.200.200.webp'" />
+            <img :src="$heap.state.hostname+'image/get.php/'+storeItem.avatarImage+'.200.200.webp'" />
           </div>
 
           <div v-if="storeGroups" class="group-fixed-block hidden-block">

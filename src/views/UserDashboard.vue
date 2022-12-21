@@ -131,33 +131,35 @@ ion-icon{
           <ion-item style="--background:var(--ion-color-success-tint)" lines="none">
             <ion-text>
               <ion-label>Смена активна</ion-label>
-              <ion-note>Вы можете брать задания на доставку</ion-note>
+              <ion-note>Вы можете брать задания на доставку <a href="https://t.me/tezkelbot" target="_new">@tezkelbot</a></ion-note>
             </ion-text>
           </ion-item>
+          <!--
           <ion-item style="--background:var(--ion-color-success-tint)" button lines="full" @click="courierStatusSet('idle')">
             <ion-icon src="./assets/icon/delivery-man.svg" slot="start"></ion-icon>
             <ion-button slot="end">Завершить смену</ion-button>
-          </ion-item>
+          </ion-item>-->
         </div>
 
         <div v-else-if="courierStatus=='idle'">
           <ion-item style="--background:var(--ion-color-warning-tint)" lines="none">
             <ion-text>
               <ion-label>Смена закрыта</ion-label>
-              <ion-note>Начните смену для начала работы</ion-note>
+              <ion-note>Воспользуйтесь telegram ботом <a href="https://t.me/tezkelbot" target="_new">@tezkelbot</a>, чтобы начать смену</ion-note>
             </ion-text>
           </ion-item>
+          <!--
           <ion-item style="--background:var(--ion-color-warning-tint)" button lines="full" @click="courierStatusSet('ready')">
             <ion-icon :icon="rocketOutline" slot="start"></ion-icon>
             <ion-button slot="end">Начать смену</ion-button>
-          </ion-item>
+          </ion-item>-->
         </div>
 
         <div v-else-if="courierStatus=='busy'">
           <ion-item style="--background:var(--ion-color-warning-tint)" lines="none">
             <ion-text>
               <ion-label>Выполняется задание</ion-label>
-              <ion-note>В процессе доставки заказа</ion-note>
+              <ion-note>В процессе доставки заказа <a href="https://t.me/tezkelbot" target="_new">@tezkelbot</a></ion-note>
             </ion-text>
           </ion-item>
           <ion-item style="--background:var(--ion-color-warning-tint)" button lines="full">
