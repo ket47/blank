@@ -65,16 +65,14 @@ ion-icon{
               <ion-icon :icon="receiptOutline" slot="start" color="primary"></ion-icon>
               <ion-label>Мои чеки</ion-label>
           </ion-item>
-                    <ion-item @click="$router.push('/user/user-cards')" lines="full" button detail>
+          <ion-item @click="$router.push('/user/user-cards')" lines="full" button detail>
               <ion-icon :icon="cardOutline" slot="start" color="primary"></ion-icon>
               <ion-label>Мои карты</ion-label>
           </ion-item>
-          <!--
-          <ion-item lines="full" button detail @click="$router.push('msg-dashboard')">
-              <ion-icon :icon="notificationsOutline" slot="start" color="primary"></ion-icon>
-              <ion-label>Мои уведомления</ion-label>
+          <ion-item lines="full" button detail href="https://t.me/tezkelbot" target="_new">
+              <ion-icon :icon="chatboxEllipsesOutline" slot="start" color="primary"></ion-icon>
+              <ion-label>Телеграм бот <a href="https://t.me/tezkelbot" target="_new">@tezkelbot</a></ion-label>
           </ion-item>
-          -->
         </div>
 
         <ion-item-group v-if="isAdmin">
@@ -301,7 +299,7 @@ import {
   documentTextOutline,
   informationCircleOutline,
   storefrontOutline,
-  notificationsOutline,
+  chatboxEllipsesOutline,
   giftOutline,
   personAddOutline,
   ribbonOutline,
@@ -351,7 +349,7 @@ export default {
       documentTextOutline,
       informationCircleOutline,
       storefrontOutline,
-      notificationsOutline,
+      chatboxEllipsesOutline,
       giftOutline,
       personAddOutline,
       ribbonOutline,
