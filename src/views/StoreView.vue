@@ -384,7 +384,6 @@ import {
   IonAccordion,
   IonAccordionGroup,
   IonList,
-  IonAvatar,
   IonItem
 }                         from "@ionic/vue";
 import { 
@@ -438,7 +437,6 @@ export default{
     IonList,
     IonItem,
     ImageSlider,
-    IonAvatar,
     StoreOpenedIndicator,
     Swiper,
     SwiperSlide,
