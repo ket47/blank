@@ -429,6 +429,12 @@ export default {
 
 
 @media screen and (max-width: 740px) {
+  .supplier-guide-page .guide-list{
+    grid-template-columns: 1fr !important;
+  }
+  .intro-container .main-block-content .image-col img{
+    margin-bottom: 0em !important;
+  }
   .supplier-guide-page .main-block{
     padding: 1em;
   }
