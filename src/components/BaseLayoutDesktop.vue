@@ -12,19 +12,19 @@
           <ion-col class="ion-left-column" size="3">
             <ion-icon class="toolbar_svg_logo ion-color ion-color-primary"  :icon="mainLogo"/>
             <ion-tab-bar>
-              <ion-tab-button tab="tab1" href="/catalog/" routerDirection="root">
+              <ion-tab-button tab="tab1" href="/catalog/" routerDirection="back">
                 <ion-row>
                   <ion-icon :icon="storefrontOutline"/>
                   <ion-label>Каталог</ion-label>
                 </ion-row>
               </ion-tab-button>
-              <ion-tab-button tab="tab2" href="/search/" routerDirection="root">
+              <ion-tab-button tab="tab2" href="/search/" routerDirection="back">
                 <ion-row>
                   <ion-icon :icon="searchOutline"/>
                   <ion-label>Поиск</ion-label>
                 </ion-row>
               </ion-tab-button>
-              <ion-tab-button tab="tab3" href="/order/" routerDirection="root">
+              <ion-tab-button tab="tab3" href="/order/" routerDirection="back">
                 <ion-row>
                   <ion-icon :icon="readerOutline"/>
                   <ion-label>Заказы
@@ -32,7 +32,7 @@
                   </ion-label>
                 </ion-row>
               </ion-tab-button>
-              <ion-tab-button tab="tab4" href="/user/" routerDirection="root">
+              <ion-tab-button tab="tab4" href="/user/" routerDirection="back">
                 <ion-row>
                   <ion-icon :icon="personOutline"/>
                   <ion-label>Профиль</ion-label>

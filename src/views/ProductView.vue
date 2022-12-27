@@ -46,7 +46,7 @@ ion-accordion-group .accordion-expanding .product-description{
       <ion-list v-if="productItem">
         <ion-list-header style="font-size:1.2em;">
           <h3 style="font-size:1.2em;">
-            <b>{{ productItem.product_name }}</b> <span v-if="!isAvailable">(Нет в наличии)</span>
+            <b>{{ productItem.product_name }}</b> <b v-if="productItem.product_option">[{{productItem.product_option}}]</b> <span v-if="!isAvailable">(Нет в наличии)</span>
           </h3>
         </ion-list-header>
         <ion-accordion-group style="width:100%">
@@ -63,6 +63,16 @@ ion-accordion-group .accordion-expanding .product-description{
         <ion-item  lines="none">
           <ion-chip :outline="true" color="primary" v-for="group in categories" :key="group.group_id">{{group.group_name}}</ion-chip>
         </ion-item>
+
+        <div v-if="productItem?.options">
+          <ion-item lines="none">
+            <ion-icon :src="layersOutline" color="primary" slot="start"/>
+            <ion-label>Варианты</ion-label>
+          </ion-item>
+          <ion-chip @click="$router.replace(`/catalog/product-${option.product_id}`)" color="primary" v-for="option in productItem.options" :key="option.product_id">
+            {{option.product_option}}
+          </ion-chip>
+        </div>
 
         <ion-item lines="none" v-if="productItem.product_price!=productItem.product_final_price">
           <ion-icon slot="start" color="primary" :src="giftOutline"/>
@@ -115,7 +125,8 @@ import {
   giftOutline,
   walletOutline,
   chatboxEllipsesOutline,
-  settingsOutline
+  settingsOutline,
+  layersOutline
 }                       from 'ionicons/icons'
 import {
   IonTextarea,
@@ -152,18 +163,30 @@ export default  {
     IonAccordionGroup,
   },
   setup(){
-    return {CartHeader,compassOutline,cartOutline,pricetagOutline,giftOutline,walletOutline,chatboxEllipsesOutline,settingsOutline}
+    return {
+      CartHeader,
+      compassOutline,
+      cartOutline,
+      pricetagOutline,
+      giftOutline,
+      walletOutline,
+      chatboxEllipsesOutline,
+      settingsOutline,
+      layersOutline
+      }
   },
   data() {
     return { 
       productId: this.$route.params.id,
-      productItem: null
+      productItem: null,
+      is_loading:0
     };
   },
   mounted(){
-    //this.getProduct();
+    this.getProduct();
   },
   ionViewDidEnter(){
+    this.productId=this.$route.params.id
     this.getProduct();
   },
   computed:{
@@ -212,11 +235,16 @@ export default  {
   },
   methods: {
       async getProduct(){
+        if( this.is_loading==1 ){
+          return
+        }
         try{
+          this.is_loading=1
           this.productItem=await jQuery.post( heap.state.hostname + "Product/itemGet", { product_id: this.productId })
         }catch{
           //console.log('weird error is here')
         }
+        this.is_loading=0
       },
       cartCommentUpdate(comment){
         const entry={

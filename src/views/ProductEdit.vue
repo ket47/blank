@@ -21,10 +21,14 @@
 
 <template>
   <base-layout :page-title="productItem?.product_name??'Товар'" pageDefaultBackLink="/catalog">
+
+  <div v-if="!is_option_child">
     <ion-card :color="productItem?.validity<validity_min?'danger':''">
       <ion-card-header>
-        <ion-label>Анкета заполнена на {{productItem?.validity}}%</ion-label>
-        <ion-progress-bar :value="productItem?.validity/100"></ion-progress-bar>
+        <ion-card-title>
+          Форма заполнена на {{productItem?.validity??0}}%
+          <ion-progress-bar :value="productItem?.validity/100"></ion-progress-bar>
+        </ion-card-title>
       </ion-card-header>
       <ion-card-content v-if="productItem?.validity<validity_min">
         <ion-text>
@@ -43,9 +47,10 @@
     </ion-card>
     <ion-card v-if="message&&productItem?.validity>validity_min">
       <ion-card-content :class="messageClass">
-        {{message}}
+        <ion-text>{{message}}</ion-text>
       </ion-card-content>
     </ion-card>
+  </div>
 
     <ion-list v-if="productItem">
       <ion-item>
@@ -55,14 +60,61 @@
       </ion-item>
       <ion-item>
         <ion-icon :src="searchOutline" color="primary" slot="start"/>
-        На модерации
+        Отключен
         <ion-toggle slot="end" v-model="is_disabled" @ionChange="itemDisable($event.target.checked?1:0)"></ion-toggle>
       </ion-item>
       <ion-item>
         <ion-icon :src="pizzaOutline" color="primary" slot="start"/>
         Вести учет остатков
-        <ion-toggle slot="end" v-model="is_counted" @ionChange="save('is_counted',$event.target.checked?1:0)"/>
+        <ion-toggle v-if="productItem" slot="end" v-model="is_counted" @ionChange="save('is_counted',$event.target.checked?1:0)"/>
       </ion-item>
+      <ion-item v-if="!is_option_child">
+        <ion-icon :src="layersOutline" color="primary" slot="start"/>
+        Имеет разновидности (варианты)
+        <ion-toggle v-if="productItem" slot="end" v-model="is_option_parent" @ionChange="itemOptionSet($event.target.checked);"/>
+      </ion-item>
+
+      <div @change="saveForm" v-if="optionData">
+          <ion-card @click="$router.push(`product-edit-${optionData.parent.product_id}?refreshOptions=1`)" :color="(productId==optionData.parent.product_id)?'primary':'light'">
+            <ion-card-header>
+              <ion-card-subtitle>
+                Родительский товар
+              </ion-card-subtitle>
+            </ion-card-header>
+            <ion-card-content>
+              <ion-item color="light" lines="none">
+                <ion-img slot="start" style="height:70px" :src="`${$heap.state.hostname}image/get.php/${optionData.parent.image_hash}.70.70.webp`"/>
+                {{optionData.parent.product_name}}
+              </ion-item>
+              <ion-item v-if="productId==optionData.parent.product_id" color="light"> 
+                <ion-label position="stacked" >Вариант*</ion-label>
+                <ion-input name="product_option" v-model="productItem.product_option"/>
+              </ion-item>
+              <ion-item lines="none" v-else color="light">
+                <ion-chip>[{{optionData.parent.product_option}}]</ion-chip>
+              </ion-item>
+            </ion-card-content>
+          </ion-card>
+        <div style="display:grid;grid-template-columns:1fr 1fr">
+          <ion-card @click="$router.push(`product-edit-${option.product_id}?refreshOptions=1`)" v-for="option in optionData.children" :key="option.product_id" :color="productItem.product_id==option.product_id?'primary':''">
+            <ion-card-content>
+              <ion-item v-if="productItem.product_id==option.product_id" :color="productItem.deleted_at?'danger':''">
+                <ion-label position="stacked" >Опция*</ion-label>
+                <ion-input name="product_option" v-model="productItem.product_option"/>
+              </ion-item>
+              <ion-item lines="none" v-else>
+                <ion-chip :color="option.deleted_at?'danger':''">[{{option.product_option}}]</ion-chip>
+              </ion-item>
+            </ion-card-content>
+          </ion-card>
+          <ion-card>
+            <ion-card-content>
+              <ion-button color="light" expand="block" @click="itemOptionCreate()">добавить</ion-button>
+            </ion-card-content>
+          </ion-card>
+        </div>
+      </div>
+      <div v-if="!is_option_child">
       <ion-item-divider></ion-item-divider>
       <ion-item button @click="$router.push('product-'+productItem.product_id)">
         <ion-icon :src="chevronBack" slot="start"/>
@@ -76,6 +128,7 @@
         <ion-icon :src="chevronBack" slot="start"/>
         Управление магазином
       </ion-item>
+      </div>
     </ion-list>
 
     <form @change="saveForm" v-if="productItem">
@@ -84,32 +137,32 @@
           <ion-item-divider>
             <ion-label>Основные настройки</ion-label>
           </ion-item-divider>
-          <ion-item>
+          <ion-item v-if="!is_option_child">
             <ion-label position="stacked" color="primary">Название*</ion-label>
             <ion-input v-model="productItem.product_name" name="product_name" placeholder="полное название товара" clearInput="true"/>
           </ion-item>
-          <ion-item>
+          <ion-item v-if="!is_option_child">
             <ion-label position="stacked" color="primary">Описание*</ion-label>
             <ion-textarea v-model="productItem.product_description" name="product_description" rows="6" placeholder="характеристики, свойства, состав товара"></ion-textarea>
           </ion-item>
           <ion-item>
-            <ion-label color="primary">Артикул</ion-label>
+            <ion-label>Артикул</ion-label>
             <ion-input v-model="productItem.product_code" name="product_code" slot="end" placeholder="код товара"/>
           </ion-item>
           <ion-item>
-            <ion-label color="primary">Штрихкод</ion-label>
+            <ion-label>Штрихкод</ion-label>
             <ion-input v-model="productItem.product_barcode" name="product_barcode" slot="end" placeholder="штрихкод"/>
           </ion-item>
           <ion-item v-if="is_counted">
-            <ion-label color="primary">Остаток <span v-if="productItem.product_unit">({{productItem.product_unit}})</span></ion-label>
+            <ion-label>Остаток <span v-if="productItem.product_unit">({{productItem.product_unit}})</span></ion-label>
             <ion-input v-model="productItem.product_quantity" name="product_quantity" slot="end" placeholder="в наличии"/>
           </ion-item>
           <ion-item>
-            <ion-label color="primary">Мин. заказ*<span v-if="productItem.product_unit">({{productItem.product_unit}})</span></ion-label>
+            <ion-label>Мин. заказ*<span v-if="productItem.product_unit">({{productItem.product_unit}})</span></ion-label>
             <ion-input v-model="productItem.product_quantity_min" name="product_quantity_min" type="number" inputmode="numeric" pattern="\d\." slot="end"/>
           </ion-item>
-          <ion-item>
-            <ion-label color="primary">Единица*</ion-label>
+          <ion-item v-if="!is_option_child">
+            <ion-label>Единица*</ion-label>
             <ion-select v-model="productItem.product_unit" name="product_unit" slot="end"  @ionChange="saveForm">
               <ion-select-option value="шт">штука</ion-select-option>
               <ion-select-option value="порция">порция</ion-select-option>
@@ -119,7 +172,7 @@
             </ion-select>
           </ion-item>
           <ion-item v-if="productItem.product_unit!='кг'">
-            <ion-label color="primary">Вес 1{{productItem.product_unit}} (кг)*</ion-label>
+            <ion-label>Вес 1{{productItem.product_unit}} (кг)*</ion-label>
             <ion-input v-model="productItem.product_weight" name="product_weight" type="number" step="0.1" inputmode="numeric" pattern="\d\." slot="end"/>
           </ion-item>
         </ion-item-group>
@@ -133,11 +186,15 @@
           </ion-item-divider>
         </ion-item-group>
         <ion-item>
-          <ion-label color="primary">Цена*</ion-label>
+          <ion-label>Цена*</ion-label>
           <ion-input v-model="productItem.product_price" name="product_price" type="number" inputmode="numeric" slot="end"/>
         </ion-item>
         <ion-item>
-          <ion-text color="success">Цена акционная</ion-text>
+          <ion-label>Цена в меню/на полке</ion-label>
+          <ion-input v-model="productItem.product_net_price" name="product_net_price" type="number" inputmode="numeric" slot="end"/>
+        </ion-item>
+        <ion-item>
+          <ion-label color="success">Цена акционная</ion-label>
           <ion-input v-model="productItem.product_promo_price" name="product_promo_price" type="number" inputmode="numeric" slot="end" color="success"/>
         </ion-item>
         <ion-item>
@@ -150,7 +207,10 @@
         </ion-item>
       </ion-list>
     </form>
-    <ion-list v-if="productItem">
+
+
+
+    <ion-list v-if="productItem && !is_option_child">
       <ion-item-divider>
         <ion-label>Изображения товара*</ion-label>
       </ion-item-divider>
@@ -160,7 +220,7 @@
       </ion-button>
     </ion-list>
 
-    <ion-list v-if="categoryList">
+    <ion-list v-if="productItem && categoryList && !is_option_child">
       <ion-item-divider>
           <ion-label>Категории товара*</ion-label>
       </ion-item-divider>
@@ -201,6 +261,11 @@ import {
   IonText,
   IonSelect,
   IonSelectOption,
+  IonImg,
+  IonCardTitle,
+  IonCardSubtitle,
+  IonAvatar,
+  IonChip,
   modalController
   }                   from '@ionic/vue'
 import {
@@ -211,10 +276,12 @@ import {
   addOutline,
   pizzaOutline,
   compassOutline,
-  chevronBack
+  chevronBack,
+  layersOutline,
 }                     from 'ionicons/icons'
 import imageTileComp  from '@/components/ImageTileComp.vue'
 import GroupPicker    from '@/components/GroupPicker.vue'
+import ProductPicker  from '@/components/ProductPicker.vue'
 import heap           from '@/heap';
 import Topic          from '@/scripts/Topic.js'
 import jQuery         from "jquery";
@@ -238,6 +305,11 @@ export default  {
     IonText,
     IonSelect,
     IonSelectOption,
+    IonImg,
+    IonChip,
+    IonCardTitle,
+    IonCardSubtitle,
+    IonAvatar,
     imageTileComp
     },
   setup(){
@@ -249,7 +321,8 @@ export default  {
       addOutline,
       pizzaOutline,
       compassOutline,
-      chevronBack
+      chevronBack,
+      layersOutline,
       }
   },
   data(){
@@ -257,12 +330,16 @@ export default  {
       productId: this.$route.params.id,
       productItem: null,
       productGroupList:null,
+      validity:0,
+      validity_min:80,
+      optionData:null,
+      refreshOptions:this.$route.query.refreshOptions,
+      is_option_parent:false,
+      is_option_child:false,
       is_groups_marked:0,
       is_deleted:0,
       is_disabled:0,
       is_counted:0,
-      validity:0,
-      validity_min:80
     }
   },
   computed: {
@@ -306,15 +383,24 @@ export default  {
     this.listGroupGet()
     this.itemGet()
   },
+  ionViewDidEnter() {
+    if(this.refreshOptions && this.productItem?.product_parent_id){
+        this.itemOptionGet();
+    }
+  },
   methods:{
     async itemGet(){
       try{
         let productItem=await jQuery.post( heap.state.hostname + "Product/itemGet", { product_id: this.productId })
         this.productItem=this.itemPrepare(productItem)
         this.itemParseFlags()
-        this.itemMarkGroups()
-      }catch{
-        //
+        //this.itemMarkGroups()
+
+        this.is_option_child=(this.productItem.product_parent_id && this.productItem.product_parent_id!=this.productItem.product_id)
+        this.is_option_parent=(this.productItem.product_parent_id && this.productItem.product_parent_id==this.productItem.product_id)
+        await this.itemOptionGet();
+      }catch(err){
+        console.log(err);
       }
     },
     itemPrepare(productItem){
@@ -336,6 +422,9 @@ export default  {
       try{
         await jQuery.post( heap.state.hostname + "Product/"+remoteFunction, { product_id: this.productId })
         this.productItem.deleted_at=is_deleted?1:null;
+        if(this.is_option_child || this.is_option_parent){
+          this.itemOptionGet()
+        }
       }catch{
         this.itemGet()
       }
@@ -369,6 +458,67 @@ export default  {
         return false
       }
     },
+
+
+
+
+    async itemOptionGet(){
+      if(!this.productItem.product_parent_id){
+        this.optionData=null
+      }
+      const request={
+        product_parent_id:this.productItem.product_parent_id
+      }
+      let optionData=await jQuery.post(`${this.$heap.state.hostname}Product/itemOptionGet`,request)
+      this.optionData={
+        parent:optionData[0],
+        children:optionData.slice(1)
+      }
+    },
+    async itemOptionCreate(){
+      const existingOptionCount=this.optionData?.children?.length??0
+      const productOption={
+        is_disabled:1,
+        store_id:this.productItem.store_id,
+        product_parent_id:this.productItem.product_parent_id,
+        product_name:'OPTION',
+        product_price:0,
+        product_option: `Вариант#${existingOptionCount}`
+      };
+      try{
+        await jQuery.post(`${this.$heap.state.hostname}Product/itemCreate`,productOption)
+        this.itemOptionGet()
+      } catch(err){/** */}
+    },
+    async itemOptionSet( set_option ){
+      if( set_option ){
+        await this.itemOptionSave( this.productId, this.productId )
+      } else {
+        await this.itemOptionDelete( this.productId )
+      }
+      this.itemGet()
+    },
+    async itemOptionUpdate( option_value ){
+      console.log(this.productId,option_value)
+    },
+    async itemOptionSave( product_id, product_parent_id ){
+      try{
+        await jQuery.post( `${this.$heap.state.hostname}Product/itemOptionSave`, { product_id, product_parent_id })
+      }catch{/** */}
+    },
+    async itemOptionDelete( product_id ){
+      if(!confirm("Удалить разновидности товара?")){
+        return
+      }
+      try{
+        await jQuery.post( `${this.$heap.state.hostname}Product/itemOptionDelete`, { product_id })
+        this.itemOptionGet()
+      }catch{/** */}
+    },
+
+
+
+
     checkPromoPrice(field_name){
       if( this.productItem.product_price>0 && this.productItem.product_promo_price>0 && this.productItem.product_price<=this.productItem.product_promo_price ){
         if(field_name=='product_promo_price'){
@@ -397,8 +547,11 @@ export default  {
       this.save(field_name,field_value)
     },
     async save(field_name, field_value) {
+      if( !this.productItem.product_id ){//product not loaded yet
+        return
+      }
       let request = {
-        product_id:this.productId,
+        product_id:this.productItem.product_id,
         [field_name]:field_value
       }
       if( this.itemUpdate(request) ){

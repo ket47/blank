@@ -121,7 +121,8 @@ export default{
       this.productData=productData;
     },
     productListItemHighlight(){
-      let product_list_item=document.getElementById(`product_list_item${this.productData?.product_id}`);
+      const parent_product_id=this.productData?.parent_product_id||this.productData?.product_id
+      let product_list_item=document.getElementById(`product_list_item${parent_product_id}`);
       if(!product_list_item){
         return;
       }
@@ -161,6 +162,10 @@ export default{
         newQuantity=this.productData.product_quantity;
       }
       let stock_product_quantity=this.productItem?this.productItem.product_quantity:this.productData.product_quantity;
+      let entry_text=this.productData.entry_text
+      if(this.productData.product_name){
+        entry_text=this.productData.product_name+(this.productData.product_option?` [${this.productData.product_option}]`:'')
+      }
       let entry={
         entry_id:this.productData.entry_id,
         product_id:this.productData.product_id,
@@ -169,7 +174,7 @@ export default{
         is_counted:this.productData.is_counted,
         entry_quantity:newQuantity,
         entry_price:this.productData.product_final_price||this.productData.entry_price,
-        entry_text:this.productData.product_name||this.productData.entry_text,
+        entry_text:entry_text,
         image_hash:this.productData.image_hash||''
       };
       this.productData.entry_quantity=newQuantity;

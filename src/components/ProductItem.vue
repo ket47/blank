@@ -38,45 +38,48 @@
 }
 </style>
 <template>
-    <div :class="item_class" :id="`product_list_item${productItem.product_id}`"
-        >
+    <div :class="item_class" :id="`product_list_item${productItem.product_id}`">
         <div class="product_list_item_img">
             <div style="position:relative;top:-50%;">
                 <cart-add-buttons buttonLayout="vertical" :productItem="productItem"></cart-add-buttons>
             </div> 
             <img class="blur-image" :src="`${$heap.state.hostname}image/get.php/${productItem.image_hash}.200.200.webp`"/>
             <ion-img @click="$router.push(`/catalog/product-${productItem.product_id}`)" :src="`${$heap.state.hostname}image/get.php/${productItem.image_hash}.200.200.webp`"/>
+            <ion-chip v-if="options" style="position:absolute;bottom:0;right:0" color="success">
+                варианты
+            </ion-chip> 
         </div>
         <div style="height:5em;overflow:hidden">
             <div style="color:black;height:3em;font-size:1em;overflow:hidden;line-height:1.4em; font-weight: bold;" @click="$router.push(`product-${productItem.product_id}`)">
                 {{ productItem.product_name }}
             </div>
-            
-                <span v-if="productItem.product_price!=productItem.product_final_price" style="color:var(--ion-color-danger)">
-                    <s>{{productItem.product_price}}{{$heap.state.currencySign}}</s>&nbsp;&nbsp;
-                </span>
-                <span style="color:var(--ion-color-primary)">
-                    <b style="font-weight: bold; margin: 0; font-size: 1.4em">{{productItem.product_final_price}}</b>
-                    <b style="font-weight: bold; margin: 0; font-size: 1.2em">{{$heap.state.currencySign}}</b>
-                </span>
-             /
-                <span v-if="productItem.product_unit=='порция'" style="color:var(--ion-color-medium)">
-                    {{weight_in_gramms}}г
-                </span>
-                <span v-else style="color:var(--ion-color-medium)">
-                    {{productItem.product_unit}}
-                </span>
+            <span v-if="productItem.product_price!=productItem.product_final_price" style="color:var(--ion-color-danger)">
+                <s>{{productItem.product_price}}{{$heap.state.currencySign}}</s>&nbsp;&nbsp;
+            </span>
+            <span style="color:var(--ion-color-primary)">
+                <b style="font-weight: bold; margin: 0; font-size: 1.4em">{{productItem.product_final_price}}</b>
+                <b style="font-weight: bold; margin: 0; font-size: 1.2em">{{$heap.state.currencySign}}</b>
+            </span>
+            /
+            <span v-if="productItem.product_unit=='порция'" style="color:var(--ion-color-medium)">
+                {{weight_in_gramms}}г
+            </span>
+            <span v-else style="color:var(--ion-color-medium)">
+                {{productItem.product_unit}}
+            </span>
         </div>
     </div>
 </template>
 <script>
 import {
   IonImg,
+  IonChip,
 }                       from '@ionic/vue'
 import CartAddButtons from '@/components/CartAddButtons';
 export default {
     components:{
     IonImg,
+    IonChip,
     CartAddButtons
     },
     props:['productItem'],
@@ -95,6 +98,12 @@ export default {
         },
         weight_in_gramms(){
             return this.productItem.product_weight*1000
+        },
+        options(){
+            if( !this.productItem?.product_options ){
+                return null
+            }
+            return this.productItem.product_options.split('~|~')
         }
     }
 }
