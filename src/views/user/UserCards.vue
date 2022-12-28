@@ -26,7 +26,7 @@
                 <ion-img v-else-if="card.card_type=='visa'" class="card_type" :src="`/img/icons/card-${card.card_type}.svg`" slot="start"/>
                 <ion-img v-else-if="card.card_type=='mastercard'" class="card_type" :src="`/img/icons/card-${card.card_type}.svg`" slot="start"/>
                 <ion-icon v-else :src="cardOutline" slot="start" color="primary"/>
-                <ion-label @click="itemMainSet(card.card_id)" :class="i==0?'is_main':''">{{card.card_mask}}</ion-label>
+                <ion-label @click="i!=0&&itemMainSet(card.card_id)" :class="i==0?'is_main':''">{{card.card_mask}}</ion-label>
                 <ion-icon :icon="trashOutline" slot="end" @click="itemDelete(card.card_id)"></ion-icon>
             </ion-item>
         </ion-list>
@@ -96,7 +96,7 @@ export default {
                 card_id
             };
             try{
-                this.cardList=await jQuery.post(`${this.$heap.state.hostname}UserCards/itemMainSet`,request)
+                await jQuery.post(`${this.$heap.state.hostname}UserCards/itemMainSet`,request)
                 this.listGet()
             } catch{/** */}
         },
@@ -108,7 +108,7 @@ export default {
                 card_id
             };
             try{
-                this.cardList=await jQuery.post(`${this.$heap.state.hostname}UserCards/itemDelete`,request)
+                await jQuery.post(`${this.$heap.state.hostname}UserCards/itemDelete`,request)
                 this.listGet()
             } catch{
                 this.flash("Не удалось открепить карту")

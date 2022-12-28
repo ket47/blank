@@ -450,7 +450,8 @@ export default({
                 try{
                     await jQuery.post(`${this.$heap.state.hostname}CardAcquirer/paymentDo`,request)
                 } catch(err){
-                    console.error(err)
+                    this.$flash("Оплата привязанной картой не удалась")
+                    return false
                 }
             }
             try{
