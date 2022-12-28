@@ -242,7 +242,7 @@ ion-chip .active-chip {
       <image-slider :imageList="storeItem.images" :imgHeight="200" :mode="'crop-to-fit'"></image-slider>
       <ion-list  class="store-info">
         <ion-item lines="none">
-          <div slot="start" class="avatar-container">
+          <div v-if="storeItem.avatarImage" slot="start" class="avatar-container">
             <div class="avatar">
               <img alt="Silhouette of a person's head" :src="$heap.state.hostname+'image/get.php/'+storeItem.avatarImage+'.200.200.webp'" />
             </div>

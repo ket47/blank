@@ -37,7 +37,7 @@ ion-accordion-group .accordion-expanding .product-description{
 <template>
   <base-layout :page-title="productItem?.product_name "  pageDefaultBackLink="/catalog" :cartComponent="CartHeader">
       <div class="product-images">
-        <image-slider v-if="productItem" :imageList="productItem.images"  />
+        <image-slider v-if="productItem" :imageList="productItem.images" :imgHeight="400" :mode="'save-aspect-ratio'" />
         <ion-chip color="dark" @click="$router.push('/catalog/product-edit-'+productId)" class="product-subactions">
           <ion-icon color="primary" :src="settingsOutline"/>
           <ion-text>Редактировать</ion-text>
