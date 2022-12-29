@@ -66,6 +66,19 @@
   background-position-x: center;
   background-position-y: bottom;
   background-repeat: no-repeat;
+  background-size: auto;
+}
+
+
+@media screen and (max-width: 768px) {
+  .store-menu-page .store-image-slider-container .overlay{
+    background-size: 1700px;
+  }
+}
+@media screen and (max-width: 450px) {
+  .store-menu-page .store-image-slider-container .overlay{
+    background-size: 1000px;
+  }
 }
 .store-menu-page .groups-container{
   border-bottom: 1px solid lightgray;
@@ -206,6 +219,7 @@
     border: 4px solid #666;
 }
 .store-menu-page ion-footer{
+  display: block !important;
   text-align: center;
   padding: 2em;
   border-top-left-radius: 15px;
@@ -226,11 +240,14 @@
       <div style="background-color: #1380c1; padding-bottom: 15px;"> 
         <div class="store-info-container">
           <div class="store-image-slider-container">
-            <image-slider :imageList="storeItem.images" :imgHeight="200" :mode="'crop-to-fit'"></image-slider>
-            <div class="overlay" style="background-image: url(/img/store_menu_background_full.png); background-size: auto;"></div>
+            <image-slider :imageList="storeItem.images" :imgHeight="250" :mode="'crop-to-fit'"></image-slider>
+            <div class="overlay" style="background-image: url(/img/store_menu_background_full.png); "></div>
           </div>
-          <div class="avatar">
-            <img alt="Silhouette of a person's head" :src="$heap.state.hostname+'image/get.php/'+storeItem.avatarImage+'.200.200.webp'" />
+          <div class="avatar" v-if="storeItem.avatarImage">
+            <img :alt="storeItem.store_name" :src="$heap.state.hostname+'image/get.php/'+storeItem.avatarImage+'.200.200.webp'" />
+          </div>
+          <div v-else>
+            <h2>{{storeItem.store_name}}</h2>
           </div>
 
           <div v-if="storeGroups" class="group-fixed-block hidden-block">
