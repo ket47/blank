@@ -69,9 +69,12 @@ ion-accordion-group .accordion-expanding .product-description{
             <ion-icon :src="layersOutline" color="primary" slot="start"/>
             <ion-label>Варианты</ion-label>
           </ion-item>
-          <ion-chip @click="$router.replace(`/catalog/product-${option.product_id}`)" color="primary" v-for="option in productItem.options" :key="option.product_id">
-            {{option.product_option}}
-          </ion-chip>
+          <ion-item lines="none">
+            <ion-chip @click="$router.replace(`/catalog/product-${option.product_id}`)" color="primary" v-for="option in productItem.options" :key="option.product_id">
+              {{option.product_option}}
+            </ion-chip>
+
+          </ion-item>
         </div>
 
         <ion-item lines="none" v-if="productItem.product_price!=productItem.product_final_price">

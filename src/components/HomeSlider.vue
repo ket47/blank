@@ -26,7 +26,7 @@
   .home_slide_img{
     display: block;
     margin-left: auto;
-    max-height:250px;
+    -max-height:250px;
   }
 </style>
 

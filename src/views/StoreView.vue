@@ -355,7 +355,12 @@ ion-chip .active-chip {
             :data-group_id="group_item.group_id"
           >
             <ion-col class="group-title" size="12">
-              <h5 style="margin: 0;">{{ group_item.group_name }}</h5>
+              <h5 style="margin: 0;">
+                {{ group_item.group_name }} 
+                <ion-chip v-if="storeItem.is_writable==1" @click="productItemCreate(group_item.group_id)">
+                  <ion-icon :src="addOutline"/> добавить товар
+                </ion-chip>
+              </h5>
             </ion-col>
             <ion-col  size="12">
               <product-list :productList="storeProducts[group_item.group_id]"></product-list>
@@ -398,6 +403,7 @@ import {
   settingsOutline,
   rocketOutline,
   compassOutline,
+  addOutline,
 }                         from "ionicons/icons";
 import ImageSlider        from "@/components/ImageSlider";
 import GroupList          from "@/components/GroupList.vue";
@@ -449,6 +455,7 @@ export default{
       settingsOutline,
       rocketOutline,
       compassOutline,
+      addOutline,
       slideOpts,
       slideModules:[Autoplay]
     };
@@ -476,7 +483,7 @@ export default{
         this.itemGetInProgress=true
         const store=await jQuery.post(`${heap.state.hostname}Store/itemGet`, {store_id: this.storeId,distance_include:1})
         this.storeItem = this.itemPrepare(store);
-        console.log(this.storeItem);
+        //console.log(this.storeItem);
         this.storeId = store.store_id;
         this.groupTreeGet({ store_id: this.storeId });
         heap.commit('setCurrentStore',this.storeItem);
@@ -536,7 +543,7 @@ export default{
         this.storeProducts[product.group_id??0].push(product);
       }
     },
-    async productItemCreate(){
+    async productItemCreate( group_id ){
       try{
         const request={
           store_id:this.storeId,
@@ -545,8 +552,11 @@ export default{
           product_promo_price:1000
         }
         const product_id=await jQuery.post(`${heap.state.hostname}Product/itemCreate`,request)
-        this.$router.push(`product-edit-${product_id}`)
-        this.$flash("Добавлен 'Новый товар' в категорию 'Другое'")
+        if(group_id){
+          await jQuery.post(`${heap.state.hostname}Product/itemUpdateGroup`,{product_id,group_id,is_joined:1})
+        }
+        this.$router.push(`/catalog/product-edit-${product_id}`)
+        this.$flash("Добавлен 'Новый товар'")
       }catch{
         this.$flash("Не удалось создать товар")
       }

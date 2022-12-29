@@ -86,7 +86,7 @@ export default {
                     has_invoice:'1',
                 }
                 this.invoiceList=await jQuery.post(this.$heap.state.hostname+'Order/listGet',request)
-                console.log(this.invoiceList)
+                //console.log(this.invoiceList)
             } catch{/** */}
         },
         async billOpen( billLink ) {

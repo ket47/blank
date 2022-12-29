@@ -45,7 +45,7 @@
 
     <ion-list v-if="storeItem">
       <ion-item>
-        <ion-icon :src="storefrontOutline" color="primary" slot="start"/>
+        <ion-icon :src="checkmarkCircleOutline" color="primary" slot="start"/>
         Готово к заказам
         <ion-toggle slot="end" v-model="is_working" @ionChange="save('is_working',$event.target.checked?1:0)"></ion-toggle>
       </ion-item>
@@ -60,15 +60,20 @@
         <ion-toggle slot="end" v-model="is_primary" @ionChange="save('is_primary',$event.target.checked?1:0)"></ion-toggle>
       </ion-item>
       <ion-item>
-        <ion-icon :src="searchOutline" color="primary" slot="start"/>
+        <ion-icon :src="ribbonOutline" color="primary" slot="start"/>
         На модерации
         <ion-toggle slot="end" v-model="is_disabled" @ionChange="itemDisable($event.target.checked?1:0)"></ion-toggle>
       </ion-item>
-      <ion-button @click="$router.push('/catalog/store-'+storeId)" expand="full">Открыть {{storeItem.store_name}}</ion-button>
-      <ion-item-divider>Добавление товара</ion-item-divider>
+
+
+      <ion-item-divider></ion-item-divider>
+      <ion-item button @click="$router.push('/catalog/store-'+storeId)">
+        <ion-icon :src="chevronBack" slot="start"/>
+        Показать {{storeItem.store_name}}
+      </ion-item>
       <ion-item @click="productItemCreate()" button>
         <ion-icon :src="addOutline" slot="start"/>
-        Добавить товар
+        Добавить товар в {{storeItem.store_name}}
       </ion-item>
     </ion-list>
 
@@ -216,11 +221,11 @@
         </ion-item-divider>
 
         <image-tile-comp :images="storeItem.images" :image_holder_id="storeItem.store_id" controller="Store" title="Витрина продавца" ref="storeImgs"></image-tile-comp>
-        <image-tile-comp :images="storeItem.avatar" :image_holder="'store_avatar'" :image_holder_id="storeItem.store_id" controller="Store" title="Аватар продавца" ref="storeAvatar"></image-tile-comp>
-        <ion-button @click="$refs.storeImgs.take_photo()" color="medium">
+        <ion-button @click="$refs.storeImgs.take_photo()" color="light" expand="block">
           <ion-icon :src="cameraOutline" slot="start"/> Добавить фото на витрину
         </ion-button>
-        <ion-button @click="$refs.storeAvatar.take_photo()" color="medium">
+        <image-tile-comp :images="storeItem.avatar" :image_holder="'store_avatar'" :image_holder_id="storeItem.store_id" controller="Store" title="Аватар продавца" ref="storeAvatar"></image-tile-comp>
+        <ion-button @click="$refs.storeAvatar.take_photo()" color="light" expand="block">
           <ion-icon :src="cameraOutline" slot="start"/> Добавить аватар
         </ion-button>
       </ion-list>
@@ -349,7 +354,7 @@
 
 
 
-    <ion-list v-if="storeItem">
+    <ion-list v-if="ownerList">
       <ion-item-divider>
           <ion-label>Адинистраторы</ion-label>
       </ion-item-divider>
@@ -362,6 +367,7 @@
         </ion-label>
         <ion-icon v-if="isStoreSuperadmin && storeItem.owner_id!=owner.user_id" :src="trashOutline" slot="end" @click="ownerDelete(owner.user_id)"/>
       </ion-item>
+
       <ion-item v-if="isStoreSuperadmin" button @click="ownerAdd()">
         <ion-icon :src="addOutline" slot="start" color="primary"/>
         <ion-label>Добавить администратора</ion-label>
@@ -369,7 +375,7 @@
     </ion-list>
 
 
-    <ion-list v-if="storeItem">
+    <ion-list v-if="storeItem && isStoreSuperadmin">
       <ion-item-divider>
           <ion-label>API токен</ion-label>
       </ion-item-divider>
@@ -667,7 +673,7 @@ export default  {
           product_promo_price:1000
         }
         const product_id=await jQuery.post(`${heap.state.hostname}Product/itemCreate`,request)
-        this.$router.push(`product-edit-${product_id}`)
+        this.$router.push(`/catalog/product-edit-${product_id}`)
       }catch{
         this.$flash("Не удалось создать товар")
       }
@@ -882,7 +888,9 @@ export default  {
       try{
         await jQuery.post(heap.state.hostname + "Store/locationDelete",{location_id})
         this.itemGet()
-      }catch{/** */}
+      }catch{
+        this.$flash("Удалить адрес не удалось")
+      }
     },
     async apiTokenShow(){
       const request={

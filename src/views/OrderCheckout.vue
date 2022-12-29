@@ -105,7 +105,7 @@
                         <input type="radio" name="paymentType" id="use_card_recurrent" value="registered_card"  :checked="paymentType == 'use_card_recurrent'">
                     </div>
                 </ion-item>
-                <ion-item button detail @click="$router.push('/user/user-cards')">
+                <ion-item v-if="recurrentPaymentAllow" button detail @click="$router.push('/user/user-cards')">
                     <ion-label v-if="bankCard?.card_type" color="medium">Выбрать другую карту</ion-label>
                     <ion-label v-else color="medium">Привязать карту</ion-label>
                 </ion-item>
@@ -268,6 +268,7 @@ export default({
 
             paymentType:'use_card',
             bankCard:null,
+            recurrentPaymentAllow:this.$heap.state.settings?.other?.recurrentPaymentAllow==1?1:0,
             tariffRule:{},
             tariffRuleList:[],
         }
@@ -362,7 +363,7 @@ export default({
                 this.promo=bulkResponse.Promo_itemLinkGet
                 this.promoCount=bulkResponse.Promo_listGet
                 this.storeIsReady=Array.isArray(bulkResponse.Store_deliveryOptions)?1:0
-                this.bankCard=bulkResponse.bankCard;
+                this.bankCard=bulkResponse?.bankCard;
                 this.tariffRuleList=bulkResponse.Store_deliveryOptions
                 this.tariffRuleSet(this.tariffRuleList[0]||{})
             }

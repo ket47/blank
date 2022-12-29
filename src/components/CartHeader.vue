@@ -31,7 +31,6 @@ export default{
   },
   computed:{
     cartListTotal(){
-      console.log(this.$Order.cart.listTotalGet())
       return this.$Order.cart.listTotalGet()
     }
   },

@@ -59,8 +59,8 @@
         <ion-toggle slot="end" v-model="is_deleted" color="danger" @ionChange="itemDelete($event.target.checked?1:0)"></ion-toggle>
       </ion-item>
       <ion-item>
-        <ion-icon :src="searchOutline" color="primary" slot="start"/>
-        Отключен
+        <ion-icon :src="banOutline" color="primary" slot="start"/>
+        Отключено
         <ion-toggle slot="end" v-model="is_disabled" @ionChange="itemDisable($event.target.checked?1:0)"></ion-toggle>
       </ion-item>
       <ion-item>
@@ -70,12 +70,12 @@
       </ion-item>
       <ion-item v-if="!is_option_child">
         <ion-icon :src="layersOutline" color="primary" slot="start"/>
-        Имеет разновидности (варианты)
+        Имеет варианты
         <ion-toggle v-if="productItem" slot="end" v-model="is_option_parent" @ionChange="itemOptionSet($event.target.checked);"/>
       </ion-item>
 
       <div @change="saveForm" v-if="optionData">
-          <ion-card @click="$router.push(`product-edit-${optionData.parent.product_id}?refreshOptions=1`)" :color="(productId==optionData.parent.product_id)?'primary':'light'">
+          <ion-card @click="$router.replace(`product-edit-${optionData.parent.product_id}?refreshOptions=1`)" :color="(productId==optionData.parent.product_id)?'primary':'light'">
             <ion-card-header>
               <ion-card-subtitle>
                 Родительский товар
@@ -96,10 +96,10 @@
             </ion-card-content>
           </ion-card>
         <div style="display:grid;grid-template-columns:1fr 1fr">
-          <ion-card @click="$router.push(`product-edit-${option.product_id}?refreshOptions=1`)" v-for="option in optionData.children" :key="option.product_id" :color="productItem.product_id==option.product_id?'primary':''">
+          <ion-card @click="$router.replace(`product-edit-${option.product_id}?refreshOptions=1`)" v-for="option in optionData.children" :key="option.product_id" :color="productItem.product_id==option.product_id?'primary':''">
             <ion-card-content>
               <ion-item v-if="productItem.product_id==option.product_id" :color="productItem.deleted_at?'danger':''">
-                <ion-label position="stacked" >Опция*</ion-label>
+                <ion-label position="stacked" >Вариант*</ion-label>
                 <ion-input name="product_option" v-model="productItem.product_option"/>
               </ion-item>
               <ion-item lines="none" v-else>
@@ -114,6 +114,9 @@
           </ion-card>
         </div>
       </div>
+
+
+
       <div v-if="!is_option_child">
       <ion-item-divider></ion-item-divider>
       <ion-item button @click="$router.push('product-'+productItem.product_id)">
@@ -271,7 +274,7 @@ import {
 import {
   cameraOutline,
   trashOutline,
-  searchOutline,
+  banOutline,
   personOutline,
   addOutline,
   pizzaOutline,
@@ -316,7 +319,7 @@ export default  {
     return {
       cameraOutline,
       trashOutline,
-      searchOutline,
+      banOutline,
       personOutline,
       addOutline,
       pizzaOutline,
@@ -351,7 +354,7 @@ export default  {
         return "Товар не активен и находится на рассмотрении у администратора";
       }
       if(this.productItem?.is_counted!=1){
-        return "Товар активен и готов к продаже. Товар произодится вами, например еда";
+        return "Товар активен и готов к продаже. Учет остатков товара не ведется";
       }
       return "Товар активен и готов к продаже.";
     },
@@ -400,7 +403,7 @@ export default  {
         this.is_option_parent=(this.productItem.product_parent_id && this.productItem.product_parent_id==this.productItem.product_id)
         await this.itemOptionGet();
       }catch(err){
-        console.log(err);
+        //console.log(err);
       }
     },
     itemPrepare(productItem){
@@ -499,7 +502,7 @@ export default  {
       this.itemGet()
     },
     async itemOptionUpdate( option_value ){
-      console.log(this.productId,option_value)
+      //console.log(this.productId,option_value)
     },
     async itemOptionSave( product_id, product_parent_id ){
       try{

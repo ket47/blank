@@ -158,7 +158,7 @@ export default {
                 this.is_loading=0
                 this.items=this.items.concat(items)
             } catch(err){
-                console.log(err)
+                //console.log(err)
             }
         },
         listTypeChanged(e){

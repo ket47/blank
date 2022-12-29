@@ -62,7 +62,12 @@ export default{
           }
           this.paymentLink=await jQuery.post(this.$heap.state.hostname+'CardAcquirer/paymentLinkGet',this.order_data);
         } catch(err){
-            this.$flash("Нет возможности принять оплату картой");
+            const exception_code = err?.responseJSON?.messages?.error;
+            if(exception_code =='nocardid'){
+              this.$flash("Не удалось добавить карту");
+            } else {
+              this.$flash("Нет возможности принять оплату картой");
+            }
             this.closeModal();
         }
     },
