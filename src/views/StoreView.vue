@@ -121,7 +121,6 @@ ion-accordion-group .accordion-expanding .store-description{
 .store-page .product-list {
   margin-top: 1em;
   min-height: 80vh;
-  padding: 0 16px;
 }
 
 
@@ -180,7 +179,9 @@ ion-accordion-group .accordion-expanding .store-description{
   max-height: 250px;
 }
 .group-title {
-  text-align: left;
+  border-bottom: 2px solid var(--ion-color-secondary);
+  margin-bottom: 1em;
+  width: 80% !important;
 }
 .group-fixed-block {
   position: fixed;
@@ -344,7 +345,21 @@ ion-chip .active-chip {
     <group-list v-if="storeGroups" :groupList="storeGroups" :onClick="(group_id) => {groupSelectParent(group_id,true) }"></group-list>
 
     <h4 style="margin: 8px 16px;"><b>Товары</b></h4>
-    <swiper v-if="storeGroups" pager="true" :options="slideOpts" class="product-list-slider" @slideChange="groupSliderChanged($event)" :style="`max-height: ${sliderMaxHeight}`">
+    <swiper v-if="storeGroups" 
+      pager="true" 
+      
+      :initialSlide="0"
+      :speed="400"
+      :watchSlidesProgress="false"
+      :grabCursor="true"
+      :touchStartForcePreventDefault="true"
+      :slidesPerView="1.2"
+      :pagination="false"
+      :centeredSlides="true" 
+      class="product-list-slider" 
+      @slideChange="groupSliderChanged($event)" 
+      :style="`max-height: ${sliderMaxHeight}`"
+    >
       {{storeGroups}}
       <swiper-slide v-for="parent_group_item in storeGroups" :key="parent_group_item.group_id">
         <ion-grid class="product-list">
@@ -414,18 +429,6 @@ import heap               from "@/heap";
 import Utils              from "@/scripts/Utils.js";
 
 
-
-const slideOpts = {
-  slidesPerView: 1,
-  pagination: false,
-  centeredSlides: false,
-  initialSlide: 0,
-  speed: 400,
-  watchSlidesProgress: false,
-  grabCursor: true,
-  touchStartForcePreventDefault: true,
-};
-
 export default{
   components: {
     IonText,
@@ -456,7 +459,6 @@ export default{
       rocketOutline,
       compassOutline,
       addOutline,
-      slideOpts,
       slideModules:[Autoplay]
     };
   },

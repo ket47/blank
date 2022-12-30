@@ -16,8 +16,8 @@
 .product_list_item_img{
     border-radius: 10px;
     border: 2px solid var(--ion-color-light);
-    width:145px;
-    height:145px;
+    width:125px;
+    height:125px;
     overflow:hidden;
     align-items: center;
     justify-content: center;
@@ -43,7 +43,7 @@
             <div style="position:relative;top:-50%;">
                 <cart-add-buttons buttonLayout="vertical" :productItem="productItem"></cart-add-buttons>
             </div> 
-            <img class="blur-image" :src="`${$heap.state.hostname}image/get.php/${productItem.image_hash}.200.200.webp`"/>
+            <ion-img class="blur-image" :src="`${$heap.state.hostname}image/get.php/${productItem.image_hash}.200.200.webp`"/>
             <ion-img @click="$router.push(`/catalog/product-${productItem.product_id}`)" :src="`${$heap.state.hostname}image/get.php/${productItem.image_hash}.200.200.webp`"/>
             <ion-chip v-if="options" style="position:absolute;bottom:0;right:0" color="success">
                 варианты
