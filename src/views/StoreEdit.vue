@@ -366,6 +366,7 @@
           <span v-if="storeItem.owner_id==owner.user_id">(Суперадмин)</span>
         </ion-label>
         <ion-icon v-if="isStoreSuperadmin && storeItem.owner_id!=owner.user_id" :src="trashOutline" slot="end" @click="ownerDelete(owner.user_id)"/>
+        <ion-icon v-if="isStoreSuperadmin && storeItem.owner_id==owner.user_id" :src="swapHorizontalOutline" slot="end" @click="ownerAdd('swap')"/>
       </ion-item>
 
       <ion-item v-if="isStoreSuperadmin" button @click="ownerAdd()">
@@ -375,7 +376,7 @@
     </ion-list>
 
 
-    <ion-list v-if="storeItem && isStoreSuperadmin">
+    <ion-list v-if="isStoreSuperadmin && storeItem">
       <ion-item-divider>
           <ion-label>API токен</ion-label>
       </ion-item-divider>
@@ -435,6 +436,7 @@ import {
   briefcaseOutline,
   cartOutline,
   rocketOutline,
+  swapHorizontalOutline,
 }                     from 'ionicons/icons'
 import imageTileComp  from '@/components/ImageTileComp.vue'
 import UserAddressPicker from '@/components/UserAddressPicker.vue'
@@ -487,6 +489,7 @@ export default  {
       briefcaseOutline,
       cartOutline,
       rocketOutline,
+      swapHorizontalOutline,
       }
   },
   data(){
@@ -516,7 +519,7 @@ export default  {
       return User.isAdmin();
     },
     isStoreSuperadmin(){
-      return this.$heap.state.user.user_id==this.storeItem.owner_id || User.isAdmin()
+      return this.$heap.state.user.user_id==this.storeItem?.owner_id || User.isAdmin()
     },
     message(){
       if(!this.storeItem){
@@ -814,7 +817,7 @@ export default  {
         this.ownerList=await jQuery.post(heap.state.hostname + "Store/ownerListGet",{store_id:this.storeId} )
       }catch{/** */}
     },
-    async ownerAdd(){
+    async ownerAdd( action='add' ){
       let owner_phone=prompt('Введите номер телефона нового администратора')
       if(!owner_phone){
         return
@@ -825,8 +828,12 @@ export default  {
         return
       }
       try{
-        await jQuery.post(heap.state.hostname + "Store/ownerSave",{store_id:this.storeId,action:'add',owner_phone})
-        this.ownerListGet()
+        await jQuery.post(heap.state.hostname + "Store/ownerSave",{store_id:this.storeId,action,owner_phone})
+        if( action=='swap' ){
+          this.itemGet()
+        } else {
+          this.ownerListGet()
+        }
       }catch{
         this.$flash("Не удалось добавить администратора")
       }
