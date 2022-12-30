@@ -323,7 +323,7 @@
           <h4>ВЫБИРАЙ TEZKEL</h4>
         </div>
         <div>
-          <router-link to="/catalog">
+          <router-link :to="`/catalog/store-${storeId}`">
             <ion-button>Перейти в приложение</ion-button>
           </router-link>
         </div>
