@@ -267,7 +267,6 @@ import {
   IonImg,
   IonCardTitle,
   IonCardSubtitle,
-  IonAvatar,
   IonChip,
   modalController
   }                   from '@ionic/vue'
@@ -312,7 +311,6 @@ export default  {
     IonChip,
     IonCardTitle,
     IonCardSubtitle,
-    IonAvatar,
     imageTileComp
     },
   setup(){
