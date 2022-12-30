@@ -25,6 +25,7 @@
 
 <template>
   <base-layout :page-title="this.storeItem?.store_name??'Мой магазин'" pageDefaultBackLink="/catalog/">
+  <div  v-if="storeItem">
     <ion-card :color="validity_perc<validity_min?'danger':''">
       <ion-card-header>
         <ion-label>Анкета заполнена на {{validity_perc}}%</ion-label>
@@ -390,6 +391,7 @@
         <ion-icon v-else :src="eyeOutline" slot="end" color="dark" @click="apiTokenShow()"/>
       </ion-item>
     </ion-list>
+    </div>
   </base-layout>
 </template>
 
@@ -565,7 +567,7 @@ export default  {
       return this.tariffList;
     },
   },
-  created(){
+  mounted(){
     this.listGroupGet()
     this.itemGet()
     this.ownerListGet()

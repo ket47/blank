@@ -7,7 +7,7 @@
       width: 100%;
     }
     .swiper .cropper:not(.crop-to-fit) {
-      padding: 10%;
+      padding: 0%;
     }
     .swiper .cropper.crop-to-fit img {
       min-width: 100%;

@@ -6,8 +6,8 @@ module.exports = {
   // },
   pwa: {
     name: "Tezkel",
-    themeColor: "#009dcd",
-    msTileColor: "#009dcd",
+    themeColor: "#ffffff",
+    msTileColor: "#ffffff",
     appleMobileWebAppCapable: true,
     appleMobileWebAppStatusBarStyle: 'white',
     workboxOptions: {

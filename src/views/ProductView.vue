@@ -30,7 +30,8 @@ ion-accordion-group .accordion-expanding .product-description{
   z-index: 100;
 }
 .product-images .swiper img{
-  border-radius: 10px;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
 }
 </style>
 
@@ -38,10 +39,6 @@ ion-accordion-group .accordion-expanding .product-description{
   <base-layout :page-title="productItem?.product_name "  pageDefaultBackLink="/catalog/" :cartComponent="CartHeader">
       <div class="product-images">
         <image-slider v-if="productItem" :imageList="productItem.images" :imgHeight="400" :mode="'save-aspect-ratio'" />
-        <ion-chip color="dark" @click="$router.push('/catalog/product-edit-'+productId)" class="product-subactions">
-          <ion-icon color="primary" :src="settingsOutline"/>
-          <ion-text>Редактировать</ion-text>
-        </ion-chip>
       </div>
       <ion-list v-if="productItem">
         <ion-list-header style="font-size:1.2em;">
@@ -49,7 +46,7 @@ ion-accordion-group .accordion-expanding .product-description{
             <b>{{ productItem.product_name }}</b> <b v-if="productItem.product_option">[{{productItem.product_option}}]</b> <span v-if="!isAvailable">(Нет в наличии)</span>
           </h3>
         </ion-list-header>
-        <ion-accordion-group style="width:100%">
+        <ion-accordion-group v-if="productItem.product_description" style="width:100%">
           <ion-accordion>
             <ion-item slot="header" lines="none">
               <ion-text  class="product-description" color="medium">{{productItem.product_description}}</ion-text>
@@ -60,6 +57,9 @@ ion-accordion-group .accordion-expanding .product-description{
           </ion-accordion>
         </ion-accordion-group>
         
+        <ion-item v-if="productItem.is_writable" lines="none">
+          <ion-icon slot="end" color="primary" :src="settingsOutline" @click="$router.push('/catalog/product-edit-'+productId)"/>
+        </ion-item>
         <ion-item  lines="none">
           <ion-chip :outline="true" color="primary" v-for="group in categories" :key="group.group_id">{{group.group_name}}</ion-chip>
         </ion-item>
@@ -187,11 +187,13 @@ export default  {
   },
   mounted(){
     this.getProduct();
+    console.log('mounted');
   },
-  ionViewDidEnter(){
-    this.productId=this.$route.params.id
-    this.getProduct();
-  },
+  // ionViewDidEnter(){
+  //   this.productId=this.$route.params.id
+  //   this.getProduct();
+  //   console.log('enter');
+  // },
   computed:{
     categories(){
       if(!this.productItem?.member_of_groups?.group_ids){

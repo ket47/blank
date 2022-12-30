@@ -387,15 +387,14 @@ ion-chip .active-chip {
     <h4 style="margin: 8px 16px;"><b>Товары</b></h4>
     <swiper v-if="storeGroups" 
       pager="true" 
-      
       :initialSlide="0"
       :speed="400"
       :watchSlidesProgress="false"
       :grabCursor="true"
       :touchStartForcePreventDefault="true"
-      :slidesPerView="1.2"
+      :slidesPerView="1.1"
       :pagination="false"
-      :centeredSlides="true" 
+      :centeredSlides="false" 
       class="product-list-slider" 
       @slideChange="groupSliderChanged($event)" 
       :style="`max-height: ${sliderMaxHeight}`"
@@ -744,13 +743,13 @@ export default{
     this.query = this.$route.query;
     this.itemGet();
   },
-  ionViewDidEnter() {
-    this.query = this.$route.query;
-    this.itemGet();
-  },
-  ionViewDidLeave(){
-    this.storeItem=[];
-  },
+  // ionViewDidEnter() {
+  //   this.query = this.$route.query;
+  //   this.itemGet();
+  // },
+  // ionViewDidLeave(){
+  //   this.storeItem=[];
+  // },
   watch: {
     $route(currentRoute) {
       this.storeId = currentRoute.params.id;
