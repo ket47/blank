@@ -300,11 +300,9 @@
                                     </span>
                                 </div>
                                 <div class="product-price">
-                                  <span v-if="productItem.product_price!=productItem.product_final_price" style="color:var(--ion-color-danger)">
-                                      <s>{{productItem.product_price}}{{$heap.state.currencySign}}</s>&nbsp;&nbsp;
-                                  </span>
                                   <span style="color:var(--ion-color-primary)">
-                                      <b style="font-weight: bold; margin: 5px; font-size: 1.8em">{{productItem.product_final_price}}</b>
+                                      <b v-if="productItem.product_net_price>0" style="font-weight: bold; margin: 5px; font-size: 1.8em">{{productItem.product_net_price}}</b>
+                                      <b v-else style="font-weight: bold; margin: 5px; font-size: 1.8em">{{productItem.product_final_price}}</b>
                                       <b style="font-weight: bold; margin: 0; font-size: 1.5em">{{$heap.state.currencySign}}</b>
                                   </span>
                               </div>
@@ -325,7 +323,7 @@
           <h4>ВЫБИРАЙ TEZKEL</h4>
         </div>
         <div>
-          <router-link to="/catalog">
+          <router-link :to="`/catalog/store-${storeId}`">
             <ion-button>Перейти в приложение</ion-button>
           </router-link>
         </div>

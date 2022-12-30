@@ -373,7 +373,7 @@ ion-chip .active-chip {
               <h5 style="margin: 0;">
                 {{ group_item.group_name }} 
                 <ion-chip v-if="storeItem.is_writable==1" @click="productItemCreate(group_item.group_id)">
-                  <ion-icon :src="addOutline"/> добавить товар
+                  <ion-icon :src="addOutline"/>добавить
                 </ion-chip>
               </h5>
             </ion-col>
@@ -473,33 +473,32 @@ export default{
       groupSelectedParentId: -1,
       sliderMaxHeight: 0,
       offsetModificator: 150,
-      itemGetInProgress:false
+      is_loading:0
     };
   },
   methods: {
     async itemGet() {
-      if(this.itemGetInProgress){
+      if(this.is_loading){
         return
       }
       try{
-        this.itemGetInProgress=true
+        this.is_loading=1
         const store=await jQuery.post(`${heap.state.hostname}Store/itemGet`, {store_id: this.storeId,distance_include:1})
-        this.storeItem = this.itemPrepare(store);
-        //console.log(this.storeItem);
+        this.storeItem = this.itemPrepare(store); 
         this.storeId = store.store_id;
         this.groupTreeGet({ store_id: this.storeId });
         heap.commit('setCurrentStore',this.storeItem);
-        this.itemGetInProgress=false
       } catch(err){
-          const exception_code=err?.responseJSON?.messages?.error;
-          switch(exception_code){
-              case 'notfound':
-                  this.$flash("Продавец не найден")
-                  this.$router.push("/catalog/")
-                  break;
-          }
-          return false
+        const exception_code=err?.responseJSON?.messages?.error;
+        switch(exception_code){
+            case 'notfound':
+                this.$flash("Продавец не найден")
+                this.$router.push("/catalog/")
+                break;
         }
+        return false
+      }
+      this.is_loading=0
    },
    itemPrepare(storeItem) {
       if (storeItem.member_of_groups.group_names) {
@@ -700,6 +699,10 @@ export default{
         }
       }
     },
+  },
+  mounted(){
+    this.query = this.$route.query;
+    this.itemGet();
   },
   ionViewDidEnter() {
     this.query = this.$route.query;
