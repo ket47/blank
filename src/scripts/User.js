@@ -6,13 +6,9 @@ import Order from '@/scripts/Order';
 import { Geolocation } from '@capacitor/geolocation';
 import { toastController }  from '@ionic/vue';
 
-import { initializeApp } from "firebase/app";
-import { getMessaging, getToken } from "firebase/messaging";
-
 const User = {
     init(){
         this.geo.trackingStart();
-        this.firebase.init()
     },
     async settingsGet(){
         const settings=await jQuery.get( heap.state.hostname + "User/itemSettingsGet")
@@ -225,34 +221,34 @@ const User = {
             return false;
         },
         async trackingStart(){
-            // if(!User.courier.data?.courier_id){
-            //     return false;
-            // }
-            // await User.geo.permissionCheck();
-            // User.geo.trackingStop();
-            // User.geo.clock=await Geolocation.watchPosition({timeout:User.geo.timeout},(position)=>{
-            //     if( !position || (
-            //         User.geo.lastPosition?.coords?.longitude==position?.coords?.longitude
-            //         &&
-            //         User.geo.lastPosition?.coords?.latitude==position?.coords?.latitude
-            //     )){
-            //         return;
-            //     }
-            //     if( User.geo.lastPosition?.coords && !position?.coords?.speed ){
-            //         return
-            //     }
-            //     User.geo.lastPosition=position;
-            //     const request={
-            //         location_longitude:position.coords.longitude,
-            //         location_latitude:position.coords.latitude,
-            //         location_holder_id:User.courier.data.courier_id,
-            //     };
-            //     if( request.location_holder_id && request.location_latitude && request.location_longitude ){
-            //         return jQuery.post( heap.state.hostname + "Courier/locationAdd",request);
-            //     } else {
-            //         console.log('geolocation format error',request);
-            //     }
-            // });
+            if(!User.courier.data?.courier_id){
+                return false;
+            }
+            await User.geo.permissionCheck();
+            User.geo.trackingStop();
+            User.geo.clock=await Geolocation.watchPosition({timeout:User.geo.timeout},(position)=>{
+                if( !position || (
+                    User.geo.lastPosition?.coords?.longitude==position?.coords?.longitude
+                    &&
+                    User.geo.lastPosition?.coords?.latitude==position?.coords?.latitude
+                )){
+                    return;
+                }
+                if( User.geo.lastPosition?.coords && !position?.coords?.speed ){
+                    return
+                }
+                User.geo.lastPosition=position;
+                const request={
+                    location_longitude:position.coords.longitude,
+                    location_latitude:position.coords.latitude,
+                    location_holder_id:User.courier.data.courier_id,
+                };
+                if( request.location_holder_id && request.location_latitude && request.location_longitude ){
+                    return jQuery.post( heap.state.hostname + "Courier/locationAdd",request);
+                } else {
+                    console.log('geolocation format error',request);
+                }
+            });
         },
         trackingStop(){
             if( !User.geo.clock ){
@@ -261,38 +257,6 @@ const User = {
             Geolocation.clearWatch({id:User.geo.clock});
         }
     },
-    firebase:{
-        tokenSaved:false,
-        init(){
-            Topic.on('userGet',(user)=>{
-                if( !User.firebase.tokenSaved && user.user_id>0 && heap.state.settings.firebase ){//user signed in
-                    initializeApp(heap.state.settings.firebase);
-                    setTimeout(function(){
-                        User.firebase.saveNotificationToken()
-                    },30*1000)
-                }
-            })
-        },
-        async saveNotificationToken(){
-            if(Notification.permission!='granted'){
-                return
-            }
-            try{
-                const vapidKey=heap.state.settings.firebase.vapidKey
-                const messaging = getMessaging();
-                const token=await getToken(messaging, {vapidKey});
-                const request={
-                    type:'webpush',
-                    registration_id:token,
-                    user_agent:navigator.userAgent
-                }
-                await jQuery.post(`${heap.state.hostname}MessageSub/itemCreate`,request)
-                User.firebase.tokenSaved=true;
-            }catch(err){
-                console.log(err)
-            }
-        },
-    }
 }
 User.init();
 export default User;

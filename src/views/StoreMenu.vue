@@ -94,7 +94,6 @@
 .store-menu-page .product-list {
   margin-top: 1em;
   min-height: 80vh;
-  padding: 0 16px;
 }
 .store-menu-page .product-container{
   margin-bottom: 2em;
@@ -188,7 +187,7 @@
   display: grid;
   align-items: center;
   justify-content: center;
-  grid-template-columns: 100px 65%;
+  grid-template-columns: 80px 65%;
   grid-column-gap: 5%;
 }
 .store-menu-page .product-item.absent{
@@ -198,8 +197,8 @@
 .store-menu-page .product-item .product_list_item_img{
     border-radius: 10px;
     border: 2px solid var(--ion-color-light);
-    width: 100px;
-    height: 100px;
+    width: 80px;
+    height: 80px;
     overflow:hidden;
     align-items: center;
     justify-content: center;
@@ -268,7 +267,17 @@
         </div>
 
         <div class="product-container">
-          <swiper v-if="storeGroups" pager="true" :options="slideOpts" class="product-list-slider" @slideChange="groupSliderChanged($event)" :style="`max-height: ${sliderMaxHeight}`">
+          <swiper v-if="storeGroups" 
+          pager="true" 
+          :initialSlide="0"
+          :speed="400"
+          :watchSlidesProgress="false"
+          :grabCursor="true"
+          :touchStartForcePreventDefault="true"
+          :slidesPerView="1.1"
+          :pagination="false"
+          :centeredSlides="false" 
+          class="product-list-slider" @slideChange="groupSliderChanged($event)" :style="`max-height: ${sliderMaxHeight}`">
             {{storeGroups}}
             <swiper-slide v-for="parent_group_item in storeGroups" :key="parent_group_item.group_id">
               <ion-grid class="product-list">
@@ -370,16 +379,6 @@ import Utils              from "@/scripts/Utils.js";
 
 
 
-const slideOpts = {
-  slidesPerView: 1,
-  pagination: false,
-  centeredSlides: false,
-  initialSlide: 0,
-  speed: 400,
-  watchSlidesProgress: false,
-  grabCursor: true,
-  touchStartForcePreventDefault: true,
-};
 
 export default{
   components: {
@@ -408,7 +407,6 @@ export default{
       settingsOutline,
       rocketOutline,
       compassOutline,
-      slideOpts,
       slideModules:[Autoplay]
     };
   },

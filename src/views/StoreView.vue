@@ -62,19 +62,27 @@ ion-accordion-group .accordion-expanding .store-description{
   display: inline-block;
   line-height: 1.4;
 }
+.delivery-variant-slider .swiper-slide{
+  width: 200px;
+}
 .delivery-variant{
   background: var(--ion-color-success-shade);
   padding: 0;
   border-radius: 10px;
-  display: inline-block;
   margin: 8px 16px;
   font-size: 14px;
+}
+.delivery-variant ion-row{
+  display: grid;
+  grid-template-columns: 65% 35%;
+  min-height: 70px;
 }
 .delivery-variant .delivery-variant-description{
   background: var(--ion-color-success);
   padding: 10px;
   border-radius: 10px 0 0 10px;
   color: white;
+  height: 100%;
 }
 .delivery-variant .delivery-variant-description label{ 
   display: block; 
@@ -289,18 +297,50 @@ ion-chip .active-chip {
             </ion-col>
           </ion-row>
         </ion-grid>
-        
-        <ion-grid class="delivery-variant">
-          <ion-row class="ion-justify-content-between ion-align-items-center">
-            <ion-col size="auto" class="delivery-variant-description">
-              <label><b>Доставит {{$heap.getters.settings.app_title}}</b></label>
-              <ion-text>15-20 минут</ion-text>
-            </ion-col>
-            <ion-col size="auto" class="delivery-variant-cost">
-              <ion-text v-if="$heap.getters.settings.delivery?.fee>0"><b>{{$heap.getters.settings.delivery.fee}}₽</b></ion-text>
-            </ion-col>
-          </ion-row>
-        </ion-grid>
+        <swiper
+            :slidesPerView="'auto'"
+          class="delivery-variant-slider" 
+        >
+          <swiper-slide>
+            <ion-grid class="delivery-variant">
+              <ion-row class="ion-justify-content-between ion-align-items-center">
+                <ion-col size="auto" class="delivery-variant-description">
+                  <label><b>Доставит {{$heap.getters.settings.app_title}}</b></label>
+                  <ion-text v-if="storeItem.deliveryTime">{{storeItem.deliveryTime.timeMin}}-{{storeItem.deliveryTime.timeMax}}мин</ion-text>
+                </ion-col>
+                <ion-col size="auto" class="delivery-variant-cost">
+                  <ion-text v-if="$heap.getters.settings.delivery?.fee > 0"><b>{{$heap.getters.settings.delivery.fee}}₽</b></ion-text>
+                </ion-col>
+              </ion-row>
+            </ion-grid>
+          </swiper-slide>
+          <swiper-slide v-if="storeItem.store_delivery_allow">
+            <ion-grid class="delivery-variant">
+              <ion-row class="ion-justify-content-between ion-align-items-center">
+                <ion-col size="auto" class="delivery-variant-description">
+                  <label><b>Доставит {{storeItem.member_of_groups.group_names}}</b></label>
+                  <ion-text>-</ion-text>
+                </ion-col>
+                <ion-col size="auto" class="delivery-variant-cost">
+                  <ion-text v-if="storeItem.store_delivery_cost>0"><b>{{storeItem.store_delivery_cost}}₽</b></ion-text>
+                </ion-col>
+              </ion-row>
+            </ion-grid>
+          </swiper-slide>
+          <swiper-slide v-if="storeItem.store_pickup_allow">
+            <ion-grid class="delivery-variant">
+              <ion-row class="ion-justify-content-between ion-align-items-center">
+                <ion-col size="auto" class="delivery-variant-description">
+                  <label><b>Самовывоз</b></label>
+                  <ion-text>-</ion-text>
+                </ion-col>
+                <ion-col size="auto" class="delivery-variant-cost">
+                  <ion-text><b>0₽</b></ion-text>
+                </ion-col>
+              </ion-row>
+            </ion-grid>
+          </swiper-slide>
+        </swiper>
       </ion-list>
 
 
