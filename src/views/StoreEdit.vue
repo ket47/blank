@@ -24,7 +24,7 @@
 </style>
 
 <template>
-  <base-layout :page-title="this.storeItem?.store_name??'Мой магазин'" pageDefaultBackLink="/catalog">
+  <base-layout :page-title="this.storeItem?.store_name??'Мой магазин'" pageDefaultBackLink="/catalog/">
     <ion-card :color="validity_perc<validity_min?'danger':''">
       <ion-card-header>
         <ion-label>Анкета заполнена на {{validity_perc}}%</ion-label>

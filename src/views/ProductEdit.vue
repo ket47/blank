@@ -20,7 +20,7 @@
 </style>
 
 <template>
-  <base-layout :page-title="productItem?.product_name??'Товар'" pageDefaultBackLink="/catalog">
+  <base-layout :page-title="productItem?.product_name??'Товар'" pageDefaultBackLink="/catalog/">
 
   <div v-if="!is_option_child">
     <ion-card :color="productItem?.validity<validity_min?'danger':''">

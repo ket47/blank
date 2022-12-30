@@ -99,7 +99,7 @@ export default {
           }
       } else {
           this.$flash('Страница для администраторов')
-          this.$router.push('/catalog')
+          this.$router.push('/catalog/')
       }
   },
   methods:{
