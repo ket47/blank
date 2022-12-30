@@ -3,12 +3,12 @@ import { createRouter, createWebHistory, } from '@ionic/vue-router';
 import BaseTabs from '@/components/BaseTabs.vue'
 
 const already_visited_app=localStorage?.already_visited_app?true:false;
-const homePath=already_visited_app?'/catalog':'/page/about-us';
+const homePath=already_visited_app?'/catalog/':'/page/about-us';
 localStorage.already_visited_app=1;
 
 const routes = [
   {
-    path: '/home',
+    path: '/home/',
     redirect: '/'
   },
   {
@@ -21,10 +21,10 @@ const routes = [
     children: [
       {
         path: '',
-        redirect: '/catalog'
+        redirect: '/catalog/'
       },
       {
-        path: '/catalog',
+        path: '/catalog/',
         component: () => import('@/views/HomePage.vue')
       },
       {
@@ -198,11 +198,6 @@ const routes = [
         path: '/error-offline',
         component: () => import('@/views/ErrorOffline.vue')
       },
-
-
-
-            
-
   ]
   },
   {

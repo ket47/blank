@@ -218,8 +218,8 @@
         <ion-label>Изображения товара*</ion-label>
       </ion-item-divider>
       <image-tile-comp :images="productItem.images" :image_holder_id="productItem.product_id" controller="Product" ref="productImgs"></image-tile-comp>
-      <ion-button @click="$refs.productImgs.take_photo()" size="small" expand="full" color="medium">
-        <ion-icon :src="cameraOutline"/> Добавить
+      <ion-button @click="$refs.productImgs.take_photo()" color="light" expand="block">
+        <ion-icon :src="cameraOutline" slot="start"/> Добавить фото на витрину
       </ion-button>
     </ion-list>
 

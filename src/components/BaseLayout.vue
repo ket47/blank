@@ -7,7 +7,9 @@
         </ion-buttons>
         <ion-title v-if="pageTitle" size="small"><div style="line-height: 1.5;max-height:3em;text-overflow: ellipsis;overflow: hidden;white-space: nowrap;font-weight: bold;">{{ pageTitle }}</div></ion-title>
         
-        <ion-icon  v-if="pageLogo" class="toolbar_svg_logo" style="color: var(--ion-color-primary)"  :icon="pageLogo"/>
+        <router-link to="/">
+          <ion-icon  v-if="pageLogo" class="toolbar_svg_logo" style="color: var(--ion-color-primary)"  :icon="pageLogo"/>
+        </router-link>
         <div slot="end">
           <cart-header slot="end"></cart-header>
         </div>

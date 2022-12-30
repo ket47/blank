@@ -10,21 +10,23 @@
       <ion-grid class="desktop-template" :class="[pageClass]">
         <ion-row>
           <ion-col class="ion-left-column" size="3">
-            <ion-icon class="toolbar_svg_logo ion-color ion-color-primary"  :icon="mainLogo"/>
+            <router-link to="/">
+              <ion-icon class="toolbar_svg_logo ion-color ion-color-primary"  :icon="mainLogo"/>
+            </router-link>
             <ion-tab-bar>
-              <ion-tab-button tab="tab1" href="/catalog/" routerDirection="back">
+              <ion-tab-button tab="catalog" href="/catalog/" routerDirection="back">
                 <ion-row>
                   <ion-icon :icon="storefrontOutline"/>
                   <ion-label>Каталог</ion-label>
                 </ion-row>
               </ion-tab-button>
-              <ion-tab-button tab="tab2" href="/search/" routerDirection="back">
+              <ion-tab-button tab="search" href="/search/" routerDirection="back">
                 <ion-row>
                   <ion-icon :icon="searchOutline"/>
                   <ion-label>Поиск</ion-label>
                 </ion-row>
               </ion-tab-button>
-              <ion-tab-button tab="tab3" href="/order/" routerDirection="back">
+              <ion-tab-button tab="order" href="/order/" routerDirection="back">
                 <ion-row>
                   <ion-icon :icon="readerOutline"/>
                   <ion-label>Заказы
@@ -32,7 +34,7 @@
                   </ion-label>
                 </ion-row>
               </ion-tab-button>
-              <ion-tab-button tab="tab4" href="/user/" routerDirection="back">
+              <ion-tab-button tab="user" href="/user/" routerDirection="back">
                 <ion-row>
                   <ion-icon :icon="personOutline"/>
                   <ion-label>Профиль</ion-label>

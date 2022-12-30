@@ -4,7 +4,7 @@ namespace Controllers;
 
 class Sitemap{
     function index(){
-        $this->siteMapService=new SiteMapService(getenv('app.frontendUrl'));
+        $this->siteMapService=new SiteMapService(getenv('app.frontendURL'));
         $this->siteMapService->setPath('../');
         $this->addPages();
         $this->addStores();
