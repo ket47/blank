@@ -248,7 +248,7 @@ ion-chip .active-chip {
   <base-layout pageDefaultBackLink="/catalog" page-class="store-page" :contentOnScroll="onScroll" :page-title="this.storeItem.store_name??'Магазин'">
   <div>
     <div class="store-info-container">
-      <image-slider :imageList="storeItem.images" :imgHeight="200" :mode="'crop-to-fit'"></image-slider>
+      <image-slider-comp :imageList="storeItem.images" :imgHeight="200" :mode="'crop-to-fit'"></image-slider-comp>
       <ion-list  class="store-info">
         <ion-item lines="none">
           <div v-if="storeItem.avatarImage" slot="start" class="avatar-container">
@@ -459,7 +459,7 @@ import {
   compassOutline,
   addOutline,
 }                         from "ionicons/icons";
-import ImageSlider        from "@/components/ImageSlider";
+import ImageSliderComp    from "@/components/ImageSliderComp";
 import GroupList          from "@/components/GroupList.vue";
 import ProductList        from '@/components/ProductList.vue';
 import StoreOpenedIndicator from '@/components/StoreOpenedIndicator.vue';
@@ -484,7 +484,7 @@ export default{
     IonAccordionGroup,
     IonList,
     IonItem,
-    ImageSlider,
+    ImageSliderComp,
     StoreOpenedIndicator,
     Swiper,
     SwiperSlide,
@@ -517,11 +517,11 @@ export default{
   },
   methods: {
     async itemGet() {
-      if(this.is_loading){
-        return
-      }
+      // if(this.is_loading){
+      //   return
+      // }
       try{
-        this.is_loading=1
+        //this.is_loading=1
         const store=await jQuery.post(`${heap.state.hostname}Store/itemGet`, {store_id: this.storeId,distance_include:1})
         this.storeItem = this.itemPrepare(store); 
         this.storeId = store.store_id;
@@ -537,7 +537,7 @@ export default{
         }
         return false
       }
-      this.is_loading=0
+      //this.is_loading=0
    },
    itemPrepare(storeItem) {
       if (storeItem.member_of_groups.group_names) {
@@ -546,6 +546,7 @@ export default{
       try{
         storeItem.deliveryTime=Utils.deliveryTimeCalculate(storeItem.locations[0].distance,storeItem.store_time_preparation)
       }catch{/** */}
+      console.log(storeItem.locations[0].distance)
       storeItem.avatarImage = '';
       if (storeItem.avatar.length > 0) {
         storeItem.avatarImage = storeItem.avatar[0].image_hash;
@@ -663,16 +664,15 @@ export default{
       const swiper = document.querySelector('.product-list-slider').swiper;
       const slide_index = Object.keys(this.storeGroups).indexOf(this.groupSelectedParentId);
       swiper.slideTo(slide_index,100,false);
-      try{
-        if(selectFirstChip){
-          const first_sub_group_id=Object.keys(this.storeGroups[parent_group_id].children)[0];
-          const self=this
-          setTimeout(()=>{
-            self.groupSelectSub(first_sub_group_id)
-          },0)
-        }
-      } catch(err){/** */}
-      
+      // try{
+      //   if(selectFirstChip){
+      //     const first_sub_group_id=Object.keys(this.storeGroups[parent_group_id].children)[0];
+      //     const self=this
+      //     setTimeout(()=>{
+      //       self.groupSelectSub(first_sub_group_id)
+      //     },0)
+      //   }
+      // } catch(err){/** */}
     },
     groupSelectSub(sub_group_id){
       if(this.groupSelectedSubId == sub_group_id){
@@ -698,10 +698,6 @@ export default{
       this.groupSelectParent(parent_groud_id,1);
       //this.groupSelectSub(sub_group_id);
     },
-
-
-
-
     scrollTo(sub_group_id) {
       if (!this.$refs["group-" + sub_group_id]?.[0] ) {
         return;

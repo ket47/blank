@@ -1,9 +1,9 @@
 <style scoped>
     .product_list_widget_grid {
-    display: grid;
+      display: grid;
       gap: 3em;
-      grid-template-columns: 1fr 1fr;
-    font-size: 0.8em;
+      grid-template-columns: repeat(auto-fill, 130px);
+      font-size: 0.8em;
     }
 </style>
 <template>

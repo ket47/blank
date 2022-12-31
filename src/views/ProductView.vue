@@ -38,7 +38,7 @@ ion-accordion-group .accordion-expanding .product-description{
 <template>
   <base-layout :page-title="productItem?.product_name "  pageDefaultBackLink="/catalog/" :cartComponent="CartHeader">
       <div class="product-images">
-        <image-slider v-if="productItem" :imageList="productItem.images" :imgHeight="400" :mode="'save-aspect-ratio'" />
+        <image-slider-comp v-if="productItem" :imageList="productItem.images" :imgHeight="400" :mode="'save-aspect-ratio'" />
       </div>
       <ion-list v-if="productItem">
         <ion-list-header style="font-size:1.2em;">
@@ -144,7 +144,7 @@ import {
   IonAccordionGroup,
 }                       from '@ionic/vue'
 
-import ImageSlider      from '@/components/ImageSlider'
+import ImageSliderComp      from '@/components/ImageSliderComp'
 import CartAddButtons   from '@/components/CartAddButtons'
 import CartHeader       from '@/components/CartHeader'
 
@@ -152,7 +152,7 @@ import Order            from '@/scripts/Order.js'
 
 export default  {
   components: { 
-    ImageSlider,
+    ImageSliderComp,
     CartAddButtons,
     IonTextarea,
     IonListHeader,
