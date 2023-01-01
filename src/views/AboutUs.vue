@@ -12,7 +12,7 @@
           <div class="text" style="color: white">
             <h2>Супер быстрая доставка</h2>
             <h4>Роскошь, ставшая реальностью</h4>
-            <router-link to="/catalog/">
+            <router-link to="/catalog">
               <ion-button>Хочу сделать заказ!</ion-button>
             </router-link>
           </div>

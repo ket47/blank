@@ -153,23 +153,23 @@ ion-icon{
     <ion-tabs>
       <ion-router-outlet></ion-router-outlet>
       <ion-tab-bar class="bottom-bar" slot="bottom">
-        <ion-tab-button tab="catalog" id="catalog" href="/catalog/" routerDirection="back" selected>
+        <ion-tab-button tab="catalog" id="catalog" href="/catalog" routerDirection="back" selected>
           <ion-icon :icon="storefrontOutline"/>
           <ion-label><b>Каталог</b></ion-label>
         </ion-tab-button>
 
-        <ion-tab-button tab="search" id="search" href="/search/" routerDirection="back">
+        <ion-tab-button tab="search" id="search" href="/search" routerDirection="back">
           <ion-icon :icon="searchOutline"/>
           <ion-label><b>Поиск</b></ion-label>
         </ion-tab-button>
 
-        <ion-tab-button tab="order" id="order" href="/order/" routerDirection="back">
+        <ion-tab-button tab="order" id="order" href="/order" routerDirection="back">
             <ion-icon :icon="readerOutline"/>
             <ion-badge color="warning" style="font-size:1.5em" v-if="activeOrderCount>0">{{activeOrderCount}}</ion-badge>
           <ion-label><b>Заказы</b></ion-label>
         </ion-tab-button>
 
-        <ion-tab-button tab="user" id="user" href="/user/" routerDirection="back">
+        <ion-tab-button tab="user" id="user" href="/user" routerDirection="back">
           <ion-icon :icon="personOutline"/>
           <ion-label><b>Профиль</b></ion-label>
         </ion-tab-button>

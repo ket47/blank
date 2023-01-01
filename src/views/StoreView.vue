@@ -63,7 +63,7 @@ ion-accordion-group .accordion-expanding .store-description{
   line-height: 1.4;
 }
 .delivery-variant-slider .swiper-slide{
-  width: 200px;
+  width: 300px;
 }
 .delivery-variant{
   background: var(--ion-color-success-shade);
@@ -75,7 +75,7 @@ ion-accordion-group .accordion-expanding .store-description{
 .delivery-variant ion-row{
   display: grid;
   grid-template-columns: 65% 35%;
-  min-height: 70px;
+  min-height: 50px;
 }
 .delivery-variant .delivery-variant-description{
   background: var(--ion-color-success);
@@ -253,34 +253,32 @@ ion-chip .active-chip {
         <ion-item lines="none">
           <div v-if="storeItem.avatarImage" slot="start" class="avatar-container">
             <div class="avatar">
-              <img alt="Silhouette of a person's head" :src="$heap.state.hostname+'image/get.php/'+storeItem.avatarImage+'.200.200.webp'" />
+              <img :src="$heap.state.hostname+'image/get.php/'+storeItem.avatarImage+'.200.200.webp'" />
             </div>
           </div>
           <ion-text style="font-size:1.2em;"><b>{{ storeItem.store_name }}</b></ion-text>
-          <router-link slot="end" :to="'/catalog/store-edit-' + storeItem.store_id" v-if="storeItem.is_writable==1">
-            <ion-icon :icon="settingsOutline" style="font-size:24px"></ion-icon>
-          </router-link>
+          <ion-icon slot="end" color="primary" @click="$router.push(`/catalog/store-edit-${storeItem.store_id}`)" :icon="settingsOutline" style="font-size:24px"></ion-icon>
         </ion-item>
         <ion-accordion-group style="width:100%">
           <ion-accordion>
             <ion-item  slot="header" lines="none">
-              <ion-text  class="store-description" color="medium">{{storeItem.store_description}}</ion-text>
+              <ion-text v-if="storeItem.store_description" class="store-description" color="medium">{{storeItem.store_description}}</ion-text>
+              <ion-text v-else color="medium">подробнее</ion-text>
             </ion-item>
-
             <ion-list slot="content">
-              <ion-item lines="none">
+              <ion-item lines="none" v-if="storeItem.store_company_name">
                 <ion-text><b>{{storeItem.store_company_name}}</b></ion-text>
               </ion-item>
-              <ion-item lines="none">
+              <ion-item lines="none" v-if="storeItem.store_tax_num">
                 <ion-label color="medium">ИНН</ion-label>
-                <ion-label color="medium">{{storeItem.store_tax_num}}</ion-label>
+                <ion-text color="dark">{{storeItem.store_tax_num}}</ion-text>
               </ion-item>
-              <ion-item lines="none">
+              <ion-item lines="none" v-if="storeItem.store_phone">
                 <ion-label color="medium">Телефон</ion-label>
-                <ion-label color="medium">{{storeItem.store_phone}}</ion-label>
+                <ion-text color="dark">{{storeItem.store_phone}}</ion-text>
               </ion-item>
-              <ion-item lines="none">
-                <ion-text color="medium">{{storeItem.locations?.[0].location_address}}</ion-text>
+              <ion-item lines="none" v-if="storeItem.locations">
+                <ion-text color="dark">{{storeItem.locations?.[0].location_address}}</ion-text>
               </ion-item>
             </ion-list>
           </ion-accordion>
@@ -291,16 +289,42 @@ ion-chip .active-chip {
               <store-opened-indicator :storeItem="storeItem"/>
             </ion-col>
             <ion-col size="auto">
-              <ion-chip color="medium"  background="transparent">
+              <ion-chip v-if="storeItem.store_group_names" color="medium"  background="transparent">
                 <label>{{ storeItem.store_group_names }}</label>
               </ion-chip>
             </ion-col>
           </ion-row>
+          <ion-row>
+            <ion-col size="auto" style="overflow-y: scroll;white-space: nowrap;">
+
+              <ion-chip color="medium">
+                <ion-icon color="primary" :src="`/img/icons/favicon.svg`"/>
+                Доставит {{$heap.getters.settings.app_title}} 
+                <span v-if="storeItem?.deliveryTime?.timeMin">&nbsp;за {{storeItem.deliveryTime.timeMin}}-{{storeItem.deliveryTime.timeMax}}мин</span>&nbsp;
+                <ion-badge>90₽</ion-badge>
+              </ion-chip>
+
+              <ion-chip color="medium" v-if="storeItem.store_delivery_allow">
+                Доставит {{storeItem.member_of_groups.group_names}}&nbsp;
+                <ion-badge>{{storeItem.store_delivery_cost}}₽</ion-badge>
+              </ion-chip>
+
+              <ion-chip color="medium" v-if="storeItem.store_pickup_allow">
+                Самовывоз&nbsp;
+                <ion-badge>0₽</ion-badge>
+              </ion-chip>
+
+            </ion-col>
+          </ion-row>
         </ion-grid>
-        <swiper
-            :slidesPerView="'auto'"
-          class="delivery-variant-slider" 
-        >
+
+
+
+
+
+
+        <!--
+        <swiper :slidesPerView="'auto'" class="delivery-variant-slider">
           <swiper-slide>
             <ion-grid class="delivery-variant">
               <ion-row class="ion-justify-content-between ion-align-items-center">
@@ -308,7 +332,7 @@ ion-chip .active-chip {
                   <label><b>Доставит {{$heap.getters.settings.app_title}}</b></label>
                   <ion-text v-if="storeItem.deliveryTime">{{storeItem.deliveryTime.timeMin}}-{{storeItem.deliveryTime.timeMax}}мин</ion-text>
                 </ion-col>
-                <ion-col size="auto" class="delivery-variant-cost">
+                <ion-col size="1" class="delivery-variant-cost">
                   <ion-text v-if="$heap.getters.settings.delivery?.fee > 0"><b>{{$heap.getters.settings.delivery.fee}}₽</b></ion-text>
                 </ion-col>
               </ion-row>
@@ -319,7 +343,6 @@ ion-chip .active-chip {
               <ion-row class="ion-justify-content-between ion-align-items-center">
                 <ion-col size="auto" class="delivery-variant-description">
                   <label><b>Доставит {{storeItem.member_of_groups.group_names}}</b></label>
-                  <ion-text>-</ion-text>
                 </ion-col>
                 <ion-col size="auto" class="delivery-variant-cost">
                   <ion-text v-if="storeItem.store_delivery_cost>0"><b>{{storeItem.store_delivery_cost}}₽</b></ion-text>
@@ -332,7 +355,6 @@ ion-chip .active-chip {
               <ion-row class="ion-justify-content-between ion-align-items-center">
                 <ion-col size="auto" class="delivery-variant-description">
                   <label><b>Самовывоз</b></label>
-                  <ion-text>-</ion-text>
                 </ion-col>
                 <ion-col size="auto" class="delivery-variant-cost">
                   <ion-text><b>0₽</b></ion-text>
@@ -341,6 +363,8 @@ ion-chip .active-chip {
             </ion-grid>
           </swiper-slide>
         </swiper>
+      -->
+
       </ion-list>
 
 
@@ -361,7 +385,7 @@ ion-chip .active-chip {
       </ion-segment>
       <ion-segment color="light"   v-if="storeGroups[groupSelectedParentId]" scrollable class="sub-groups-container">
         <span
-          v-show="1||storeProducts[group_item.group_id]"
+          v-show="storeProducts[group_item.group_id]"
           v-for="group_item in storeGroups[groupSelectedParentId].children"
           :key="group_item.group_id"
           :ref="`group-chip-${group_item.group_id}`"
@@ -373,7 +397,7 @@ ion-chip .active-chip {
       </ion-segment>
     </div>
 
-    <ion-searchbar class="search-container" v-model="searchRequest" placeholder="Поиск в этом предприятии"
+    <ion-searchbar class="search-container" v-model="searchRequest" placeholder="Поиск у этого продавца"
       @input="
         productListGet({
           name_query: $event.target.value,
@@ -443,7 +467,8 @@ import {
   IonAccordion,
   IonAccordionGroup,
   IonList,
-  IonItem
+  IonItem,
+  IonBadge,
 }                         from "@ionic/vue";
 import { 
   Autoplay
@@ -484,6 +509,7 @@ export default{
     IonAccordionGroup,
     IonList,
     IonItem,
+    IonBadge,
     ImageSliderComp,
     StoreOpenedIndicator,
     Swiper,
@@ -532,7 +558,7 @@ export default{
         switch(exception_code){
             case 'notfound':
                 this.$flash("Продавец не найден")
-                this.$router.push("/catalog/")
+                this.$router.push("/catalog")
                 break;
         }
         return false
@@ -657,7 +683,7 @@ export default{
       }
     },
     groupSelectParent(parent_group_id,selectFirstChip=false){
-      if(this.groupSelectedParentId == parent_group_id){
+      if(this.groupSelectedParentId == parent_group_id || !document.querySelector('.product-list-slider')){
         return
       }
       this.groupSelectedParentId = parent_group_id;

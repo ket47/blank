@@ -443,7 +443,7 @@ export default{
           switch(exception_code){
               case 'notfound':
                   this.$flash("Продавец не найден")
-                  this.$router.push("/catalog/")
+                  this.$router.push("/catalog")
                   break;
           }
           return false

@@ -36,7 +36,7 @@ ion-accordion-group .accordion-expanding .product-description{
 </style>
 
 <template>
-  <base-layout :page-title="productItem?.product_name "  pageDefaultBackLink="/catalog/" :cartComponent="CartHeader">
+  <base-layout :page-title="productItem?.product_name "  pageDefaultBackLink="/catalog" :cartComponent="CartHeader">
       <div class="product-images">
         <image-slider-comp v-if="productItem" :imageList="productItem.images" :imgHeight="400" :mode="'save-aspect-ratio'" />
       </div>
