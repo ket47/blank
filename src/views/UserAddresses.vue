@@ -68,7 +68,7 @@ export default{
     async modalLocationCreate( location_group_id, location_group_name ) {
       if(!heap.state.user.user_id){
         this.$flash('Чтобы добавленные адреса сохранились, пожалуйста войдите в систему');
-        router.push({name: 'UserSignIn'});
+        router.push('/user/sign-in');
         return;
       }
       var location_group_name_low=String(location_group_name).toLowerCase();
@@ -127,6 +127,10 @@ export default{
       };
       try{
         await jQuery.post(heap.state.hostname + "User/locationCreate",request)
+        if(this.$heap.state.next_route){
+          this.$router.push(this.$heap.state.next_route)
+          this.$heap.state.next_route=null
+        }
         this.locationListGet();
       } catch(err){
         const exception=err.responseJSON;

@@ -47,9 +47,10 @@
           <ion-chip>
             <ion-skeleton-text style="width:100px"></ion-skeleton-text>
           </ion-chip>
-          <div style="margin:10px;display:grid;grid-template-columns:repeat(auto-fit, 160px)">
+          <div style="display:grid;grid-template-columns:repeat(auto-fit, 150px)">
             <div v-for="i in [1,2,3,4]" :key="i">                
-              <ion-skeleton-text style="width:150px;height:150px" animated></ion-skeleton-text>
+              <ion-skeleton-text style="width:120px;height:120px" animated></ion-skeleton-text>
+              <ion-skeleton-text style="width:120px;height:30px" animated></ion-skeleton-text>
             </div>
           </div>          
         </ion-card-content>

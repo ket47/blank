@@ -62,9 +62,39 @@ ion-accordion-group .accordion-expanding .store-description{
   display: inline-block;
   line-height: 1.4;
 }
-.delivery-variant-slider .swiper-slide{
-  width: 300px;
+
+
+.delivery-variant{
+  background: var(--ion-color-success);
+  padding: 0;
+  border-radius: 10px;
+  margin: 8px 16px;
+  font-size: 14px;
+  display: grid;
+  grid-template-columns: auto 50px;
+  min-width:250px;
+  height: 55px;
+  color:white;
 }
+.delivery-variant div{
+  padding: 10px;
+}
+.delivery-variant div:last-of-type{
+  background: var(--ion-color-success-shade);
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
+  display: flex;
+  align-items: center;
+  font-size: 18px;
+}
+
+
+
+
+
+/* .delivery-variant-slider .swiper-slide{
+  width: 300px;
+} 
 .delivery-variant{
   background: var(--ion-color-success-shade);
   padding: 0;
@@ -92,7 +122,13 @@ ion-accordion-group .accordion-expanding .store-description{
   padding: 10px;
   color: white;
   font-size: 18px;
-}
+} */
+
+
+
+
+
+
 .groups-container{
   border-bottom: 1px solid lightgray;
   display: block ruby;
@@ -248,7 +284,7 @@ ion-chip .active-chip {
   <base-layout pageDefaultBackLink="/catalog" page-class="store-page" :contentOnScroll="onScroll" :page-title="this.storeItem.store_name??'Магазин'">
   <div>
     <div class="store-info-container">
-      <image-slider-comp :imageList="storeItem.images" :imgHeight="200" :mode="'crop-to-fit'"></image-slider-comp>
+      <image-slider-comp :imageList="storeItem.images" :imgHeight="300" :mode="'crop-to-fit'"></image-slider-comp>
       <ion-list  class="store-info">
         <ion-item lines="none">
           <div v-if="storeItem.avatarImage" slot="start" class="avatar-container">
@@ -294,7 +330,7 @@ ion-chip .active-chip {
               </ion-chip>
             </ion-col>
           </ion-row>
-          <ion-row>
+          <!-- <ion-row>
             <ion-col size="auto" style="overflow-y: scroll;white-space: nowrap;">
 
               <ion-chip color="medium">
@@ -315,60 +351,37 @@ ion-chip .active-chip {
               </ion-chip>
 
             </ion-col>
-          </ion-row>
-        </ion-grid>
-
-
-
-
-
-
-        <!--
-        <swiper :slidesPerView="'auto'" class="delivery-variant-slider">
-          <swiper-slide>
-            <ion-grid class="delivery-variant">
-              <ion-row class="ion-justify-content-between ion-align-items-center">
-                <ion-col size="auto" class="delivery-variant-description">
-                  <label><b>Доставит {{$heap.getters.settings.app_title}}</b></label>
-                  <ion-text v-if="storeItem.deliveryTime">{{storeItem.deliveryTime.timeMin}}-{{storeItem.deliveryTime.timeMax}}мин</ion-text>
-                </ion-col>
-                <ion-col size="1" class="delivery-variant-cost">
-                  <ion-text v-if="$heap.getters.settings.delivery?.fee > 0"><b>{{$heap.getters.settings.delivery.fee}}₽</b></ion-text>
-                </ion-col>
-              </ion-row>
-            </ion-grid>
-          </swiper-slide>
-          <swiper-slide v-if="storeItem.store_delivery_allow">
-            <ion-grid class="delivery-variant">
-              <ion-row class="ion-justify-content-between ion-align-items-center">
-                <ion-col size="auto" class="delivery-variant-description">
-                  <label><b>Доставит {{storeItem.member_of_groups.group_names}}</b></label>
-                </ion-col>
-                <ion-col size="auto" class="delivery-variant-cost">
-                  <ion-text v-if="storeItem.store_delivery_cost>0"><b>{{storeItem.store_delivery_cost}}₽</b></ion-text>
-                </ion-col>
-              </ion-row>
-            </ion-grid>
-          </swiper-slide>
-          <swiper-slide v-if="storeItem.store_pickup_allow">
-            <ion-grid class="delivery-variant">
-              <ion-row class="ion-justify-content-between ion-align-items-center">
-                <ion-col size="auto" class="delivery-variant-description">
-                  <label><b>Самовывоз</b></label>
-                </ion-col>
-                <ion-col size="auto" class="delivery-variant-cost">
-                  <ion-text><b>0₽</b></ion-text>
-                </ion-col>
-              </ion-row>
-            </ion-grid>
-          </swiper-slide>
-        </swiper>
-      -->
-
+          </ion-row>-->
+        </ion-grid> 
       </ion-list>
 
-
-
+        <div style="scrollbar-width: none; overflow-x: scroll;display: flex;">
+          <div class="delivery-variant">
+            <div>
+                <ion-label>Доставит {{$heap.getters.settings.app_title}}</ion-label><br/>
+                <ion-text v-if="storeItem?.deliveryTime?.timeMin">{{storeItem.deliveryTime.timeMin}}-{{storeItem.deliveryTime.timeMax}}мин</ion-text>
+            </div>
+            <div>
+              <ion-text v-if="storeItem.delivery_cost > 0"><b>{{storeItem.delivery_cost}}₽</b></ion-text>
+            </div>
+          </div>
+          <div class="delivery-variant" v-if="storeItem.store_delivery_allow">
+            <div>
+              <ion-label>Доставит {{storeItem.member_of_groups.group_names}}</ion-label><br/>
+            </div>
+            <div>
+              <ion-text v-if="storeItem.delivery_cost > 0"><b>{{storeItem.store_delivery_cost}}₽</b></ion-text>
+            </div>
+          </div>
+          <div class="delivery-variant" v-if="storeItem.store_pickup_allow">
+            <div>
+              <ion-label>Самовывоз</ion-label><br/>
+            </div>
+            <div>
+              <ion-text><b>0₽</b></ion-text>
+            </div>
+          </div>
+        </div>
     </div>
 
     <div v-if="storeGroups" class="group-fixed-block hidden-block">
@@ -538,16 +551,17 @@ export default{
       groupSelectedParentId: -1,
       sliderMaxHeight: 0,
       offsetModificator: 150,
-      is_loading:0
+      can_reload_at:0
     };
   },
   methods: {
     async itemGet() {
-      // if(this.is_loading){
-      //   return
-      // }
+      const now=Date.now()
+      if(this.can_reload_at>now){
+        return
+      }
+      this.can_reload_at=now+10000
       try{
-        //this.is_loading=1
         const store=await jQuery.post(`${heap.state.hostname}Store/itemGet`, {store_id: this.storeId,distance_include:1})
         this.storeItem = this.itemPrepare(store); 
         this.storeId = store.store_id;
@@ -563,16 +577,15 @@ export default{
         }
         return false
       }
-      //this.is_loading=0
    },
    itemPrepare(storeItem) {
       if (storeItem.member_of_groups.group_names) {
         storeItem.store_group_names = storeItem.member_of_groups.group_names;
       }
-      try{
+      storeItem.deliveryTime={};
+      if(storeItem.locations[0]?.distance){
         storeItem.deliveryTime=Utils.deliveryTimeCalculate(storeItem.locations[0].distance,storeItem.store_time_preparation)
-      }catch{/** */}
-      console.log(storeItem.locations[0].distance)
+      }
       storeItem.avatarImage = '';
       if (storeItem.avatar.length > 0) {
         storeItem.avatarImage = storeItem.avatar[0].image_hash;
@@ -765,10 +778,10 @@ export default{
     this.query = this.$route.query;
     this.itemGet();
   },
-  // ionViewDidEnter() {
-  //   this.query = this.$route.query;
-  //   this.itemGet();
-  // },
+  ionViewDidEnter() {
+    this.query = this.$route.query;
+    this.itemGet();
+  },
   // ionViewDidLeave(){
   //   this.storeItem=[];
   // },

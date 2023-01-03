@@ -29,12 +29,9 @@ ion-card .store-title{
 
 <template>
   <ion-list v-if="!storeList" class="store-list" >
-    <ion-card button v-for="store_item in [1,1]" :key="store_item">
-        <div class="crop-to-fit" style="background-color:var(--ion-color-light)">
-
-        </div>
-        <ion-chip color="success"><ion-skeleton-text style="width:130px;" animated></ion-skeleton-text></ion-chip>
-
+    <ion-card button v-for="store_item in [1,1,1,1]" :key="store_item">
+        <div class="crop-to-fit" style="background-color:var(--ion-color-light)"></div>
+        <ion-chip color="medium"><ion-skeleton-text style="width:130px;" animated></ion-skeleton-text></ion-chip>
         <ion-chip color="primary"><ion-skeleton-text style="width:100px;" animated></ion-skeleton-text></ion-chip>
         <ion-item lines="none">
             <ion-skeleton-text style="width:70%;height:1.5em" animated></ion-skeleton-text>

@@ -83,7 +83,16 @@ export default defineComponent({
     reload(){
       location.reload();
     }
-  }
+  },
+  // updated(){
+  //   //console.log(this.pageTitle)
+  //   document.title=this.pageTitle
+  // },
+  // watch:{
+  //   pageTitle:function(val){
+  //     document.title=val
+  //   }
+  // }
 })
 </script>
 
