@@ -28,7 +28,7 @@
     height: 100%;
     position: absolute;
     z-index: -1;
-    filter: blur(2px);
+    filter: blur(30px);
 }
 .deleted .product_list_item_img{
     border: 4px solid red;
@@ -45,12 +45,12 @@
             </div> 
             <ion-img class="blur-image" :src="`${$heap.state.hostname}image/get.php/${productItem.image_hash}.200.200.webp`"/>
             <ion-img @click="$router.push(`/catalog/product-${productItem.product_id}`)" :src="`${$heap.state.hostname}image/get.php/${productItem.image_hash}.200.200.webp`"/>
-            <ion-chip v-if="options" style="position:absolute;bottom:0;right:0" color="success">
+            <ion-chip v-if="options" :outline="true" style="position:absolute;bottom:0;right:0">
                 варианты
             </ion-chip> 
         </div>
         <div style="height:5em;overflow:hidden">
-            <div style="color:black;height:3em;font-size:1em;overflow:hidden;line-height:1.4em; font-weight: bold;" @click="$router.push(`product-${productItem.product_id}`)">
+            <div style="color:black;height:3em;font-size:1em;overflow:hidden;line-height:1.4em; font-weight: bold;" @click="$router.push(`/catalog/product-${productItem.product_id}`)">
                 {{ productItem.product_name }}
             </div>
             <span v-if="productItem.product_price!=productItem.product_final_price" style="color:var(--ion-color-danger)">
@@ -75,12 +75,12 @@ import {
   IonImg,
   IonChip,
 }                       from '@ionic/vue'
-import CartAddButtons from '@/components/CartAddButtons';
+import CartAddButtons   from '@/components/CartAddButtons';
 export default {
     components:{
-    IonImg,
-    IonChip,
-    CartAddButtons
+        IonImg,
+        IonChip,
+        CartAddButtons,
     },
     props:['productItem'],
     computed:{

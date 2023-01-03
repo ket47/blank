@@ -549,7 +549,7 @@ export default{
       storeProducts: {},
       storeGroups: null,
       groupSelectedParentId: -1,
-      sliderMaxHeight: 0,
+      sliderMaxHeight: 500,
       offsetModificator: 150,
       can_reload_at:0
     };
@@ -778,10 +778,10 @@ export default{
     this.query = this.$route.query;
     this.itemGet();
   },
-  ionViewDidEnter() {
-    this.query = this.$route.query;
-    this.itemGet();
-  },
+  // ionViewDidEnter() {//unnecessary  loadings when return from productView
+  //   this.query = this.$route.query;
+  //   this.itemGet();
+  // },
   // ionViewDidLeave(){
   //   this.storeItem=[];
   // },
@@ -789,8 +789,12 @@ export default{
     $route(currentRoute) {
       this.storeId = currentRoute.params.id;
     },
-    groupSelectedParentId() {
-      this.sliderMaxHeight = document.querySelector('.product-list-slider.swiper').style.maxHeight = document.querySelector('.product-list-slider .swiper-slide.swiper-slide-active').scrollHeight+'px'
+    groupSelectedParentId(){
+      try{
+        this.sliderMaxHeight = document.querySelector('.product-list-slider.swiper').style.maxHeight = document.querySelector('.product-list-slider .swiper-slide.swiper-slide-active').scrollHeight+'px'
+      }catch{
+        this.sliderMaxHeight = 1000
+      }
     }
   },
 }
