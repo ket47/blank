@@ -434,7 +434,6 @@ ion-chip .active-chip {
       :centeredSlides="false" 
       class="product-list-slider" 
       @slideChange="groupSliderChanged($event)" 
-      :style="`max-height: ${sliderMaxHeight}`"
     >
       {{storeGroups}}
       <swiper-slide v-for="parent_group_item in storeGroups" :key="parent_group_item.group_id">
@@ -713,6 +712,7 @@ export default{
       //   }
       // } catch(err){/** */}
     },
+
     groupSelectSub(sub_group_id){
       if(this.groupSelectedSubId == sub_group_id){
         //return
@@ -734,8 +734,15 @@ export default{
       const slideIndex=event.activeIndex
       const parent_groud_id = Object.keys(this.storeGroups)[slideIndex];
       //const sub_group_id =  Object.keys(this.storeGroups[parent_groud_id].children)[0];
-      this.groupSelectParent(parent_groud_id,1);
+      this.groupSelectParent(parent_groud_id,1)
+      this.groupSliderAdjustHeight()
       //this.groupSelectSub(sub_group_id);
+    },
+    groupSliderAdjustHeight(){
+      const sliderContentHeight=document.querySelector('.product-list-slider .swiper-slide.swiper-slide-active').scrollHeight
+      if(sliderContentHeight>0){
+////
+      }
     },
     scrollTo(sub_group_id) {
       if (!this.$refs["group-" + sub_group_id]?.[0] ) {
@@ -790,11 +797,16 @@ export default{
       this.storeId = currentRoute.params.id;
     },
     groupSelectedParentId(){
+      const maxHeight=500;
       try{
-        this.sliderMaxHeight = document.querySelector('.product-list-slider.swiper').style.maxHeight = document.querySelector('.product-list-slider .swiper-slide.swiper-slide-active').scrollHeight+'px'
+        // = document.querySelector('.product-list-slider.swiper').style.maxHeight
+        this.sliderMaxHeight = document.querySelector('.product-list-slider .swiper-slide.swiper-slide-active').scrollHeight+'px'
       }catch{
         this.sliderMaxHeight = 1000
       }
+
+
+
     }
   },
 }
