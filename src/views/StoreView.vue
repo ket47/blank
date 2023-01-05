@@ -164,7 +164,7 @@ ion-accordion-group .accordion-expanding .store-description{
 }
 .store-page .product-list {
   margin-top: 1em;
-  min-height: 80vh;
+  min-height: 75vh;
 }
 
 
@@ -433,7 +433,7 @@ ion-chip .active-chip {
       :pagination="false"
       :centeredSlides="false" 
       class="product-list-slider" 
-      @slideChange="groupSliderChanged($event)" 
+      @slideChange="groupSliderChanged($event)"
     >
       {{storeGroups}}
       <swiper-slide v-for="parent_group_item in storeGroups" :key="parent_group_item.group_id">
@@ -702,6 +702,7 @@ export default{
       const swiper = document.querySelector('.product-list-slider').swiper;
       const slide_index = Object.keys(this.storeGroups).indexOf(this.groupSelectedParentId);
       swiper.slideTo(slide_index,100,false);
+      this.groupSliderAdjustHeight()
       // try{
       //   if(selectFirstChip){
       //     const first_sub_group_id=Object.keys(this.storeGroups[parent_group_id].children)[0];
@@ -735,13 +736,14 @@ export default{
       const parent_groud_id = Object.keys(this.storeGroups)[slideIndex];
       //const sub_group_id =  Object.keys(this.storeGroups[parent_groud_id].children)[0];
       this.groupSelectParent(parent_groud_id,1)
-      this.groupSliderAdjustHeight()
       //this.groupSelectSub(sub_group_id);
     },
     groupSliderAdjustHeight(){
-      const sliderContentHeight=document.querySelector('.product-list-slider .swiper-slide.swiper-slide-active').scrollHeight
+      const sliderContentHeight=document.querySelector('.product-list-slider .swiper-slide.swiper-slide-active')?.scrollHeight
       if(sliderContentHeight>0){
-////
+        document.querySelector('.product-list-slider.swiper').style.maxHeight=sliderContentHeight+'px'
+      } else {
+        document.querySelector('.product-list-slider.swiper').style.maxHeight=''
       }
     },
     scrollTo(sub_group_id) {
@@ -796,18 +798,6 @@ export default{
     $route(currentRoute) {
       this.storeId = currentRoute.params.id;
     },
-    groupSelectedParentId(){
-      const maxHeight=500;
-      try{
-        // = document.querySelector('.product-list-slider.swiper').style.maxHeight
-        this.sliderMaxHeight = document.querySelector('.product-list-slider .swiper-slide.swiper-slide-active').scrollHeight+'px'
-      }catch{
-        this.sliderMaxHeight = 1000
-      }
-
-
-
-    }
   },
 }
 </script>
