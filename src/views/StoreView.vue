@@ -330,54 +330,6 @@ ion-chip .active-chip {
               </ion-chip>
             </ion-col>
           </ion-row>
-<<<<<<< HEAD
-        </ion-grid>
-        <swiper
-            :slidesPerView="'auto'"
-          class="delivery-variant-slider" 
-        >
-          <swiper-slide>
-            <ion-grid class="delivery-variant">
-              <ion-row class="ion-justify-content-between ion-align-items-center">
-                <ion-col size="auto" class="delivery-variant-description">
-                  <label><b>Доставит {{$heap.getters.settings.app_title}}</b></label>
-                  <ion-text v-if="storeItem?.deliveryTime?.timeMin>0">{{storeItem.deliveryTime.timeMin}}-{{storeItem.deliveryTime.timeMax}}мин</ion-text>
-                </ion-col>
-                <ion-col size="auto" class="delivery-variant-cost">
-                  <ion-text v-if="$heap.getters.settings.delivery?.fee > 0"><b>{{$heap.getters.settings.delivery.fee}}₽</b></ion-text>
-                </ion-col>
-              </ion-row>
-            </ion-grid>
-          </swiper-slide>
-          <swiper-slide v-if="storeItem.store_delivery_allow">
-            <ion-grid class="delivery-variant">
-              <ion-row class="ion-justify-content-between ion-align-items-center">
-                <ion-col size="auto" class="delivery-variant-description">
-                  <label><b>Доставит {{storeItem.member_of_groups.group_names}}</b></label>
-                  <ion-text>-</ion-text>
-                </ion-col>
-                <ion-col size="auto" class="delivery-variant-cost">
-                  <ion-text v-if="storeItem.store_delivery_cost>0"><b>{{storeItem.store_delivery_cost}}₽</b></ion-text>
-                </ion-col>
-              </ion-row>
-            </ion-grid>
-          </swiper-slide>
-          <swiper-slide v-if="storeItem.store_pickup_allow">
-            <ion-grid class="delivery-variant">
-              <ion-row class="ion-justify-content-between ion-align-items-center">
-                <ion-col size="auto" class="delivery-variant-description">
-                  <label><b>Самовывоз</b></label>
-                  <ion-text>-</ion-text>
-                </ion-col>
-                <ion-col size="auto" class="delivery-variant-cost">
-                  <ion-text><b>0₽</b></ion-text>
-                </ion-col>
-              </ion-row>
-            </ion-grid>
-          </swiper-slide>
-        </swiper>
-      </ion-list>
-=======
           <!-- <ion-row>
             <ion-col size="auto" style="overflow-y: scroll;white-space: nowrap;">
 
@@ -387,7 +339,6 @@ ion-chip .active-chip {
                 <span v-if="storeItem?.deliveryTime?.timeMin">&nbsp;за {{storeItem.deliveryTime.timeMin}}-{{storeItem.deliveryTime.timeMax}}мин</span>&nbsp;
                 <ion-badge>90₽</ion-badge>
               </ion-chip>
->>>>>>> 2be9b8eb8580fbff3ee4c0ea16ec8a8593112629
 
               <ion-chip color="medium" v-if="storeItem.store_delivery_allow">
                 Доставит {{storeItem.member_of_groups.group_names}}&nbsp;
