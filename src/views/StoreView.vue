@@ -306,7 +306,7 @@ ion-chip .active-chip {
               <ion-row class="ion-justify-content-between ion-align-items-center">
                 <ion-col size="auto" class="delivery-variant-description">
                   <label><b>Доставит {{$heap.getters.settings.app_title}}</b></label>
-                  <ion-text v-if="storeItem.deliveryTime">{{storeItem.deliveryTime.timeMin}}-{{storeItem.deliveryTime.timeMax}}мин</ion-text>
+                  <ion-text v-if="storeItem?.deliveryTime?.timeMin>0">{{storeItem.deliveryTime.timeMin}}-{{storeItem.deliveryTime.timeMax}}мин</ion-text>
                 </ion-col>
                 <ion-col size="auto" class="delivery-variant-cost">
                   <ion-text v-if="$heap.getters.settings.delivery?.fee > 0"><b>{{$heap.getters.settings.delivery.fee}}₽</b></ion-text>
@@ -348,7 +348,7 @@ ion-chip .active-chip {
     </div>
 
     <div v-if="storeGroups" class="group-fixed-block hidden-block">
-      <ion-segment v-model="groupSelectedParentId" scrollable  class="groups-container">
+      <ion-segment v-model="groupSelectedParentId" scrollable style="scrollbar-width: none;" class="groups-container">
         <ion-segment-button
           v-for="group_item in storeGroups"
           :key="group_item.group_id"
@@ -384,7 +384,7 @@ ion-chip .active-chip {
     <h4 style="margin: 8px 16px;"><b>Категории</b></h4>
     <group-list v-if="storeGroups" :groupList="storeGroups" :onClick="(group_id) => {groupSelectParent(group_id,true) }"></group-list>
 
-    <h4 style="margin: 8px 16px;"><b>Товары</b></h4>
+
     <swiper v-if="storeGroups" 
       pager="true" 
       :initialSlide="0"
