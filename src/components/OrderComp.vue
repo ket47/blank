@@ -47,7 +47,7 @@
             </ion-item>
             <ion-item lines="none">
                 <ion-icon :icon="cubeOutline" slot="start" color="medium"></ion-icon>
-                <ion-text color="medium">Сумма заказа: </ion-text>
+                <ion-text color="medium">Стоимость заказа: </ion-text>
                 <ion-label slot="end" color="primary">{{ orderTotal }}{{$heap.state.currencySign}}</ion-label>
             </ion-item>
             <ion-item lines="none" v-if="orderData.order_sum_delivery>0">

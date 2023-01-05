@@ -25,7 +25,7 @@
       <div style="width:max-content;text-align:center">
         <ion-icon :icon="sparklesOutline" size="large"></ion-icon>
         <ion-label>Корзина пуста </ion-label><br>
-        <a href="/catalog/">на главную</a>
+        <a href="/catalog">на главную</a>
       </div>
     </div>
   </ion-content>
@@ -88,7 +88,7 @@ export default{
     },
     async onStageCreate(order_id, order_stage_code){
         if(order_stage_code=='customer_purged'){
-          this.$router.push('/order/order-list');
+          //this.$router.push('/order/order-list');
           return this.clearCart(order_id,'purge_on_server');
         }
         if(order_stage_code=='customer_action_confirm'){
@@ -122,6 +122,7 @@ export default{
                         this.$flash("Необходимо добавить адрес доставки")
                         this.$topic.publish('dismissModal')
                         this.$router.push('/user/user-addresses')
+                        this.$heap.state.next_route='/order/order-'+order_id;
                         break;
                 }
                 return false

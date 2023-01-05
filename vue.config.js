@@ -23,12 +23,12 @@ module.exports = {
       shortcuts: [
         {
           "name": "Главная",
-          "url": "/catalog/",
+          "url": "/catalog",
           "description": "Магазины и рестораны поблизости"
         },
         {
           "name": "Поиск",
-          "url": "/search/",
+          "url": "/search",
           "description": "Поиск товаров"
         },
         {
@@ -38,7 +38,7 @@ module.exports = {
         },
         {
           "name": "Личный кабинет",
-          "url": "/user/",
+          "url": "/user",
           "description": "Управление настройками пользователя"
         }
       ],

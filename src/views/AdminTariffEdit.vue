@@ -1,5 +1,5 @@
 <template>
-    <base-layout pageDefaultBackLink="/user/" page-title="Редактирование тарифа">    
+    <base-layout pageDefaultBackLink="/user" page-title="Редактирование тарифа">    
         <ion-list @change="itemUpdate()">
             <ion-item>
                 <ion-label position="floating">Название тарифа</ion-label>
@@ -67,8 +67,6 @@ import {
   IonRow,
   IonCol,
   IonLabel,
-  IonSelect,
-  IonSelectOption,
   IonItemDivider,
 }                          from '@ionic/vue';
 import {
@@ -87,8 +85,6 @@ export default {
   IonRow,
   IonCol,
   IonLabel,
-  IonSelect,
-  IonSelectOption,
   IonItemDivider,
     },
     setup(){

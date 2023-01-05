@@ -204,7 +204,7 @@ const Order = {
         itemDelete(order_id,mode){
             const existingOrder=this.itemGetById(order_id);
             if( existingOrder ){
-                if(existingOrder.data.order_id && mode=='purge_on_server'){
+                if(existingOrder.data.order_id>0 && mode=='purge_on_server'){
                     Order.api.itemStageCreate(existingOrder.data.order_id,'customer_purged')
                 }
                 heap.state.cartList.splice(existingOrder.order_index,1);

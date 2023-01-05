@@ -21,13 +21,10 @@
 }
 </style>
 <template>
-    <swiper id="hcat_widget_grid"
-        :slides-per-view="4.5"
-        :space-between=10
-    >
+    <swiper id="hcat_widget_grid" :slides-per-view="4.5" :space-between=10>
         <swiper-slide v-for="group in groupList" :key="group.group_id"  @click="() => {return onClick(group.group_id)}">
             <ion-thumbnail style="width:70px;height:70px">
-                <ion-img style="border-radius:10px;border:1px solid #ddd" :src="`${$heap.state.hostname}image/get.php/${group.image_hash}.150.150.webp`"/>
+                <ion-img v-if="group.image_hash" style="border-radius:10px;border:1px solid #ddd" :src="`${$heap.state.hostname}image/get.php/${group.image_hash}.150.150.webp`"/>
             </ion-thumbnail>
             <div class="slide-title">{{group.group_name}}</div>
         </swiper-slide>
@@ -40,9 +37,9 @@
 import { 
   IonImg,
   IonThumbnail,
-}                          from "@ionic/vue";
-import { defineComponent } from "@vue/runtime-core";
-  import { Swiper, SwiperSlide } from 'swiper/vue';
+}                                   from "@ionic/vue";
+import { defineComponent }          from "@vue/runtime-core";
+import { Swiper, SwiperSlide }      from 'swiper/vue';
 export default defineComponent({
     components:{
         IonImg,

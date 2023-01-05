@@ -408,7 +408,7 @@ export default {
         const event = new Date(Date.parse(iso));
         const options = { month: 'short', day: 'numeric',hour:'numeric',minute:'numeric',year:'numeric' };
 
-        return event.toLocaleDateString(undefined, options);
+        return event.toLocaleDateString('ru-RU', options);
     },
   },
   watch: {

@@ -62,9 +62,39 @@ ion-accordion-group .accordion-expanding .store-description{
   display: inline-block;
   line-height: 1.4;
 }
-.delivery-variant-slider .swiper-slide{
-  width: 200px;
+
+
+.delivery-variant{
+  background: var(--ion-color-success);
+  padding: 0;
+  border-radius: 10px;
+  margin: 8px 16px;
+  font-size: 14px;
+  display: grid;
+  grid-template-columns: auto 50px;
+  min-width:250px;
+  height: 55px;
+  color:white;
 }
+.delivery-variant div{
+  padding: 10px;
+}
+.delivery-variant div:last-of-type{
+  background: var(--ion-color-success-shade);
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
+  display: flex;
+  align-items: center;
+  font-size: 18px;
+}
+
+
+
+
+
+/* .delivery-variant-slider .swiper-slide{
+  width: 300px;
+} 
 .delivery-variant{
   background: var(--ion-color-success-shade);
   padding: 0;
@@ -75,7 +105,7 @@ ion-accordion-group .accordion-expanding .store-description{
 .delivery-variant ion-row{
   display: grid;
   grid-template-columns: 65% 35%;
-  min-height: 70px;
+  min-height: 50px;
 }
 .delivery-variant .delivery-variant-description{
   background: var(--ion-color-success);
@@ -92,7 +122,13 @@ ion-accordion-group .accordion-expanding .store-description{
   padding: 10px;
   color: white;
   font-size: 18px;
-}
+} */
+
+
+
+
+
+
 .groups-container{
   border-bottom: 1px solid lightgray;
   display: block ruby;
@@ -248,39 +284,37 @@ ion-chip .active-chip {
   <base-layout pageDefaultBackLink="/catalog" page-class="store-page" :contentOnScroll="onScroll" :page-title="this.storeItem.store_name??'Магазин'">
   <div>
     <div class="store-info-container">
-      <image-slider :imageList="storeItem.images" :imgHeight="200" :mode="'crop-to-fit'"></image-slider>
+      <image-slider-comp :imageList="storeItem.images" :imgHeight="300" :mode="'crop-to-fit'"></image-slider-comp>
       <ion-list  class="store-info">
         <ion-item lines="none">
           <div v-if="storeItem.avatarImage" slot="start" class="avatar-container">
             <div class="avatar">
-              <img alt="Silhouette of a person's head" :src="$heap.state.hostname+'image/get.php/'+storeItem.avatarImage+'.200.200.webp'" />
+              <img :src="$heap.state.hostname+'image/get.php/'+storeItem.avatarImage+'.200.200.webp'" />
             </div>
           </div>
           <ion-text style="font-size:1.2em;"><b>{{ storeItem.store_name }}</b></ion-text>
-          <router-link slot="end" :to="'/catalog/store-edit-' + storeItem.store_id" v-if="storeItem.is_writable==1">
-            <ion-icon :icon="settingsOutline" style="font-size:24px"></ion-icon>
-          </router-link>
+          <ion-icon slot="end" color="primary" @click="$router.push(`/catalog/store-edit-${storeItem.store_id}`)" :icon="settingsOutline" style="font-size:24px"></ion-icon>
         </ion-item>
         <ion-accordion-group style="width:100%">
           <ion-accordion>
             <ion-item  slot="header" lines="none">
-              <ion-text  class="store-description" color="medium">{{storeItem.store_description}}</ion-text>
+              <ion-text v-if="storeItem.store_description" class="store-description" color="medium">{{storeItem.store_description}}</ion-text>
+              <ion-text v-else color="medium">подробнее</ion-text>
             </ion-item>
-
             <ion-list slot="content">
-              <ion-item lines="none">
+              <ion-item lines="none" v-if="storeItem.store_company_name">
                 <ion-text><b>{{storeItem.store_company_name}}</b></ion-text>
               </ion-item>
-              <ion-item lines="none">
+              <ion-item lines="none" v-if="storeItem.store_tax_num">
                 <ion-label color="medium">ИНН</ion-label>
-                <ion-label color="medium">{{storeItem.store_tax_num}}</ion-label>
+                <ion-text color="dark">{{storeItem.store_tax_num}}</ion-text>
               </ion-item>
-              <ion-item lines="none">
+              <ion-item lines="none" v-if="storeItem.store_phone">
                 <ion-label color="medium">Телефон</ion-label>
-                <ion-label color="medium">{{storeItem.store_phone}}</ion-label>
+                <ion-text color="dark">{{storeItem.store_phone}}</ion-text>
               </ion-item>
-              <ion-item lines="none">
-                <ion-text color="medium">{{storeItem.locations?.[0].location_address}}</ion-text>
+              <ion-item lines="none" v-if="storeItem.locations">
+                <ion-text color="dark">{{storeItem.locations?.[0].location_address}}</ion-text>
               </ion-item>
             </ion-list>
           </ion-accordion>
@@ -291,11 +325,12 @@ ion-chip .active-chip {
               <store-opened-indicator :storeItem="storeItem"/>
             </ion-col>
             <ion-col size="auto">
-              <ion-chip color="medium"  background="transparent">
+              <ion-chip v-if="storeItem.store_group_names" color="medium"  background="transparent">
                 <label>{{ storeItem.store_group_names }}</label>
               </ion-chip>
             </ion-col>
           </ion-row>
+<<<<<<< HEAD
         </ion-grid>
         <swiper
             :slidesPerView="'auto'"
@@ -342,9 +377,60 @@ ion-chip .active-chip {
           </swiper-slide>
         </swiper>
       </ion-list>
+=======
+          <!-- <ion-row>
+            <ion-col size="auto" style="overflow-y: scroll;white-space: nowrap;">
 
+              <ion-chip color="medium">
+                <ion-icon color="primary" :src="`/img/icons/favicon.svg`"/>
+                Доставит {{$heap.getters.settings.app_title}} 
+                <span v-if="storeItem?.deliveryTime?.timeMin">&nbsp;за {{storeItem.deliveryTime.timeMin}}-{{storeItem.deliveryTime.timeMax}}мин</span>&nbsp;
+                <ion-badge>90₽</ion-badge>
+              </ion-chip>
+>>>>>>> 2be9b8eb8580fbff3ee4c0ea16ec8a8593112629
 
+              <ion-chip color="medium" v-if="storeItem.store_delivery_allow">
+                Доставит {{storeItem.member_of_groups.group_names}}&nbsp;
+                <ion-badge>{{storeItem.store_delivery_cost}}₽</ion-badge>
+              </ion-chip>
 
+              <ion-chip color="medium" v-if="storeItem.store_pickup_allow">
+                Самовывоз&nbsp;
+                <ion-badge>0₽</ion-badge>
+              </ion-chip>
+
+            </ion-col>
+          </ion-row>-->
+        </ion-grid> 
+      </ion-list>
+
+        <div style="scrollbar-width: none; overflow-x: scroll;display: flex;">
+          <div class="delivery-variant">
+            <div>
+                <ion-label>Доставит {{$heap.getters.settings.app_title}}</ion-label><br/>
+                <ion-text v-if="storeItem?.deliveryTime?.timeMin">{{storeItem.deliveryTime.timeMin}}-{{storeItem.deliveryTime.timeMax}}мин</ion-text>
+            </div>
+            <div>
+              <ion-text v-if="storeItem.delivery_cost > 0"><b>{{storeItem.delivery_cost}}₽</b></ion-text>
+            </div>
+          </div>
+          <div class="delivery-variant" v-if="storeItem.store_delivery_allow">
+            <div>
+              <ion-label>Доставит {{storeItem.member_of_groups.group_names}}</ion-label><br/>
+            </div>
+            <div>
+              <ion-text v-if="storeItem.delivery_cost > 0"><b>{{storeItem.store_delivery_cost}}₽</b></ion-text>
+            </div>
+          </div>
+          <div class="delivery-variant" v-if="storeItem.store_pickup_allow">
+            <div>
+              <ion-label>Самовывоз</ion-label><br/>
+            </div>
+            <div>
+              <ion-text><b>0₽</b></ion-text>
+            </div>
+          </div>
+        </div>
     </div>
 
     <div v-if="storeGroups" class="group-fixed-block hidden-block">
@@ -361,7 +447,7 @@ ion-chip .active-chip {
       </ion-segment>
       <ion-segment color="light"   v-if="storeGroups[groupSelectedParentId]" scrollable class="sub-groups-container">
         <span
-          v-show="1||storeProducts[group_item.group_id]"
+          v-show="storeProducts[group_item.group_id]"
           v-for="group_item in storeGroups[groupSelectedParentId].children"
           :key="group_item.group_id"
           :ref="`group-chip-${group_item.group_id}`"
@@ -373,7 +459,7 @@ ion-chip .active-chip {
       </ion-segment>
     </div>
 
-    <ion-searchbar class="search-container" v-model="searchRequest" placeholder="Поиск в этом предприятии"
+    <ion-searchbar class="search-container" v-model="searchRequest" placeholder="Поиск у этого продавца"
       @input="
         productListGet({
           name_query: $event.target.value,
@@ -397,7 +483,6 @@ ion-chip .active-chip {
       :centeredSlides="false" 
       class="product-list-slider" 
       @slideChange="groupSliderChanged($event)" 
-      :style="`max-height: ${sliderMaxHeight}`"
     >
       {{storeGroups}}
       <swiper-slide v-for="parent_group_item in storeGroups" :key="parent_group_item.group_id">
@@ -443,7 +528,8 @@ import {
   IonAccordion,
   IonAccordionGroup,
   IonList,
-  IonItem
+  IonItem,
+  IonBadge,
 }                         from "@ionic/vue";
 import { 
   Autoplay
@@ -459,7 +545,7 @@ import {
   compassOutline,
   addOutline,
 }                         from "ionicons/icons";
-import ImageSlider        from "@/components/ImageSlider";
+import ImageSliderComp    from "@/components/ImageSliderComp";
 import GroupList          from "@/components/GroupList.vue";
 import ProductList        from '@/components/ProductList.vue';
 import StoreOpenedIndicator from '@/components/StoreOpenedIndicator.vue';
@@ -484,7 +570,8 @@ export default{
     IonAccordionGroup,
     IonList,
     IonItem,
-    ImageSlider,
+    IonBadge,
+    ImageSliderComp,
     StoreOpenedIndicator,
     Swiper,
     SwiperSlide,
@@ -510,18 +597,19 @@ export default{
       storeProducts: {},
       storeGroups: null,
       groupSelectedParentId: -1,
-      sliderMaxHeight: 0,
+      sliderMaxHeight: 500,
       offsetModificator: 150,
-      is_loading:0
+      can_reload_at:0
     };
   },
   methods: {
     async itemGet() {
-      if(this.is_loading){
+      const now=Date.now()
+      if(this.can_reload_at>now){
         return
       }
+      this.can_reload_at=now+10000
       try{
-        this.is_loading=1
         const store=await jQuery.post(`${heap.state.hostname}Store/itemGet`, {store_id: this.storeId,distance_include:1})
         this.storeItem = this.itemPrepare(store); 
         this.storeId = store.store_id;
@@ -532,20 +620,20 @@ export default{
         switch(exception_code){
             case 'notfound':
                 this.$flash("Продавец не найден")
-                this.$router.push("/catalog/")
+                this.$router.push("/catalog")
                 break;
         }
         return false
       }
-      this.is_loading=0
    },
    itemPrepare(storeItem) {
       if (storeItem.member_of_groups.group_names) {
         storeItem.store_group_names = storeItem.member_of_groups.group_names;
       }
-      try{
+      storeItem.deliveryTime={};
+      if(storeItem.locations[0]?.distance){
         storeItem.deliveryTime=Utils.deliveryTimeCalculate(storeItem.locations[0].distance,storeItem.store_time_preparation)
-      }catch{/** */}
+      }
       storeItem.avatarImage = '';
       if (storeItem.avatar.length > 0) {
         storeItem.avatarImage = storeItem.avatar[0].image_hash;
@@ -656,24 +744,24 @@ export default{
       }
     },
     groupSelectParent(parent_group_id,selectFirstChip=false){
-      if(this.groupSelectedParentId == parent_group_id){
+      if(this.groupSelectedParentId == parent_group_id || !document.querySelector('.product-list-slider')){
         return
       }
       this.groupSelectedParentId = parent_group_id;
       const swiper = document.querySelector('.product-list-slider').swiper;
       const slide_index = Object.keys(this.storeGroups).indexOf(this.groupSelectedParentId);
       swiper.slideTo(slide_index,100,false);
-      try{
-        if(selectFirstChip){
-          const first_sub_group_id=Object.keys(this.storeGroups[parent_group_id].children)[0];
-          const self=this
-          setTimeout(()=>{
-            self.groupSelectSub(first_sub_group_id)
-          },0)
-        }
-      } catch(err){/** */}
-      
+      // try{
+      //   if(selectFirstChip){
+      //     const first_sub_group_id=Object.keys(this.storeGroups[parent_group_id].children)[0];
+      //     const self=this
+      //     setTimeout(()=>{
+      //       self.groupSelectSub(first_sub_group_id)
+      //     },0)
+      //   }
+      // } catch(err){/** */}
     },
+
     groupSelectSub(sub_group_id){
       if(this.groupSelectedSubId == sub_group_id){
         //return
@@ -695,13 +783,16 @@ export default{
       const slideIndex=event.activeIndex
       const parent_groud_id = Object.keys(this.storeGroups)[slideIndex];
       //const sub_group_id =  Object.keys(this.storeGroups[parent_groud_id].children)[0];
-      this.groupSelectParent(parent_groud_id,1);
+      this.groupSelectParent(parent_groud_id,1)
+      this.groupSliderAdjustHeight()
       //this.groupSelectSub(sub_group_id);
     },
-
-
-
-
+    groupSliderAdjustHeight(){
+      const sliderContentHeight=document.querySelector('.product-list-slider .swiper-slide.swiper-slide-active').scrollHeight
+      if(sliderContentHeight>0){
+////
+      }
+    },
     scrollTo(sub_group_id) {
       if (!this.$refs["group-" + sub_group_id]?.[0] ) {
         return;
@@ -743,7 +834,7 @@ export default{
     this.query = this.$route.query;
     this.itemGet();
   },
-  // ionViewDidEnter() {
+  // ionViewDidEnter() {//unnecessary  loadings when return from productView
   //   this.query = this.$route.query;
   //   this.itemGet();
   // },
@@ -754,8 +845,17 @@ export default{
     $route(currentRoute) {
       this.storeId = currentRoute.params.id;
     },
-    groupSelectedParentId() {
-      this.sliderMaxHeight = document.querySelector('.product-list-slider.swiper').style.maxHeight = document.querySelector('.product-list-slider .swiper-slide.swiper-slide-active').scrollHeight+'px'
+    groupSelectedParentId(){
+      const maxHeight=500;
+      try{
+        // = document.querySelector('.product-list-slider.swiper').style.maxHeight
+        this.sliderMaxHeight = document.querySelector('.product-list-slider .swiper-slide.swiper-slide-active').scrollHeight+'px'
+      }catch{
+        this.sliderMaxHeight = 1000
+      }
+
+
+
     }
   },
 }

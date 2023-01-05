@@ -1,5 +1,5 @@
 <template>
-    <base-layout pageDefaultBackLink="/user/" page-title="Список тарифов">
+    <base-layout pageDefaultBackLink="/user" page-title="Список тарифов">
         <ion-list>
             <ion-item v-for="tariff in tariffList" :key="tariff.tariff_id" detail button @click="$router.push(`/user/admin-tariff-edit-${tariff.tariff_id}`)">
                 <ion-icon :icon="briefcaseOutline" slot="start" color="primary"></ion-icon>

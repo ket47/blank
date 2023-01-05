@@ -239,7 +239,7 @@
       <div style="background-color: #1380c1; padding-bottom: 15px;"> 
         <div class="store-info-container">
           <div class="store-image-slider-container">
-            <image-slider :imageList="storeItem.images" :imgHeight="250" :mode="'crop-to-fit'"></image-slider>
+            <image-slider-comp :imageList="storeItem.images" :imgHeight="250" :mode="'crop-to-fit'"></image-slider-comp>
             <div class="overlay" style="background-image: url(/img/store_menu_background_full.png); "></div>
           </div>
           <div class="avatar" v-if="storeItem.avatarImage">
@@ -371,7 +371,7 @@ import {
   compassOutline,
 }                         from "ionicons/icons";
 import mainLogo           from "@/assets/icons/tezkel_logo.svg";
-import ImageSlider        from "@/components/ImageSlider";
+import ImageSliderComp        from "@/components/ImageSliderComp";
 import GroupList          from "@/components/GroupList.vue";
 import jQuery             from "jquery";
 import heap               from "@/heap";
@@ -391,7 +391,7 @@ export default{
     IonImg,
     IonRow,
     IonGrid,
-    ImageSlider,
+    ImageSliderComp,
     IonLabel,
     IonSegmentButton,
     IonSegment,
@@ -443,7 +443,7 @@ export default{
           switch(exception_code){
               case 'notfound':
                   this.$flash("Продавец не найден")
-                  this.$router.push("/catalog/")
+                  this.$router.push("/catalog")
                   break;
           }
           return false

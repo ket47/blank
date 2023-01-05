@@ -14,13 +14,13 @@
               <ion-icon class="toolbar_svg_logo ion-color ion-color-primary"  :icon="mainLogo"/>
             </router-link>
             <ion-tab-bar>
-              <ion-tab-button tab="catalog" href="/catalog/" routerDirection="back">
+              <ion-tab-button tab="catalog" href="/catalog" routerDirection="back">
                 <ion-row>
                   <ion-icon :icon="storefrontOutline"/>
                   <ion-label>Каталог</ion-label>
                 </ion-row>
               </ion-tab-button>
-              <ion-tab-button tab="search" href="/search/" routerDirection="back">
+              <ion-tab-button tab="search" href="/search" routerDirection="back">
                 <ion-row>
                   <ion-icon :icon="searchOutline"/>
                   <ion-label>Поиск</ion-label>
@@ -34,7 +34,7 @@
                   </ion-label>
                 </ion-row>
               </ion-tab-button>
-              <ion-tab-button tab="user" href="/user/" routerDirection="back">
+              <ion-tab-button tab="user" href="/user" routerDirection="back">
                 <ion-row>
                   <ion-icon :icon="personOutline"/>
                   <ion-label>Профиль</ion-label>
