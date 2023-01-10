@@ -3,6 +3,7 @@ namespace Controllers;
 
 
 class Sitemap{
+    private $siteMapService;
     function index(){
         $this->siteMapService=new SiteMapService(getenv('app.frontendURL'));
         $this->siteMapService->setPath('../');
@@ -47,6 +48,53 @@ class Sitemap{
             $result = "0";
         }
         return $result;
+    }
+
+    public function ymlFeed(){
+        header("Content-Type:text/xml");
+        $CatalogModel=new \Models\CatalogModel();
+        $stores=$CatalogModel->storeListGet([
+            'limit'=>500
+        ]);
+        $xml=new \XMLWriter();
+        $xml->openMemory();
+        $xml->setIndent(true);
+        $xml->startDocument('1.0', 'UTF-8');
+        $xml->startElement('yml_catalog');
+        $xml->writeAttribute('date',date("Y-m-d\TH:i:s"));
+
+        foreach($stores as $store){
+            $xml->startElement('shop');
+            $xml->writeElement('name',$store->store_name);
+            $xml->writeElement('company',$store->store_company_name);
+            $xml->writeElement('url',getenv('app.frontendURL').'catalog/store-'.$store->store_id);
+            $xml->startElement('offers');
+            $this->ymlProductsWrite($xml,$store->store_id);
+            $xml->endElement();
+            $xml->endElement();
+        }
+
+        $xml->endElement();
+        $xml->endDocument();
+        echo $xml->flush();
+    }
+
+    private function ymlProductsWrite($xml,$store_id){
+        $CatalogModel=new \Models\CatalogModel();
+        $products=$CatalogModel->productListGet([
+            'limit'=>500,
+            'store_id'=>$store_id
+        ]);
+        foreach($products as $product){
+            $xml->startElement('offer');
+            $xml->writeAttribute('id',$product->product_id);
+            $xml->writeElement('name',$product->product_name);
+            $xml->writeElement('url',getenv('app.frontendURL').'catalog/product-'.$product->product_id);
+            $xml->writeElement('price',$product->product_final_price);
+            $xml->writeElement('delivery','true');
+            $xml->writeElement('weight',$product->product_weight);
+            $xml->endElement();
+        }
     }
 }
 

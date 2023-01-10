@@ -480,7 +480,6 @@ import {
   IonAccordionGroup,
   IonList,
   IonItem,
-  IonBadge,
 }                         from "@ionic/vue";
 import { 
   Autoplay
@@ -521,7 +520,6 @@ export default{
     IonAccordionGroup,
     IonList,
     IonItem,
-    IonBadge,
     ImageSliderComp,
     StoreOpenedIndicator,
     Swiper,

@@ -3,6 +3,7 @@ namespace Models;
 require_once 'Db.php';
 class CatalogModel{
 
+    private $db;
     function __construct(){
         $this->db=new Db();
     }
