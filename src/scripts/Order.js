@@ -255,6 +255,9 @@ const Order = {
             return Order.cart.entryCreate(entry,existingOrder);
         },
         entryCreate(entry,existingOrder){
+            if( entry.is_disabled==1 || entry.deleted_at ){
+                return false
+            }
             heap.state.cartList[existingOrder.order_index].entries.push(entry);
             Order.cart.listSave();
             return true;

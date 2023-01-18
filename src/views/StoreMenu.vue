@@ -111,6 +111,11 @@
   position: relative;
 }
 
+.store-menu-page .product-title{
+  color: black;
+  font-size: 1.2em;
+  font-weight: bold;
+}
 .store-menu-page .product-item .product-data{
   justify-content: center;
   display: flex;
@@ -118,10 +123,11 @@
   height: 100%;
   padding: 20px 0;
 }
-.store-menu-page .product-title{
-  color: black;
-  font-size: 1.2em;
-  font-weight: bold;
+.store-menu-page .product-item .product-description{
+  color: #666;
+  font-size: 0.75em;
+  font-weight: normal;
+  padding-top: 5px;
 }
 .store-menu-page .product-price{
   padding: 10px 10px 5px;
@@ -152,8 +158,6 @@
 .store-menu-page .product-list ion-card-content {
   padding: 10px 0px;
   text-align: center;
-}
-.store-menu-page .product-list-slider{
 }
 .store-menu-page .product-list-slider.swiper-container {
   min-height: 100vh;
@@ -190,10 +194,6 @@
   grid-template-columns: 80px 65%;
   grid-column-gap: 5%;
 }
-.store-menu-page .product-item.absent{
-    filter:grayscale(1);
-    opacity: 0.5;
-}
 .store-menu-page .product-item .product_list_item_img{
     border-radius: 10px;
     border: 2px solid var(--ion-color-light);
@@ -211,11 +211,9 @@
     z-index: -1;
     filter: blur(2px);
 }
-.store-menu-page .deleted .product_list_item_img{
-    border: 4px solid red;
-}
-.store-menu-page .disabled .product_list_item_img{
-    border: 4px solid #666;
+.store-menu-page .product-item.disabled,.store-menu-page .product-item.deleted{
+    filter:grayscale(1);
+    opacity: 0.7;
 }
 .store-menu-page ion-footer{
   display: block !important;
@@ -307,6 +305,7 @@
                                     <span v-else style="color:var(--ion-color-medium)">
                                         ({{productItem.product_unit}})
                                     </span>
+                                    <div class="product-description">{{productItem.product_description}}</div>
                                 </div>
                                 <div class="product-price">
                                   <span style="color:var(--ion-color-primary)">
@@ -421,23 +420,22 @@ export default{
       groupSelectedParentId: -1,
       offsetModificator: 80,
       sliderMaxHeight: 500,
-      itemGetInProgress:false
+      can_reload_at:0
     };
   },
   methods: {
     async itemGet() {
-      if(this.itemGetInProgress){
+      const now=Date.now()
+      if(this.can_reload_at>now){
         return
       }
+      this.can_reload_at=now+10000
       try{
-        this.itemGetInProgress=true
         const store=await jQuery.post(`${heap.state.hostname}Store/itemGet`, {store_id: this.storeId,distance_include:1})
         this.storeItem = this.itemPrepare(store);
-        console.log(this.storeItem);
         this.storeId = store.store_id;
         this.groupTreeGet({ store_id: this.storeId });
         heap.commit('setCurrentStore',this.storeItem);
-        this.itemGetInProgress=false
       } catch(err){
           const exception_code=err?.responseJSON?.messages?.error;
           switch(exception_code){
@@ -494,7 +492,7 @@ export default{
         if(product.deleted_at){
             product.item_class = 'deleted'
         }
-        if(product.disabled==1){
+        if(product.is_disabled==1){
           product.item_class = 'disabled'
         }
         if(product.is_counted==1 && (product.product_quantity-product.product_quantity_reserved)<1){
@@ -605,22 +603,21 @@ export default{
       }
     },
   },
-  ionViewDidEnter() {
+  mounted(){
     this.query = this.$route.query;
     this.itemGet();
   },
-  ionViewDidLeave(){
-    this.storeItem=[];
-  },
+  // ionViewDidEnter() {//unnecessary  loadings when return from productView
+  //   this.query = this.$route.query;
+  //   this.itemGet();
+  // },
+  // ionViewDidLeave(){
+  //   this.storeItem=[];
+  // },
   watch: {
     $route(currentRoute) {
       this.storeId = currentRoute.params.id;
     },
-    groupSelectedParentId() {
-      setTimeout(function(){
-        this.sliderMaxHeight = document.querySelector('.product-list-slider.swiper').style.maxHeight = document.querySelector('.product-list-slider .swiper-slide.swiper-slide-active').scrollHeight+'px'
-      }, 0)
-    }
   },
 }
 </script>

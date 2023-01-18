@@ -40,7 +40,7 @@
 <template>
     <div :class="item_class" :id="`product_list_item${productItem.product_id}`">
         <div class="product_list_item_img">
-            <div style="position:relative;top:-50%;">
+            <div style="position:relative;top:-50%;" v-if="productItem.is_disabled=='0' && !productItem.deleted_at">
                 <cart-add-buttons buttonLayout="vertical" :productItem="productItem"></cart-add-buttons>
             </div> 
             <ion-img class="blur-image" :src="`${$heap.state.hostname}image/get.php/${productItem.image_hash}.200.200.webp`"/>
@@ -88,7 +88,7 @@ export default {
             if(this.productItem.deleted_at){
                 return 'deleted'
             }
-            if(this.productItem.disabled==1){
+            if(this.productItem.is_disabled==1){
                 return 'disabled'
             }
             if(this.productItem.is_counted==1 && (this.productItem.product_quantity-this.productItem.product_quantity_reserved)<1){

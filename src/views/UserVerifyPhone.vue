@@ -104,6 +104,7 @@ export default  {
       try{
         await jQuery.post( `${this.$heap.state.hostname}/User/phoneVerificationCheck`, {user_phone: this.user_phone, verification_code: this.verification_code})
         User.autoSignIn()
+        this.$router.replace('/user/user-edit')
         this.$router.push('/home')
         this.$flash("Номер телефона верифицирован")
       } catch(err){
