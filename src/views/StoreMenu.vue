@@ -575,13 +575,22 @@ export default{
       const swiper = document.querySelector('.product-list-slider').swiper;
       const slide_index = Object.keys(this.storeGroups).indexOf(this.groupSelectedParentId);
       swiper.slideTo(slide_index,100,false);
-      
+      this.groupSliderAdjustHeight()
     },
     groupSliderChanged(event) {
       const slideIndex=event.activeIndex
       const parent_groud_id = Object.keys(this.storeGroups)[slideIndex];
       //const sub_group_id =  Object.keys(this.storeGroups[parent_groud_id].children)[0];
       this.groupSelectParent(parent_groud_id,1);
+    },
+
+    groupSliderAdjustHeight(){
+      const sliderContentHeight=document.querySelector('.product-list-slider .swiper-slide.swiper-slide-active')?.scrollHeight
+      if(sliderContentHeight>0){
+        document.querySelector('.product-list-slider.swiper').style.maxHeight=sliderContentHeight+'px'
+      } else {
+        document.querySelector('.product-list-slider.swiper').style.maxHeight=''
+      }
     },
 
     onScroll(event) {
