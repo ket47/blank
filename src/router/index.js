@@ -197,13 +197,17 @@ const routes = [
       {
         path: '/error-offline',
         component: () => import('@/views/ErrorOffline.vue')
-      },
+      }
   ]
   },
   {
     path: '/catalog/store-:id/menu',
     component: () => import('@/views/StoreMenu.vue')
-  }
+  },
+  {
+    path: '/:catchAll(.*)',
+    redirect: homePath
+  },
 ]
 
 const router = createRouter({

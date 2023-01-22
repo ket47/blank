@@ -293,7 +293,7 @@ ion-chip .active-chip {
             </div>
           </div>
           <ion-text style="font-size:1.2em;"><b>{{ storeItem.store_name }}</b></ion-text>
-          <ion-icon slot="end" color="primary" @click="$router.push(`/catalog/store-edit-${storeItem.store_id}`)" :icon="settingsOutline" style="font-size:24px"></ion-icon>
+          <ion-icon v-if="storeItem.is_writable" slot="end" color="primary" @click="$router.push(`/catalog/store-edit-${storeItem.store_id}`)" :icon="settingsOutline" style="font-size:24px"></ion-icon>
         </ion-item>
         <ion-accordion-group style="width:100%">
           <ion-accordion>
