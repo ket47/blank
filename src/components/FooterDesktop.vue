@@ -10,7 +10,7 @@
         <router-link to="/">
         <div>
           <ion-img src="/img/logo_full_transparent.png" style="width:150px;height:auto"/>
-          <ion-title>Быстро и удобно</ion-title>
+          <ion-title>только пожелай</ion-title>
         </div>
         </router-link>
         <div>

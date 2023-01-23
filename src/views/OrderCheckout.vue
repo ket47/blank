@@ -299,6 +299,9 @@ export default({
             if( this.errNotfound==1 ){
                 return `Заказ удален`
             }
+            if( this.tariffRule.deliveryByCourier==1 && this.tariffRule.deliveryIsReady==0 ){
+                return `К сожалению, нет доступных курьеров`;
+            }
             return false
         },
 
@@ -401,6 +404,7 @@ export default({
                 this.promoLink({order_id:this.order_id})//unlinking promo if exists
                 this.promo=null
             }
+            
         },
         async orderDescriptionChanged(){
             const request={
