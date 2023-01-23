@@ -108,9 +108,13 @@ export default {
             };
             try{
                 this.tariff=await jquery.post(`${this.$heap.state.hostname}Admin/Tariff/itemGet`,request)
-
                 const self=this;
                 setTimeout(()=>self.updateallow=true,100)
+                this.tariff.is_disabled*=1
+                this.tariff.order_allow*=1
+                this.tariff.card_allow*=1
+                this.tariff.cash_allow*=1
+                this.tariff.delivery_allow*=1
             }
             catch(err){
                 const exception=err.responseJSON;

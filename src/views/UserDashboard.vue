@@ -406,7 +406,7 @@ export default {
     },
     toLocDateTime( iso ){
         const event = new Date(Date.parse(iso));
-        const options = { month: 'short', day: 'numeric',hour:'numeric',minute:'numeric',year:'numeric' };
+        const options = { month: 'short', day: 'numeric',hour:'numeric',minute:'numeric',year:'numeric',timeZone:'Europe/Kyiv' };
 
         return event.toLocaleDateString('ru-RU', options);
     },
