@@ -1,13 +1,13 @@
 <template>
     <base-layout pageDefaultBackLink="/user" page-title="Редактирование тарифа">    
-        <ion-list @change="itemUpdate()">
+        <ion-list>
             <ion-item>
                 <ion-label position="floating">Название тарифа</ion-label>
                 <ion-input v-model="tariff.tariff_name" placeholder="название" color="primary" style="font-size:1.5em"></ion-input>
             </ion-item>
             <ion-item lines="full">
                 <ion-label>Отключен</ion-label>
-                <ion-toggle v-model="tariff.is_disabled" @click="itemUpdate()" />
+                <ion-toggle v-model="tariff.is_disabled" @ionChange="itemUpdate()" />
             </ion-item>
             <ion-item lines="full">
                 <ion-label>Удалить</ion-label>
@@ -18,7 +18,8 @@
                 Настройки тарифа
             </ion-item-divider>
         </ion-list>
-        <ion-grid @change="itemUpdate()">
+        <div style="overflow-x:scroll">
+        <ion-grid @change="itemUpdate()" style="min-width:470px">
             <ion-row>
                 <ion-col></ion-col>
                 <ion-col>Разрешено</ion-col>
@@ -28,32 +29,33 @@
 
             <ion-row>
                 <ion-col><ion-label>Заказ</ion-label></ion-col>
-                <ion-col><ion-toggle v-model="tariff.order_allow" @click="itemUpdate()" /></ion-col>
+                <ion-col><ion-toggle v-model="tariff.order_allow" @ionChange="itemUpdate()" /></ion-col>
                 <ion-col><ion-input  v-model="tariff.order_fee" placeholder="%" /></ion-col>
                 <ion-col><ion-input  v-model="tariff.order_cost" :placeholder="$heap.state.currencySign" /></ion-col>
             </ion-row>
 
             <ion-row>
                 <ion-col><ion-label>Опл. картой</ion-label></ion-col>
-                <ion-col><ion-toggle v-model="tariff.card_allow"  @click="itemUpdate()" /></ion-col>
+                <ion-col><ion-toggle v-model="tariff.card_allow"  @ionChange="itemUpdate()" /></ion-col>
                 <ion-col><ion-input  v-model="tariff.card_fee" placeholder="%" /></ion-col>
                 <ion-col></ion-col>
             </ion-row>
 
             <ion-row>
                 <ion-col><ion-label>Опл. наличными</ion-label></ion-col>
-                <ion-col><ion-toggle v-model="tariff.cash_allow" @click="itemUpdate()" /></ion-col>
+                <ion-col><ion-toggle v-model="tariff.cash_allow" @ionChange="itemUpdate()" /></ion-col>
                 <ion-col><ion-input  v-model="tariff.cash_fee" placeholder="%" /></ion-col>
                 <ion-col></ion-col>
             </ion-row>
 
             <ion-row>
                 <ion-col><ion-label>Доставка</ion-label></ion-col>
-                <ion-col><ion-toggle v-model="tariff.delivery_allow" @click="itemUpdate()" /></ion-col>
+                <ion-col><ion-toggle v-model="tariff.delivery_allow" @ionChange="itemUpdate()" /></ion-col>
                 <ion-col><ion-input  v-model="tariff.delivery_fee" placeholder="%" /></ion-col>
                 <ion-col><ion-input  v-model="tariff.delivery_cost" :placeholder="$heap.state.currencySign" /></ion-col>
             </ion-row>
         </ion-grid>
+        </div>
     </base-layout>
 </template>
 <script>
@@ -106,6 +108,9 @@ export default {
             };
             try{
                 this.tariff=await jquery.post(`${this.$heap.state.hostname}Admin/Tariff/itemGet`,request)
+
+                const self=this;
+                setTimeout(()=>self.updateallow=true,100)
             }
             catch(err){
                 const exception=err.responseJSON;
@@ -119,6 +124,9 @@ export default {
             }
         },
         async itemUpdate(){
+            if(!this.updateallow){
+                return
+            }
             let request=this.tariff;
             try{
                 await jquery.post(`${this.$heap.state.hostname}Admin/Tariff/itemUpdate`,JSON.stringify(request))
