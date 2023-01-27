@@ -96,14 +96,11 @@ const User = {
         return 1;//should check connection and login status
     },
     isAdmin(){
-        let user_types="";
-        try{
-            user_types=heap.state.user.member_of_groups.group_types;
-        }catch{/** */}
-        if( user_types.indexOf('admin')>-1 ){
-          return true;
+        const user_types=heap.state?.user?.member_of_groups?.group_types
+        if( user_types?.indexOf('admin')>-1 ){
+          return true
         }
-        return false;
+        return false
     },
     isCourier(){
         let user_types="";

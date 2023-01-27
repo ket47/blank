@@ -283,7 +283,7 @@ import {
 }                     from 'ionicons/icons'
 import imageTileComp  from '@/components/ImageTileComp.vue'
 import GroupPicker    from '@/components/GroupPicker.vue'
-import ProductPicker  from '@/components/ProductPicker.vue'
+//import ProductPicker  from '@/components/ProductPicker.vue'
 import heap           from '@/heap';
 import Topic          from '@/scripts/Topic.js'
 import jQuery         from "jquery";

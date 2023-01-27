@@ -1,4 +1,5 @@
 <template>
+<div>
   <ion-list>
     <ion-item>
       <ion-title>Баланс</ion-title>
@@ -16,21 +17,21 @@
       <ion-list slot="content">
         <ion-item color="light">
           <ion-text>Начальная дата</ion-text>
-          <div slot="end" style="display:grid;grid-template-columns:110px 110px;">
+          <div slot="end" style="display:grid;grid-template-columns:120px 100px;">
             <ion-input type="date" v-model="start_at"  @ionChange="listGet()"/>
             <ion-input type="text" style="text-align:right" color="medium" v-if="meta.sum_start" :value="`${meta.sum_start}${$heap.state.currencySign}`" readonly />
           </div>
         </ion-item>
         <ion-item color="light">
           <ion-text>Обороты</ion-text>
-          <div slot="end" style="display:grid;grid-template-columns:110px 110px;">
+          <div slot="end" style="display:grid;grid-template-columns:120px 100px;">
             <ion-input type="text" style="text-align:right" color="medium" v-if="meta.sum_debit" :value="`+${meta.sum_debit}${$heap.state.currencySign}`" readonly />
             <ion-input type="text" style="text-align:right" color="medium" v-if="meta.sum_credit" :value="`-${meta.sum_credit}${$heap.state.currencySign}`" readonly />
           </div>
         </ion-item>
         <ion-item color="light">
           <ion-text>Конечная дата</ion-text>
-          <div slot="end" style="display:grid;grid-template-columns:110px 110px;">
+          <div slot="end" style="display:grid;grid-template-columns:120px 100px;">
             <ion-input type="date" v-model="finish_at" />
             <ion-input type="text" style="text-align:right" color="medium" v-if="meta.sum_finish" :value="`${meta.sum_finish}${$heap.state.currencySign}`" readonly />
           </div>
@@ -47,7 +48,7 @@
     </ion-item>
   </ion-list>
   <ion-list v-else-if="ledger.length>0">
-    <ion-item v-for="trans in ledgerCalc" :key="trans.trans_id">
+    <ion-item v-for="trans in ledgerCalc" :key="trans.trans_id" @click="itemClick(trans.trans_id)" :detail="is_admin">
         <ion-text slot="start">{{trans.date}}</ion-text>
         <ion-text>{{trans.trans_description}}</ion-text>
         <ion-label slot="end" v-if="trans.is_debit==1" color="success">{{trans.trans_amount}}</ion-label>
@@ -60,7 +61,7 @@
     </ion-item>
   </ion-list>
 
-
+</div>
 </template>
 
 <script>
@@ -76,8 +77,9 @@ import {
   IonText,
   IonSkeletonText,
 } from "@ionic/vue";
-import { settingsOutline } from "ionicons/icons";
-import jquery from "jquery";
+import { settingsOutline }    from "ionicons/icons";
+import jquery                 from "jquery";
+import User                   from '@/scripts/User.js'
 
 export default {
   components: {
@@ -107,7 +109,7 @@ export default {
       finish_at: today.toISOString().slice(0, 10),
       ledger:null,
       meta:{},
-      today:today,
+      today:today
     };
   },
   computed:{
@@ -121,6 +123,14 @@ export default {
             lcalc.push(trans)
         }
         return lcalc
+    },
+    is_admin(){
+      return User.isAdmin()
+    }
+  },
+  watch:{
+    account:function(){
+      this.listGet()
     }
   },
   methods: {
@@ -131,24 +141,25 @@ export default {
             finish_at:this.finish_at,
             account:this.account,
         }
-        const response= await jquery.post(`${this.$heap.state.hostname}Transaction/listGet`,request);
+        const response= await jquery.post(`${this.$heap.state.hostname}Transaction/listGet`,request)
         this.ledger=response.ledger
         this.meta=response.meta
         if( this.finish_at==this.today.toISOString().slice(0, 10) ){
-            this.balance=response.meta.sum_finish;
+            this.balance=response.meta.sum_finish
         }
       } catch (err) {
         const exception = err.responseJSON;
         const exception_code = exception.messages.error;
         switch (exception_code) {
           case "no_account":
-            this.$flash("Ошибка получения выписки");
+            this.$flash("Ошибка получения выписки")
             break;
           case "large_interval":
-            this.$flash("Период должен быть не больше 3 месяцев");
+            this.$flash("Период должен быть не больше 3 месяцев")
             break;
         }
-        this.ledger=[];
+        this.ledger=[]
+        this.balance=0
         return false;
       }
     },
@@ -158,7 +169,12 @@ export default {
 
         return event.toLocaleDateString(undefined, options);
     },
-
+    itemClick(trans_id){
+      if( !User.isAdmin() ){
+        return
+      }
+      this.$router.push(`/admin/transaction-edit-${trans_id}`)
+    }
   },
   mounted() {
     this.listGet();

@@ -44,11 +44,11 @@ ion-card .store-title{
       <ion-card-title>Вне зоны обслуживания</ion-card-title>
     </ion-card-header>
     <ion-card-content style="font-family:Roboto">
-      К сожалению, не найдено подходящих магазинов и ресторанов. <br/>Возможно вы находитесь вне радиуса доставки.
+      Поблизости к вам нет подходящих ресторанов и магазинов.
     </ion-card-content>
   </ion-card>
   
-  <ion-grid  class="ion-justify-content-between ion-align-items-center" style="padding: 0 16px;">
+  <ion-grid  v-if="storeList && storeList.length>0" class="ion-justify-content-between ion-align-items-center" style="padding: 0 16px;">
     <ion-row>
       <ion-col size="10">
         <h5 class="section-title">Магазины и рестораны</h5>

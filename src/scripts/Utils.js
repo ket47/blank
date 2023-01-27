@@ -16,6 +16,12 @@ const Utils={
         const timeMin=time>delta?time-delta:time
         const timeMax=timeMin+delta
         return {time,timeMin,timeMax}
+    },
+    render(template,context){
+        for(let i in context){
+            template=template.replace(`{{${i}}}`,context[i])
+        }
+        return template
     }
   };
   export default Utils;

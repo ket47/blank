@@ -197,7 +197,19 @@ const routes = [
       {
         path: '/error-offline',
         component: () => import('@/views/ErrorOffline.vue')
-      }
+      },
+
+
+
+      
+      {
+        path: '/admin/transaction-edit-:id',
+        component: () => import('@/views/admin/TransactionEdit.vue')
+      },
+      {
+        path: '/admin/accounting',
+        component: () => import('@/views/admin/AccountingView.vue')
+      },
   ]
   },
   {

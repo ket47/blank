@@ -37,7 +37,7 @@
     <div v-if="isMainLocationSet" @click="selectDeliveryAddress()" class="selector">
       <div class="delivery-adress"  style="font-size: 1em;" >
         <div class="center">
-          <ion-text size="small" color="medium" >Адрес</ion-text>
+          <ion-text size="small" color="medium" >Адрес доставки заказа</ion-text>
           <ion-icon :icon="chevronDownOutline" color="medium"></ion-icon>
         </div>
         <div class="center">

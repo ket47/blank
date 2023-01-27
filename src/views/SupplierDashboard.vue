@@ -49,7 +49,7 @@ ion-text{
         </ion-card-header>
         <ion-card-content>
           Чтобы стать продавцом, нужно быть зарегистрированным пользователем. Вы можете зарегистрироваться за 2 минуты.
-        <ion-button expand="block" href="/user/sign-up">Зарегистрироваться</ion-button>
+        <ion-button expand="block" @click="$router.push('/user/sign-up')">Зарегистрироваться</ion-button>
         </ion-card-content>
       </ion-card>
 
