@@ -91,6 +91,10 @@ ion-icon{
               <ion-icon :icon="briefcaseOutline" slot="start" color="primary"></ion-icon>
               <ion-label>Список тарифов</ion-label>
           </ion-item>
+          <ion-item @click="$router.push('/admin/accounting')" lines="full" button detail>
+              <ion-icon :icon="pieChartOutline" slot="start" color="primary"></ion-icon>
+              <ion-label>Бухгалтерия</ion-label>
+          </ion-item>
         </ion-item-group>
         <!--
         <ion-item lines="full" button detail>
@@ -307,7 +311,7 @@ import {
   rocketOutline,
   briefcaseOutline,
 
-  pieChartOutline,
+  pieChartOutline
 } from "ionicons/icons";
 
 import User     from "@/scripts/User.js";

@@ -19,7 +19,7 @@
                     <ion-select-option value="courier">Курьер #</ion-select-option>
                 </ion-select>
 
-                <ion-label>{{transaction.trans_holder_label}}</ion-label>
+                <ion-label @click="holderIdPick()">{{transaction.trans_holder_label}}</ion-label>
                 <ion-button slot="end" @click="holderIdPick()" >
                     <ion-icon :icon="searchOutline"/>
                 </ion-button>
@@ -37,8 +37,10 @@
                 <ion-toggle v-model="transaction.is_disabled" />
             </ion-item>
             <ion-item lines="none">
-                <ion-note>
+                <ion-note v-if="transaction.created_at">
                 Создано {{transaction.created_user_name}} {{transaction.created_at}}
+                </ion-note>
+                <ion-note v-if="transaction.created_at">
                 Изменено {{transaction.updated_user_name}} {{transaction.updated_at}}
                 </ion-note>
             </ion-item>
@@ -46,7 +48,7 @@
         <ion-grid v-if="transaction">
             <ion-row>
                 <ion-col><ion-button color="medium" @click="itemDelete()" expand="block">Удалить</ion-button></ion-col>
-                <ion-col><ion-button color="primary" @click="itemUpdate()" expand="block">Сохранить</ion-button></ion-col>
+                <ion-col><ion-button color="primary" @click="itemSave()" expand="block">Сохранить</ion-button></ion-col>
             </ion-row>
         </ion-grid>
     </base-layout>
@@ -175,6 +177,10 @@ export default {
             this.itemGet();
         },
         async itemGet(){
+            if(this.transactionId==0){
+                this.transaction={}
+                return
+            }
             let request={
                 trans_id:this.transactionId
             };
@@ -228,6 +234,9 @@ export default {
             }catch{/** */}
         },
         async holderIdPick(){
+            if(!this.transaction.trans_holder){
+                return
+            }
             const itemType=this.transaction.trans_holder
             const modal = await modalController.create({
                 component: ItemPicker,
@@ -249,18 +258,25 @@ export default {
             this.itemRender()
         },
         validate(){
+            if( !(this.transaction.trans_date) ){
+                this.$flash("Дата не выбрана")
+                return false
+            }
+            if( !(this.transaction.trans_role) ){
+                this.$flash("Тип проводки не выбран")
+                return false
+            }
             if( !(this.transaction.trans_holder_id>0) ){
-                console.log(this.transaction)
                 this.$flash("Контрагент не выбран")
                 return false
             }
-            if( !this.transaction.trans_holder || !this.transaction.trans_role ){
-                this.$flash("Тип проводки не выбран")
+            if( (this.transaction.trans_amount==0) ){
+                this.$flash("Сумма должна не равняться нулю")
                 return false
             }
             return true
         },
-        async itemUpdate(){
+        async itemSave(){
             if(!this.validate()){
                 return;
             }
@@ -275,7 +291,8 @@ export default {
                 is_disabled:this.transaction.is_disabled,
             }
             try{
-                await jquery.post(`${this.$heap.state.hostname}Transaction/itemUpdate`,JSON.stringify(request))
+                const remoteFunction=request.trans_id?'itemUpdate':'itemCreate'
+                await jquery.post(`${this.$heap.state.hostname}Transaction/${remoteFunction}`,JSON.stringify(request))
                 this.$flash("💾 сохранено")
                 this.$router.go(-1);
             }

@@ -40,6 +40,7 @@
     </ion-accordion>
   </ion-accordion-group>
 
+  <ion-searchbar v-model="q" placeholder="Поиск по сумме или описанию" @ionChange="listGet()" />
   <ion-list v-if="ledger==null">
     <ion-item v-for="i in [1,2,3]" :key="i">
         <ion-text slot="start"><ion-skeleton-text animated style="width:50px" /></ion-text>
@@ -76,6 +77,7 @@ import {
   IonAccordionGroup,
   IonText,
   IonSkeletonText,
+  IonSearchbar,
 } from "@ionic/vue";
 import { settingsOutline }    from "ionicons/icons";
 import jquery                 from "jquery";
@@ -93,6 +95,7 @@ export default {
     IonAccordionGroup,
     IonText,
     IonSkeletonText,
+    IonSearchbar,
   },
   props:['account'],
   setup(){
@@ -107,6 +110,7 @@ export default {
       balance: '-',
       start_at: firstDay.toISOString().slice(0, 10),
       finish_at: today.toISOString().slice(0, 10),
+      q:'',
       ledger:null,
       meta:{},
       today:today
@@ -140,6 +144,7 @@ export default {
             start_at:this.start_at,
             finish_at:this.finish_at,
             account:this.account,
+            q:this.q,
         }
         const response= await jquery.post(`${this.$heap.state.hostname}Transaction/listGet`,request)
         this.ledger=response.ledger

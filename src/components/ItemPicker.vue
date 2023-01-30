@@ -46,7 +46,6 @@ import {
     IonImg,
     IonList,
     IonItem,
-    IonChip,
     IonSearchbar,
     IonSkeletonText,
 }                         from "@ionic/vue";
@@ -63,7 +62,6 @@ export default {
         IonImg,
         IonList,
         IonItem,
-        IonChip,
         IonSearchbar,
         IonSkeletonText,
     },

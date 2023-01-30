@@ -25,16 +25,13 @@
                                 <ion-select-option value="courier">Курьеры</ion-select-option>
                             </ion-select>
                         </ion-item>
-                        <ion-item button detail>
+                        <ion-item button detail @click="itemCreate()">
                             <ion-icon slot="start" :src="addOutline"/>
                             <ion-label>Добавить проводку</ion-label>
                         </ion-item>
-                        
                     </ion-list>
                 </ion-card-content>
             </ion-card>
-
-
             <ledger-comp :account="ledgerAccount" :holder="ledgerHolder" :holderId="ledgerHolderId"/>
         </div>
     </base-layout>
@@ -93,6 +90,9 @@ export default {
     computed:{
     },
     methods:{
+        itemCreate(){
+            this.$router.push('/admin/transaction-edit-0')
+        }
     },
 }
 </script>
