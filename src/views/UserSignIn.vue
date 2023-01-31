@@ -206,14 +206,12 @@ export default{
       } catch{/** */}
     },
     async openModal() {
-      this.modalOpen = true;
-      var self = this;
+      this.modalOpen = true
+      const phone=this.user_phone_prefix??''+this.user_phone??''
       const modal = await modalController
         .create({
           component: UserPasswordReset,
-          componentProps: {
-            phone: self.user_phone
-          },
+          componentProps: {phone},
           initialBreakpoint: 0.5,
           breakpoints: [0.5, 0.75]
         })

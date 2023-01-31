@@ -62,7 +62,7 @@ ion-card .store-title{
     <ion-card button v-for="store_item in storeList" :key="store_item.store_id" @click="$router.push(`/catalog/store-${store_item.store_id}`)"  :class="store_item.is_opened==0?'closed':''">
       <router-link :to="`/catalog/store-${store_item.store_id}`">
         <div class="crop-to-fit">
-            <ion-img v-if="store_item.image_hash" :src="$heap.state.hostname +'/image/get.php/' +store_item.image_hash +'.300.300.webp'"/>
+            <ion-img v-if="store_item.image_hash" :src="$heap.state.hostname +'/image/get.php/' +store_item.image_hash +'.500.500.webp'"/>
         </div>
       </router-link>
         <ion-item lines="none" class="store-title">

@@ -21,8 +21,8 @@
                     <ion-chip color="primary" v-if="orderData.info.customer_location_address">
                         <ion-icon :src="locationOutline"/>
                         <a :href="`https://yandex.ru/maps/?pt=${orderData.info.customer_location_longitude},${orderData.info.customer_location_latitude}&z=19&l=map,trf`" target="_new">
-                            {{orderData.info.customer_location_address}}{{orderData.info.customer_location_comment}} 
-                        </a>
+                            {{orderData.info.customer_location_address}} 
+                        </a>{{orderData.info.customer_location_comment}} 
                     </ion-chip>
             </ion-item>
         </ion-accordion>

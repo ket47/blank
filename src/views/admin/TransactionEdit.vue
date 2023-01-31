@@ -112,6 +112,12 @@ const transTypes=[
         'trans_description':'Аванс за услуги сайта',
     },
     {
+        'trans_role':'supplier->capital.profit',
+        'trans_holder':'store',
+        'trans_name':'Продавец Бонус на услуги при регистрации',
+        'trans_description':'Бонус на услуги при регистрации на сайте',
+    },
+    {
         'trans_role':'money.account->courier',
         'trans_holder':'courier',
         'trans_name':'Курьер Выплата',

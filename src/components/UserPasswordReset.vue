@@ -1,9 +1,9 @@
 <template>
   <ion-header>
-    <ion-toolbar>
-      <ion-title>Напоминание пароля</ion-title>
-      <ion-icon :icon="closeCircle" @click="closeModal();" slot="end" size="large" color="medium"></ion-icon>
-    </ion-toolbar>
+      <ion-toolbar color="secondary">
+        <ion-title>Напоминание пароля</ion-title>
+        <ion-icon slot="end" @click="closeModal();" :icon="closeOutline" size="large"></ion-icon>
+      </ion-toolbar>
   </ion-header>
   <ion-content>
       <form novalidate>
@@ -38,7 +38,7 @@ import {
   modalController 
 }                   from '@ionic/vue';
 import {
-    closeCircle
+    closeOutline
 }                   from 'ionicons/icons';
 import jQuery       from "jquery";
 
@@ -57,7 +57,7 @@ export default {
   },
   props: [ 'phone' ],
   setup(){
-    return {closeCircle}
+    return {closeOutline}
   },
   data() {
     return {
@@ -78,9 +78,9 @@ export default {
         await jQuery.post(`${this.$heap.state.hostname}User/passwordReset`, requestData)
         this.$flash(`Ваш новый пароль выслан на номер '${this.userphone}'`)
       } catch(err){
-        const message=err.responseJSON.messages.error
-        if(message=='user_not_found'){
-          this.$flash(`Пользователь с телефоном '${this.userphone}' и именем '${this.username}' ненайден`)
+        const message=err?.responseJSON?.messages?.error
+        if(message=='user_notfound'){
+          this.$flash(`Пользователь с телефоном '${this.userphone}' и именем '${this.username}' не найден`)
         }else{
           this.$flash(`Не удалось восстановить пароль`)
         }
