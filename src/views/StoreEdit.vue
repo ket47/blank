@@ -832,10 +832,9 @@ export default  {
       try{
         await jQuery.post(heap.state.hostname + "Store/ownerSave",{store_id:this.storeId,action,owner_phone})
         if( action=='swap' ){
-          this.itemGet()
-        } else {
-          this.ownerListGet()
+          await this.itemGet()
         }
+        this.ownerListGet()
       }catch{
         this.$flash("Не удалось добавить администратора")
       }

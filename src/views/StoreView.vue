@@ -356,7 +356,7 @@ ion-chip .active-chip {
       </ion-list>
 
         <div style="scrollbar-width: none; overflow-x: scroll;display: flex;">
-          <div class="delivery-variant">
+          <div class="delivery-variant" v-if="storeItem.delivery_cost > 0">
             <div>
                 <ion-label>Доставит {{$heap.getters.settings.app_title}}</ion-label><br/>
                 <ion-text v-if="storeItem?.deliveryTime?.timeMin">{{storeItem.deliveryTime.timeMin}}-{{storeItem.deliveryTime.timeMax}}мин</ion-text>
