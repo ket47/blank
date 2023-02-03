@@ -75,7 +75,8 @@ export default  {
   data(){
     return {
       verification_code:null,
-      user_phone:this.$route.params.user_phone||this.$route.query.user_phone||''
+      user_phone:this.$route.params.user_phone||this.$route.query.user_phone||'',
+      is_sent:false
     }
   },
   created(){
@@ -86,6 +87,9 @@ export default  {
   },
   methods:{
     smsSend(){
+      if(this.is_sent){
+        return
+      }
       this.user_phone=this.$route.params.user_phone||this.$route.query.user_phone||'';
       if(!this.user_phone){
         return;
@@ -94,6 +98,7 @@ export default  {
         user_phone: this.user_phone
       }
       try{
+        this.is_sent=true
         jQuery.post( `${this.$heap.state.hostname}User/phoneVerificationSend`, requestData)
       }catch{/** */}
     },

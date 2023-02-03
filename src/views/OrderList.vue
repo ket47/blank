@@ -236,11 +236,12 @@ export default {
         },
         ionViewDidEnter() {
             this.courierReadinessCheck();
-            if(this.orderType=='active'){
-                this.listLoad('active');
-            } else {
-                this.orderType='active'
-            }
+            this.listLoad(this.orderType);
+            // if(this.orderType=='active'){
+            //     this.listLoad('active');
+            // } else {
+            //     this.orderType='active'
+            // }
         },
         ionViewDidLeave() {
             clearTimeout(this.clock);

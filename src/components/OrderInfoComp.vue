@@ -10,6 +10,7 @@
                 <ion-label>Покупатель <b>{{orderData.info.customer_name}}</b></ion-label>
             </ion-item>
             <ion-item slot="content">
+                <ion-label class="ion-text-wrap">
                     <ion-chip color="primary" v-if="orderData.info.customer_phone">
                         <ion-icon :src="callOutline"/>
                         <a :href="`tel:${orderData.info.customer_phone}`">{{orderData.info.customer_phone}}</a>
@@ -22,8 +23,12 @@
                         <ion-icon :src="locationOutline"/>
                         <a :href="`https://yandex.ru/maps/?pt=${orderData.info.customer_location_longitude},${orderData.info.customer_location_latitude}&z=19&l=map,trf`" target="_new">
                             {{orderData.info.customer_location_address}} 
-                        </a>{{orderData.info.customer_location_comment}} 
+                        </a>
                     </ion-chip>
+                    <ion-note v-if="orderData.info.customer_location_comment">
+                        Комментарий к адресу: {{orderData.info.customer_location_comment}} 
+                    </ion-note>
+                </ion-label>
             </ion-item>
         </ion-accordion>
         <ion-accordion v-if="orderData?.info?.courier_name">
@@ -31,6 +36,7 @@
                 <ion-label>Курьер <b>{{orderData.info.courier_name}}</b></ion-label>
             </ion-item>
             <ion-item slot="content">
+                <ion-label class="ion-text-wrap">
                     <ion-chip color="primary" v-if="orderData.info.courier_phone">
                         <ion-icon :src="callOutline"/>
                         <a :href="`tel:${orderData.info.courier_phone}`">{{orderData.info.courier_phone}}</a>
@@ -39,12 +45,7 @@
                         <ion-icon :src="mailOutline"/>
                         <a :href="`mailto:${orderData.info.courier_email}`">{{orderData.info.courier_email}}</a>
                     </ion-chip>
-                    <ion-chip color="primary" v-if="orderData.info.courier_location_address">
-                        <ion-icon :src="locationOutline"/>
-                        <a :href="`https://yandex.ru/maps/?pt=${orderData.info.courier_location_longitude},${orderData.info.customer_location_latitude}&z=19&l=map,trf`" target="_new">
-                            {{orderData.info.courier_location_address}} {{orderData.info.courier_location_comment}} 
-                        </a>
-                    </ion-chip>
+                </ion-label>
             </ion-item>
         </ion-accordion>
         <ion-accordion v-if="orderData?.info?.supplier_name">
@@ -52,6 +53,7 @@
                 <ion-label>Продавец <b>{{orderData.info.supplier_name}}</b></ion-label>
             </ion-item>
             <ion-item slot="content">
+                <ion-label class="ion-text-wrap">
                     <ion-chip color="primary" v-if="orderData.info.supplier_phone">
                         <ion-icon :src="callOutline"/>
                         <a :href="`tel:${orderData.info.supplier_phone}`">{{orderData.info.supplier_phone}}</a>
@@ -63,9 +65,13 @@
                     <ion-chip color="primary" v-if="orderData.info.supplier_location_address">
                         <ion-icon :src="locationOutline"/>
                         <a :href="`https://yandex.ru/maps/?pt=${orderData.info.supplier_location_longitude},${orderData.info.supplier_location_latitude}&z=19&l=map,trf`" target="_new">
-                            {{orderData.info.supplier_location_address}} {{orderData.info.supplier_location_comment}} 
+                            {{orderData.info.supplier_location_address}}
                         </a>
                     </ion-chip>
+                    <ion-note v-if="orderData.info.supplier_location_comment">
+                        Комментарий к адресу: {{orderData.info.supplier_location_comment}} 
+                    </ion-note>
+                </ion-label>
             </ion-item>
         </ion-accordion>
     </ion-accordion-group>
@@ -79,6 +85,7 @@ import {
     IonItem,
     IonAccordion,
     IonAccordionGroup,
+    IonNote,
 }                       from '@ionic/vue';
 import { 
     locationOutline,
@@ -96,6 +103,7 @@ export default({
     IonItem,
     IonAccordion,
     IonAccordionGroup,
+    IonNote,
     },
     setup() {
         return { 

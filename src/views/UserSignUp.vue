@@ -216,7 +216,14 @@ export default  {
         this.phoneVerify()
         localStorage.signInData = JSON.stringify({user_phone: this.user_phone_prefix+this.user_phone,user_pass: this.user_pass});
       } catch(err){
-        let exception_code='unknown';
+        let exception_code=err?.responseJSON?.messages?.error;
+        if(exception_code=='user_phone_unverified'){
+          this.phoneVerify();
+          return
+
+        }
+        
+        exception_code='unknown';
         try{
           const invalid_field=Object.keys(JSON.parse(err.responseJSON.messages.error))[0]
           const invalid_reason=Object.values(JSON.parse(err.responseJSON.messages.error))[0]
