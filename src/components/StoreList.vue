@@ -43,8 +43,8 @@ ion-card .store-title{
     <ion-card-header>
       <ion-card-title>Вне зоны обслуживания</ion-card-title>
     </ion-card-header>
-    <ion-card-content style="font-family:Roboto">
-      Поблизости к вам нет подходящих ресторанов и магазинов.
+    <ion-card-content>
+      Поблизости к адресу <b>{{ $heap.state.user.location_main.location_address??'доставки заказа' }}</b>, который вы выбрали, пока нет нет подходящих ресторанов и магазинов. Попробуйте другой адрес.
     </ion-card-content>
   </ion-card>
   
@@ -102,7 +102,10 @@ import {
   IonCardContent,
   IonSkeletonText,
 }                   from "@ionic/vue";
-import {  timeOutline, searchOutline }    from 'ionicons/icons'
+import {  
+  timeOutline, 
+  searchOutline
+ }                  from 'ionicons/icons'
 import jQuery       from "jquery";
 import heap         from "@/heap";
 import Utils        from '@/scripts/Utils.js'
@@ -134,10 +137,17 @@ export default {
   data() {
     return {
       storeList: null,
+      can_reload_at:0,
     };
   },
   methods: {
     async listGet() {
+      const now=Date.now()
+      if(this.can_reload_at>now){
+        return
+      }
+      this.can_reload_at=now+2000
+
       var main_address = heap.state.user.location_main;
       if (!main_address) {
         return;
@@ -159,8 +169,12 @@ export default {
       this.listGet();
     }) 
     this.$topic.on('userMainLocationSet',mainloc=>{
+      this.can_reload_at=0
       this.listGet();
     })
+    this.listGet();
+  },
+  ionViewDidEnter(){
     this.listGet();
   }
 };
