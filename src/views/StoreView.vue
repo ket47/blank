@@ -130,25 +130,12 @@ ion-accordion-group .accordion-expanding .store-description{
 
 
 .groups-container{
-  border-bottom: 1px solid lightgray;
   display: block ruby;
 }
 .groups-container ion-segment-button {
-  font-weight: bold;
-  margin: 0 5px;
-  text-transform: initial;
-  min-height: 35px;
+  min-height: 45px;
 }
 
-.sub-groups-container {
-  display: block ruby;
-}
-.sub-groups-container span ion-label {
-  margin: 0;
-}
-.sub-groups-container span.segment-button-checked ion-label {
-  color: white;
-}
 
 
 .store-page .search-container {
@@ -233,7 +220,7 @@ ion-accordion-group .accordion-expanding .store-description{
   z-index: 10000;
   width: 100vw;
   background-color: white;
-  border-bottom: 1px solid lightgray;
+  ----border-bottom: 1px solid lightgray;
 }
 .group-fixed-block.hidden-block {
   display: none;
@@ -396,6 +383,8 @@ ion-chip .active-chip {
           <ion-label>{{ group_item.group_name }}</ion-label>
         </ion-segment-button>
       </ion-segment>
+
+      <!--
       <ion-segment color="light"   v-if="storeGroups[groupSelectedParentId]" scrollable class="sub-groups-container">
         <span
           v-show="storeProducts[group_item.group_id]"
@@ -408,6 +397,9 @@ ion-chip .active-chip {
 
         </span>
       </ion-segment>
+
+      -->
+
     </div>
 
     <ion-searchbar class="search-container" v-model="searchRequest" placeholder="Поиск у этого продавца"
@@ -652,6 +644,7 @@ export default{
           storeGroupsOrdered[storeGroupsUnordered[group_id].order]=storeGroupsUnordered[group_id]
         }
         this.storeGroups=storeGroupsOrdered
+
         this.productListGet();
       }catch(err){/** */}
     },
@@ -687,7 +680,7 @@ export default{
         }
       }
       if( !parent_group_id ){
-        parent_group_id = Object.keys(this.storeGroups)[0]
+        parent_group_id = this.storeGroups[0]?.group_id
       }
       
       const selectFirstChip=false;//sub_group_id?false:true
@@ -705,9 +698,14 @@ export default{
       }
       this.groupSelectedParentId = parent_group_id;
       const swiper = document.querySelector('.product-list-slider').swiper;
-      const slide_index = Object.keys(this.storeGroups).indexOf(this.groupSelectedParentId);
-      swiper.slideTo(slide_index,100,false);
-      this.groupSliderAdjustHeight()
+      const slide_index =this.storeGroups.findIndex(group=>group.group_id==parent_group_id)
+      if(slide_index>=0){
+        swiper.slideTo(slide_index,100,false);
+        this.groupSliderAdjustHeight()
+      }
+
+      //const slide_index = Object.keys(this.storeGroups).indexOf(this.groupSelectedParentId);
+
       // try{
       //   if(selectFirstChip){
       //     const first_sub_group_id=Object.keys(this.storeGroups[parent_group_id].children)[0];
@@ -738,10 +736,8 @@ export default{
     },
     groupSliderChanged(event) {
       const slideIndex=event.activeIndex
-      const parent_groud_id = Object.keys(this.storeGroups)[slideIndex];
-      //const sub_group_id =  Object.keys(this.storeGroups[parent_groud_id].children)[0];
+      const parent_groud_id = this.storeGroups[slideIndex].group_id;
       this.groupSelectParent(parent_groud_id,1)
-      //this.groupSelectSub(sub_group_id);
     },
     groupSliderAdjustHeight(){
       const sliderContentHeight=document.querySelector('.product-list-slider .swiper-slide.swiper-slide-active')?.scrollHeight
