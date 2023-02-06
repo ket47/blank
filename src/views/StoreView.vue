@@ -435,7 +435,6 @@ ion-chip .active-chip {
       class="product-list-slider" 
       @slideChange="groupSliderChanged($event)"
     >
-      {{storeGroups}}
       <swiper-slide v-for="parent_group_item in storeGroups" :key="parent_group_item.group_id">
         <ion-grid class="product-list">
           <ion-row
@@ -604,9 +603,6 @@ export default{
 
       this.productListPrepare(response.product_list);
 
-
-      console.log(this.storeProducts);
-
       this.groupOtherAdd()
       let self=this
       setTimeout(()=>{
@@ -650,7 +646,12 @@ export default{
 
     async groupTreeGet(filter) {
       try{
-        this.storeGroups=await jQuery.get(`${heap.state.hostname}Product/groupTreeGet`, {store_id: filter.store_id})
+        const storeGroupsUnordered=await jQuery.get(`${heap.state.hostname}Product/groupTreeGet`, {store_id: filter.store_id})
+        let storeGroupsOrdered=[]
+        for( let group_id in storeGroupsUnordered){
+          storeGroupsOrdered[storeGroupsUnordered[group_id].order]=storeGroupsUnordered[group_id]
+        }
+        this.storeGroups=storeGroupsOrdered
         this.productListGet();
       }catch(err){/** */}
     },

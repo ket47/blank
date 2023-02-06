@@ -581,6 +581,8 @@ export default  {
     async itemGet(){
       try{
         this.storeItem=await jQuery.post( heap.state.hostname + "Store/itemGet", { store_id: this.storeId })
+        this.storeItem.store_pickup_allow*=1
+        this.storeItem.store_delivery_allow*=1
         this.itemParseFlags()
         this.itemMarkGroups()
         this.itemValidityCalc()
@@ -770,8 +772,8 @@ export default  {
       }
       try{
         let user_phone=this.storeItem.store_phone.replace(/\D/g,"")
-        if(user_phone.length>10){
-          user_phone=user_phone.substring(user_phone.length-10)
+        if(user_phone.length>12){
+          user_phone='+'+user_phone.substring(user_phone.length-12)
         }
         this.storeItem.store_phone=user_phone
       } catch{/** */}

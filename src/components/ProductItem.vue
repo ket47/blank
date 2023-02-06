@@ -36,18 +36,24 @@
 .disabled .product_list_item_img{
     border: 4px solid #666;
 }
+.promo .product_list_item_img{
+    border: 4px solid green;
+}
 </style>
 <template>
     <div :class="item_class" :id="`product_list_item${productItem.product_id}`">
+        <div style="position:relative" v-if="options">
+            <div class="product_list_item_img" style="position:absolute;background-color:#679;top:-9px;left:9px;z-index:-1"></div>
+            <div class="product_list_item_img" style="position:absolute;background-color:#9ac;top:-6px;left:6px;z-index:-1"></div>
+            <div class="product_list_item_img" style="position:absolute;background-color:#cde;top:-3px;left:3px;z-index:-1"></div>
+        </div>
         <div class="product_list_item_img">
             <div style="position:relative;top:-50%;" v-if="productItem.is_disabled=='0' && !productItem.deleted_at">
                 <cart-add-buttons buttonLayout="vertical" :productItem="productItem"></cart-add-buttons>
             </div> 
             <ion-img class="blur-image" :src="`${$heap.state.hostname}image/get.php/${productItem.image_hash}.200.200.webp`"/>
             <ion-img @click="$router.push(`/catalog/product-${productItem.product_id}`)" :src="`${$heap.state.hostname}image/get.php/${productItem.image_hash}.200.200.webp`"/>
-            <ion-chip v-if="options" :outline="true" style="position:absolute;bottom:0;right:0">
-                варианты
-            </ion-chip> 
+            <ion-icon v-if="options" :src="layersOutline" color="primary" size="large" style="position:absolute;bottom:3px;left:3px"/>
         </div>
         <div style="height:5em;overflow:hidden">
             <div style="color:black;height:3em;font-size:1em;overflow:hidden;line-height:1.4em; font-weight: bold;" @click="$router.push(`/catalog/product-${productItem.product_id}`)">
@@ -73,20 +79,29 @@
 <script>
 import {
   IonImg,
-  IonChip,
+  IonIcon,
 }                       from '@ionic/vue'
 import CartAddButtons   from '@/components/CartAddButtons';
+import { 
+  layersOutline
+}                       from "ionicons/icons";
 export default {
     components:{
         IonImg,
-        IonChip,
+        IonIcon,
         CartAddButtons,
     },
     props:['productItem'],
+    setup(){
+        return {layersOutline}
+    },
     computed:{
         item_class(){
             if(this.productItem.deleted_at){
                 return 'deleted'
+            }
+            if(this.productItem.product_final_price!=this.productItem.product_price){
+                return 'promo'
             }
             if(this.productItem.is_disabled==1){
                 return 'disabled'
