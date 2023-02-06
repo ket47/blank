@@ -142,16 +142,16 @@ export default {
   },
   methods: {
     async listGet() {
+      var main_address = heap.state.user.location_main;
+      if (!main_address) {
+        return;
+      }
       const now=Date.now()
       if(this.can_reload_at>now){
         return
       }
       this.can_reload_at=now+2000
 
-      var main_address = heap.state.user.location_main;
-      if (!main_address) {
-        return;
-      }
       try{
         const found=await jQuery.post(heap.state.hostname + "Store/listNearGet", {location_id: main_address.location_id,})
         this.storeList=this.storeListCalculate(found)
