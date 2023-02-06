@@ -57,7 +57,7 @@
             <div v-for="promo in compPromoList" :key="promo.promo_id">
                 <ion-item lines="none">
                     <ion-icon slot="start" :icon="giftOutline" color="medium"/>
-                    <ion-text>{{promo.promo_name}}</ion-text>
+                    <ion-text>{{promo.promo_name}} до {{promo.exp_date_time}}</ion-text>
                     <ion-text slot="end"><b>{{promo.promo_value}}{{$heap.state.currencySign}}</b></ion-text>
                 </ion-item>
                 <ion-item>
