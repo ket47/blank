@@ -603,6 +603,10 @@ export default{
       }catch(err){/** */}
 
       this.productListPrepare(response.product_list);
+
+
+      console.log(this.storeProducts);
+
       this.groupOtherAdd()
       let self=this
       setTimeout(()=>{
@@ -610,11 +614,13 @@ export default{
       }, 0)
     },
     productListPrepare(product_list) {
-      this.storeProducts = {};
+      let category_order=1
+      this.storeProducts = {}
       for (var product of product_list) {
         if (this.storeGroups){
           if (!this.storeProducts[product.group_id??0]) {
-            this.storeProducts[product.group_id??0] = [];
+            this.storeProducts[product.group_id??0] = []
+            this.storeProducts[product.group_id??0].category_order=category_order++
           }
         }
         this.storeProducts[product.group_id??0].push(product);
