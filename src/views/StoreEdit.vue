@@ -221,11 +221,11 @@
           <ion-label>Изображения магазина в приложении *</ion-label>
         </ion-item-divider>
 
-        <image-tile-comp :images="storeItem.images" :image_holder_id="storeItem.store_id" controller="Store" title="Витрина продавца" ref="storeImgs"></image-tile-comp>
+        <image-tile-comp :images="storeItem.images" :image_holder_id="storeItem.store_id" controller="Store" title="Витрина продавца 5 фото" ref="storeImgs"></image-tile-comp>
         <ion-button @click="$refs.storeImgs.take_photo()" color="light" expand="block">
           <ion-icon :src="cameraOutline" slot="start"/> Добавить фото на витрину
         </ion-button>
-        <image-tile-comp :images="storeItem.avatar" :image_holder="'store_avatar'" :image_holder_id="storeItem.store_id" controller="Store" title="Аватар продавца" ref="storeAvatar"></image-tile-comp>
+        <image-tile-comp :images="storeItem.avatar" :image_holder="'store_avatar'" :image_holder_id="storeItem.store_id" controller="Store" title="Аватар продавца 1 фото" ref="storeAvatar"></image-tile-comp>
         <ion-button @click="$refs.storeAvatar.take_photo()" color="light" expand="block">
           <ion-icon :src="cameraOutline" slot="start"/> Добавить аватар
         </ion-button>

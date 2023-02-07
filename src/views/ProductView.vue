@@ -102,6 +102,7 @@ ion-accordion-group .accordion-expanding .product-description{
           <ion-icon slot="start" color="primary" :src="pricetagOutline"/>
 
           <ion-label v-if="productItem.product_unit=='порция'">Цена за {{weight_in_gramms}}г</ion-label>
+          <ion-label v-else-if="productItem.product_unit=='порция мл'">Цена за {{weight_in_gramms}}мл</ion-label>
           <ion-label v-else>Цена за {{productItem.product_unit}}</ion-label>
 
           <ion-label slot="end" color="primary" style="font-size:1.2em">

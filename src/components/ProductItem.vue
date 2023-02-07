@@ -66,12 +66,9 @@
                 <b style="font-weight: bold; margin: 0; font-size: 1.2em">{{$heap.state.currencySign}}</b>
             </span>
             /
-            <span v-if="productItem.product_unit=='порция'" style="color:var(--ion-color-medium)">
-                {{weight_in_gramms}}г
-            </span>
-            <span v-else style="color:var(--ion-color-medium)">
-                {{productItem.product_unit}}
-            </span>
+            <span v-if="productItem.product_unit=='порция'" style="color:var(--ion-color-medium)">{{weight_in_gramms}}г</span>
+            <span v-else-if="productItem.product_unit=='порция мл'" style="color:var(--ion-color-medium)">{{weight_in_gramms}}мл</span>
+            <span v-else style="color:var(--ion-color-medium)">{{productItem.product_unit}}</span>
         </div>
     </div>
 </template>

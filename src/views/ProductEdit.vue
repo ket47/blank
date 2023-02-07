@@ -168,14 +168,16 @@
             <ion-label>Единица*</ion-label>
             <ion-select v-model="productItem.product_unit" name="product_unit" slot="end"  @ionChange="saveForm">
               <ion-select-option value="шт">штука</ion-select-option>
-              <ion-select-option value="порция">порция</ion-select-option>
+              <ion-select-option value="порция">порция вес</ion-select-option>
+              <ion-select-option value="порция мл">порция объем</ion-select-option>
               <ion-select-option value="кг">килограмм</ion-select-option>
               <ion-select-option value="м">метр</ion-select-option>
               <ion-select-option value="л">литр</ion-select-option>
             </ion-select>
           </ion-item>
           <ion-item v-if="productItem.product_unit!='кг'">
-            <ion-label>Вес 1{{productItem.product_unit}} (кг)*</ion-label>
+            <ion-label v-if="productItem.product_unit=='порция мл'">Объем л*</ion-label>
+            <ion-label v-else>Вес 1{{productItem.product_unit}} (кг)*</ion-label>
             <ion-input v-model="productItem.product_weight" name="product_weight" type="number" step="0.1" inputmode="numeric" pattern="\d\." slot="end"/>
           </ion-item>
         </ion-item-group>
@@ -217,7 +219,7 @@
       <ion-item-divider>
         <ion-label>Изображения товара*</ion-label>
       </ion-item-divider>
-      <image-tile-comp :images="productItem.images" :image_holder_id="productItem.product_id" controller="Product" ref="productImgs"></image-tile-comp>
+      <image-tile-comp :images="productItem.images" :image_holder_id="productItem.product_id" title="Витрина товара 5 фото" controller="Product" ref="productImgs"></image-tile-comp>
       <ion-button @click="$refs.productImgs.take_photo()" color="light" expand="block">
         <ion-icon :src="cameraOutline" slot="start"/> Добавить фото на витрину
       </ion-button>
