@@ -2,13 +2,17 @@
 import jQuery from "jquery";
 import heap  from '@/heap';
 import Topic from '@/scripts/Topic';
-import Order from '@/scripts/Order';
+//import Order from '@/scripts/Order';
 import { Geolocation } from '@capacitor/geolocation';
 import { toastController }  from '@ionic/vue';
 
+import { initializeApp } from "firebase/app";
+import { getMessaging, getToken } from "firebase/messaging";
+
 const User = {
     init(){
-        this.geo.trackingStart();
+        //this.geo.trackingStart();
+        this.firebase.init()
     },
     async settingsGet(){
         const settings=await jQuery.get( heap.state.hostname + "User/itemSettingsGet")
@@ -254,6 +258,38 @@ const User = {
             Geolocation.clearWatch({id:User.geo.clock});
         }
     },
+    firebase:{
+        tokenSaved:false,
+        init(){
+            Topic.on('userGet',(user)=>{
+                if( !User.firebase.tokenSaved && user.user_id>0 && heap.state.settings.firebase ){//user signed in
+                    initializeApp(heap.state.settings.firebase);
+                    setTimeout(function(){
+                        User.firebase.saveNotificationToken()
+                    },2*1000)
+                }
+            })
+        },
+        async saveNotificationToken(){
+            if(Notification.permission!='granted'){
+                return
+            }
+            try{
+                const vapidKey=heap.state.settings.firebase.vapidKey
+                const messaging = getMessaging();
+                const token=await getToken(messaging, {vapidKey});
+                const request={
+                    type:'webpush',
+                    registration_id:token,
+                    user_agent:navigator.userAgent
+                }
+                await jQuery.post(`${heap.state.hostname}MessageSub/itemCreate`,request)
+                User.firebase.tokenSaved=true;
+            }catch(err){
+                console.log(err)
+            }
+        },
+    }
 }
 User.init();
 export default User;

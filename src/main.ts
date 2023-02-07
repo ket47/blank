@@ -37,9 +37,9 @@ import Topic                from '@/scripts/Topic.js';
 import User                 from '@/scripts/User.js'
 import Order                from '@/scripts/Order.js'
 import jQuery               from "jquery";
+import Metrics              from '@/scripts/Metrics.js'
 
 import './registerServiceWorker';
-// import OneSignalVuePlugin from '@onesignal/onesignal-vue3'
 
 
 const FlashNotice={
@@ -174,3 +174,5 @@ if(platformMobile){
 }
 app.mount('#app');
 User.autoSignIn();
+
+Metrics.recordIncomingUser()
