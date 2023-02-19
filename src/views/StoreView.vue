@@ -685,12 +685,12 @@ export default{
       
       const selectFirstChip=false;//sub_group_id?false:true
       this.groupSelectParent(parent_group_id,selectFirstChip)
-      if(sub_group_id){
-        const self=this
-        setTimeout(()=>{
-          self.groupSelectSub(sub_group_id)
-        },0)
-      }
+      // if(sub_group_id){
+      //   const self=this
+      //   setTimeout(()=>{
+      //     self.groupSelectSub(sub_group_id)
+      //   },0)
+      // }
     },
     groupSelectParent(parent_group_id,selectFirstChip=false){
       if(this.groupSelectedParentId == parent_group_id || !document.querySelector('.product-list-slider')){
@@ -717,23 +717,23 @@ export default{
       // } catch(err){/** */}
     },
 
-    groupSelectSub(sub_group_id){
-      if(this.groupSelectedSubId == sub_group_id){
-        //return
-      }
+    // groupSelectSub(sub_group_id){
+    //   if(this.groupSelectedSubId == sub_group_id){
+    //     //return
+    //   }
 
-      this.groupSelectedSubId = sub_group_id
-      document.querySelectorAll(".groups-container ion-chip").forEach(chip=>{
-        chip.classList.remove("active-chip");
-      });
-      try{
-        this.$refs[`group-chip-${sub_group_id}`][0].$el.classList.add("active-chip");
-      }catch(err){ 
-        /** */
-      }
+    //   this.groupSelectedSubId = sub_group_id
+    //   document.querySelectorAll(".groups-container ion-chip").forEach(chip=>{
+    //     chip.classList.remove("active-chip");
+    //   });
+    //   try{
+    //     this.$refs[`group-chip-${sub_group_id}`][0].$el.classList.add("active-chip");
+    //   }catch(err){ 
+    //     /** */
+    //   }
       
-      this.scrollTo(sub_group_id);
-    },
+    //   this.scrollTo(sub_group_id);
+    // },
     groupSliderChanged(event) {
       const slideIndex=event.activeIndex
       const parent_groud_id = this.storeGroups[slideIndex].group_id;
@@ -747,42 +747,42 @@ export default{
         document.querySelector('.product-list-slider.swiper').style.maxHeight=''
       }
     },
-    scrollTo(sub_group_id) {
-      if (!this.$refs["group-" + sub_group_id]?.[0] ) {
-        return;
-      }
-      const offset=document.querySelector("ion-content.store-page").shadowRoot.querySelector("main").scrollTop;
-      const anchor=this.$refs["group-" + sub_group_id][0].$el.getBoundingClientRect().top;
-      var elementPosition = offset + anchor - this.offsetModificator - (window.innerHeight/4);
-      var first_group_id = Object.keys(this.storeGroups[this.groupSelectedParentId]?.children)[0] || 0;
-      if(first_group_id == sub_group_id){
-        elementPosition = offset+anchor - this.offsetModificator;
-      }
-      document
-        .querySelector("ion-content.store-page")
-        .shadowRoot.querySelector("main")
-        .scrollTo({ top: elementPosition, behavior: "smooth" });
-    },
+    // scrollTo(sub_group_id) {
+    //   if (!this.$refs["group-" + sub_group_id]?.[0] ) {
+    //     return;
+    //   }
+    //   const offset=document.querySelector("ion-content.store-page").shadowRoot.querySelector("main").scrollTop;
+    //   const anchor=this.$refs["group-" + sub_group_id][0].$el.getBoundingClientRect().top;
+    //   var elementPosition = offset + anchor - this.offsetModificator - (window.innerHeight/4);
+    //   var first_group_id = Object.keys(this.storeGroups[this.groupSelectedParentId]?.children)[0] || 0;
+    //   if(first_group_id == sub_group_id){
+    //     elementPosition = offset+anchor - this.offsetModificator;
+    //   }
+    //   document
+    //     .querySelector("ion-content.store-page")
+    //     .shadowRoot.querySelector("main")
+    //     .scrollTo({ top: elementPosition, behavior: "smooth" });
+    // },
     
-    onScroll(event) {
-      const offsetTop=document.querySelector(".product-list-slider")?.offsetTop;
-      const offsetHeight=document.querySelector(".group-fixed-block")?.offsetHeight;
-      if (offsetTop - offsetHeight - 100 < event.detail.scrollTop ) {
-        document.querySelector(".group-fixed-block") && (document.querySelector(".group-fixed-block").className = "group-fixed-block");
-      } else {
-        document.querySelector(".group-fixed-block") && (document.querySelector(".group-fixed-block").className = "group-fixed-block hidden-block");
-      }
-      var productGroupElementList = document.querySelectorAll(".swiper-slide-active .product-list ion-row");
-      for (var row of productGroupElementList) {
-        if (
-          row.getBoundingClientRect().top - this.offsetModificator <= (window.innerHeight - window.innerHeight/4) &&
-          row.getBoundingClientRect().bottom + this.offsetModificator >= (window.innerHeight - window.innerHeight/4) &&
-          row.dataset.group_id
-        ) {
-          break;
-        }
-      }
-    },
+    // onScroll(event) {
+    //   const offsetTop=document.querySelector(".product-list-slider")?.offsetTop;
+    //   const offsetHeight=document.querySelector(".group-fixed-block")?.offsetHeight;
+    //   if (offsetTop - offsetHeight - 100 < event.detail.scrollTop ) {
+    //     document.querySelector(".group-fixed-block") && (document.querySelector(".group-fixed-block").className = "group-fixed-block");
+    //   } else {
+    //     document.querySelector(".group-fixed-block") && (document.querySelector(".group-fixed-block").className = "group-fixed-block hidden-block");
+    //   }
+    //   var productGroupElementList = document.querySelectorAll(".swiper-slide-active .product-list ion-row");
+    //   for (var row of productGroupElementList) {
+    //     if (
+    //       row.getBoundingClientRect().top - this.offsetModificator <= (window.innerHeight - window.innerHeight/4) &&
+    //       row.getBoundingClientRect().bottom + this.offsetModificator >= (window.innerHeight - window.innerHeight/4) &&
+    //       row.dataset.group_id
+    //     ) {
+    //       break;
+    //     }
+    //   }
+    // },
   },
   mounted(){
     this.query = this.$route.query;
