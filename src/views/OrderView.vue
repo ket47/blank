@@ -89,6 +89,7 @@ export default({
             order_id:this.$route.params.id,
             order:null,
             orderIsLoading:false,
+            orderAutoloadClock:null,
             isOpenDeliveryRejectionPopover:false
         }
     },
@@ -100,7 +101,7 @@ export default({
             try{
                 this.orderIsLoading=true
                 this.order=await Order.api.itemGet(this.order_id);
-                //this.itemDetailsGet();
+                this.itemAutoReload()
             } catch(err) {
                 switch(err.status){
                     case 404:
@@ -112,19 +113,14 @@ export default({
             }
             this.orderIsLoading=false;
         },
-        // itemDetailsGet(){
-        //     if( this.order.stage_current=='supplier_corrected' ){
-        //         this.itemDetailsPrepaymentGet()
-        //     }
-        // },
-        // async itemDetailsPrepaymentGet(){
-        //     try{//cache?????
-        //         const response=await jQuery.post(this.$heap.state.hostname+'Order/itemDetailsPrepaymentGet',{'order_id':this.order_id})
-        //         this.order.order_sum_prepayed=response.order_sum_prepayed
-        //     }catch(err){
-        //         //
-        //     }
-        // },
+        itemAutoReload(){
+            clearTimeout(this.orderAutoloadClock)
+            const self=this
+            this.orderAutoloadClock=setTimeout(()=>{
+                self.itemGet()
+                console.log('autoreload')
+            },60*1000)
+        },
         async onStageCreate(order_id, order_stage_code){
             if( order_stage_code.includes('action') ){
                 order_stage_code=order_stage_code.split('_').splice(1).join('_');
@@ -258,6 +254,7 @@ export default({
     ionViewDidEnter() {
         if(this.order==null){
             this.itemGet();
+            console.log('viewenter')
         }
     },
     ionViewDidLeave(){
@@ -273,6 +270,7 @@ export default({
         this.$topic.on('pushStageChanged',data=>{
             if( self.order?.order_id==data?.order_id && self.order.stage_current!=data.stage ){
                 self.itemGet();
+                console.log('pushStageChanged')
             }
         })
     }
