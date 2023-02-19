@@ -173,9 +173,6 @@ export default {
       this.listGet();
     })
     this.listGet();
-  },
-  ionViewDidEnter(){
-    this.listGet();
   }
 };
 </script>

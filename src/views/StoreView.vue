@@ -268,7 +268,7 @@ ion-chip .active-chip {
 </style>
 
 <template>
-  <base-layout pageDefaultBackLink="/catalog" page-class="store-page" :contentOnScroll="onScroll" :page-title="this.storeItem.store_name??'Магазин'">
+  <base-layout pageDefaultBackLink="/catalog" page-class="store-page" :page-title="this.storeItem.store_name??'Магазин'">
   <div>
     <div class="store-info-container">
       <image-slider-comp :imageList="storeItem.images" :imgHeight="300" :mode="'crop-to-fit'"></image-slider-comp>

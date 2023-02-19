@@ -3,7 +3,7 @@
       <home-slider/>
       <user-address-widget :deliveryTime="primaryDeliveryTime"/>
       <!-- <home-primary-category-widget @deliveryTimeGet="deliveryTime=>{primaryDeliveryTime=deliveryTime}"/> -->
-      <store-list/>
+      <store-list ref="homeStoreList"/>
   </base-layout>
 </template>
 
@@ -30,6 +30,9 @@ export default {
     return {
       primaryDeliveryTime:null
     }
+  },
+  ionViewDidEnter(){
+    this.$refs.homeStoreList.listGet();
   }
 };
 </script>

@@ -259,6 +259,7 @@ export default({
     },
     ionViewDidLeave(){
         this.order=null;
+        clearTimeout(this.orderAutoloadClock)
     },
     created(){
         const self=this
