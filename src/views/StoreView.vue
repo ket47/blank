@@ -352,7 +352,7 @@ ion-chip .active-chip {
               <ion-text v-if="storeItem.delivery_cost > 0"><b>{{storeItem.delivery_cost}}₽</b></ion-text>
             </div>
           </div>
-          <div class="delivery-variant" v-if="storeItem.store_delivery_allow">
+          <div class="delivery-variant" v-if="storeItem.store_delivery_allow==1">
             <div>
               <ion-label>Доставит {{storeItem.member_of_groups.group_names}}</ion-label><br/>
             </div>
@@ -360,7 +360,7 @@ ion-chip .active-chip {
               <ion-text v-if="storeItem.delivery_cost > 0"><b>{{storeItem.store_delivery_cost}}₽</b></ion-text>
             </div>
           </div>
-          <div class="delivery-variant" v-if="storeItem.store_pickup_allow">
+          <div class="delivery-variant" v-if="storeItem.store_pickup_allow==1">
             <div>
               <ion-label>Самовывоз</ion-label><br/>
             </div>
@@ -560,7 +560,7 @@ export default{
         switch(exception_code){
             case 'notfound':
                 this.$flash("Продавец не найден")
-                this.$router.push("/catalog")
+                this.$router.replace("/catalog")
                 break;
         }
         return false
@@ -650,7 +650,7 @@ export default{
     },
     groupOtherAdd(){
       if(this.storeProducts[0]){
-        this.storeGroups[0]={
+        this.storeGroups.push({
           group_id:'other',
           group_name:"Другое",
           image_hash:"",
@@ -663,7 +663,7 @@ export default{
               image_hash:""
             }
           }
-        }
+        })
       }
     },
     groupSelect(){

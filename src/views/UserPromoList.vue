@@ -61,8 +61,13 @@
                     <ion-text slot="end"><b>{{promo.promo_value}}{{$heap.state.currencySign}}</b></ion-text>
                 </ion-item>
                 <ion-item>
-                    <ion-text v-if="promo.is_disabled" color="warning" style="cursor:pointer" @click="helpNotActive()">не активирована</ion-text>
-                    <ion-icon v-if="promo.is_disabled" color="warning" :icon="helpCircle" @click="helpNotActive()" style="cursor:pointer"/>
+                    <div v-if="promo.is_expired==1">
+                        <ion-text color="danger">просрочена</ion-text>
+                    </div>
+                    <div v-else-if="promo.is_disabled==1">
+                        <ion-text color="warning" style="cursor:pointer" @click="helpNotActive()">не активирована</ion-text>
+                        <ion-icon color="warning" :icon="helpCircle" @click="helpNotActive()" style="cursor:pointer"/>
+                    </div>
                     <ion-text v-if="promo.promo_order_id">использована в заказе #{{promo.promo_order_id}}</ion-text>
                 </ion-item>
             </div>

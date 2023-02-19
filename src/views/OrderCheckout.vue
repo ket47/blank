@@ -357,7 +357,7 @@ export default({
                 return
             }
             if( this.order.stage_current!="customer_confirmed" ){
-                this.$router.push('order-'+this.order.order_id);
+                this.$router.replace('order-'+this.order.order_id);
                 return;
             }
             try{
@@ -461,7 +461,7 @@ export default({
             }
             try{
                 await Order.api.itemStageCreate(this.order.order_id,'customer_start');
-                this.$router.push('/order/order-'+this.order.order_id);
+                this.$router.replace('/order/order-'+this.order.order_id);
             } catch(err){
                     const exception_code=err?.responseJSON?.messages?.error;
                     switch(exception_code){
@@ -478,7 +478,7 @@ export default({
             }
         },
         async cancel(){
-            this.$router.push('order-'+this.order.order_id);
+            this.$router.replace('order-'+this.order.order_id);
         },
         async paymentFormOpen( order_data ) {
             const self=this;
@@ -505,13 +505,31 @@ export default({
             try{
                 const result= await jQuery.post( this.$heap.state.hostname + "CardAcquirer/statusGet", request );
                 if(result=='OK'){
-                    router.push('order-'+this.order.order_id)
+                    router.replace('order-'+this.order.order_id)
                 }
             } catch(err){
+                /**
+                 * 
+                 * 
+                 * should add second try
+                 * 
+                 * 
+                 * 
+                 */
+
+
+
+
+
+
+
+
+
+
                 this.$flash("Данный заказ не может быть оплачен");
                 const message=err.responseJSON?.messages?.error;
                 if(message=='wrong_status'){
-                    router.push('order-'+this.order.order_id);
+                    router.replace('order-'+this.order.order_id);
                 }
             }
         },

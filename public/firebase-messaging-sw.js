@@ -1,5 +1,5 @@
-importScripts('https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js');
-importScripts('https://www.gstatic.com/firebasejs/8.10.0/firebase-messaging.js');
+importScripts('https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js');
+importScripts('https://www.gstatic.com/firebasejs/9.0.0/firebase-messaging-compat.js');
 
 // Initialize the Firebase app in the service worker by passing in
 // your app's Firebase config object.
@@ -17,22 +17,22 @@ firebase.initializeApp({
 // messages.
 const messaging = firebase.messaging();
 messaging.onBackgroundMessage(async (payload) => {
-  console.log('payload',payload)
-  const cl=await clients.matchAll({includeUncontrolled: false, type: 'window'});
-  if( cl.length ){
-    cl.forEach(client => client.postMessage(payload));
-    //return false;
-  }
+
+  // const cl=await clients.matchAll({includeUncontrolled: false, type: 'window'});
+  // if( cl.length ){
+  //   cl.forEach(client => client.postMessage(payload));
+  //   return false;
+  // }
   
   if(payload.data.body){//if body is set then this is foreground notification!
-    const notificationTitle = payload.data.title??'Tezkel';
+    const notificationTitle = payload.data.title??'Tezkel'
     const notificationOptions = {
       body: payload.data.body,
       icon: payload.data.icon,
       link: payload.data.link,
-      vibrate: [200, 100, 200],
-      renotify:true
-    };
+      tag: payload.data.tag,
+      vibrate: [200, 100, 200]
+    }
     return self.registration.showNotification(notificationTitle,notificationOptions);
   }
 });

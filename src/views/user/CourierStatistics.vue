@@ -5,7 +5,7 @@
                 Баланс
             </ion-segment-button>
         </ion-segment>
-        <ledger-comp account="courier" v-if="activeTab=='ledger'"/>
+        <ledger-comp :tagQuery="`courier:${courier.courier_id}`" v-if="courier && activeTab=='ledger'"/>
     </base-layout>
 </template>
 
@@ -13,13 +13,14 @@
 import {
     IonSegment,
     IonSegmentButton,
-}                   from '@ionic/vue';
+}                       from '@ionic/vue';
 
 import {
       receiptOutline
-}                   from "ionicons/icons";
+}                       from "ionicons/icons";
 
-import ledgerComp from "@/components/LedgerComp.vue";
+import ledgerComp       from "@/components/LedgerComp.vue";
+import User             from "@/scripts/User"
 export default {
     components:{
     IonSegment,
@@ -33,13 +34,20 @@ export default {
     },
     data(){
         return {
-            activeTab:'ledger'
+            activeTab:'ledger',
+            courier:null
         }
     },
     methods:{
+        async itemGet(){
+            this.courier=await User.courier.get()
+        },
         async activeTabChanged(){
             //
         },
     },
+    mounted(){
+        this.itemGet()
+    }
 }
 </script>

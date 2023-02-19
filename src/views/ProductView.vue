@@ -261,8 +261,15 @@ export default  {
         try{
           this.is_loading=1
           this.productItem=await jQuery.post( heap.state.hostname + "Product/itemGet", { product_id: this.productId })
-        }catch{
-          //console.log('weird error is here')
+        }catch(err){
+          const exception_code=err?.responseJSON?.messages?.error;
+          switch(exception_code){
+              case 'notfound':
+                  this.$flash("Товар не найден")
+                  this.$router.replace("/catalog")
+                  break;
+          }
+          return false
         }
         this.is_loading=0
       },

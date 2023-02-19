@@ -21,6 +21,7 @@ const Utils={
         for(let i in context){
             template=template.replace(`{{${i}}}`,context[i])
         }
+        template=template.replace(/{{\.}}/,'-')
         return template
     }
   };

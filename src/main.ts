@@ -138,7 +138,7 @@ jQuery( document ).ajaxComplete(()=>{
   },100)
 })
 
-if( 'serviceWorker' in navigator){
+if( 'serviceWorker' in navigator ){
   navigator.serviceWorker.onmessage = (event) => {
     if(event.data.data.topic){
       Topic.publish(event.data.data.topic,event.data.data)

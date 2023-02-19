@@ -71,12 +71,16 @@ ion-text{
             <ion-label>Основные настройки</ion-label>
           </ion-item-divider>
           <ion-item lines="full">
+            <ion-label position="stacked" color="primary">Имя</ion-label>
+            <ion-input v-model="courier.courier_name" placeholder="Имя курьера"/>
+          </ion-item>
+          <ion-item lines="full">
             <ion-label position="stacked" color="primary">Транспорт</ion-label>
             <ion-input v-model="courier.courier_vehicle" placeholder="автомобиль, мопед, велосипед"/>
           </ion-item>
           <ion-item lines="full">
             <ion-label position="stacked" color="primary">ИНН</ion-label>
-            <ion-input v-model="courier.courier_tax_num" placeholder="Ваш ИНН"/>
+            <ion-input v-model="courier.courier_tax_num" placeholder="ИНН курьера"/>
           </ion-item>
           <ion-item lines="full">
             <ion-label position="stacked" color="primary">Комментарий</ion-label>

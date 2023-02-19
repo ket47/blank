@@ -11,28 +11,13 @@
             </ion-segment-button>
         </ion-segment>
         <div v-if="activeTab=='ledger'">
-            <ion-card>
-                <ion-card-header>
-                    <ion-card-title>Выписка по счету</ion-card-title>
-                </ion-card-header>
-                <ion-card-content>
-                    <ion-list>
-                        <ion-item>
-                            <ion-label>Счет</ion-label>
-                            <ion-select v-model="ledgerAccount">
-                                <ion-select-option value="profit">Прибыль</ion-select-option>
-                                <ion-select-option value="supplier">Продавцы</ion-select-option>
-                                <ion-select-option value="courier">Курьеры</ion-select-option>
-                            </ion-select>
-                        </ion-item>
-                        <ion-item button detail @click="itemCreate()">
-                            <ion-icon slot="start" :src="addOutline"/>
-                            <ion-label>Добавить проводку</ion-label>
-                        </ion-item>
-                    </ion-list>
-                </ion-card-content>
-            </ion-card>
-            <ledger-comp :account="ledgerAccount" :holder="ledgerHolder" :holderId="ledgerHolderId"/>
+            <ion-list>
+                <ion-item button @click="itemCreate()">
+                    <ion-icon slot="start" :src="addOutline"/>
+                    <ion-label>Добавить проводку</ion-label>
+                </ion-item>
+            </ion-list>
+            <ledger-comp :account="ledgerAccount" ref="ledger"/>
         </div>
     </base-layout>
 </template>
@@ -40,15 +25,9 @@
 import {
   IonSegmentButton,
   IonSegment,
-  IonSelect,
-  IonSelectOption,
   IonList,
   IonItem,
   IonLabel,
-  IonCard,
-  IonCardHeader,
-  IonCardTitle,
-  IonCardContent,
   IonIcon,
  }                          from '@ionic/vue';
  import {
@@ -61,18 +40,12 @@ import LedgerComp           from '@/components/LedgerComp.vue';
 export default {
     components: {
         LedgerComp,
-  IonSegmentButton,
-  IonSegment,
-  IonSelect,
-  IonSelectOption,
-  IonList,
-  IonItem,
-  IonLabel,
-  IonCard,
-  IonCardHeader,
-  IonCardTitle,
-  IonCardContent,
-  IonIcon,
+        IonSegmentButton,
+        IonSegment,
+        IonList,
+        IonItem,
+        IonLabel,
+        IonIcon,
     },
     setup(){
         return {
@@ -94,5 +67,8 @@ export default {
             this.$router.push('/admin/transaction-edit-0')
         }
     },
+    ionViewDidEnter(){
+        this.$refs.ledger.listGet()
+    }
 }
 </script>

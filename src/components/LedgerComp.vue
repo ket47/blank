@@ -1,3 +1,16 @@
+<style >
+.tag{
+  padding: 5px;
+  color:#ccc;
+  display: inline-block;
+}
+.tag:hover{
+  color: var(--ion-color-primary);
+  cursor:pointer;
+}
+</style>
+
+
 <template>
 <div>
   <ion-list>
@@ -8,28 +21,28 @@
     </ion-item>
   </ion-list>
 
-  <ion-accordion-group>
-    <ion-accordion>
+  <ion-accordion-group :value="settingsType">
+    <ion-accordion value="period">
       <ion-item slot="header">
-        <ion-icon :icon="settingsOutline" slot="start"/>
-        <ion-text>Настройки</ion-text>
+        <ion-icon :icon="calendarOutline" slot="start"/>
+        <ion-text>Период</ion-text>
       </ion-item>
       <ion-list slot="content">
-        <ion-item color="light">
+        <ion-item>
           <ion-text>Начальная дата</ion-text>
           <div slot="end" style="display:grid;grid-template-columns:120px 100px;">
             <ion-input type="date" v-model="start_at"  @ionChange="listGet()"/>
             <ion-input type="text" style="text-align:right" color="medium" v-if="meta.sum_start" :value="`${meta.sum_start}${$heap.state.currencySign}`" readonly />
           </div>
         </ion-item>
-        <ion-item color="light">
+        <ion-item>
           <ion-text>Обороты</ion-text>
           <div slot="end" style="display:grid;grid-template-columns:120px 100px;">
             <ion-input type="text" style="text-align:right" color="medium" v-if="meta.sum_debit" :value="`+${meta.sum_debit}${$heap.state.currencySign}`" readonly />
             <ion-input type="text" style="text-align:right" color="medium" v-if="meta.sum_credit" :value="`-${meta.sum_credit}${$heap.state.currencySign}`" readonly />
           </div>
         </ion-item>
-        <ion-item color="light">
+        <ion-item>
           <ion-text>Конечная дата</ion-text>
           <div slot="end" style="display:grid;grid-template-columns:120px 100px;">
             <ion-input type="date" v-model="finish_at" />
@@ -38,9 +51,27 @@
         </ion-item>
       </ion-list>
     </ion-accordion>
+    <ion-accordion value="tags">
+      <ion-item slot="header">
+        <ion-icon :icon="pricetagOutline" slot="start"/>
+        <ion-text>Фильтр по тегам</ion-text>
+      </ion-item>
+      <ion-list slot="content">
+        <ion-item lines="none">
+          <ion-text>
+            <ion-chip v-for="(tagLabel,tag) in tagDict" :key="tag" color="primary">#{{tagLabel}} <ion-icon :src="closeCircle" @click="itemTagRemove(tag)"></ion-icon></ion-chip>
+            <ion-chip @click="itemTagCreate()" color="medium"><ion-icon :src="addOutline"/><ion-label>Добавить #тег</ion-label></ion-chip>
+          </ion-text>
+        </ion-item>
+      </ion-list>
+    </ion-accordion>
   </ion-accordion-group>
 
-  <ion-searchbar v-model="q" placeholder="Поиск по сумме или описанию" @ionChange="listGet()" />
+
+
+
+
+  <ion-searchbar v-model="searchQuery" placeholder="Поиск по сумме или описанию" @ionChange="listGet()" />
   <ion-list v-if="ledger==null">
     <ion-item v-for="i in [1,2,3]" :key="i">
         <ion-text slot="start"><ion-skeleton-text animated style="width:50px" /></ion-text>
@@ -49,12 +80,21 @@
     </ion-item>
   </ion-list>
   <ion-list v-else-if="ledger.length>0">
-    <ion-item v-for="trans in ledgerCalc" :key="trans.trans_id" @click="itemClick(trans.trans_id)" :detail="is_admin">
-        <ion-text slot="start">{{trans.date}}</ion-text>
-        <ion-text>{{trans.trans_description}}</ion-text>
-        <ion-label slot="end" v-if="trans.is_debit==1" color="success">{{trans.trans_amount}}</ion-label>
-        <ion-label slot="end" v-else  color="danger">{{trans.trans_amount}}</ion-label>
-    </ion-item>
+    <div v-for="trans in ledgerCalc" :key="trans.trans_id">
+      <ion-item :detail="is_admin" lines="none" @click="itemClick(trans.trans_id)">
+          <ion-text slot="start">{{trans.date}}</ion-text>
+          <ion-text>
+            {{trans.trans_description}}
+          </ion-text>
+          <ion-label slot="end" v-if="trans.is_debit==1" color="success">{{trans.trans_amount}}</ion-label>
+          <ion-label slot="end" v-else  color="danger">{{trans.trans_amount}}</ion-label>
+      </ion-item>
+      <ion-item>
+        <ion-text>
+          <div class="tag" v-for="(tag,i) in trans.tag_list" :key="i" @click="itemTagAdd(tag)">#{{tag[1]}}</div>
+        </ion-text>
+      </ion-item>
+    </div>
   </ion-list>
   <ion-list v-else>
     <ion-item>
@@ -78,10 +118,20 @@ import {
   IonText,
   IonSkeletonText,
   IonSearchbar,
-} from "@ionic/vue";
-import { settingsOutline }    from "ionicons/icons";
+  IonChip,
+  modalController,
+  actionSheetController,
+}                             from "@ionic/vue";
+import { 
+  calendarOutline,
+  addOutline,
+  closeCircle,
+  pricetagOutline,
+}                             from "ionicons/icons";
 import jquery                 from "jquery";
 import User                   from '@/scripts/User.js'
+
+import ItemPicker          from '@/components/ItemPicker.vue'
 
 export default {
   components: {
@@ -96,24 +146,33 @@ export default {
     IonText,
     IonSkeletonText,
     IonSearchbar,
+    IonChip,
   },
-  props:['account'],
+  props:[],
   setup(){
     return {
-        settingsOutline
+      calendarOutline,
+      addOutline,
+      closeCircle,
+      pricetagOutline,
     }
   },
   data() {
+    console.log(this.query)
     const today = new Date();
     const firstDay = new Date(Date.parse(`${today.getFullYear()}-${today.getMonth()+1}-1`));
     return {
       balance: '-',
       start_at: firstDay.toISOString().slice(0, 10),
       finish_at: today.toISOString().slice(0, 10),
-      q:'',
+      searchQuery:'',
+      tagQuery:'',
+      tagDict:null,
+
       ledger:null,
       meta:{},
-      today:today
+      today:today,
+      settingsType:null,
     };
   },
   computed:{
@@ -124,6 +183,7 @@ export default {
         let lcalc=[];
         for(let trans of this.ledger){
             trans.date=this.toLocDate(trans.trans_date)
+            trans.tag_list= trans.tags?.substring(1)?.toLowerCase()?.split('|')?.map(tag=>tag.split('#'))
             lcalc.push(trans)
         }
         return lcalc
@@ -133,18 +193,19 @@ export default {
     }
   },
   watch:{
-    account:function(){
+    query:function(){
       this.listGet()
     }
   },
   methods: {
     async listGet() {
       try {
+        const tagQuery=Object.keys(this.tagDict??{})?.join(' ')
         const request={
             start_at:this.start_at,
             finish_at:this.finish_at,
-            account:this.account,
-            q:this.q,
+            tagQuery,
+            searchQuery:this.searchQuery,
         }
         const response= await jquery.post(`${this.$heap.state.hostname}Transaction/listGet`,request)
         this.ledger=response.ledger
@@ -156,11 +217,11 @@ export default {
         const exception = err.responseJSON;
         const exception_code = exception.messages.error;
         switch (exception_code) {
-          case "no_account":
-            this.$flash("Ошибка получения выписки")
-            break;
           case "large_interval":
             this.$flash("Период должен быть не больше 3 месяцев")
+            break;
+          default:
+            this.$flash("Ошибка получения выписки")
             break;
         }
         this.ledger=[]
@@ -179,10 +240,87 @@ export default {
         return
       }
       this.$router.push(`/admin/transaction-edit-${trans_id}`)
+    },
+    async itemTagPick( itemType ){
+      const modal = await modalController.create({
+          component: ItemPicker,
+          componentProps:{itemType},
+          initialBreakpoint: 0.75,
+          breakpoints: [0.75, 1],
+          canDissmiss:true,
+      });
+      modal.present()
+      this.$topic.on('dismissModal',()=>{
+          modal.dismiss()
+      });
+      const item=await modal.onDidDismiss();
+      if(!item.data){
+          return
+      }
+
+      if(item.data.order_id??0){
+        this.itemTagAdd([`order:${item.data.order_id}`,`заказ ${item.data.order_id}`])
+      }
+      if(item.data.store_id??0){
+        this.itemTagAdd([`store:${item.data.store_id}`,`продавец ${item.data.store_name}`])
+      }
+      if(item.data.courier_id??0){
+        this.itemTagAdd([`courier:${item.data.courier_id}`,`курьер ${item.data.courier_name}`])
+      }
+      if(item.data.type??0){
+        this.itemTagAdd([`acc::${item.data.type}`,`счет ${item.data.name}`])
+      }
+    },
+    async itemTagCreate(){
+        const actionSheet = await actionSheetController.create({
+          header: 'Тип тега',
+          buttons: [
+            {
+              text: 'Заказ',
+              role: 'destructive',
+              data: 'order',
+            },
+            {
+              text: 'Продавец',
+              role: 'destructive',
+              data: 'store',
+            },
+            {
+              text: 'Курьер',
+              role: 'destructive',
+              data: 'courier',
+            },
+            {
+              text: 'Счет',
+              role: 'destructive',
+              data: 'acc',
+            },
+          ],
+        });
+        await actionSheet.present();
+        const itemType = await actionSheet.onDidDismiss();
+        if(itemType?.data){
+          this.itemTagPick(itemType?.data)
+        }
+    },
+    itemTagAdd(tag){
+      let dict=this.tagDict??{}
+      dict[tag[0]]=tag[1]
+      this.tagDict=dict
+      this.listGet()
+      this.settingsType='tags'
+    },
+    itemTagRemove(tag){
+      let dict=this.tagDict??{}
+      dict[tag] && delete dict[tag]
+      const size = Object.keys(dict).length
+      this.tagDict=size?dict:null
+      this.listGet()
+      this.settingsType='tags'
     }
   },
   mounted() {
-    this.listGet();
+    this.listGet()
   },
 };
 </script>
