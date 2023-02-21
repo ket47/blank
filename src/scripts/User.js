@@ -72,11 +72,17 @@ const User = {
         });
     },
     async signIn(requestData){
+        if( !localStorage.metric_user_id ){
+            requestData.metric_id=localStorage.metric_id??0
+        }
         return await jQuery.post( heap.state.hostname + "User/signIn", requestData)
         .done(function(response, textStatus, request){
             localStorage.signInData = JSON.stringify(requestData);
             const sid = request.getResponseHeader('x-sid');
             User.sessionIdUse(sid);
+            if(requestData.metric_id){
+                localStorage.metric_user_id=response
+            }
         })
         .fail(function(){
             localStorage.signInData = null;//user signin is failed should we reset localStorage.signInData????

@@ -66,11 +66,6 @@
       </ion-list>
     </ion-accordion>
   </ion-accordion-group>
-
-
-
-
-
   <ion-searchbar v-model="searchQuery" placeholder="Поиск по сумме или описанию" @ionChange="listGet()" />
   <ion-list v-if="ledger==null">
     <ion-item v-for="i in [1,2,3]" :key="i">
@@ -84,10 +79,11 @@
       <ion-item :detail="is_admin" lines="none" @click="itemClick(trans.trans_id)">
           <ion-text slot="start">{{trans.date}}</ion-text>
           <ion-text>
-            {{trans.trans_description}}
+            {{trans.trans_description}} {{trans.trans_role}}
           </ion-text>
-          <ion-label slot="end" v-if="trans.is_debit==1" color="success">{{trans.trans_amount}}</ion-label>
-          <ion-label slot="end" v-else  color="danger">{{trans.trans_amount}}</ion-label>
+          <ion-label slot="end" v-if="trans.amount_sign>0" color="success">{{trans.trans_amount}}</ion-label>
+          <ion-label slot="end" v-else-if="trans.amount_sign<0"  color="danger">{{trans.trans_amount}}</ion-label>
+          <ion-label slot="end" v-else  color="medium">{{trans.trans_amount}}</ion-label>
       </ion-item>
       <ion-item>
         <ion-text>

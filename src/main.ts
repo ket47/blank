@@ -175,4 +175,4 @@ if(platformMobile){
 app.mount('#app');
 User.autoSignIn();
 
-Metrics.recordIncomingUser()
+Metrics.init()

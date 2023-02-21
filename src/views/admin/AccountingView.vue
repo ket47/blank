@@ -17,6 +17,12 @@
                     <ion-label>Добавить проводку</ion-label>
                 </ion-item>
             </ion-list>
+            <ion-list>
+                <ion-item button @click="this.$refs.ledger.listGet()">
+                    <ion-icon slot="start" :src="refreshOutline"/>
+                    <ion-label>Обновить</ion-label>
+                </ion-item>
+            </ion-list>
             <ledger-comp :account="ledgerAccount" ref="ledger"/>
         </div>
     </base-layout>
@@ -31,7 +37,8 @@ import {
   IonIcon,
  }                          from '@ionic/vue';
  import {
-    addOutline
+    addOutline,
+    refreshOutline,
  }                          from "ionicons/icons";
 import jquery               from 'jquery'
 import LedgerComp           from '@/components/LedgerComp.vue';
@@ -49,7 +56,8 @@ export default {
     },
     setup(){
         return {
-            addOutline
+            addOutline,
+            refreshOutline,
         }
     },
     data(){
