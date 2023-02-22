@@ -99,8 +99,14 @@ const transTypes=[
     },
     {
         'trans_role':'site->supplier',
+        'holder':['store'],
+        'trans_name':'Продавец Выплата',
+        'trans_description':'Выплата по договору за выполненные заказы',
+    },
+    {
+        'trans_role':'site.->supplier',
         'holder':['order','store'],
-        'trans_name':'Продавец Возврат средств покупателю',
+        'trans_name':'Продавец Штраф',
         'trans_description':'Средства взимаемые с Продавца для воврата оплаты Покупателю. Заказ №{{order_id}}',
     },
     {
@@ -114,12 +120,6 @@ const transTypes=[
         'holder':['order','store'],
         'trans_name':'Продавец Комиссия сайта',
         'trans_description':'Комиссия сайта за предоставленные услуги. Заказ №{{order_id}}',
-    },
-    {
-        'trans_role':'site->supplier',
-        'holder':['store'],
-        'trans_name':'Продавец Выплата',
-        'trans_description':'Выплата по договору за выполненные заказы',
     },
     {
         'trans_role':'supplier->site',
@@ -236,6 +236,7 @@ export default {
             try{
                 this.transaction=await jquery.post(`${this.$heap.state.hostname}Transaction/itemGet`,request)
                 this.transaction.trans_date=this.transaction.trans_date?.substring(0,10)
+                this.transaction.is_disabled=this.transaction.is_disabled*1
                 this.tagDictFill(this.transaction.tags)
             }
             catch(err){

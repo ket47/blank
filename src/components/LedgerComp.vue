@@ -45,7 +45,7 @@
         <ion-item>
           <ion-text>Конечная дата</ion-text>
           <div slot="end" style="display:grid;grid-template-columns:120px 100px;">
-            <ion-input type="date" v-model="finish_at" />
+            <ion-input type="date" v-model="finish_at"  @ionChange="listGet()" />
             <ion-input type="text" style="text-align:right" color="medium" v-if="meta.sum_finish" :value="`${meta.sum_finish}${$heap.state.currencySign}`" readonly />
           </div>
         </ion-item>
@@ -60,7 +60,7 @@
         <ion-item lines="none">
           <ion-text>
             <ion-chip v-for="(tagLabel,tag) in tagDict" :key="tag" color="primary">#{{tagLabel}} <ion-icon :src="closeCircle" @click="itemTagRemove(tag)"></ion-icon></ion-chip>
-            <ion-chip @click="itemTagCreate()" color="medium"><ion-icon :src="addOutline"/><ion-label>Добавить #тег</ion-label></ion-chip>
+            <ion-chip @click="itemTagCreate()" color="medium" v-if="is_admin"><ion-icon :src="addOutline"/><ion-label>Добавить #тег</ion-label></ion-chip>
           </ion-text>
         </ion-item>
       </ion-list>
@@ -79,10 +79,10 @@
       <ion-item :detail="is_admin" lines="none" @click="itemClick(trans.trans_id)">
           <ion-text slot="start">{{trans.date}}</ion-text>
           <ion-text>
-            {{trans.trans_description}} {{trans.trans_role}}
+            {{trans.trans_description}}
           </ion-text>
-          <ion-label slot="end" v-if="trans.amount_sign>0" color="success">{{trans.trans_amount}}</ion-label>
-          <ion-label slot="end" v-else-if="trans.amount_sign<0"  color="danger">{{trans.trans_amount}}</ion-label>
+          <ion-label slot="end" v-if="trans.amount_sign*trans.trans_amount>0" color="success">{{trans.trans_amount}}</ion-label>
+          <ion-label slot="end" v-else-if="trans.amount_sign*trans.trans_amount<0"  color="danger">{{trans.trans_amount}}</ion-label>
           <ion-label slot="end" v-else  color="medium">{{trans.trans_amount}}</ion-label>
       </ion-item>
       <ion-item>
@@ -127,7 +127,7 @@ import {
 import jquery                 from "jquery";
 import User                   from '@/scripts/User.js'
 
-import ItemPicker          from '@/components/ItemPicker.vue'
+import ItemPicker             from '@/components/ItemPicker.vue'
 
 export default {
   components: {
@@ -144,7 +144,7 @@ export default {
     IonSearchbar,
     IonChip,
   },
-  props:[],
+  props:['permanentTag'],
   setup(){
     return {
       calendarOutline,
@@ -200,8 +200,8 @@ export default {
         const request={
             start_at:this.start_at,
             finish_at:this.finish_at,
-            tagQuery,
-            searchQuery:this.searchQuery,
+            tagQuery:`${tagQuery} ${this.permanentTag??''}`,
+            searchQuery:this.searchQuery
         }
         const response= await jquery.post(`${this.$heap.state.hostname}Transaction/listGet`,request)
         this.ledger=response.ledger
@@ -210,8 +210,7 @@ export default {
             this.balance=response.meta.sum_finish
         }
       } catch (err) {
-        const exception = err.responseJSON;
-        const exception_code = exception.messages.error;
+        const exception_code = err?.responseJSON?.messages?.error;
         switch (exception_code) {
           case "large_interval":
             this.$flash("Период должен быть не больше 3 месяцев")

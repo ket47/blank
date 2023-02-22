@@ -5,7 +5,7 @@
                 Баланс
             </ion-segment-button>
         </ion-segment>
-        <ledger-comp :tagQuery="`courier:${courier.courier_id}`" v-if="courier && activeTab=='ledger'"/>
+        <ledger-comp permanentTag="acc::courier" v-if="courier && activeTab=='ledger'"/>
     </base-layout>
 </template>
 
