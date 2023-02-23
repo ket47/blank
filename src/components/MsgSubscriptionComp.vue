@@ -9,33 +9,38 @@
       </ion-card>
       <ion-card v-if="permission=='denied'">
         <ion-card-content>
-          <p>
-          Уведомления от нашего сайта были заблокированы вами. Для полноценной работы приложения рекомендуем влючить уведомления от сайта tezkel.com в настройках вашего браузера.
-          </p>
+          <ion-item lines="none">
+            <ion-icon :src="notificationsOffOutline" color="primary" slot="start"/>
+            Уведомления от нашего сайта были заблокированы вами. Для полноценной работы приложения, рекомендуем влючить уведомления от сайта {{$heap.state.hostname}} в настройках вашего браузера.
+          </ion-item>
         </ion-card-content>        
       </ion-card>
       <ion-card v-if="permission=='notsupported'">
         <ion-card-content>
-          <p>
-          Уведомления не поддерживаются этим устройством.
-          </p>
+          <ion-item lines="none">
+            <ion-icon :src="notificationsOffOutline" color="primary" slot="start"/>
+            Уведомления не поддерживаются этим устройством.
+          </ion-item>
         </ion-card-content>        
       </ion-card>
       <ion-card v-if="permission=='granted'">
         <ion-card-content>
-          <p>
-          Уведомления включены
-          </p>
+          <ion-item lines="none">
+            <ion-icon :src="notificationsOutline" color="primary" slot="start"/>
+            Уведомления включены
+          </ion-item>
         </ion-card-content>        
       </ion-card>
 </template>
 <script>
 import User from '@/scripts/User'
-
+import { notificationsOutline,notificationsOffOutline }             from 'ionicons/icons';
 import {
   IonButton,
   IonCard,
   IonCardContent,
+  IonIcon,
+  IonItem,
 }             from "@ionic/vue"
 
 export default {
@@ -43,6 +48,11 @@ export default {
   IonButton,
   IonCard,
   IonCardContent,
+  IonIcon,
+  IonItem,
+  },
+  setup(){
+    return {notificationsOutline,notificationsOffOutline}
   },
   data(){
     let perm=("Notification" in window)?Notification.permission:'notsupported';

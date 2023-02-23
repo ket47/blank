@@ -26,8 +26,14 @@ messaging.onBackgroundMessage(async (payload) => {
   
   if(payload.data.body){//if body is set then this is foreground notification!
     const notificationTitle = payload.data.title??'Tezkel'
-    const notificationOptions = payload.data
-    console.log('onBackgroundMessage',notificationOptions)
+    const notificationOptions = {
+      body: payload.data.body,
+      icon: payload.data.icon,
+      link: payload.data.link??'',
+      tag: payload.data.tag??'',
+      vibrate: [200, 100, 200]
+    }
     return self.registration.showNotification(notificationTitle,notificationOptions);
   }
+  return self.registration.showNotification(payload.title,payload);
 });
