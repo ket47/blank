@@ -12,7 +12,7 @@ module.exports = {
     appleMobileWebAppStatusBarStyle: 'white',
     workboxOptions: {
       skipWaiting: true,
-      clientsClaim: true
+      //clientsClaim: true
     },
     manifestOptions: {
       name: "Tezkel экспресс доставка",

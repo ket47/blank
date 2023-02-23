@@ -140,6 +140,7 @@ jQuery( document ).ajaxComplete(()=>{
 
 if( 'serviceWorker' in navigator ){
   navigator.serviceWorker.onmessage = (event) => {
+    console.log('onmessage',event.data.data)
     if(event.data.data.topic){
       Topic.publish(event.data.data.topic,event.data.data)
     } else

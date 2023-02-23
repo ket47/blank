@@ -266,11 +266,14 @@ const User = {
     },
     firebase:{
         tokenSaved:false,
+        tokenSavedClock:null,
         init(){
             Topic.on('userGet',(user)=>{
-                if( !User.firebase.tokenSaved && user.user_id>0 && heap.state.settings.firebase ){//user signed in
-                    initializeApp(heap.state.settings.firebase);
-                    setTimeout(function(){
+                if( (!User.firebase.tokenSaved) && user.user_id>0 && heap.state.settings.firebase ){//user signed in
+                    initializeApp(heap.state.settings.firebase)
+
+                    clearTimeout(User.firebase.tokenSavedClock)
+                    User.firebase.tokenSavedClock=setTimeout(function(){
                         User.firebase.saveNotificationToken()
                     },2*1000)
                 }
