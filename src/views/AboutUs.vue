@@ -8,12 +8,15 @@
         <ion-icon  v-if="mainLogo" class="toolbar_svg_logo" style="color: white"  :icon="mainLogo"/>
       </ion-toolbar>  
       <div class="header-image-container main-block">
-        <div class="main-block-content">
+        <div class="main-block-content" style="transform: rotate(-7deg);">
           <div class="text" style="color: white">
-            <h2>Супер быстрая доставка</h2>
-            <h4>Роскошь, ставшая реальностью</h4>
+            <h2 style="color: rgb(235, 192, 0); font-size: 42px; margin: 0; filter: drop-shadow(-2px 2px 2px #042c4f);">Зарегистрируйся</h2>
+            <h4 style="font-size: 24px; margin-top: 5px;">и получай скидку до <b style="font-size: 20px;">1000</b> рублей</h4>
+            <router-link to="/user/sign-up" style="text-decoration: none;">
+              <ion-button expand="block" color="secondary"><b>ХОЧУ СКИДКУ!</b></ion-button>
+            </router-link>
             <router-link to="/catalog">
-              <ion-button>Хочу сделать заказ!</ion-button>
+              <ion-button expand="block" fill="clear" color="light"><b>ЧТО Я ПОЛУЧУ?</b></ion-button>
             </router-link>
           </div>
         </div>
@@ -25,10 +28,10 @@
             <h2 style="text-align: left;">Сервис курьерской доставки</h2>
             <p>Супер быстрая доставка товаров на дом теперь не роскошь, а вполне доступная для каждого услуга. 
                 Экономия времени, разнообразный ассортимент и возможность получить любой товар не выходя за пределы любимого домашнего очага, - все это возможно с Tezkel.
-                <br><br>
-                Tezkel – это служба экспресс-доставки товаров. Мы сотрудничаем со многими заведениями общественного питания и магазинами, 
-                поэтому всего через полчаса после оформления заказа вы получите его в руки.
             </p>
+            <a href="https://play.google.com/store/apps/details?id=com.tezkel.twa" stlye="text-decoration: none">
+              <ion-button color="primary"><b>СКАЧАТЬ ПРИЛОЖЕНИЕ</b></ion-button>
+            </a>
           </div>
           <div class="landing-desc-col landing-desc-feature-col image-col" style="text-align: center;">
               <img src="/img/about_us/tezkel_anasayfa1.png"/>
@@ -66,10 +69,11 @@
 
       <div class="sign-up-suggest main-block">
         <div class="main-block-content">
-          <h2>Необходимо оформлять заявки регулярно? Зарегистрируйтесь!</h2>
+          <h2>Хотите продавать на Tezkel?</h2>
+          <h4>Зарегистрируйтесь и создайте собственный магазин!</h4>
           <div class="actions">
             <router-link to="/user/sign-up">
-              <ion-button >Зарегистрироваться</ion-button>
+              <ion-button color="secondary">Зарегистрироваться</ion-button>
             </router-link>
           </div>
         </div>
@@ -188,7 +192,7 @@ export default {
 .header-image-container{
   padding: 2em 4em;
   display: grid;
-  min-height: 350px;
+  min-height: 650px;
   align-items: center;
   text-align: center;
   background-image: url("/public/img/about_us/tezkel_header.jpg");
@@ -197,7 +201,24 @@ export default {
 }
 .header-image-container h2,
 .header-image-container h4{
+  font-size: 20px;
   color: white;
+}
+@media screen and (max-width: 740px) {
+  .header-image-container h2{
+    font-size: 28px !important;
+  }
+  .header-image-container h4{
+    font-size: 15px !important;
+  }
+}
+.header-image-container .main-block-content{
+  animation: scale 2s ease-out infinite;
+}
+@keyframes scale {
+  0%   {scale: 1}
+  50%  {scale: 1.04}
+  100% {scale: 1}
 }
 
 .intro-container{
@@ -244,11 +265,19 @@ export default {
 }
 
 .sign-up-suggest{
-  background-color: #f2f2f2;
+  background-color: #009dcd;
   text-align: center;
   min-height: 250px;
   display: grid;
   align-items: center;
+}
+.sign-up-suggest h2{
+  color: rgb(235, 192, 0); 
+  font-size: 28px;
+  filter: drop-shadow(0px 2px 2px #042c4f);
+}
+.sign-up-suggest h4{
+  color: white;
 }
 .sign-up-suggest .main-block-content{
   
