@@ -107,11 +107,17 @@
   }
 
   .desktop-main-container .ion-middle-column .store-list{
-    display: grid;
-    grid-template-columns: 50% 50%;
     padding: 25px;
+    display: block;
   }
-
+  .desktop-main-container .ion-middle-column .store-list > ion-card{
+    width: 48%;
+    float: right;
+    margin: 1%;
+  }
+  .desktop-main-container .ion-middle-column .store-list > ion-card:first-child{
+    float: left;
+  }
   .desktop-main-container .ion-middle-column #hcat_widget_wrapper{
     padding: 10px 40px;
   }

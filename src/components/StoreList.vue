@@ -27,31 +27,36 @@ ion-card .store-title{
 }
 .perk-row{
   margin:2px;
-  position:absolute;top:0px;right:20px;
+  position:absolute;
+  top:10px;
+  right:10px;
   margin-left: auto;
   margin-right: auto;
   justify-content: center;
   display: grid;
   grid-template-columns: repeat(auto-fit,  minmax(10px, max-content)) ;
 }
-.perk{
-  background-position: center ;
-  background-size: 70px auto;
-  background-color:#fff;
-  border-radius:35px;
-  border:5px solid #fff;
+.perk-slider{
+  --swiper-navigation-size: 20px;
+}
+.perk-slider ion-grid{
+  padding: 5px 30px;
+  border-top: 1px solid #eee;
+}
+.perk-slider .perk-image {
 
-  height:70px;
-  width:70px;
-  display: flex;
-  justify-content: start;
-  align-items: start;
-
-  color:var(--ion-color-primary);
-  font-size:1.3em;
-  font-weight: bold;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-  text-shadow: 1px 1px 1px #fff;
+}
+.perk-slider .perk-title {
+   overflow: hidden;
+   text-overflow: ellipsis;
+   display: -webkit-box;
+   -webkit-line-clamp: 2; /* number of lines to show */
+           line-clamp: 2; 
+   -webkit-box-orient: vertical;
+}
+.perk-slider .perk-label {
+  font-size: 16px;
+  color: var(--ion-color-primary);
 }
 </style>
 
@@ -86,28 +91,21 @@ ion-card .store-title{
       </ion-col>
     </ion-row>
   </ion-grid>
-  <ion-list v-if="storeList && storeList.length>0" class="store-list" >
-    <ion-card style="position:relative" button v-for="store_item in storeList" :key="store_item.store_id" @click="$router.push(`/catalog/store-${store_item.store_id}`)"  :class="store_item.is_opened==0?'closed':''">
+  <ion-list v-if="storeList && storeList.length > 0" class="store-list">
+    <ion-card style="position:relative" v-for="(store_item, store_index) in storeList"  :key="store_item.store_id"  :class="store_item.is_opened==0?'closed':''">
       <router-link :to="`/catalog/store-${store_item.store_id}`">
         <div class="crop-to-fit">
             <ion-img v-if="store_item.image_hash" :src="$heap.state.hostname +'/image/get.php/' +store_item.image_hash +'.500.500.webp'"/>
         </div>
       </router-link>
-
-
-        <div class="perk-row" :style="`width:${store_item.perks.length*50}px`">
-            <div v-for="perk in store_item.perks" :key="perk.image_hash" class="perk" :style="`background-image:url(${$heap.state.hostname +'/image/get.php/' +perk.image_hash +'.80.80.png'})`">
-              {{perk.perk_label}}
-            </div>
+        <div 
+          v-if="store_perks[store_index].length > 0" 
+          class="perk-row" 
+          style="width:50px">
+            <ion-img v-for="perk in store_perks[store_index]" :key="perk.image_hash" class="perk"  :src="`${$heap.state.hostname +'/image/get.php/' +perk.image_hash +'.80.80.png'}`"/>
         </div>
-
-
-
-
-
-
-
-
+        
+      <router-link :to="`/catalog/store-${store_item.store_id}`" style="text-decoration: none">
         <ion-item lines="none" class="store-title">
             <b>{{store_item.store_name}}</b>
         </ion-item>
@@ -124,6 +122,30 @@ ion-card .store-title{
             </ion-col>
           </ion-row>
         </ion-grid>
+      </router-link>
+
+        <swiper class="perk-slider" v-if="store_perks_slider[store_index].length > 0" 
+          :modules="modules" 
+          :speed="400"
+          :slidesPerView="1"
+          :navigation="true"
+        >
+          <swiper-slide v-for="(productPerk, productPerkIndex) in store_perks_slider[store_index]" :key="productPerkIndex">
+            <ion-grid>
+              <ion-row class="ion-justify-content-around ion-align-items-center">
+                <ion-col size="3">
+                    <ion-img class="perk-image" v-if="productPerk.image_hash" :src="`${$heap.state.hostname +'/image/get.php/' +productPerk.image_hash +'.50.50.png'}`"/>
+                </ion-col>
+                <ion-col size="7">
+                  <b class="perk-title">{{ productPerk.perk_title }}</b>
+                </ion-col>
+                <ion-col size="2">
+                  <b class="perk-label">{{ productPerk.perk_label }}</b>
+                </ion-col>
+              </ion-row>
+            </ion-grid>
+          </swiper-slide>
+        </swiper>
     </ion-card>
   </ion-list>
 
@@ -149,6 +171,15 @@ import {
   timeOutline, 
   searchOutline
  }                  from 'ionicons/icons'
+ 
+import { 
+  Navigation, 
+  Autoplay 
+}                   from 'swiper';
+import { 
+  Swiper,
+  SwiperSlide 
+ }                  from 'swiper/vue';
 import jQuery       from "jquery";
 import heap         from "@/heap";
 import Utils        from '@/scripts/Utils.js'
@@ -169,10 +200,13 @@ export default {
     IonCardTitle,
     IonCardContent,
     IonSkeletonText,
+    Swiper,
+    SwiperSlide,
     StoreOpenedIndicator,
   },
   setup(){
       return {
+        modules: [Autoplay,Navigation],
         timeOutline,
         searchOutline
       }
@@ -182,6 +216,19 @@ export default {
       storeList: null,
       can_reload_at:0,
     };
+  },
+  computed: {
+    
+    store_perks () {
+      return this.storeList.map(function(store) {
+        return store.perks.filter(perk => perk.slot == 'perk')
+      });
+    },
+    store_perks_slider () {
+      return this.storeList.map(function(store) {
+        return store.perks.filter(perk => perk.slot == 'slider')
+      });
+    }
   },
   methods: {
     async listGet() {
