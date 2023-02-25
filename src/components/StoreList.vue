@@ -25,6 +25,34 @@ ion-card .store-title{
 .section-title{
   margin: 0;
 }
+.perk-row{
+  margin:2px;
+  position:absolute;top:0px;right:20px;
+  margin-left: auto;
+  margin-right: auto;
+  justify-content: center;
+  display: grid;
+  grid-template-columns: repeat(auto-fit,  minmax(10px, max-content)) ;
+}
+.perk{
+  background-position: center ;
+  background-size: 70px auto;
+  background-color:#fff;
+  border-radius:35px;
+  border:5px solid #fff;
+
+  height:70px;
+  width:70px;
+  display: flex;
+  justify-content: start;
+  align-items: start;
+
+  color:var(--ion-color-primary);
+  font-size:1.3em;
+  font-weight: bold;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  text-shadow: 1px 1px 1px #fff;
+}
 </style>
 
 <template>
@@ -59,12 +87,27 @@ ion-card .store-title{
     </ion-row>
   </ion-grid>
   <ion-list v-if="storeList && storeList.length>0" class="store-list" >
-    <ion-card button v-for="store_item in storeList" :key="store_item.store_id" @click="$router.push(`/catalog/store-${store_item.store_id}`)"  :class="store_item.is_opened==0?'closed':''">
+    <ion-card style="position:relative" button v-for="store_item in storeList" :key="store_item.store_id" @click="$router.push(`/catalog/store-${store_item.store_id}`)"  :class="store_item.is_opened==0?'closed':''">
       <router-link :to="`/catalog/store-${store_item.store_id}`">
         <div class="crop-to-fit">
             <ion-img v-if="store_item.image_hash" :src="$heap.state.hostname +'/image/get.php/' +store_item.image_hash +'.500.500.webp'"/>
         </div>
       </router-link>
+
+
+        <div class="perk-row" :style="`width:${store_item.perks.length*50}px`">
+            <div v-for="perk in store_item.perks" :key="perk.image_hash" class="perk" :style="`background-image:url(${$heap.state.hostname +'/image/get.php/' +perk.image_hash +'.80.80.png'})`">
+              {{perk.perk_label}}
+            </div>
+        </div>
+
+
+
+
+
+
+
+
         <ion-item lines="none" class="store-title">
             <b>{{store_item.store_name}}</b>
         </ion-item>

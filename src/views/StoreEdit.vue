@@ -188,12 +188,12 @@
         <ion-label>Категории товаров и услуг *</ion-label>
       </ion-item-divider>
       <ion-list>
-        <ion-item v-for="group in storeGroupList" :key="group.group_id">
+        <ion-item v-for="group in storeGroupListComp" :key="group.group_id">
           <ion-avatar slot="start">
             <ion-img :src="`${$heap.state.hostname}image/get.php/${group.image_hash}.50.50.webp`"/>
           </ion-avatar>
           {{group.group_name}}
-          <ion-checkbox color="primary" slot="end" :checked="group.is_marked" @ionChange="itemUpdateGroup($event.target.checked?1:0,group.group_id)"></ion-checkbox>
+          <ion-checkbox color="primary" slot="end" v-model="group.is_marked" @click="itemUpdateGroup($event.target.checked?0:1,group.group_id)"></ion-checkbox>
         </ion-item>
       </ion-list>
 
@@ -418,6 +418,7 @@ import {
   IonNote,
   modalController
   }                   from '@ionic/vue'
+
 import {
   cameraOutline,
   trash,
@@ -439,13 +440,13 @@ import {
   cartOutline,
   rocketOutline,
   swapHorizontalOutline,
-}                     from 'ionicons/icons'
-import imageTileComp  from '@/components/ImageTileComp.vue'
-import UserAddressPicker from '@/components/UserAddressPicker.vue'
-import AdminTariffPicker from '@/components/AdminTariffPicker.vue'
-import heap           from '@/heap';
-import jQuery         from "jquery";
-import User           from '@/scripts/User.js'
+}                           from 'ionicons/icons'
+import imageTileComp        from '@/components/ImageTileComp.vue'
+import UserAddressPicker    from '@/components/UserAddressPicker.vue'
+import AdminTariffPicker    from '@/components/AdminTariffPicker.vue'
+import heap                 from '@/heap';
+import jQuery               from "jquery";
+import User                 from '@/scripts/User.js'
 
 export default  {
   components: { 
@@ -498,7 +499,7 @@ export default  {
     return {
       storeId: this.$route.params.id,
       storeItem: null,
-      storeGroupList:null,
+      storeGroupList:[],
       ownerList:null,
       tariffList:null,
       is_name_edited:0,
@@ -566,6 +567,20 @@ export default  {
       }
       return this.tariffList;
     },
+    storeGroupListComp(){
+      if(!this.storeItem || !this.storeGroupList){
+        return null
+      }
+      let store_group_list=[]
+      try{
+        const member_of_groups=this.storeItem.member_of_groups.group_ids.split(',');
+        for(let group of this.storeGroupList){
+          group.is_marked=member_of_groups.includes(group.group_id);
+          store_group_list.push(group)
+        }
+      }catch{/** */}
+      return store_group_list
+    }
   },
   mounted(){
     this.listGroupGet()
@@ -584,7 +599,6 @@ export default  {
         this.storeItem.store_pickup_allow*=1
         this.storeItem.store_delivery_allow*=1
         this.itemParseFlags()
-        this.itemMarkGroups()
         this.itemValidityCalc()
         this.tariffListGet()
       } catch (err){
@@ -595,21 +609,7 @@ export default  {
         }
       }
     },
-    itemMarkGroups(){
-      if(!this.storeItem || !this.storeGroupList){
-        this.is_groups_marked=0
-        return
-      }
-      try{
-        const member_of_groups=this.storeItem.member_of_groups.group_ids.split(',');
-        for(let group of this.storeGroupList){
-          group.is_marked=member_of_groups.includes(group.group_id);
-        }
-        this.is_groups_marked=1
-      }catch{
-        //
-      }
-    },
+
     itemParseFlags(){
       this.is_deleted   = this.storeItem.deleted_at==null?0:1
       this.is_disabled  = this.storeItem.is_disabled==0?0:1
@@ -798,6 +798,10 @@ export default  {
       this.itemGet()
     },
     async itemUpdateGroup(is_joined,group_id){
+      if( !User.isAdmin() && this.is_disabled==0 && !confirm("Внимание! Изменение группы, отправит магазин/ресторан на модерацию") ){
+        this.listGroupGet()
+        return false
+      }
       const request={
         store_id:this.storeId,
         is_joined,
@@ -813,7 +817,6 @@ export default  {
     async listGroupGet(){
       try{
         this.storeGroupList=await jQuery.get( heap.state.hostname + "Store/listGroupGet")
-        this.itemMarkGroups()
       }catch{/** */}
     },
     async ownerListGet(){
