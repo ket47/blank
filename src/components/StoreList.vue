@@ -98,12 +98,15 @@ ion-card .store-title{
             <ion-img v-if="store_item.image_hash" :src="$heap.state.hostname +'/image/get.php/' +store_item.image_hash +'.500.500.webp'"/>
         </div>
       </router-link>
-        <div 
-          v-if="store_perks[store_index].length > 0" 
-          class="perk-row" 
-          style="width:50px">
-            <ion-img v-for="perk in store_perks[store_index]" :key="perk.image_hash" class="perk"  :src="`${$heap.state.hostname +'/image/get.php/' +perk.image_hash +'.80.80.png'}`"/>
-        </div>
+      <div 
+        v-if="store_perks[store_index].length > 0" 
+        class="perk-row" 
+         :style="`width:${store_perks[store_index].length*50}px`">
+        <span v-for="perk in store_perks[store_index]" :key="perk.image_hash" class="perk" >
+          <ion-img v-if="perk.image_hash" :src="`${$heap.state.hostname +'/image/get.php/' +perk.image_hash +'.80.80.png'}`"/>
+          <ion-img v-else :src="`/img/perks/${perk.image_url}`"/>
+        </span>
+      </div>
         
       <router-link :to="`/catalog/store-${store_item.store_id}`" style="text-decoration: none">
         <ion-item lines="none" class="store-title">
@@ -134,7 +137,7 @@ ion-card .store-title{
             <ion-grid>
               <ion-row class="ion-justify-content-around ion-align-items-center">
                 <ion-col size="3">
-                    <ion-img class="perk-image" v-if="productPerk.image_hash" :src="`${$heap.state.hostname +'/image/get.php/' +productPerk.image_hash +'.50.50.png'}`"/>
+                    <ion-img class="perk-image" v-if="productPerk.image_hash" :src="`${$heap.state.hostname +'/image/get.php/' +productPerk.image_hash +'.100.10                -0.webp'}`"/>
                 </ion-col>
                 <ion-col size="7">
                   <b class="perk-title">{{ productPerk.perk_title }}</b>

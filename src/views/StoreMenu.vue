@@ -523,13 +523,19 @@ export default{
 
     async groupTreeGet(filter) {
       try{
-        this.storeGroups=await jQuery.get(`${heap.state.hostname}Product/groupTreeGet`, {store_id: filter.store_id})
+        const storeGroupsUnordered=await jQuery.get(`${heap.state.hostname}Product/groupTreeGet`, {store_id: filter.store_id})
+        let storeGroupsOrdered=[]
+        for( let group_id in storeGroupsUnordered){
+          storeGroupsOrdered[storeGroupsUnordered[group_id].order]=storeGroupsUnordered[group_id]
+        }
+        this.storeGroups=storeGroupsOrdered
+
         this.productListGet();
       }catch(err){/** */}
     },
     groupOtherAdd(){
       if(this.storeProducts[0]){
-        this.storeGroups[0]={
+        this.storeGroups.push({
           group_id:'other',
           group_name:"Другое",
           image_hash:"",
@@ -542,7 +548,7 @@ export default{
               image_hash:""
             }
           }
-        }
+        })
       }
     },
     groupSelect(){
