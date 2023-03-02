@@ -7,11 +7,12 @@
               <ion-icon slot="end" :icon="trash" @click="locationDelete(`${location.location_id}`,`${i}`)"></ion-icon>
           </ion-item>
         </ion-list>
-        <ion-card v-else color="warning">
-          <ion-card-content>
-          Пока адреса не добавлены
-          </ion-card-content>
-        </ion-card>
+        <ion-list v-else lines="full">
+          <ion-item button @click="locationCurrentSet()">
+            <ion-icon slot="start" color="primary" :icon="locationOutline"/>
+            <ion-label color="dark">Ваше местоположение</ion-label>
+          </ion-item>
+        </ion-list>
 
         <ion-list>
           <ion-list-header>
@@ -44,7 +45,8 @@ import User              from '@/scripts/User.js'
 import jQuery             from 'jquery';
 import UserAddressPicker  from '@/components/UserAddressPicker.vue';
 
-import { trash }          from 'ionicons/icons';
+import { locationOutline,trash }          from 'ionicons/icons';
+
 
 export default{
   name: 'UserAddresses',
@@ -59,7 +61,7 @@ export default{
   IonCardContent,
   },
   setup(){
-    return { trash };
+    return { locationOutline,trash };
   },
   mounted(){
     this.locationListGet();
@@ -163,6 +165,10 @@ export default{
         await jQuery.post(heap.state.hostname + "User/locationDelete",{location_id})
       }catch{/** */}
       this.locationListGet();
+    },
+    async locationCurrentSet(){
+      await User.geo.locationCurrentGet()
+      router.go(-1)
     }
   },
   data(){

@@ -632,10 +632,6 @@ export default{
         this.$flash("Не удалось создать товар")
       }
     },
-
-
-
-
     async groupTreeGet(filter) {
       try{
         const storeGroupsUnordered=await jQuery.get(`${heap.state.hostname}Product/groupTreeGet`, {store_id: filter.store_id})

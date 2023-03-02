@@ -4,14 +4,14 @@ import heap  from '@/heap';
 import Topic from '@/scripts/Topic';
 //import Order from '@/scripts/Order';
 import { Geolocation } from '@capacitor/geolocation';
-import { toastController }  from '@ionic/vue';
+import { alertController }  from '@ionic/vue';
 
 import { initializeApp } from "firebase/app";
 import { getMessaging, getToken } from "firebase/messaging";
 
 const User = {
     init(){
-        //this.geo.trackingStart();
+        this.geo.trackingStart();
         this.firebase.init()
     },
     async settingsGet(){
@@ -34,6 +34,7 @@ const User = {
             }
             heap.commit('setUser', response);
             Topic.publish('userGet',response);
+            User.geo.locationSelect()
         });
         if( user?.user_id>0 ){
             //Order.api.listCount()
@@ -204,57 +205,89 @@ const User = {
     },
     geo:{
         clock:null,
-        timeout:1000*60,
+        timeout:1000*60*60,
         lastPosition:{},
         async get(){
             await User.geo.permissionCheck();
             return Geolocation.getCurrentPosition();
         },
-        async flash( message ){
-            const toast = await toastController
-              .create({
-                message: message,
-                duration: 2000,
-                color:'dark'
-              })
-            return toast.present();
+        async locationSelect(){
+            let location_main=heap.state.user.location_main
+            if( location_main.is_default==1 ){//IF we have only default location try to use devices geopositioning
+                const permission=await User.geo.permissionCheck()
+                if( permission=='granted' ){
+                    User.geo.locationCurrentGet()
+                    return;
+                }
+            }
+            heap.commit('setUserMainLocation', location_main);
+            Topic.publish('userMainLocationSet',location_main)
+        },
+        async locationCurrentGet(){
+            const point=await User.geo.get()
+            if( !point ){
+                return null
+            }
+            const location_current={
+                location_latitude:point.coords.latitude,
+                location_longitude:point.coords.longitude,
+                location_address:'Ваше местоположение',
+                timestamp:point.timestamp
+            }
+            heap.commit('setUserCurrentLocation', location_current);
+            Topic.publish('userCurrentLocationSet',location_current)
+            User.geo.trackingStart()
+        },
+        async permissionPrompt(){
+            const alert = await alertController.create({
+                header: 'Местоположение',
+                message:'Необходимо предоставить доступ к местоположению, чтобы искать около вас',
+                buttons: [
+                  {
+                    text: 'Искать около меня',
+                    role: 'confirm',
+                  },
+                  {
+                    text: 'Отмена',
+                    role: 'cancel',
+                  },
+                ],
+            });
+            await alert.present();
+            const { role } = await alert.onDidDismiss();
+            if( role=='confirm' ){
+                User.geo.locationCurrentGet()
+            }
         },
         async permissionCheck(){
-            const result=await Geolocation.checkPermissions();
-            if(result.location=='granted' || result.coarseLocation=='granted'){
-                return true;
-            }
-            User.geo.flash("Для правильной работы нужен доступ к местоположению устройства");
-            return false;
+            const result=await Geolocation.checkPermissions()
+            return result.location
         },
         async trackingStart(){
-            if(!User.courier.data?.courier_id){
-                return false;
+            const permission=await User.geo.permissionCheck();
+            if( permission!='granted' ){
+                return
             }
-            await User.geo.permissionCheck();
             User.geo.trackingStop();
             User.geo.clock=await Geolocation.watchPosition({timeout:User.geo.timeout},(position)=>{
-                if( !position || (
-                    User.geo.lastPosition?.coords?.longitude==position?.coords?.longitude
-                    &&
-                    User.geo.lastPosition?.coords?.latitude==position?.coords?.latitude
-                )){
+                const lat_shift_m=Math.abs(User.geo.lastPosition?.coords?.latitude-position?.coords?.latitude)/0.000009
+                const lon_shift_m=Math.abs(User.geo.lastPosition?.coords?.longitude-position?.coords?.longitude)/0.000009
+                const tolerance_m=1000
+                if( !position || (lat_shift_m<tolerance_m&&lon_shift_m<tolerance_m) ){
                     return;
                 }
                 if( User.geo.lastPosition?.coords && !position?.coords?.speed ){
                     return
                 }
                 User.geo.lastPosition=position;
-                const request={
-                    location_longitude:position.coords.longitude,
+                const loc={
                     location_latitude:position.coords.latitude,
-                    location_holder_id:User.courier.data.courier_id,
-                };
-                if( request.location_holder_id && request.location_latitude && request.location_longitude ){
-                    return jQuery.post( heap.state.hostname + "Courier/locationAdd",request);
-                } else {
-                    console.log('geolocation format error',request);
-                }
+                    location_longitude:position.coords.longitude,
+                    location_address:'Ваше местоположение',
+                    timestamp:position.timestamp
+                  }
+                heap.commit('setUserCurrentLocation', loc);
+                Topic.publish('userCurrentLocationSet',heap.state.user.location_current)
             });
         },
         trackingStop(){

@@ -34,45 +34,47 @@
 </style>
 
 <template>
-    <div v-if="isMainLocationSet" @click="selectDeliveryAddress()" class="selector">
-      <div class="delivery-adress"  style="font-size: 1em;" >
-        <div class="center">
-          <ion-text size="small" color="medium" >Адрес доставки заказа</ion-text>
-          <ion-icon :icon="chevronDownOutline" color="medium"></ion-icon>
-        </div>
-        <div class="center">
-          <ion-icon slot="start" color="secondary" :icon="location"/>
-          <ion-text color="dark"><b>{{$heap.state.user?.location_main?.location_address}}</b></ion-text>
-        </div>
-      </div>
-      <div class="delivery-time" v-if="deliveryTime">
-        <ion-text style="font-size:24px;color:var(--ion-color-secondary-contrast)">{{deliveryTime.time}}</ion-text>
-        <ion-note style="font-size:10px;color:var(--ion-color-secondary-contrast)">мин</ion-note>
-      </div>
-    </div>
-    <ion-item v-else detail button @click="selectDeliveryAddress()" class="selector">
-      <ion-icon slot="start" style="color: var(--ion-color-primary)" :icon="location"/>
-      <ion-label> Выбрать адрес доставки </ion-label>
+  <ion-list v-if="isMainLocationSet" @click="selectDeliveryAddress()">
+      <ion-item lines="none">
+        <ion-text color="medium">Адрес доставки заказа</ion-text>
+        <ion-icon slot="end" :icon="chevronDownOutline"/>
+      </ion-item>
+      <ion-item lines="none">
+        <ion-thumbnail v-if="location_shown.image_hash" slot="start" style="width:30px;height:30px">
+          <ion-img :src="`${$heap.state.hostname}/image/get.php/${location_shown.image_hash}.32.32.png`" />
+        </ion-thumbnail>
+        <ion-icon v-else slot="start" color="primary" :icon="locationOutline"/>
+        <ion-text color="dark">{{location_shown?.location_address}}</ion-text>
+        <ion-chip v-if="deliveryTime?.time>0" slot="end"  color="medium"  background="transparent">
+          <ion-icon :src="timeOutline"/><label>{{deliveryTime.time}}</label>
+        </ion-chip>
+      </ion-item>
+  </ion-list>
+  <ion-list v-if="showComment && location_shown">
+    <ion-item>
+        <ion-textarea rows="1" placeholder="комментарий к адресу" @change="locationCommentChanged()" v-model="location_shown.location_comment"></ion-textarea>
     </ion-item>
-
-    <ion-item v-if="showComment && $heap.state.user.location_main">
-        <ion-textarea rows="1" placeholder="комментарий к адресу" @change="locationCommentChanged()" v-model="$heap.state.user.location_main.location_comment"></ion-textarea>
-    </ion-item>
+  </ion-list>
 </template>
 
 <script>
 import { 
+  IonImg,
   IonIcon,
   IonTextarea,
   IonText,
   IonNote,
   IonLabel,
   IonItem,
+  IonList,
+  IonThumbnail,
+  IonChip,
  }  from "@ionic/vue";
 
 import { 
-  location, 
-  chevronDownOutline 
+  locationOutline, 
+  chevronDownOutline,
+  timeOutline
 }                               from "ionicons/icons";
 import heap                     from "@/heap";
 import router                   from '@/router';
@@ -82,32 +84,32 @@ import jQuery                   from 'jquery';
 export default {
   props:['deliveryTime','showComment'],
   components: {
+      IonImg,
       IonIcon,
       IonTextarea,
       IonText,
       IonNote,
       IonLabel,
       IonItem,
+      IonList,
+      IonThumbnail,
+      IonChip,
   },
   setup() {
     return { 
-      location, 
-      chevronDownOutline 
+      locationOutline, 
+      chevronDownOutline,
+      timeOutline
     };
   },
   data() {
     return {
-      location_main: heap.state.user.location_main,
+      location_shown: heap.state.user.location_main,
     };
   },
   created(){
-    let self=this;
-    Topic.on('userMainLocationSet',mainloc=>{
-      self.location_main=mainloc
-    })
-    Topic.on('userGet',user=>{
-      self.location_main=user.location_main
-    })
+    Topic.on('userMainLocationSet',mainloc=>this.location_shown=mainloc)
+    Topic.on('userCurrentLocationSet',currloc=>this.location_shown=currloc)
   },
   methods: {
     selectDeliveryAddress() {
@@ -115,8 +117,8 @@ export default {
     },
     async locationCommentChanged(){
       const request={
-        location_id:heap.state.user.location_main.location_id,
-        location_comment:heap.state.user.location_main.location_comment
+        location_id:this.location_shown.location_id,
+        location_comment:this.location_shown.location_comment
       };
       jQuery.post( this.$heap.state.hostname + "Location/itemUpdate", JSON.stringify(request) );
     }
@@ -126,7 +128,7 @@ export default {
       return heap.state.user.user_id && heap.state.user.user_id > -1;
     },
     isMainLocationSet(){
-        return this.location_main?1:0;
+        return this.location_shown?1:0;
     }
   },
 };

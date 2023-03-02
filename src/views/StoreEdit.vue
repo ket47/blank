@@ -569,16 +569,17 @@ export default  {
     },
     storeGroupListComp(){
       if(!this.storeItem || !this.storeGroupList){
+        console.log(this.storeItem,this.storeGroupList)
         return null
       }
       let store_group_list=[]
       try{
-        const member_of_groups=this.storeItem.member_of_groups.group_ids.split(',');
+        const member_of_groups=this.storeItem.member_of_groups?.group_ids?.split(',');
         for(let group of this.storeGroupList){
-          group.is_marked=member_of_groups.includes(group.group_id);
+          group.is_marked=member_of_groups?.includes(group.group_id);
           store_group_list.push(group)
         }
-      }catch{/** */}
+      }catch(err){/** */}
       return store_group_list
     }
   },

@@ -15,22 +15,16 @@
           </ion-item>
         </ion-card-content>        
       </ion-card>
-      <ion-card v-if="permission=='notsupported'">
-        <ion-card-content>
-          <ion-item lines="none">
-            <ion-icon :src="notificationsOffOutline" color="primary" slot="start"/>
-            Уведомления не поддерживаются этим устройством.
-          </ion-item>
-        </ion-card-content>        
-      </ion-card>
-      <ion-card v-if="permission=='granted'">
-        <ion-card-content>
-          <ion-item lines="none">
-            <ion-icon :src="notificationsOutline" color="primary" slot="start"/>
-            Уведомления включены
-          </ion-item>
-        </ion-card-content>        
-      </ion-card>
+
+      <ion-item v-if="permission=='notsupported'" lines="none">
+        <ion-icon :src="notificationsOffOutline" color="primary" slot="start"/>
+        Уведомления не поддерживаются этим устройством.
+      </ion-item>
+
+      <ion-item v-if="permission=='granted'" lines="none">
+        <ion-icon :src="notificationsOutline" color="primary" slot="start"/>
+        Уведомления включены
+      </ion-item>
 </template>
 <script>
 import User from '@/scripts/User'

@@ -146,6 +146,9 @@ ion-tab-bar.bottom-bar  ion-tab-button:nth-child(4).tab-selected ~ .tab-indicato
 ion-icon{
   font-size:2.5em !important;
 }
+.ios ion-icon{
+  margin-bottom:-5px;
+}
 </style>
 
 <template>

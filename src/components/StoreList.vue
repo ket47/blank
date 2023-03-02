@@ -137,7 +137,7 @@ ion-card .store-title{
             <ion-grid>
               <ion-row class="ion-justify-content-around ion-align-items-center">
                 <ion-col size="3">
-                    <ion-img class="perk-image" v-if="productPerk.image_hash" :src="`${$heap.state.hostname +'/image/get.php/' +productPerk.image_hash +'.100.10                -0.webp'}`"/>
+                    <ion-img class="perk-image" v-if="productPerk.image_hash" :src="`${$heap.state.hostname +'/image/get.php/' +productPerk.image_hash +'.100.100.webp'}`"/>
                 </ion-col>
                 <ion-col size="7">
                   <b class="perk-title">{{ productPerk.perk_title }}</b>
@@ -221,7 +221,6 @@ export default {
     };
   },
   computed: {
-    
     store_perks () {
       return this.storeList.map(function(store) {
         return store.perks.filter(perk => perk.slot == 'perk')
@@ -235,9 +234,16 @@ export default {
   },
   methods: {
     async listGet() {
-      var main_address = heap.state.user.location_main;
+      let main_address = heap.state.user.location_main
       if (!main_address) {
         return;
+      }
+      let location={location_id: main_address.location_id}
+      if( main_address.is_default==1 && heap.state.user.location_current ){
+        location={
+          location_latitude: heap.state.user.location_current.location_latitude,
+          location_longitude:heap.state.user.location_current.location_longitude
+          }
       }
       const now=Date.now()
       if(this.can_reload_at>now){
@@ -246,7 +252,7 @@ export default {
       this.can_reload_at=now+2000
 
       try{
-        const found=await jQuery.post(heap.state.hostname + "Store/listNearGet", {location_id: main_address.location_id,})
+        const found=await jQuery.post(heap.state.hostname + "Store/listNearGet", location)
         this.storeList=this.storeListCalculate(found)
       }catch{/** */}
     },
@@ -259,9 +265,13 @@ export default {
   },
   mounted(){
     this.$topic.on('userGet',()=>{
-      this.listGet();
+      //this.listGet();
     }) 
-    this.$topic.on('userMainLocationSet',mainloc=>{
+    this.$topic.on('userMainLocationSet',loc=>{
+      this.can_reload_at=0
+      this.listGet();
+    })
+    this.$topic.on('userCurrentLocationSet',loc=>{
       this.can_reload_at=0
       this.listGet();
     })

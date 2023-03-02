@@ -201,6 +201,7 @@ import {
     documentTextOutline
     }                           from 'ionicons/icons';
 import { 
+    alertController,
     modalController,
     IonTextarea,
     IonItemDivider,
@@ -414,6 +415,9 @@ export default({
             Order.api.itemUpdate(request);
         },
         async proceed(){
+            if( !await this.multipleAdressesConfirm() ){
+                return
+            }
             const orderData={
                 order_id:this.order.order_id,
                 tariff_id:this.tariffRule.tariff_id,
@@ -532,6 +536,29 @@ export default({
                     router.replace('order-'+this.order.order_id);
                 }
             }
+        },
+        async multipleAdressesConfirm(){
+            const alert = await alertController.create({
+                header: 'Адрес доставки',
+                message:this.$heap.state.user.location_main.location_address,
+                buttons: [
+                  {
+                    text: 'Изменить',
+                    role: 'cancel',
+                  },
+                  {
+                    text: 'Верно',
+                    role: 'confirm',
+                  },
+                ],
+            });
+            await alert.present();
+            const { role } = await alert.onDidDismiss();
+            if( role=='confirm' ){
+                return true
+            }
+            this.$router.push('/user/user-addresses');
+            return false
         },
         async promoPick() {
             const modal = await modalController.create({

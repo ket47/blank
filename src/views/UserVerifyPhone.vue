@@ -7,7 +7,9 @@
           </ion-card-title>
         </ion-card-header>
         <ion-card-content>
-          Мы выслали вам смс с кодом подтверждения на номер <b>{{user_phone}}</b>. Поступление СМС на ваш телефон может занять до 2 минут. Введите 4 цифры из смс ниже
+          <p>Мы выслали вам смс с кодом подтверждения на номер <b>{{user_phone}}</b>. Введите 4 цифры из смс ниже</p>
+          <hr/>
+          <p>Поступление СМС на ваш телефон может занять до 2 минут.</p>
         </ion-card-content>
       </ion-card>
 
@@ -34,6 +36,12 @@
         <ion-row responsive-sm>
           <ion-col>
             <ion-button @click="onSubmit()" expand="block">Подтвердить</ion-button>
+          </ion-col>
+        </ion-row>
+
+        <ion-row responsive-sm>
+          <ion-col>
+            <ion-button @click="is_sent=false;smsSend()" expand="block" color="light" :disabled="timeToResend>0">Послать снова {{timeLeft}}</ion-button>
           </ion-col>
         </ion-row>
       </form>
@@ -76,7 +84,8 @@ export default  {
     return {
       verification_code:null,
       user_phone:this.$route.params.user_phone||this.$route.query.user_phone||'',
-      is_sent:false
+      is_sent:false,
+      timeToResend:120
     }
   },
   created(){
@@ -85,13 +94,28 @@ export default  {
   ionViewDidEnter(){
     this.smsSend();
   },
+  computed:{
+    timeLeft(){
+      const min=Math.floor(this.timeToResend/60);
+      const sec=this.timeToResend-60*min;
+      return `${min}:${sec}`
+    }
+  },
   methods:{
-    smsSend(){
+    clockStart(){
+      if(this.timeToResend<=0){
+        return
+      }
+      this.timeToResend--
+      setTimeout(()=>this.clockStart(),1000)
+    },
+    async smsSend(){
       if(this.is_sent){
         return
       }
       this.user_phone=this.$route.params.user_phone||this.$route.query.user_phone||'';
       if(!this.user_phone){
+        this.$router.replace('/user')
         return;
       }
       let requestData = {
@@ -99,7 +123,9 @@ export default  {
       }
       try{
         this.is_sent=true
-        jQuery.post( `${this.$heap.state.hostname}User/phoneVerificationSend`, requestData)
+        await jQuery.post( `${this.$heap.state.hostname}User/phoneVerificationSend`, requestData)
+        this.timeToResend=120
+        this.clockStart()
       }catch{/** */}
     },
     async onSubmit() {
@@ -108,16 +134,16 @@ export default  {
       }
       try{
         await jQuery.post( `${this.$heap.state.hostname}/User/phoneVerificationCheck`, {user_phone: this.user_phone, verification_code: this.verification_code})
-        User.autoSignIn()
-        this.$router.replace('/user/user-edit')
-        this.$router.push('/home')
         this.$flash("Номер телефона верифицирован")
+        this.$router.replace('/user')
+        await User.autoSignIn()
+        this.$router.push('/catalog')
       } catch(err){
         const message=err.responseJSON.messages.error
         switch(message){
           case 'verification_not_found':
             this.$flash("Код верификации устарел")
-            this.$router.push('sign-in')
+            this.$router.replace('/user/sign-in')
             break;
         }
         this.$flash("Не удалось верифицировать телефон")

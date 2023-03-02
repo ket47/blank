@@ -54,6 +54,9 @@ const heap = createStore({
         setUserMainLocation(state,mainLocation){
             state.user.location_main=mainLocation
         },
+        setUserCurrentLocation(state,currentLocation){
+            state.user.location_current=currentLocation
+        },
         setCurrentStore (state, storeData) {
             state.currentStore = storeData;
         },

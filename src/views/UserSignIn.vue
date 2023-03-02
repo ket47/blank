@@ -18,17 +18,16 @@
 
     <form novalidate>
         <ion-list>
-          <ion-item>
-            <ion-grid style="width:100%">
-              <ion-row>
-                <ion-col size="5">
-                  <ion-label position="stacked" color="primary">Код</ion-label>
+          <ion-item lines="full">
+            <div style="display:grid;grid-template-columns:100px auto">
+              <div>
+                  <ion-label position="stacked">Код</ion-label>
                   <ion-select :value="user_phone_prefix">
                     <ion-select-option value="7" selected>+7 </ion-select-option>
                   </ion-select>
-                </ion-col>
-                <ion-col size="7">
-                  <ion-label position="stacked" color="primary">Мобильный телефон*</ion-label>
+              </div>
+              <div>
+                  <ion-label position="stacked">Мобильный телефон*</ion-label>
                   <ion-input
                     v-model="user_phone"
                     @ionChange="phoneFormat()"
@@ -37,17 +36,17 @@
                     inputmode="tel"
                     placeholder="(xxx)xxxxxxxxx"
                     required
-                  ></ion-input>
-                </ion-col>
-              </ion-row>
-            </ion-grid>
+                  ></ion-input>            
+                  <ion-text color="danger" slot="helper"><p v-show="!phoneValid && submitted == true" padding-left>Неверный номер телефона</p></ion-text>
+              </div>
+            </div>
             <ion-text color="danger" slot="helper">
               <p v-show="!phoneValid && submitted == true" padding-left>Неверный номер телефона</p>
             </ion-text>
           </ion-item>
 
-          <ion-item>
-            <ion-label position="stacked" color="primary">Пароль (Минимум 4 символа)*</ion-label>
+          <ion-item lines="full">
+            <ion-label position="stacked">Пароль (Минимум 4 символа)*</ion-label>
             <ion-input 
               v-model="user_pass" 
               name="password" 

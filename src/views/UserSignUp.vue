@@ -23,17 +23,16 @@
       
       <form novalidate>
         <ion-list>
-          <ion-item>
-            <ion-grid style="width:100%">
-              <ion-row>
-                <ion-col size="4">
-                  <ion-label position="stacked" color="primary">Код</ion-label>
+          <ion-item lines="full">
+            <div style="display:grid;grid-template-columns:100px auto">
+              <div>
+                  <ion-label position="stacked">Код</ion-label>
                   <ion-select :value="user_phone_prefix">
                     <ion-select-option value="7" selected>+7 </ion-select-option>
                   </ion-select>
-                </ion-col>
-                <ion-col size="8">
-                  <ion-label position="stacked" color="primary">Мобильный телефон*</ion-label>
+              </div>
+              <div>
+                  <ion-label position="stacked">Мобильный телефон*</ion-label>
                   <ion-input
                     v-model="user_phone"
                     @ionChange="phoneFormat()"
@@ -42,17 +41,13 @@
                     inputmode="tel"
                     placeholder="(xxx)xxxxxxxxx"
                     required
-                  ></ion-input>
-                </ion-col>
-              </ion-row>
-            </ion-grid>
-            <ion-text color="danger" slot="helper">
-              <p v-show="!phoneValid && submitted == true" padding-left>Неверный номер телефона</p>
-            </ion-text>
+                  ></ion-input>            
+                  <ion-text color="danger" slot="helper"><p v-show="!phoneValid && submitted == true" padding-left>Неверный номер телефона</p></ion-text>
+              </div>
+            </div>
           </ion-item>
-
-          <ion-item>
-            <ion-label position="stacked" color="primary">Ваш псевдоним*</ion-label>
+          <ion-item lines="full">
+            <ion-label position="stacked">Ваш псевдоним*</ion-label>
             <ion-input 
               v-model="user_name"
               name="username"
@@ -64,9 +59,8 @@
               <p v-show="!usernameValid && submitted == true" padding-left>Проверьте ваш псевдоним</p>
             </ion-text>
           </ion-item>
-
-          <ion-item>
-            <ion-label position="stacked" color="primary">Ваш е-маил (желательно заполнить)</ion-label>
+          <ion-item lines="full">
+            <ion-label position="stacked">Ваш е-маил (желательно заполнить)</ion-label>
             <ion-input 
               v-model="user_email"
               name="email"
@@ -82,8 +76,8 @@
               Мы придумали пароль <ion-chip style="font-family:monospace,serif">{{user_pass}}</ion-chip> для вас, но вы можете использовать свой вариант. Пароль будет сохранен на этом устройстве.
             </ion-card-content>
           </ion-card>
-          <ion-item>
-            <ion-label position="stacked" color="primary">Пароль (минимум 4 символа)*</ion-label>
+          <ion-item lines="full">
+            <ion-label position="stacked">Пароль (минимум 4 символа)*</ion-label>
             <ion-input 
               v-model="user_pass" 
               name="password" 
@@ -121,9 +115,7 @@
         
         <ion-row responsive-sm>
           <ion-col>
-          <router-link to="/user/sign-in">
-            <ion-button color="light" expand="block">Уже есть учетная запись?</ion-button>
-          </router-link>
+            <ion-button color="light" expand="block" @click="$router.push('/user/sign-in')">Уже есть учетная запись?</ion-button>
           </ion-col>
         </ion-row>
 
@@ -133,9 +125,6 @@
 
 <script>
 import { 
-  IonGrid,
-  IonRow,
-  IonCol, 
   IonSelect, 
   IonSelectOption,
   IonLabel,
@@ -149,15 +138,14 @@ import {
   IonCardTitle,
   IonCardContent,
   IonChip,
+  IonCol,
+  IonRow,
 }                               from '@ionic/vue';
 import User                     from '@/scripts/User.js'
 import jQuery                   from "jquery";
 
 export default  {
   components: {
-  IonGrid,
-  IonRow,
-  IonCol, 
   IonSelect, 
   IonSelectOption,
   IonLabel,
@@ -171,6 +159,8 @@ export default  {
   IonCardTitle,
   IonCardContent,
   IonChip,
+  IonCol,
+  IonRow,
   },
   data(){
     const genpass=this.passGenerate()
@@ -220,7 +210,6 @@ export default  {
         if(exception_code=='user_phone_unverified'){
           this.phoneVerify();
           return
-
         }
         
         exception_code='unknown';
@@ -266,7 +255,7 @@ export default  {
     passGenerate(){
       let pass=''
       const length=4
-      const alphabet = 'abcdefghijklmnopqrstuvwxyz1234567890'
+      const alphabet = 'abcdefghijklmnopqrstuvwxyz12345678901234567890'
       for(let i=0;i<length;i++){
         const index=Math.floor(Math.random()*alphabet.length)
         pass+=alphabet[index]
@@ -290,7 +279,7 @@ export default  {
         user_phone: this.user_phone_prefix+this.user_phone
       }
       try{
-        this.$router.push({name:'UserVerifyPhone',params:requestData})
+        this.$router.replace({name:'UserVerifyPhone',params:requestData})
       } catch{
         this.$flash("Не удалось выслать смс с подтверждением")
       }

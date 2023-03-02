@@ -64,7 +64,7 @@ ion-accordion-group .accordion-expanding .product-description{
         <ion-accordion-group v-if="productItem.product_description" style="width:100%">
           <ion-accordion>
             <ion-item slot="header" lines="none">
-              <ion-text  class="product-description" color="medium">{{productItem.product_description}}</ion-text>
+              <ion-text  class="product-description" color="medium" v-html="itemDescription"></ion-text>
             </ion-item>
             <ion-list slot="content">
               <ion-item lines="none"></ion-item>
@@ -251,6 +251,9 @@ export default  {
     },
     weight_in_gramms(){
         return this.productItem.product_weight*1000
+    },
+    itemDescription(){
+      return this.productItem?.product_description?.replace(/<\/?[^>]+(>|$)/g, "").replace(/[\n\r]/g,'<br>')
     }
   },
   methods: {

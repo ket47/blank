@@ -29,14 +29,28 @@
             <p>Супер быстрая доставка товаров на дом теперь не роскошь, а вполне доступная для каждого услуга. 
                 Экономия времени, разнообразный ассортимент и возможность получить любой товар не выходя за пределы любимого домашнего очага, - все это возможно с Tezkel.
             </p>
-            <a href="https://play.google.com/store/apps/details?id=com.tezkel.twa" stlye="text-decoration: none">
-              <ion-button color="primary"><b>СКАЧАТЬ ПРИЛОЖЕНИЕ</b></ion-button>
-            </a>
           </div>
           <div class="landing-desc-col landing-desc-feature-col image-col" style="text-align: center;">
               <img src="/img/about_us/tezkel_anasayfa1.png"/>
           </div>
         </div>
+      </div>
+
+
+      <div style="padding:10px;margin-top:25px;">
+        <h2 style="text-align: left;">Сайт как приложение</h2>
+        <p>
+          С помощью сайта tezkel.com вы можете делать абсолютно все, потому что сайт сделан как <b>Веб приложение</b>. Вы можете создать ярлык сайта в телефоне и пользоваться полным функционалом сервиса. 
+        </p>
+        <p>
+          Всё же для телефонов на ОС Андроид есть возможность использовать классическое приложение.
+        </p>
+        <a href="https://play.google.com/store/apps/details?id=com.tezkel.twa" target="_new" stlye="text-decoration: none">
+          <ion-button color="primary">
+            <ion-icon :src="logoGooglePlaystore" slot="start" />
+            
+            скачать из google play</ion-button>
+        </a>
       </div>
 
       <div class="order-stages-container main-block">
@@ -126,6 +140,9 @@
 
 import FooterDesktop  from "@/components/FooterDesktop";
 import mainLogo       from "@/assets/icons/tezkel_logo.svg";
+import {
+  logoGooglePlaystore
+}                     from "ionicons/icons";
 
 import {
   IonPage, 
@@ -143,7 +160,8 @@ export default {
   ],
   setup() {
     return {
-      mainLogo
+      mainLogo,
+      logoGooglePlaystore
     }
   },
   components:{
@@ -192,7 +210,7 @@ export default {
 .header-image-container{
   padding: 2em 4em;
   display: grid;
-  min-height: 650px;
+  min-height: 350px;
   align-items: center;
   text-align: center;
   background-image: url("/public/img/about_us/tezkel_header.jpg");
