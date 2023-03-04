@@ -42,17 +42,17 @@
 </style>
 <template>
     <div :class="item_class" :id="`product_list_item${productItem.product_id}`">
-        <div style="position:relative" v-if="options">
+        <div style="position:relative" v-if="productItem.options">
             <div class="product_list_item_img" style="position:absolute;border:#9ac solid 2px;top:-8px;left:8px;z-index:-1"></div>
             <div class="product_list_item_img" style="position:absolute;border:#cde solid 2px;top:-4px;left:4px;z-index:-1"></div>
         </div>
-        <div class="product_list_item_img" :style="options?'border:#def solid 2px;':''">
+        <div class="product_list_item_img" :style="productItem.options?'border:#def solid 2px;':''">
             <div style="position:relative;top:-50%;" v-if="productItem.is_disabled=='0' && !productItem.deleted_at">
                 <cart-add-buttons buttonLayout="vertical" :productItem="productItem"></cart-add-buttons>
             </div> 
             <ion-img class="blur-image" :src="`${$heap.state.hostname}image/get.php/${productItem.image_hash}.200.200.webp`"/>
             <ion-img @click="$router.push(`/catalog/product-${productItem.product_id}`)" :src="`${$heap.state.hostname}image/get.php/${productItem.image_hash}.200.200.webp`"/>
-            <ion-icon v-if="options" :src="layersOutline" color="primary" size="large" style="position:absolute;bottom:3px;right:3px"/>
+            <ion-icon v-if="productItem.options" :src="layersOutline" color="primary" size="large" style="position:absolute;bottom:3px;right:3px"/>
         </div>
         <div style="height:5em;overflow:hidden">
             <div style="color:black;height:3em;font-size:1em;overflow:hidden;line-height:1.4em; font-weight: bold;" @click="$router.push(`/catalog/product-${productItem.product_id}`)">
@@ -109,12 +109,6 @@ export default {
         },
         weight_in_gramms(){
             return this.productItem.product_weight*1000
-        },
-        options(){
-            if( !this.productItem?.product_options ){
-                return null
-            }
-            return this.productItem.product_options.split('~|~')
         }
     }
 }

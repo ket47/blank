@@ -36,8 +36,6 @@ import {
   IonListHeader,
   IonIcon,
   modalController,
-  IonCard,
-  IonCardContent,
 }                         from "@ionic/vue";
 import router             from '@/router';
 import heap               from '@/heap';
@@ -57,8 +55,6 @@ export default{
   IonList,
   IonListHeader,
   IonIcon,
-  IonCard,
-  IonCardContent,
   },
   setup(){
     return { locationOutline,trash };

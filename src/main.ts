@@ -118,15 +118,15 @@ jQuery( document ).ajaxError(( event, jqxhr, settings, thrownError )=>{
   if(status_code==0){
     flash('Похоже нет связи с интерентом. Попробуйте позже');
     Topic.publish('dismissModal')
-    router.push({path: `/error-offline`});
-  }
+    //router.push({path: `/error-offline`});
+  } else
   if(thrownError === 'abort'){
     flash('Похоже нет связи с интерентом. Попробуйте позже');
-    router.push({path: `/error-offline`});
-  }
+    //router.push({path: `/error-offline`});
+  } else
   if(thrownError === 'timeout'){
     flash('Похоже нет связи с интерентом. Попробуйте позже');
-    router.push({path: `/error-offline`});
+    //router.push({path: `/error-offline`});
   }
 })
 jQuery( document ).ajaxSend(()=>{

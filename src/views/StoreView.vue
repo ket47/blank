@@ -371,10 +371,10 @@ ion-chip .active-chip {
         </div>
     </div>
 
-    <div v-if="storeGroups" class="group-fixed-block hidden-block">
+    <div v-if="storeGroupsFiltered" class="group-fixed-block hidden-block">
       <ion-segment v-model="groupSelectedParentId" scrollable style="scrollbar-width: none;" class="groups-container">
         <ion-segment-button
-          v-for="group_item in storeGroups"
+          v-for="group_item in storeGroupsFiltered"
           :key="group_item.group_id"
           :value="group_item.group_id"
           @click="groupSelectParent(group_item.group_id,1)"
@@ -402,54 +402,52 @@ ion-chip .active-chip {
 
     </div>
 
-    <ion-searchbar class="search-container" v-model="searchRequest" placeholder="Поиск у этого продавца"
-      @input="
-        productListGet({
-          name_query: $event.target.value,
-          name_query_fields: 'product_name,product_code',
-        })
-      "/>
+    <ion-searchbar class="search-container" v-model="searchQuery" placeholder="Поиск у этого продавца"/>
 
-    <h4 style="margin: 8px 16px;"><b>Категории</b></h4>
-    <group-list v-if="storeGroups" :groupList="storeGroups" :onClick="(group_id) => {groupSelectParent(group_id,true) }"></group-list>
+    <div v-if="storeGroupsFiltered">
+      <h4 style="margin: 8px 16px;"><b>Категории</b></h4>
+      <group-list :groupList="storeGroupsFiltered" :onClick="(group_id) => {groupSelectParent(group_id,true) }"></group-list>
 
-
-    <swiper v-if="storeGroups" 
-      pager="true" 
-      :initialSlide="0"
-      :speed="400"
-      :watchSlidesProgress="false"
-      :grabCursor="true"
-      :touchStartForcePreventDefault="true"
-      :slidesPerView="1.1"
-      :pagination="false"
-      :centeredSlides="false" 
-      class="product-list-slider" 
-      @slideChange="groupSliderChanged($event)"
-    >
-      <swiper-slide v-for="parent_group_item in storeGroups" :key="parent_group_item.group_id">
-        <ion-grid class="product-list">
-          <ion-row
-            v-for="group_item in parent_group_item.children"
-            :key="group_item.group_id"
-            :ref="'group-' + group_item.group_id"
-            :data-group_id="group_item.group_id"
-          >
-            <ion-col class="group-title" size="12">
-              <h5 style="margin: 0;">
-                {{ group_item.group_name }} 
-                <ion-chip v-if="storeItem.is_writable==1" @click="productItemCreate(group_item.group_id)">
-                  <ion-icon :src="addOutline"/>добавить
-                </ion-chip>
-              </h5>
-            </ion-col>
-            <ion-col  size="12">
-              <product-list :productList="storeProducts[group_item.group_id]"></product-list>
-            </ion-col>
-          </ion-row>
-        </ion-grid>
-      </swiper-slide>
-    </swiper>
+      <swiper
+        pager="true" 
+        :initialSlide="0"
+        :speed="400"
+        :watchSlidesProgress="false"
+        :grabCursor="true"
+        :touchStartForcePreventDefault="true"
+        :slidesPerView="1.1"
+        :pagination="false"
+        :centeredSlides="false" 
+        class="product-list-slider" 
+        @slideChange="groupSliderChanged($event)"
+      >
+        <swiper-slide v-for="parent_group_item in storeGroupsFiltered" :key="parent_group_item.group_id">
+          <ion-grid class="product-list">
+            <ion-row
+              v-for="group_item in parent_group_item.children"
+              :key="group_item.group_id"
+              :ref="'group-' + group_item.group_id"
+              :data-group_id="group_item.group_id"
+            >
+              <ion-col class="group-title" size="12">
+                <h5 style="margin: 0;">
+                  {{ group_item.group_name }} 
+                  <ion-chip v-if="storeItem.is_writable==1" @click="productItemCreate(group_item.group_id)">
+                    <ion-icon :src="addOutline"/>добавить
+                  </ion-chip>
+                </h5>
+              </ion-col>
+              <ion-col  size="12">
+                <product-list :productList="storeProductsFiltered[group_item.group_id]"></product-list>
+              </ion-col>
+            </ion-row>
+          </ion-grid>
+        </swiper-slide>
+      </swiper>
+    </div>
+    <ion-label v-else-if="searchQuery">
+      К сожалению, в <b>{{storeItem.store_name}}</b> по запросу <b>"{{searchQuery}}"</b> ничего не найдено. <ion-chip @click="this.searchQuery=null">Сбросить фильтр</ion-chip>
+    </ion-label>
     
     </div>
   </base-layout>
@@ -532,15 +530,70 @@ export default{
     return {
       storeId: this.$route.params.id,
       query:this.$route.query,
-      searchRequest: "",
+      searchQuery: null,
       storeItem: [],
-      storeProducts: {},
+      //storeProducts: {},
+      productList:[],
       storeGroups: null,
       groupSelectedParentId: -1,
       sliderMaxHeight: 500,
       offsetModificator: 150,
       can_reload_at:0
     };
+  },
+  computed:{
+    storeGroupsFiltered(){
+      if(!this.storeProductsFiltered || !this.storeGroups){
+        return null
+      }
+      const notEmptyGroupIds=Object.keys(this.storeProductsFiltered)
+      let storeGroupsFiltered=null
+      for(let i in this.storeGroups){
+        for(let group_id in this.storeGroups[i].children){
+          const group=this.storeGroups[i].children[group_id]
+          if(notEmptyGroupIds.includes(group_id)){
+            if(!storeGroupsFiltered){
+              storeGroupsFiltered={}
+            }
+            if(!storeGroupsFiltered[i]){
+              storeGroupsFiltered[i]={
+                group_id:this.storeGroups[i].group_id,
+                group_name:this.storeGroups[i].group_name,
+                image_hash:this.storeGroups[i].image_hash,
+                children:[],
+              }
+            }
+            storeGroupsFiltered[i].children.push(group)
+          }
+        }
+      }
+      return storeGroupsFiltered
+    },
+    storeProductsFiltered() {
+      let category_order=1
+      let storeProductsFiltered = {}
+      for (let product of this.productList) {
+        if( this.searchQuery ){
+          try{
+            const regexp=new RegExp(this.searchQuery.replace(/^[\w\d\s]/,'').replace(/\s/g,'.*'),'im')
+            if(    !product.product_name?.match( regexp )
+                && !product.product_code?.match( regexp )
+                && !product.product_description?.match( regexp )
+              ){// 
+              continue
+            }
+          } catch{/** */}
+        }
+        if (this.storeGroups){
+          if (!storeProductsFiltered[product.group_id??0]) {
+            storeProductsFiltered[product.group_id??0] = []
+            storeProductsFiltered[product.group_id??0].category_order=category_order++
+          }
+        }
+        storeProductsFiltered[product.group_id??0].push(product)
+      }
+      return storeProductsFiltered
+    },
   },
   methods: {
     async itemGet() {
@@ -592,8 +645,9 @@ export default{
       try{
         response=await jQuery.post(heap.state.hostname + "Product/listGet", filter)
       }catch(err){/** */}
+      this.productList=response.product_list
 
-      this.productListPrepare(response.product_list);
+      //this.productListPrepare(response.product_list);
 
       this.groupOtherAdd()
       let self=this
@@ -601,19 +655,19 @@ export default{
         self.groupSelect();
       }, 0)
     },
-    productListPrepare(product_list) {
-      let category_order=1
-      this.storeProducts = {}
-      for (var product of product_list) {
-        if (this.storeGroups){
-          if (!this.storeProducts[product.group_id??0]) {
-            this.storeProducts[product.group_id??0] = []
-            this.storeProducts[product.group_id??0].category_order=category_order++
-          }
-        }
-        this.storeProducts[product.group_id??0].push(product);
-      }
-    },
+    // productListPrepare(product_list) {
+    //   let category_order=1
+    //   this.storeProducts = {}
+    //   for (var product of product_list) {
+    //     if (this.storeGroups){
+    //       if (!this.storeProducts[product.group_id??0]) {
+    //         this.storeProducts[product.group_id??0] = []
+    //         this.storeProducts[product.group_id??0].category_order=category_order++
+    //       }
+    //     }
+    //     this.storeProducts[product.group_id??0].push(product);
+    //   }
+    // },
     async productItemCreate( group_id ){
       try{
         const request={
@@ -645,7 +699,11 @@ export default{
       }catch(err){/** */}
     },
     groupOtherAdd(){
-      if(this.storeProducts[0]){
+      if(this.storeProductsFiltered[0]){
+        const has_other_group=this.storeGroups.filter(group=>group.group_id=='other')
+        if(has_other_group){
+          return
+        }
         this.storeGroups.push({
           group_id:'other',
           group_name:"Другое",

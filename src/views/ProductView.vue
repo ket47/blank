@@ -86,7 +86,7 @@ ion-accordion-group .accordion-expanding .product-description{
           </ion-item>
           <ion-item lines="none">
             <ion-chip @click="$router.replace(`/catalog/product-${option.product_id}`)" color="primary" v-for="option in productItem.options" :key="option.product_id">
-              {{option.product_option}}
+              <ion-label>{{option.product_option}}</ion-label>&nbsp;<ion-label v-if="option.product_final_price>0">{{option.product_final_price}}{{$heap.state.currencySign}}</ion-label>
             </ion-chip>
 
           </ion-item>

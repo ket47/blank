@@ -143,6 +143,11 @@ export default{
       if( newQuantity==0 && this.orderData?.order_id>0 && confirm("Удалить?")===false ){
           return;
       }
+
+      if(this.productItem?.options && this.currentQuantity==0 && newQuantity==1){
+        console.log(this.productItem?.options)
+      }
+
       return this.updateOrder(newQuantity);
     },
     setInOrder(){
