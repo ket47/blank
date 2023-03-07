@@ -265,6 +265,11 @@ ion-chip .active-chip {
     width: 24%;
   }
 }
+
+  ion-skeleton-text {
+    --border-radius: 10px;
+    --background: #ddd
+  }
 </style>
 
 <template>
@@ -448,6 +453,29 @@ ion-chip .active-chip {
     <ion-label v-else-if="searchQuery">
       К сожалению, в <b>{{storeItem.store_name}}</b> по запросу <b>"{{searchQuery}}"</b> ничего не найдено. <ion-chip @click="this.searchQuery=null">Сбросить фильтр</ion-chip>
     </ion-label>
+    <div v-else-if="!storeGroupsFiltered">
+      <h4 style="margin: 8px 16px;"><b><ion-skeleton-text style="height:30px;width:150px"></ion-skeleton-text></b></h4>
+      <div>
+        <div v-for="i in [1,2,3,4]" :key="i" style="display:inline-block;margin:10px">
+          <ion-skeleton-text style="height:70px;width:70px" animated></ion-skeleton-text>
+        </div>
+      </div>
+
+      <ion-grid class="product-list">
+        <ion-row>
+          <ion-col class="group-title" size="12">
+            <h5 style="margin: 0;">
+              <ion-skeleton-text style="height:20px;width:120px"></ion-skeleton-text>
+            </h5>
+          </ion-col>
+          <ion-col  size="12">
+            <div v-for="i in [1,2,3,4]" :key="i" style="display:inline-block;margin:10px">
+              <ion-skeleton-text style="height:120px;width:120px" animated></ion-skeleton-text>
+            </div>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </div>
     
     </div>
   </base-layout>
@@ -469,6 +497,7 @@ import {
   IonAccordionGroup,
   IonList,
   IonItem,
+  IonSkeletonText,
 }                         from "@ionic/vue";
 import { 
   Autoplay
@@ -514,7 +543,8 @@ export default{
     Swiper,
     SwiperSlide,
     GroupList,
-    ProductList
+    ProductList,
+    IonSkeletonText,
   },
   setup() {
     return {
@@ -584,13 +614,14 @@ export default{
             }
           } catch{/** */}
         }
+        const group_id=product.group_id??0
         if (this.storeGroups){
-          if (!storeProductsFiltered[product.group_id??0]) {
-            storeProductsFiltered[product.group_id??0] = []
-            storeProductsFiltered[product.group_id??0].category_order=category_order++
+          if (!storeProductsFiltered[group_id]) {
+            storeProductsFiltered[group_id] = []
+            storeProductsFiltered[group_id].category_order=category_order++
           }
         }
-        storeProductsFiltered[product.group_id??0].push(product)
+        storeProductsFiltered[group_id].push(product)
       }
       return storeProductsFiltered
     },
@@ -701,7 +732,7 @@ export default{
     groupOtherAdd(){
       if(this.storeProductsFiltered[0]){
         const has_other_group=this.storeGroups.filter(group=>group.group_id=='other')
-        if(has_other_group){
+        if(has_other_group.length>0){
           return
         }
         this.storeGroups.push({

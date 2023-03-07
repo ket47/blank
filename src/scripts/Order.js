@@ -25,9 +25,9 @@ const Order = {
         async listCartGet(){
             return jQuery.post( heap.state.hostname + "Order/listCartGet" );
         },
-        async listLoad(order_group_type){
-            const list = await jQuery.post( heap.state.hostname + "Order/listGet",{order_group_type,limit:100} );
-            if(order_group_type=='active_only'){
+        async listLoad(request){
+            const list = await jQuery.post( heap.state.hostname + "Order/listGet",request );
+            if(request.order_group_type=='active_only'){
                 let activeOrderCount=0;
                 for(let i in list){
                     if(list[i].stage_current!='customer_cart'){

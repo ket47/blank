@@ -33,26 +33,11 @@ ion-accordion-group .accordion-expanding .product-description{
   border-bottom-left-radius: 10px;
   border-bottom-right-radius: 10px;
 }
-
-.blur-image{
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  z-index: -1;
-  overflow: hidden;
-}
-.blur-image img{
-  width: 100%;
-  filter: blur(30px);
-}
 </style>
 
 <template>
   <base-layout :page-title="productItem?.product_name "  pageDefaultBackLink="/catalog" :cartComponent="CartHeader">
       <div class="product-images" v-if="productItem">
-        <div class="blur-image">
-          <img :src="`${$heap.state.hostname}image/get.php/${productItem.images[0]?.image_hash}.50.50.webp`"/>
-        </div>
         <image-slider-comp :imageList="productItem.images" :imgHeight="400" :mode="'save-aspect-ratio'" />
       </div>
       <ion-list v-if="productItem">

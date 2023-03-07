@@ -83,7 +83,7 @@ ion-icon{
               <ion-icon :icon="documentTextOutline" slot="start" color="primary"></ion-icon>
               <ion-label>Редактирование страниц</ion-label>
           </ion-item>
-          <ion-item @click="$router.push('admin-moderation')" lines="full" button detail>
+          <ion-item @click="$router.push('/admin/list-moderation')" lines="full" button detail>
               <ion-icon :icon="ribbonOutline" slot="start" color="primary"></ion-icon>
               <ion-label>Модерация элементов</ion-label>
           </ion-item>

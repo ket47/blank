@@ -61,6 +61,9 @@
                 <ion-note @click="$router.replace('/')" style="cursor:pointer" color="primary">но вы можете создать новый</ion-note>
             </div>
         </div>
+        <ion-infinite-scroll @ionInfinite="listLoadMore($event)" id="moderation-infinite-scroll">
+            <ion-infinite-scroll-content loading-spinner="bubbles" loading-text="Загрузка..."></ion-infinite-scroll-content>
+        </ion-infinite-scroll>
   </base-layout>
 </template>
 <script>
@@ -77,6 +80,8 @@ import {
     IonChip,
     IonNote,
     IonImg,
+    IonInfiniteScroll,
+    IonInfiniteScrollContent,
 }                   from '@ionic/vue';
 import {
     storefrontOutline,
@@ -106,6 +111,8 @@ export default {
     IonChip,
     IonNote,
     IonImg,
+    IonInfiniteScroll,
+    IonInfiniteScrollContent,
     },
     setup() {
       return { sparklesOutline,storefrontOutline,timeOutline,ordersIcon,rocketOutline,ribbonOutline,checkmarkOutline, };
@@ -194,21 +201,39 @@ export default {
                 this.orderType='jobs';
             }
         },
-        async listLoad(listType){
-            this.autoReload(listType);
+        async listLoad(listType,mode='append'){
             if( listType=='jobs' ){
+                this.autoReload(listType);
                 this.listJobLoad();
                 return;
             }
             let order_group_type='system_finish';
             if( listType=='active' ){
+                this.autoReload(listType);
                 order_group_type='active_only';
             }
-            this.orderList=await Order.api.listLoad(order_group_type);
+            const offset=(mode=='append')?this.orderList?.length??0:0
+            const limit=(mode=='append')?10:this.orderList?.length
+            const request={
+                order_group_type,
+                offset,
+                limit,
+            }
+            let orderList=await Order.api.listLoad(request);
+            if( mode=='append' ){
+                this.orderList??=[]
+                orderList=this.orderList.concat(orderList)
+            }
+            this.orderList=orderList
             this.jobList=null;
+        },
+        async listLoadMore(ev){
+            await this.listLoad(this.orderType)
+            ev.target.complete();
         },
         listTypeChanged(e){
             const listType=e.target.value;
+            this.orderList=[]
             this.listLoad(listType);
         },
         async listJobLoad(){
@@ -226,11 +251,10 @@ export default {
         },
         autoReload(listType){
             clearTimeout(this.clock);
-            const self=this;
             const timeout=1000*60*2;
             if(listType=='jobs' || listType=='active'){
                 this.clock=setTimeout(()=>{
-                    self.listLoad(listType);
+                    this.listLoad(this.orderType,'reload');
                 },timeout);
             }
         },

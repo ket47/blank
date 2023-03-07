@@ -33,24 +33,27 @@
         max-width: 100% !important;
       }
     }
-
+.blur-image{
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  z-index: -1;
+  overflow: hidden;
+}
+.blur-image img{
+  width: 100%;
+  filter: blur(30px);
+}
 </style>
 
 <template>
-  <div v-if="expanded" style="position: relative;">
-    <div v-for="image in imageList" :key="image.image_hash" style="border:2px solid var(--ion-color-primary)">
-      <img :src="`${$heap.state.hostname}image/get.php/${image.image_hash}.1000.1000.webp`"/>
-    </div>
-    <ion-fab horizontal="end" vertical="top"  slot="fixed">
-      <ion-fab-button color="light">
-      <ion-icon :src="contract" size="large" @click="minimize()"/>
-      </ion-fab-button>
-    </ion-fab>
-  </div>
-  <swiper v-else :modules="modules" :autoplay='{delay: 3000, disableOnInteraction: false}' :loop="true" effect="fade"  :style="`height: ${imgHeight||'100%'};`" >
+  <swiper :modules="modules" :autoplay='{delay: 3000, disableOnInteraction: false}' :loop="true" effect="fade"  :style="`height: ${imgHeight||'100%'};`" >
     <swiper-slide v-for="image in imageList" :key="image.image_hash">
-      <div :class="`${(mode) ? mode: ''} cropper`" :style="`height: ${imgHeight+'px'||'100%'};`">
-        <img :style="`min-height: ${imgHeight+'px;'||'100%; max-width: 400px;'}`" :src="`${$heap.state.hostname}image/get.php/${image.image_hash}.${imgHeight*4||1200}.${imgHeight*4||1200}.webp`"/>
+      <div :class="`${(mode) ? mode: ''} cropper`" :style="`height: ${imgHeight+'px'||'100%'}`">
+        <div class="blur-image">
+          <img :src="`${$heap.state.hostname}image/get.php/${image.image_hash}.${imgHeight*4||1200}.${imgHeight*4||1200}.webp`"/>
+        </div>
+        <img :style="`min-height: ${imgHeight+'px;'||'100%; max-width: 400px;'};max-height:50vh`" :src="`${$heap.state.hostname}image/get.php/${image.image_hash}.${imgHeight*4||1200}.${imgHeight*4||1200}.webp`"/>
       </div>
     </swiper-slide>
   </swiper>

@@ -59,11 +59,6 @@
         <ion-toggle slot="end" v-model="is_deleted" color="danger" @ionChange="itemDelete($event.target.checked?1:0)"></ion-toggle>
       </ion-item>
       <ion-item>
-        <ion-icon :src="banOutline" color="primary" slot="start"/>
-        Отключено
-        <ion-toggle slot="end" v-model="is_disabled" @ionChange="itemDisable($event.target.checked?1:0)"></ion-toggle>
-      </ion-item>
-      <ion-item>
         <ion-icon :src="pizzaOutline" color="primary" slot="start"/>
         Вести учет остатков
         <ion-toggle v-if="productItem" slot="end" v-model="is_counted" @ionChange="save('is_counted',$event.target.checked?1:0)"/>
@@ -72,6 +67,11 @@
         <ion-icon :src="layersOutline" color="primary" slot="start"/>
         Имеет варианты
         <ion-toggle v-if="productItem" slot="end" v-model="is_option_parent" @ionChange="itemOptionSet($event.target.checked);"/>
+      </ion-item>
+      <ion-item>
+        <ion-icon :src="ribbonOutline" color="primary" slot="start"/>
+        На модерации
+        <ion-toggle slot="end" v-model="is_disabled" @ionChange="itemDisable($event.target.checked?1:0)"></ion-toggle>
       </ion-item>
 
       <div @change="saveForm" v-if="optionData">
@@ -282,6 +282,7 @@ import {
   compassOutline,
   chevronBack,
   layersOutline,
+  ribbonOutline,
 }                     from 'ionicons/icons'
 import imageTileComp  from '@/components/ImageTileComp.vue'
 import GroupPicker    from '@/components/GroupPicker.vue'
@@ -326,6 +327,7 @@ export default  {
       compassOutline,
       chevronBack,
       layersOutline,
+      ribbonOutline,
       }
   },
   data(){
@@ -440,13 +442,14 @@ export default  {
         await jQuery.post( heap.state.hostname + "Product/itemDisable", { product_id: this.productId, is_disabled })
         this.productItem.is_disabled=is_disabled;
       }catch{
+        this.$flash("Изменение не сохранено")
         this.itemGet()
       }
     },
     async itemUpdate(request){
       try{
         await jQuery.post( heap.state.hostname + "Product/itemUpdate", JSON.stringify(request))
-        this.$flash("сохранено")
+        this.$flash("💾 сохранено")
         return true
       } catch(err){
         const validationErrors=err.responseJSON.messages.error

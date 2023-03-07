@@ -5,7 +5,7 @@
 </style>
 <template>
     <base-layout pageDefaultBackLink="/user" page-title="Модерация">
-        <ion-segment swipe-gesture="true" v-model="moderationType" @ionChange="listTypeChanged($event)">
+        <ion-segment :scrollable="true" v-model="moderationType" @ionChange="listTypeChanged($event)">
             <ion-segment-button value="images">
                 Картинки
             </ion-segment-button>

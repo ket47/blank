@@ -3,36 +3,47 @@
 </style>
 <template>
     <ion-header>
-      <ion-toolbar>
+      <ion-toolbar color="secondary">
           <ion-title>Категории</ion-title>
-          <ion-icon slot="end" @click="closeModal();" :icon="closeCircle" size="large" color="medium"></ion-icon>
+          <ion-icon slot="end" @click="closeModal();" :icon="closeOutline" size="large" color="medium"></ion-icon>
       </ion-toolbar>
-      <ion-button @click="closeModal();" color="medium" expand="full">Готово</ion-button>
     </ion-header>
     <ion-content>
-        <ion-list v-if="groupList">
-            <div v-for="group in groupList" :key="group.group_id">
-                <ion-item v-if="group.group_parent_id>0">
-                    <ion-avatar slot="start">
-                        <ion-img :src="$heap.state.hostname + 'image/get.php/'+group.image_hash+'.50.50.webp'"/>
+        <ion-searchbar placeholder="Фильтр по категориям" v-model="searchQuery"/>
+        <ion-accordion-group v-if="groupListFiltered.length>0">
+            <ion-accordion v-for="parentGroup in groupListTree" :key="parentGroup.group_id">
+                <ion-item slot="header">
+                    <ion-avatar slot="start" v-if="parentGroup.image_hash">
+                        <ion-img :src="$heap.state.hostname + 'image/get.php/'+parentGroup.image_hash+'.50.50.webp'"/>
                     </ion-avatar>
-                    <ion-label>{{group.group_name}}</ion-label>
-                    <ion-checkbox 
-                    slot="end" 
-                    :checked="group.is_marked"
-                    @click="mimickChage($event.target,group.group_id)"></ion-checkbox>
+                    <ion-label>{{parentGroup.group_name}}</ion-label>
                 </ion-item>
-                <ion-item-divider v-else>
-                    <ion-label><b>{{group.group_name}}</b></ion-label>
-                </ion-item-divider>
-            </div>
+                <div class="ion-padding" slot="content">
+                    <ion-list>
+                        <div v-for="childGroup in parentGroup.children" :key="childGroup.group_id">
+                            <ion-item>
+                                <ion-avatar slot="start" v-if="childGroup.image_hash">
+                                    <ion-img :src="$heap.state.hostname + 'image/get.php/'+childGroup.image_hash+'.50.50.webp'"/>
+                                </ion-avatar>
+                                <ion-label>{{childGroup.group_name}}</ion-label>
+                                <ion-checkbox slot="end" :checked="childGroup.is_marked" @click="mimickChage($event.target,childGroup.group_id)"></ion-checkbox>
+                            </ion-item>
+                        </div>
+                    </ion-list>
+                </div>
+            </ion-accordion>
+        </ion-accordion-group>
+        <ion-list v-else>
+            <ion-item v-for="i in [1,2,3,4]" :key="i">
+                <ion-skeleton-text style="width:100%"/>
+            </ion-item>
         </ion-list>
     </ion-content>
 </template>
 <script>
 import 
 {
-  closeCircle
+  closeOutline
 }                         from 'ionicons/icons';
 import {
     modalController,
@@ -48,7 +59,11 @@ import {
     IonLabel,
     IonItemDivider,
     IonList,
-    IonItem
+    IonItem,
+    IonAccordion,
+    IonAccordionGroup,
+    IonSearchbar,
+    IonSkeletonText,
 }                         from "@ionic/vue";
 import jQuery             from 'jquery'
 
@@ -67,13 +82,18 @@ export default {
     IonLabel,
     IonItemDivider,
     IonList,
-    IonItem
+    IonItem,
+    IonAccordion,
+    IonAccordionGroup,
+    IonSearchbar,
+    IonSkeletonText,
     },
     setup(){
-        return {closeCircle}
+        return {closeOutline}
     },
     data(){
         return {
+            searchQuery:'',
             groupList:null,
             checkedGroupList:[]
         }
@@ -81,6 +101,45 @@ export default {
     created(){
         this.listGroupGet()
         this.checkedGroupList=this.memberOfIds||[]
+    },
+    computed:{
+        groupListFiltered(){
+            if(!this.searchQuery){
+                return this.groupList??[]
+            }
+            const regexp=new RegExp(this.searchQuery.replace(/^[\w\d\s]/,'').replace(/\s/g,'.*'),'im')
+            return this.groupList.filter(group=>group.group_name?.match( regexp ))??[]
+        },
+        groupListTree(){
+            let groupTree=[]
+            for( let group of this.groupListFiltered ){
+                if(group.group_parent_id==0){
+                    group.children=this.groupList.filter(child_group=>child_group.group_parent_id==group.group_id)
+                    groupTree.push(group)
+                } else {
+                    let branchIndex=groupTree.findIndex(parentGroup=>group.group_parent_id==parentGroup.group_id)
+                    if(branchIndex<0){
+                        let parentGroup=this.groupList.find(parent_group=>parent_group.group_id==group.group_parent_id)
+                        parentGroup.children=[]
+                        branchIndex=groupTree.push(parentGroup)-1
+                    }
+                    groupTree[branchIndex].children.push(group)
+                }
+            }
+            return groupTree
+        },
+
+
+        parentGroupList(){
+            return this.groupListFiltered?.filter(group=>group.group_parent_id==0)
+        },
+        childGroupList(){
+            let childGroups={}
+            for(let group of this.parentGroupList){
+                childGroups[group.group_id]=this.groupListFiltered.filter(child_group=>child_group.group_parent_id==group.group_id)
+            }
+            return childGroups
+        }
     },
     methods:{
         async listGroupGet(){

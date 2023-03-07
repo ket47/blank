@@ -138,10 +138,6 @@ const routes = [
         component: () => import('@/views/TextListView.vue')
       },
       {
-        path: '/user/admin-moderation',
-        component: () => import('@/views/AdminModeration.vue')
-      },
-      {
         path: '/user/admin-tariff-list',
         component: () => import('@/views/AdminTariffList.vue')
       },
@@ -209,6 +205,10 @@ const routes = [
       {
         path: '/admin/accounting',
         component: () => import('@/views/admin/AccountingView.vue')
+      },
+      {
+        path: '/admin/list-moderation',
+        component: () => import('@/views/admin/ListModeration.vue')
       },
   ]
   },
