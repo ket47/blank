@@ -21,7 +21,7 @@
         Уведомления не поддерживаются этим устройством.
       </ion-item>
 
-      <ion-item v-if="permission=='granted'" lines="none">
+      <ion-item v-if="0&&permission=='granted'" lines="none">
         <ion-icon :src="notificationsOutline" color="primary" slot="start"/>
         Уведомления включены
       </ion-item>

@@ -93,7 +93,7 @@ const transTypes=[
     },
     {
         'trans_role':'site->profit',
-        'holder':['order'],
+        'holder':[],
         'trans_name':'Сайт Списание месячной прибыли',
         'trans_description':'Списание месячной прибыли',
     },

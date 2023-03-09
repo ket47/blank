@@ -10,8 +10,8 @@
             </div>
 
             <order-comp :orderData="order" @stageCreate="onStageCreate" @orderRefresh="itemGet"/>
-            <order-info-comp :orderData="order"/>
             <order-tracking-comp :orderData="order"/>
+            <order-info-comp :orderData="order"/>
             <image-tile-comp v-if="order" :images="order?.images" :image_holder_id="order?.order_id" controller="Order" ref="orderImgs"/>
             <order-history-comp :orderData="order"/>
             <msg-subscription-comp/>
@@ -118,7 +118,7 @@ export default({
             const self=this
             this.orderAutoloadClock=setTimeout(()=>{
                 self.itemGet()
-                console.log('autoreload')
+                //console.log('autoreload')
             },60*1000)
         },
         async onStageCreate(order_id, order_stage_code){

@@ -8,7 +8,7 @@
                 Активные
             </ion-segment-button>
             <ion-segment-button value="done">
-                Исполненые
+                Завершенные
             </ion-segment-button>
         </ion-segment>
         <ion-list v-if="orderList?.length>0">
@@ -54,7 +54,25 @@
             </ion-item>
             </div>
         </ion-list>
-        <div v-if="(!orderList || orderList.length==0) && (!jobList || jobList.length==0)" style="display:flex;align-items:center;justify-content:center;height:70vh">
+        <ion-list v-if="orderList==null">
+            <div v-for="i in [1,2,3]" :key="i">
+            <ion-item lines="none">
+                <ion-skeleton-text style="width:50px" slot="start"/>
+                <ion-skeleton-text style="width:100%"/>
+                <ion-skeleton-text style="width:50px" slot="end"/>
+            </ion-item>
+            <ion-item lines="full">
+                <ion-skeleton-text animated style="width:30px;height:30px;border-radius:50px" slot="start"/>
+                <ion-chip color="medium"><ion-label color="dark"><ion-skeleton-text animated style="width:80px;"/></ion-label></ion-chip>
+                <ion-chip color="primary">
+                    <ion-icon :icon="checkmarkOutline"></ion-icon>
+                    <ion-label color="dark"><ion-skeleton-text animated style="width:80px;"/></ion-label>
+                </ion-chip>
+                <ion-skeleton-text animated style="width:40px;height:40px;border-radius:10px" slot="end"/>
+            </ion-item>
+            </div>
+        </ion-list>
+        <div v-else-if="(orderList?.length==0) && (!jobList || jobList.length==0)" style="display:flex;align-items:center;justify-content:center;height:70vh">
             <div style="width:max-content;text-align:center">
                 <ion-icon :icon="sparklesOutline" size="large"></ion-icon>
                 <ion-label>Заказов нет</ion-label><br>
@@ -82,6 +100,7 @@ import {
     IonImg,
     IonInfiniteScroll,
     IonInfiniteScrollContent,
+    IonSkeletonText,
 }                   from '@ionic/vue';
 import {
     storefrontOutline,
@@ -113,6 +132,7 @@ export default {
     IonImg,
     IonInfiniteScroll,
     IonInfiniteScrollContent,
+    IonSkeletonText,
     },
     setup() {
       return { sparklesOutline,storefrontOutline,timeOutline,ordersIcon,rocketOutline,ribbonOutline,checkmarkOutline, };
@@ -165,10 +185,13 @@ export default {
     },
     created(){
         let self=this;
-        this.$topic.on('courierStatusChange',function(){
-            self.courierReadinessCheck();
+        this.$topic.on('courierStatusChange',()=>{
+            this.courierReadinessCheck();
         });
-        self.courierReadinessCheck();
+        this.$topic.on('userGet',()=>{
+            this.listLoad(this.orderType,'reload');
+        });
+        this.courierReadinessCheck();
     },
     methods:{
         toLocDate( iso ){
@@ -201,7 +224,7 @@ export default {
                 this.orderType='jobs';
             }
         },
-        async listLoad(listType,mode='append'){
+        async listLoad(listType,mode='reload'){
             if( listType=='jobs' ){
                 this.autoReload(listType);
                 this.listJobLoad();
@@ -212,12 +235,14 @@ export default {
                 this.autoReload(listType);
                 order_group_type='active_only';
             }
-            const offset=(mode=='append')?this.orderList?.length??0:0
-            const limit=(mode=='append')?10:this.orderList?.length
             const request={
                 order_group_type,
-                offset,
-                limit,
+                offset:0,
+                limit:(this.orderList?.length||10),
+            }
+            if(mode=='append'){
+                request.offset=this.orderList?.length??0
+                request.limit=10
             }
             let orderList=await Order.api.listLoad(request);
             if( mode=='append' ){
@@ -228,7 +253,7 @@ export default {
             this.jobList=null;
         },
         async listLoadMore(ev){
-            await this.listLoad(this.orderType)
+            await this.listLoad(this.orderType,'append')
             ev.target.complete();
         },
         listTypeChanged(e){
@@ -254,7 +279,7 @@ export default {
             const timeout=1000*60*2;
             if(listType=='jobs' || listType=='active'){
                 this.clock=setTimeout(()=>{
-                    this.listLoad(this.orderType,'reload');
+                    this.listLoad(this.orderType);
                 },timeout);
             }
         },

@@ -17,7 +17,9 @@
         </ion-item>
         <ion-list slot="content">
             <ion-item lines="none">
-                <ion-icon color="primary" slot="start" :icon="locationOutline" style="font-size:30px"/>
+                <ion-thumbnail v-if="job?.image_hash" slot="start">
+                    <ion-img :src="`${$heap.state.hostname}image/get.php/${job.image_hash}.70.70.webp`" style="border-radius:100px;background-color:var(--ion-color-primary-tint)"/>
+                </ion-thumbnail>
                 <ion-label>Курьер, {{job?.courier_name}}</ion-label>      
             </ion-item>
 
@@ -51,7 +53,9 @@ import {
     IonIcon,
     IonAccordionGroup,
     IonAccordion,
-    IonProgressBar
+    IonProgressBar,
+    IonThumbnail,
+    IonImg,
 }                   from '@ionic/vue';
 import {
     storefrontOutline,
@@ -72,7 +76,9 @@ export default({
     IonIcon,
     IonAccordionGroup,
     IonAccordion,
-    IonProgressBar
+    IonProgressBar,
+    IonThumbnail,
+    IonImg,
     },
     setup() {
         return { 

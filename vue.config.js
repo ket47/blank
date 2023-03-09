@@ -11,7 +11,7 @@ module.exports = {
     appleMobileWebAppCapable: true,
     appleMobileWebAppStatusBarStyle: 'white',
     workboxOptions: {
-      skipWaiting: true,
+      //skipWaiting: true,
       //clientsClaim: true
     },
     manifestOptions: {

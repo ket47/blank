@@ -41,10 +41,13 @@ ion-accordion-group .accordion-expanding .product-description{
         <image-slider-comp :imageList="productItem.images" :imgHeight="400" :mode="'save-aspect-ratio'" />
       </div>
       <ion-list v-if="productItem">
-        <ion-list-header style="font-size:1.2em;">
-          <h3 style="font-size:1.2em;">
-            <b>{{ productItem.product_name }}</b> <b v-if="productItem.product_option">[{{productItem.product_option}}]</b> <span v-if="!isAvailable">(Нет в наличии)</span>
-          </h3>
+        <ion-list-header>
+          <ion-label>
+            {{ productItem.product_name }}<b v-if="productItem.product_option"> [{{productItem.product_option}}]</b> <span v-if="!isAvailable">(Нет в наличии)</span>
+          </ion-label>
+          <ion-button v-if="productItem.is_writable" @click="$router.push('/catalog/product-edit-'+productId)">
+            <ion-icon color="primary" :src="settingsOutline"/>
+          </ion-button>
         </ion-list-header>
         <ion-accordion-group v-if="productItem.product_description" style="width:100%">
           <ion-accordion>
@@ -56,39 +59,62 @@ ion-accordion-group .accordion-expanding .product-description{
             </ion-list>
           </ion-accordion>
         </ion-accordion-group>
-        
-        <ion-item v-if="productItem.is_writable" lines="none">
-          <ion-icon slot="end" color="primary" :src="settingsOutline" @click="$router.push('/catalog/product-edit-'+productId)"/>
-        </ion-item>
-        <ion-item  lines="none">
-          <ion-chip :outline="true" color="primary" v-for="group in categories" :key="group.group_id">{{group.group_name}}</ion-chip>
+
+
+
+
+
+
+        <ion-item lines="none" @click="$router.push('/store/store-view-'+productItem.store_id)" button>
+          <ion-avatar slot="start" v-if="productItem?.store?.avatar">
+            <ion-img :src="`${$heap.state.hostname}image/get.php/${avatar.image_hash}.200.200.webp`" v-for="avatar in productItem?.store?.avatar" :key="avatar.image_id"/>
+          </ion-avatar>
+          <ion-label>{{productItem.store.store_name}}</ion-label>
+          <ion-text v-if="categories" slot="end" color="medium">#{{categories[0].group_name}}</ion-text>
         </ion-item>
 
+        <ion-item lines="none">
+          <!--
+          <ion-chip color="medium">
+            <ion-icon :src="thumbsUpSharp" @click="itemReactionLike()" color="medium"/>
+            <ion-label>2353</ion-label>
+            <ion-label color="medium">&nbsp;|&nbsp;</ion-label> 
+            <ion-icon :src="thumbsDownSharp" @click="itemReactionDislike()" color="dark"/>
+          </ion-chip>
+          -->
+
+          <ion-chip @click="itemShare()" color="medium">
+            <ion-icon :src="shareSocialOutline"/>
+            <ion-label>Поделиться</ion-label>
+          </ion-chip>
+        </ion-item>
+
+
+        <ion-item lines="none"></ion-item>
         <div v-if="productItem?.options">
           <ion-item lines="none">
-            <ion-icon :src="layersOutline" color="primary" slot="start"/>
-            <ion-label>Варианты</ion-label>
+            <ion-icon color="medium" :src="layersOutline" slot="start"/>
+            <ion-label color="medium">Варианты</ion-label>
           </ion-item>
           <ion-item lines="none">
-            <ion-chip @click="$router.replace(`/catalog/product-${option.product_id}`)" color="primary" v-for="option in productItem.options" :key="option.product_id">
+            <ion-chip :outline="true" @click="$router.replace(`/catalog/product-${option.product_id}`)" color="primary" v-for="option in productItem.options" :key="option.product_id">
               <ion-label>{{option.product_option}}</ion-label>&nbsp;<ion-label v-if="option.product_final_price>0">{{option.product_final_price}}{{$heap.state.currencySign}}</ion-label>
             </ion-chip>
-
           </ion-item>
         </div>
 
         <ion-item lines="none" v-if="productItem.product_price!=productItem.product_final_price">
-          <ion-icon slot="start" color="primary" :src="giftOutline"/>
-          <ion-label>Акция до {{promoFinish}}</ion-label>
+          <ion-icon slot="start" :src="giftOutline" color="medium"/>
+          <ion-label color="medium">Акция до {{promoFinish}}</ion-label>
           <ion-label slot="end" color="success" style="font-size:1.2em">-{{promoPercent}}%</ion-label>
         </ion-item>
 
         <ion-item lines="none">
-          <ion-icon slot="start" color="primary" :src="pricetagOutline"/>
+          <ion-icon slot="start" :src="pricetagOutline" color="medium"/>
 
-          <ion-label v-if="productItem.product_unit=='порция'">Цена за {{weight_in_gramms}}г</ion-label>
-          <ion-label v-else-if="productItem.product_unit=='порция мл'">Цена за {{weight_in_gramms}}мл</ion-label>
-          <ion-label v-else>Цена за {{productItem.product_unit}}</ion-label>
+          <ion-label v-if="productItem.product_unit=='порция'" color="medium">Цена за {{weight_in_gramms}}г</ion-label>
+          <ion-label v-else-if="productItem.product_unit=='порция мл'" color="medium">Цена за {{weight_in_gramms}}мл</ion-label>
+          <ion-label v-else color="medium">Цена за {{productItem.product_unit}}</ion-label>
 
           <ion-label slot="end" color="primary" style="font-size:1.2em">
             <span v-if="productItem.product_price!=productItem.product_final_price" style="color:var(--ion-color-danger);font-size:0.75em">
@@ -98,20 +124,20 @@ ion-accordion-group .accordion-expanding .product-description{
           </ion-label>
         </ion-item>
         <ion-item lines="none">
-          <ion-icon slot="start" color="primary" :src="cartOutline"/>
-          <ion-label v-if="inCart">В корзине ({{productItem.product_unit}})</ion-label>
-          <ion-label v-else>Не заказан</ion-label>
+          <ion-icon slot="start" :src="cartOutline" color="medium"/>
+          <ion-label v-if="inCart" color="medium">В корзине ({{productItem.product_unit}})</ion-label>
+          <ion-label v-else color="medium">Не заказан</ion-label>
           <cart-add-buttons slot="end" buttonLayout="horizontal" display="inline" :productItem="productItem"></cart-add-buttons>
         </ion-item>
 
         <ion-item lines="none" v-if="inCart">
-          <ion-icon slot="start" color="primary" :src="walletOutline"/>
-          <ion-label>Итог</ion-label>
-          <ion-label slot="end" color="primary" style="font-size:1.2em">{{inCart}}{{$heap.state.currencySign}}</ion-label>
+          <ion-icon slot="start" :src="walletOutline" color="medium"/>
+          <ion-label color="medium">Итог</ion-label>
+          <ion-label slot="end" color="medium" style="font-size:1.2em">{{inCart}}{{$heap.state.currencySign}}</ion-label>
         </ion-item>
 
         <ion-item lines="none" v-if="inCartComment!=null">
-          <ion-icon slot="start" color="primary" :src="chatboxEllipsesOutline"/>
+          <ion-icon slot="start" :src="chatboxEllipsesOutline" color="medium"/>
           <ion-textarea :value="inCartComment" @change="cartCommentUpdate($event.target.value)" placeholder="заметка для продавца"></ion-textarea>
         </ion-item>
       </ion-list>
@@ -130,8 +156,12 @@ import {
   walletOutline,
   chatboxEllipsesOutline,
   settingsOutline,
-  layersOutline
+  layersOutline,
+  shareSocialOutline,
+  thumbsUpSharp,
+  thumbsDownSharp,
 }                       from 'ionicons/icons'
+
 import {
   IonTextarea,
   IonListHeader,
@@ -143,6 +173,9 @@ import {
   IonList,
   IonAccordion,
   IonAccordionGroup,
+  IonButton,
+  IonAvatar,
+  IonImg,
 }                       from '@ionic/vue'
 
 import ImageSliderComp      from '@/components/ImageSliderComp'
@@ -165,6 +198,9 @@ export default  {
     IonList,
     IonAccordion,
     IonAccordionGroup,
+    IonButton,
+    IonAvatar,
+    IonImg,
   },
   setup(){
     return {
@@ -176,7 +212,10 @@ export default  {
       walletOutline,
       chatboxEllipsesOutline,
       settingsOutline,
-      layersOutline
+      layersOutline,
+      shareSocialOutline,
+      thumbsUpSharp,
+      thumbsDownSharp,
       }
   },
   data() {
@@ -249,6 +288,9 @@ export default  {
         try{
           this.is_loading=1
           this.productItem=await jQuery.post( heap.state.hostname + "Product/itemGet", { product_id: this.productId })
+          this.productItem.reaction={
+            reaction_id:33
+          }
         }catch(err){
           const exception_code=err?.responseJSON?.messages?.error;
           switch(exception_code){
@@ -267,6 +309,36 @@ export default  {
           entry_comment:comment
         };
         Order.cart.entryUpdate(entry)
+      },
+      async itemShare(){
+        try{
+            const link=location.href;
+            if(navigator.share){
+                const shareData = {
+                    title: `${this.$heap.state.settings.app_title} ${this.productItem.product_name}`,
+                    text: this.productItem.product_description,
+                    url:link
+                }
+                await navigator.share(shareData);
+            } else {
+                await navigator.clipboard.writeText(link);
+                this.$alert("Теперь вы можете поделиться ей с друзьями в социальных сетях или мессенджерах.","Ссылка на страницу скопирована");
+            }
+        }catch(err){
+            //console.log(err)
+        }
+      },
+
+
+      async itemReactionLike(){
+        const request={
+          tagQuery:`product:${this.productId}`,
+          is_like:1
+        }
+        await jQuery.post(`${heap.state.hostname}Reaction/itemCreate`,request)
+      },
+      async itemReactionDislike(){
+        //
       }
   },
 }

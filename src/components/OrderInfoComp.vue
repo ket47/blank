@@ -4,6 +4,17 @@
     }
 </style>
 <template>
+    <ion-list v-if="['delivery_finish'].includes(orderData?.stage_current)">
+        <ion-item lines="none">
+            <ion-thumbnail slot="start" v-if="orderData?.info?.courier_image_hash">
+                <ion-img :src="`${$heap.state.hostname}image/get.php/${orderData?.info?.courier_image_hash}.70.70.webp`" style="border-radius:10px;background-color:var(--ion-color-primary-tint)"/>
+            </ion-thumbnail>
+            <p>Ваш курьер <b>{{orderData?.info?.courier_name}}</b></p>
+        </ion-item>
+        <ion-item lines="none">
+            <ion-text>Вы можете отблагодарить курьера чаевыми ☕, если он доставил заказ быстро и качественно.</ion-text>
+        </ion-item>
+    </ion-list>
     <ion-accordion-group>
         <ion-accordion v-if="orderData?.info?.customer_name">
             <ion-item slot="header">
@@ -28,23 +39,6 @@
                     <ion-note v-if="orderData.info.customer_location_comment">
                         Комментарий к адресу: {{orderData.info.customer_location_comment}} 
                     </ion-note>
-                </ion-label>
-            </ion-item>
-        </ion-accordion>
-        <ion-accordion v-if="orderData?.info?.courier_name">
-            <ion-item slot="header">
-                <ion-label>Курьер <b>{{orderData.info.courier_name}}</b></ion-label>
-            </ion-item>
-            <ion-item slot="content">
-                <ion-label class="ion-text-wrap">
-                    <ion-chip color="primary" v-if="orderData.info.courier_phone">
-                        <ion-icon :src="callOutline"/>
-                        <a :href="`tel:${orderData.info.courier_phone}`">{{orderData.info.courier_phone}}</a>
-                    </ion-chip>
-                    <ion-chip color="primary" v-if="orderData.info.courier_email">
-                        <ion-icon :src="mailOutline"/>
-                        <a :href="`mailto:${orderData.info.courier_email}`">{{orderData.info.courier_email}}</a>
-                    </ion-chip>
                 </ion-label>
             </ion-item>
         </ion-accordion>
@@ -86,6 +80,10 @@ import {
     IonAccordion,
     IonAccordionGroup,
     IonNote,
+    IonList,
+    IonThumbnail,
+    IonImg,
+    IonText,
 }                       from '@ionic/vue';
 import { 
     locationOutline,
@@ -104,6 +102,10 @@ export default({
     IonAccordion,
     IonAccordionGroup,
     IonNote,
+    IonList,
+    IonThumbnail,
+    IonImg,
+    IonText,
     },
     setup() {
         return { 

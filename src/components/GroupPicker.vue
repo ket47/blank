@@ -108,28 +108,24 @@ export default {
                 return this.groupList??[]
             }
             const regexp=new RegExp(this.searchQuery.replace(/^[\w\d\s]/,'').replace(/\s/g,'.*'),'im')
-            return this.groupList.filter(group=>group.group_name?.match( regexp ))??[]
+            return this.groupList.filter(group=>group.group_path?.match( regexp ))??[]
         },
         groupListTree(){
             let groupTree=[]
             for( let group of this.groupListFiltered ){
-                if(group.group_parent_id==0){
-                    group.children=this.groupList.filter(child_group=>child_group.group_parent_id==group.group_id)
-                    groupTree.push(group)
-                } else {
-                    let branchIndex=groupTree.findIndex(parentGroup=>group.group_parent_id==parentGroup.group_id)
-                    if(branchIndex<0){
-                        let parentGroup=this.groupList.find(parent_group=>parent_group.group_id==group.group_parent_id)
-                        parentGroup.children=[]
-                        branchIndex=groupTree.push(parentGroup)-1
+                let branchIndex=groupTree.findIndex(parentGroup=>group.group_parent_id==parentGroup.group_id)
+                if(branchIndex<0){
+                    let parentGroup=this.groupList.find(parent_group=>parent_group.group_id==group.group_parent_id)
+                    if(!parentGroup){
+                        continue
                     }
-                    groupTree[branchIndex].children.push(group)
+                    parentGroup.children=[]
+                    branchIndex=groupTree.push(parentGroup)-1
                 }
+                groupTree[branchIndex].children.push(group)
             }
             return groupTree
         },
-
-
         parentGroupList(){
             return this.groupListFiltered?.filter(group=>group.group_parent_id==0)
         },

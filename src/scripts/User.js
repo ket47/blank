@@ -73,9 +73,10 @@ const User = {
         });
     },
     async signIn(requestData){
-        if( !localStorage.metric_user_id ){
-            requestData.metric_id=localStorage.metric_id??0
-        }
+        // if( !localStorage.metric_user_id ){
+            
+        // }
+        requestData.metric_id=localStorage.metric_id??0
         return await jQuery.post( heap.state.hostname + "User/signIn", requestData)
         .done(function(response, textStatus, request){
             localStorage.signInData = JSON.stringify(requestData);
