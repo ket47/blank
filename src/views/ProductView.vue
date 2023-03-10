@@ -74,14 +74,12 @@ ion-accordion-group .accordion-expanding .product-description{
         </ion-item>
 
         <ion-item lines="none">
-          <!--
           <ion-chip color="medium">
             <ion-icon :src="thumbsUpSharp" @click="itemReactionLike()" color="medium"/>
             <ion-label>2353</ion-label>
             <ion-label color="medium">&nbsp;|&nbsp;</ion-label> 
             <ion-icon :src="thumbsDownSharp" @click="itemReactionDislike()" color="dark"/>
           </ion-chip>
-          -->
 
           <ion-chip @click="itemShare()" color="medium">
             <ion-icon :src="shareSocialOutline"/>
@@ -330,15 +328,32 @@ export default  {
       },
 
 
+      async itemReact( request ){
+        try{
+          await jQuery.post(`${heap.state.hostname}Reaction/itemCreate`,request)
+        }catch(err){
+          const exception_code=err?.responseJSON?.messages?.error;
+          switch(exception_code){
+              case 'notfound':
+                  this.$flash("Нужно купить товар, чтобы его оценить")
+                  break;
+          }
+          return false
+        }
+      },
       async itemReactionLike(){
         const request={
           tagQuery:`product:${this.productId}`,
           is_like:1
         }
-        await jQuery.post(`${heap.state.hostname}Reaction/itemCreate`,request)
+        await this.itemReact(request)
       },
       async itemReactionDislike(){
-        //
+        const request={
+          tagQuery:`product:${this.productId}`,
+          is_dislike:1
+        }
+        await this.itemReact(request)
       }
   },
 }
