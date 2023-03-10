@@ -165,6 +165,7 @@ app.config.globalProperties.$alert = alert;
 app.config.globalProperties.$topic = Topic;
 
 const platformMobile= /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(window.navigator.userAgent);
+console.log(window.navigator.userAgent)
 if(platformMobile){
   app.component('base-layout', BaseLayout);
   //require('./theme/base_layout.css');

@@ -66,6 +66,13 @@ ion-card .store-title{
     margin: 1%;
   }
 }
+@media screen and (min-width: 1080px) {
+  .store-list > ion-card{
+    width: 31%;
+    float: right;
+    margin: 1%;
+  }
+}
 </style>
 
 <template>

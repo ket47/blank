@@ -2,10 +2,10 @@
     
 @media screen and (max-width: 1025px) {
 
-  .desktop-main-container .ion-left-column {
+  .plt-desktop .desktop-main-container .ion-left-column {
     display: none !important;
   }
-  .desktop-main-container .ion-middle-column{
+  .plt-desktop .desktop-main-container .ion-middle-column{
     width: 100% !important;
     max-width: 100% !important;
   }
@@ -13,12 +13,11 @@
     display: none !important;
   }
 }
-@media screen and (min-width: 1025px) {
-  .desktop-main-container .desktop-template{
+  .plt-desktop .desktop-main-container .desktop-template{
     max-width: var(--breakpoints-width);
     padding: 0;
   }
-  .desktop-main-container {
+  .plt-desktop .desktop-main-container {
     --background: url('../../public/img/bg3.png');
   }
 
@@ -27,25 +26,25 @@
   /*======LEFT COLUMN========*/
   /*=========================*/
 
-  .desktop-main-container .ion-left-column {
+  .plt-desktop .desktop-main-container .ion-left-column {
     padding: 1em;
     background-color: #ffffff66;
     border-right: 1px solid var(--ion-item-border-color);
     text-align: right;
   }
 
-  .desktop-main-container .ion-left-column .toolbar_svg_logo {
+  .plt-desktop .desktop-main-container .ion-left-column .toolbar_svg_logo {
     height: 42px;
     width: 161px;
     margin: 0.5em;
     display: inline-block;
   }
-  .desktop-main-container .ion-left-column .toolbar_svg_logo .icon-inner,
-  .desktop-main-container .ion-left-column .toolbar_svg_logo .svg{
+  .plt-desktop .desktop-main-container .ion-left-column .toolbar_svg_logo .icon-inner,
+  .plt-desktop .desktop-main-container .ion-left-column .toolbar_svg_logo .svg{
     width: 100%;
     height: auto;
   }
-  .desktop-main-container .ion-left-column ion-tab-bar {
+  .plt-desktop .desktop-main-container .ion-left-column ion-tab-bar {
     display: grid;
     height: auto;
     contain: inherit;
@@ -54,14 +53,14 @@
     align-items: center;
     grid-template-columns: 100%;
   }
-  .desktop-main-container .ion-left-column ion-tab-button {
+  .plt-desktop .desktop-main-container .ion-left-column ion-tab-button {
     --padding-start: 0px;
     display: block;
     font-size: 15px;
     width: 100%;
     padding: 10px 0;
   }
-  .desktop-main-container .ion-left-column ion-row {
+  .plt-desktop .desktop-main-container .ion-left-column ion-row {
     display: grid;
     font-size: 15px;
     grid-template-columns: 30% 70%;
@@ -70,7 +69,7 @@
     width: 100%;
     padding: 5px 0;
   }
-  .desktop-main-container .ion-left-column ion-tab-bar ion-icon {
+  .plt-desktop .desktop-main-container .ion-left-column ion-tab-bar ion-icon {
     margin-right: 10px;
     font-size: 17px;
     width: 20px;
@@ -87,70 +86,70 @@
   /*=====MIDDLE COLUMN=======*/
   /*=========================*/
 
-  .desktop-main-container .ion-middle-column {
+  .plt-desktop .desktop-main-container .ion-middle-column {
     background: white;
     padding: 0;
     border-bottom: 1px solid var(--ion-item-border-color);
   }
 
-  .desktop-main-container .ion-middle-column ion-toolbar {
+  .plt-desktop .desktop-main-container .ion-middle-column ion-toolbar {
     text-align: left;
     padding: 10px 20px;
     --background: white;
     border-bottom: 1px solid var(--ion-item-border-color);
   }
 
-  .desktop-main-container .ion-middle-column .page-content{
+  .plt-desktop .desktop-main-container .ion-middle-column .page-content{
     width: 100%;
     display: block;
     min-height: 80vh;
   }
 
-  .desktop-main-container .ion-middle-column .store-list{
+  .plt-desktop .desktop-main-container .ion-middle-column .store-list{
     padding: 25px;
     display: block;
   }
-  .desktop-main-container .ion-middle-column .store-list > ion-card{
+  .plt-desktop .desktop-main-container .ion-middle-column .store-list > ion-card{
     width: 48%;
     float: right;
     margin: 1%;
   }
-  .desktop-main-container .ion-middle-column .store-list > ion-card:first-child{
+  .plt-desktop .desktop-main-container .ion-middle-column .store-list > ion-card:first-child{
     float: left;
   }
-  .desktop-main-container .ion-middle-column #hcat_widget_wrapper{
+  .plt-desktop .desktop-main-container .ion-middle-column #hcat_widget_wrapper{
     padding: 10px 40px;
   }
 
 
 
 
-  .desktop-main-container .ion-middle-column ion-radio-group ion-list{
+  .plt-desktop .desktop-main-container .ion-middle-column ion-radio-group ion-list{
     display: flex;
     padding: 0;
     margin: 10px 0;
   }
-  .desktop-main-container .ion-middle-column ion-radio-group ion-list ion-item{
+  .plt-desktop .desktop-main-container .ion-middle-column ion-radio-group ion-list ion-item{
     --border-color: transparent;
     --padding-start: 0px;
     --inner-padding-end: 0px;
     border-radius: 5px;
   }
-  .desktop-main-container .ion-middle-column ion-radio-group ion-list ion-item.item-radio-checked{
+  .plt-desktop .desktop-main-container .ion-middle-column ion-radio-group ion-list ion-item.item-radio-checked{
     --background: var(--ion-color-primary);
     --color: white;
   }
-  .desktop-main-container .ion-middle-column ion-radio-group ion-list ion-item.item-radio-checked ion-radio{
+  .plt-desktop .desktop-main-container .ion-middle-column ion-radio-group ion-list ion-item.item-radio-checked ion-radio{
     --color-checked: white;
   }
-  .desktop-main-container .ion-middle-column ion-radio-group ion-list ion-item .item-native{
+  .plt-desktop .desktop-main-container .ion-middle-column ion-radio-group ion-list ion-item .item-native{
     padding-inline-start: 0px;
   }
-  .desktop-main-container .ion-middle-column ion-radio-group ion-list ion-item ion-radio{
+  .plt-desktop .desktop-main-container .ion-middle-column ion-radio-group ion-list ion-item ion-radio{
     margin-left: 10px;
   }
 
-  .desktop-main-container .ion-middle-column .product-actions.incart ion-button{
+  .plt-desktop .desktop-main-container .ion-middle-column .product-actions.incart ion-button{
     border: 2px solid var(--ion-color-primary-tint);
     border-radius: 10px;
     height: 40px;
@@ -165,26 +164,26 @@
   /*=========================*/
   /*======RIGHT COLUMN=======*/
   /*=========================*/
-  .desktop-main-container .ion-right-column {
+  .plt-desktop .desktop-main-container .ion-right-column {
     padding: 0;
     border-left: 1px solid var(--ion-item-border-color);
     border-right: 1px solid var(--ion-item-border-color);
     border-bottom: 1px solid var(--ion-item-border-color);
     overflow: hidden;
   }
-  .desktop-main-container .ion-right-column ion-toolbar {
+  .plt-desktop .desktop-main-container .ion-right-column ion-toolbar {
     text-align: left;
     padding: 10px 20px;
     background: white;
   }
-  .desktop-main-container .ion-right-column ion-toolbar ion-icon {
+  .plt-desktop .desktop-main-container .ion-right-column ion-toolbar ion-icon {
     display: none;
   }
-  .desktop-main-container .ion-right-column ion-content{
+  .plt-desktop .desktop-main-container .ion-right-column ion-content{
     --padding-bottom: 5em;
   }
 
-  .desktop-main-container .ion-right-column .product-actions ion-button{
+  .plt-desktop .desktop-main-container .ion-right-column .product-actions ion-button{
     border: 2px solid var(--ion-color-primary-tint);
     border-radius: 10px;
   }
@@ -196,43 +195,43 @@
   /*=========================*/
   /*==========FOOTER=========*/
   /*=========================*/
-  .desktop-main-container ion-footer.desktop-footer{
+  .plt-desktop .desktop-main-container ion-footer.desktop-footer{
     color: white;
     background: var(--footer-background, #3880ff);
     padding: 1em 2em;
     min-height: 15vh;
   }
-  .desktop-main-container ion-footer.desktop-footer .desktop-footer-container{
+  .plt-desktop .desktop-main-container ion-footer.desktop-footer .desktop-footer-container{
     max-width: calc(var(--breakpoints-width)/1);
     margin: 0 auto;
   }
-  .desktop-main-container ion-footer  a{
+  .plt-desktop .desktop-main-container ion-footer  a{
     color: white;
     text-decoration: none;
     margin-left: 20px;
   }
-  .desktop-main-container ion-footer ion-title{
+  .plt-desktop .desktop-main-container ion-footer ion-title{
     padding: 0px;
     font-size: 15px;
   }
-  .desktop-main-container ion-footer.desktop-footer .social-media-block{
+  .plt-desktop .desktop-main-container ion-footer.desktop-footer .social-media-block{
     justify-content: center;
     display: flex;
   }
-  .desktop-main-container ion-footer.desktop-footer .social-media-block ion-img{
+  .plt-desktop .desktop-main-container ion-footer.desktop-footer .social-media-block ion-img{
     width: 200px;
   }
-  .desktop-main-container ion-footer.desktop-footer .desktop-footer-top{
+  .plt-desktop .desktop-main-container ion-footer.desktop-footer .desktop-footer-top{
     align-items: center;
     display: flex;
     justify-content: space-between;
     padding: 1em 0;
   }
-  .desktop-main-container ion-footer.desktop-footer .desktop-footer-top ion-img{
+  .plt-desktop .desktop-main-container ion-footer.desktop-footer .desktop-footer-top ion-img{
     width: inherit;
     display: inline-block;
   }
-  .desktop-main-container ion-footer.desktop-footer .desktop-footer-bottom{
+  .plt-desktop .desktop-main-container ion-footer.desktop-footer .desktop-footer-bottom{
     align-items: center;
     display: flex;
     justify-content: space-between;
@@ -248,17 +247,16 @@
 
 
 
-  ion-header ion-toolbar {
+  .plt-desktop ion-header ion-toolbar {
     padding: 10px 20px !important;
   }
-  ion-header ion-toolbar ion-title{
+  .plt-desktop ion-header ion-toolbar ion-title{
     color: var(--ion-color-dark);
   }
-  ion-header ion-tab-bar{
+  .plt-desktop ion-header ion-tab-bar{
     --background: transparent;
   }
 
-  ion-tabs ion-tab-bar.bottom-bar{
+  .plt-desktop ion-tabs ion-tab-bar.bottom-bar{
     display: none;
   }
-}
