@@ -22,7 +22,7 @@
 
       <div class="winnings-container main-block">
         <div class="main-block-content">
-          <h2>Почему мы?</h2>
+          <h2>Что Вы получите, работая именно с Tezkel?</h2>
           <div class="winnings-grid">
             <div class="winning-item">
               <h4>Увеличение продаж</h4>
@@ -55,18 +55,28 @@
 
       <div class="benefits-container main-block">
         <div class="main-block-content">
+          <h2>Сделайте всего 3 шага и начните зарабатывать!</h2>
           <div class="benefits-list">
             <div class="benefit-item">
-              <h4>Они придут</h4>
-              <p>Больше половины будущих постоянных клиентов пробуют доставку прежде, чем лично прийти к Вам.</p>
+              <div class="heading">
+                <h2>1</h2>
+                <h4>Создайте магазин и примите оферту</h4>
+              </div>
+              <p>Мы соблюдаем все необходимые законные требования сотрудничества.</p>
             </div>
             <div class="benefit-item">
-              <h4>Они вернутся</h4>
-              <p>Если Ваши постоянные клиенты не смогли прийти, они всегда могут заказать доставку именно у Вас.</p>
+              <div class="heading">
+                <h2>2</h2>
+                <h4>Заполните каталог Вашими товарами</h4>
+              </div>
+              <p>Добавьте и оформите товары, которые Вы собираетесь продавать.</p>
             </div>
             <div class="benefit-item">
-              <h4>Они найдутся</h4>
-              <p>Те клиенты, которые не могли к Вам прийти из-за большого расстояния, теперь смогут всегда быть с Вами.</p>
+              <div class="heading">
+                <h2>3</h2>
+                <h4>Дождитесь проверки и подтверждения</h4>
+              </div>
+              <p>Администраторы в самые короткие сроки проверят и подтвердят Ваши данные.</p>
             </div>
           </div>
         </div>
@@ -78,7 +88,7 @@
               <img src="/img/supplier_guide/tezkel_supplier_flyer_phone.png" width="300"/>
           </div>
           <div class="landing-desc-col landing-desc-feature-col">
-            <h2>Проще не бывает</h2>
+            <h2>Рабочий процесс невероятно прост</h2>
             <div class="intro-list">
               <div class="intro-item">
                 <img src="/img/supplier_guide/tezkel_supplier_flyer_img1.png" width="100"/>
@@ -101,29 +111,71 @@
       </div>
 
 
-      <div class="guide-container main-block">
+      <div class="tarif-container main-block">
         <div class="main-block-content">
-          <div class="guide-list">
-            <div class="guide-item">
-              <div class="heading">
-                <h2>1</h2>
-                <h4>Создайте магазин и примите оферту</h4>
+          <h2>Есть несколько способов работы с нами.</h2>
+          <h4>Выбирайте самый удобный!</h4>
+          <div class="tarif-list">
+            <div class="tarif-item">
+              <div class="tarif-left">
+                <h4>Тариф "Свобода"</h4>
+                <p>Почувствуйте вкус свободы с нашим максимальным тарифом</p>
+                <ul class="tarif-conditions">
+                  <li>Доступ к безналичному рассчёту для покупателей.</li>
+                  <li>Услуги доставки с помощью наших курьеров.</li>
+                  <li>Услуги доставки с помощью наших курьеров.</li>
+                  <li>Услуги доставки с помощью наших курьеров.</li>
+                </ul>
               </div>
-              <p>Мы соблюдаем все необходимые законные требования сотрудничества.</p>
+              <div class="tarif-right">
+                <h1>25%</h1>
+                <h6>Стоимость</h6>
+                <router-link to="/user/sign-up">
+                  <ion-button button-secondary color="secondary"><span class="button-text">НАЧАТЬ</span></ion-button>
+                </router-link>
+              </div>
             </div>
-            <div class="guide-item">
-              <div class="heading">
-                <h2>2</h2>
-                <h4>Заполните каталог Вашими товарами</h4>
+          </div>
+          <h2>Есть несколько способов работы с нами.</h2>
+          <h4>Выбирайте самый удобный!</h4>
+          <div class="tarif-list">
+            <div class="tarif-item">
+              <div class="tarif-left">
+                <h4>Тариф "Маркетплейс"</h4>
+                <p>Почувствуйте вкус свободы с нашим максимальным тарифом</p>
+                <ul class="tarif-conditions">
+                  <li>Доступ к безналичному рассчёту для покупателей.</li>
+                  <li>Услуги доставки с помощью наших курьеров.</li>
+                  <li>Услуги доставки с помощью наших курьеров.</li>
+                  <li>Услуги доставки с помощью наших курьеров.</li>
+                </ul>
               </div>
-              <p>Добавьте и оформите товары, которые Вы собираетесь продавать.</p>
+              <div class="tarif-right">
+                <h1>7%</h1>
+                <h6>Стоимость</h6>
+                <router-link to="/user/sign-up">
+                  <ion-button button-secondary color="secondary"><span class="button-text">НАЧАТЬ</span></ion-button>
+                </router-link>
+              </div>
             </div>
-            <div class="guide-item">
-              <div class="heading">
-                <h2>3</h2>
-                <h4>Дождитесь проверки и подтверждения</h4>
+            <div class="tarif-item">
+              <div class="tarif-left">
+                <h4>Тариф "Маркетплейс + Оплата"</h4>
+                <p>Почувствуйте вкус свободы с нашим максимальным тарифом</p>
+                <ul class="tarif-conditions">
+                  <li>Доступ к безналичному рассчёту для покупателей.</li>
+                  <li>Услуги доставки с помощью наших курьеров.</li>
+                  <li>Услуги доставки с помощью наших курьеров.</li>
+                  <li>Услуги доставки с помощью наших курьеров.</li>
+                </ul>
               </div>
-              <p>Администраторы в самые короткие сроки проверят и подтвердят Ваши данные.</p>
+              <div class="tarif-right">
+                <h1>10%</h1>
+                <h6>Стоимость</h6>
+                <router-link to="/user/sign-up">
+                  <ion-button button-secondary color="secondary"><span class="button-text">НАЧАТЬ</span></ion-button>
+                </router-link>
+              </div>
             </div>
           </div>
         </div>
@@ -258,7 +310,7 @@ export default {
 }
 .intro-container .main-block-content .image-col img{
   margin-bottom: -6em;
-  margin-top: -8em;
+  margin-top: -6em;
 }
 .intro-container .intro-list{
 
@@ -285,7 +337,7 @@ export default {
 
 
 .winnings-container{
-  padding-top: 4em !important;
+  padding-top: 1em !important;
   text-align: center;
 }
 .winnings-grid{
@@ -295,10 +347,14 @@ export default {
   padding: 1em;
   text-align: center;
   justify-content: center;
+  grid-gap: 15px;
 }
 .winnings-grid .winning-item{
-  padding: 2em;
+  padding: 1em 2em;
   text-align: left;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+  border-radius: 15px;
+  height: 100%;
 }
 .winnings-grid .winning-item p{
   color: gray;
@@ -326,6 +382,10 @@ export default {
 .benefits-container{
   background: linear-gradient(to left, #303c88, #327ab4);
 }
+.benefits-container .main-block-content > h2{
+  color: white;
+  text-align: center;
+}
 .benefits-list{
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
@@ -335,7 +395,16 @@ export default {
 .benefits-list .benefit-item{
   padding: 2em;
 }
-.benefits-list .benefit-item h4{
+.benefits-list .benefit-item .heading{
+  display: flex;
+  align-items: center;
+}
+.benefits-list .benefit-item .heading h2{
+  font-size: 50px;
+  margin-right: 20px;
+  color: #fed304;
+}
+.benefits-list .benefit-item .heading h4{
   color: white;
 }
 .benefits-list .benefit-item p{
@@ -343,37 +412,49 @@ export default {
   line-height: 20px;
   text-align: left;
 }
-.benefits-list .benefit-item img{
-  width: 120px;
-}
 
 
-.guide-container{
+.tarif-container{
+
 }
-.guide-list{
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  align-items: baseline;
+.tarif-container .main-block-content > h2,
+.tarif-container .main-block-content > h4{
+  text-align: center;
+}
+.tarif-container .tarif-list{
   padding: 1em;
 }
-.guide-list .guide-item{
-  padding: 2em;
-}
-.guide-list .guide-item .heading{
-  display: flex;
-  align-items: center;
-}
-.guide-list .guide-item .heading h2{
-  font-size: 50px;
-  margin-right: 20px;
-  color: #fed304;
-}
-.guide-list .guide-item .heading h4{
-}
-.guide-list .guide-item p{
-  line-height: 20px;
+.tarif-container .tarif-item{
+  padding: 1em 2em;
   text-align: left;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+  border-radius: 15px;
+  height: 100%;
+  display: grid;
+  grid-template-columns: 70% 30%;
+  align-items: center;
+  margin: 15px 0;
 }
+.tarif-container .tarif-item .tarif-left ul{
+
+}
+.tarif-container .tarif-item .tarif-left ul li{
+  color: #606060;
+  font-size: 14px;
+}
+.tarif-container .tarif-item .tarif-right{
+  text-align: center;
+}
+.tarif-container .tarif-right > h1,
+.tarif-container .tarif-right > h6{
+  font-weight: bold;
+  color: var(--ion-color-primary);
+}
+.tarif-container .tarif-right > h6{
+  margin-top: 0;
+}
+
+
   /*=========================*/
   /*==========FOOTER=========*/
   /*=========================*/
@@ -437,6 +518,10 @@ export default {
   }
   .supplier-guide-page .main-block{
     padding: 1em;
+    grid-template-columns: 1fr;
+    background-position-x: left;
+    min-height: 400px;
+    text-align: center;
   }
   .supplier-guide-page .main-block .toolbar_svg_logo{
     left: 0;
@@ -447,11 +532,17 @@ export default {
   .benefits-list
   {
     grid-template-columns: 1fr;
+    padding: 0;
+
   }
   
   ion-footer.desktop-footer{
     display: none;
   }
+  
+.winnings-grid .winning-item{
+  text-align: center;
+}
 }
 
 </style>
