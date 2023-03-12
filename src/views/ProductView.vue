@@ -74,7 +74,7 @@ ion-accordion-group .accordion-expanding .product-description{
         </ion-item>
 
         <ion-item lines="none">
-          <ion-chip color="medium">
+          <ion-chip color="medium" v-if="0">
             <ion-icon :src="thumbsUpSharp" @click="itemReactionLike()" color="medium"/>
             <ion-label>2353</ion-label>
             <ion-label color="medium">&nbsp;|&nbsp;</ion-label> 

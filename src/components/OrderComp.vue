@@ -6,7 +6,10 @@
 <template>
     <div v-if="orderData">
         <ion-item detail button @click="storeOpen()" lines="none">
-            <ion-icon slot="start" :icon="storefrontOutline"></ion-icon>
+            <ion-avatar v-if="orderData?.store?.image_hash" slot="start">
+                <ion-img :src="`${$heap.state.hostname}image/get.php/${orderData?.store?.image_hash}.80.80.webp`" style="border-radius:100px"/>
+            </ion-avatar>
+            <ion-icon v-else slot="start" :icon="storefrontOutline"></ion-icon>
             <ion-label>{{orderData?.store?.store_name}}</ion-label>
         </ion-item>
 
@@ -152,6 +155,7 @@ import {
     IonCardHeader,
     IonCardContent,
     IonCardTitle,
+    IonAvatar,
 }                       from '@ionic/vue';
 import { 
     add,
@@ -192,6 +196,7 @@ export default({
     IonCardHeader,
     IonCardContent,
     IonCardTitle,
+    IonAvatar,
     },
     setup() {
         return { 

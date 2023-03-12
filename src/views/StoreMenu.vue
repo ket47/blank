@@ -518,7 +518,7 @@ export default{
           product_promo_price:1000
         }
         const product_id=await jQuery.post(`${heap.state.hostname}Product/itemCreate`,request)
-        this.$router.push(`product-edit-${product_id}`)
+        this.$router.push(`/catalog/product-edit-${product_id}`)
         this.$flash("Добавлен 'Новый товар' в категорию 'Другое'")
       }catch{
         this.$flash("Не удалось создать товар")

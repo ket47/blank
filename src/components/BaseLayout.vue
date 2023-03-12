@@ -1,11 +1,11 @@
 <template>
   <ion-page>
-    <ion-header :class="[pageClass]" style="z-index:0"><!-- ???z-index cancels box-shadow -->
+    <ion-header :class="[pageClass]">
       <ion-toolbar>
         <ion-buttons slot="start">
-          <ion-back-button :default-href="pageDefaultBackLink" style="padding:0px 10px"></ion-back-button>
+          <ion-back-button style="padding:0px 10px"></ion-back-button>
         </ion-buttons>
-        <ion-title v-if="pageTitle" size="small"><div style="line-height: 1.5;max-height:3em;text-overflow: ellipsis;overflow: hidden;white-space: nowrap;font-weight: bold;">{{ pageTitle }}</div></ion-title>
+        <ion-title v-if="pageTitle" size="small"><div style="line-height: 1.5;max-height:3em;text-overflow: ellipsis;overflow: hidden;font-weight: bold;">{{ pageTitle }}</div></ion-title>
         
         <router-link to="/">
           <ion-icon  v-if="pageLogo" class="toolbar_svg_logo" style="color: var(--ion-color-primary)"  :icon="pageLogo"/>

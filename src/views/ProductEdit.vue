@@ -119,7 +119,7 @@
 
       <div v-if="!is_option_child">
       <ion-item-divider></ion-item-divider>
-      <ion-item button @click="$router.push('product-'+productItem.product_id)">
+      <ion-item button @click="$router.push('/catalog/product-'+productItem.product_id)">
         <ion-icon :src="chevronBack" slot="start"/>
         Показать товар
       </ion-item>

@@ -23,8 +23,6 @@ import {
   }                        from 'ionicons/icons';
 import {
   IonButton,
-  IonCard,
-  IonCardContent,
   IonIcon,
   IonItem,
   IonText,
@@ -34,8 +32,6 @@ import {
 export default {
   components:{
   IonButton,
-  IonCard,
-  IonCardContent,
   IonIcon,
   IonItem,
   IonText,

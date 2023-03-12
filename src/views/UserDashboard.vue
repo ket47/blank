@@ -32,11 +32,11 @@ ion-icon{
             <ion-icon :icon="exitOutline" slot="start" color="primary"></ion-icon>
             <ion-label>Выйти</ion-label>
         </ion-item>
-        <ion-item v-else lines="full" button detail @click="$router.push('sign-in')">
+        <ion-item v-else lines="full" button detail @click="$router.push('/user/sign-in')">
             <ion-icon :icon="logInOutline" slot="start" color="primary"></ion-icon>
             <ion-label>Войти</ion-label>
         </ion-item>
-        <ion-item v-if="!isSignedIn" lines="full" button detail @click="$router.push('sign-up')">
+        <ion-item v-if="!isSignedIn" lines="full" button detail @click="$router.push('/user/sign-up')">
             <ion-icon :icon="personAddOutline" slot="start" color="primary"></ion-icon>
             <ion-label>Зарегистрироваться</ion-label>
         </ion-item>

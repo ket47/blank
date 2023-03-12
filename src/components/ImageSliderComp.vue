@@ -65,9 +65,7 @@ import {
   contract
 }                                 from 'ionicons/icons'
 import {
-  IonFab,
-  IonFabButton,
-  IonIcon
+
 }                                 from '@ionic/vue'
 import { EffectFade, Autoplay }   from 'swiper';
 import { Swiper, SwiperSlide }    from 'swiper/vue';
@@ -76,9 +74,6 @@ export default({
     components: { 
       Swiper,
       SwiperSlide,
-      IonFab,
-      IonFabButton,
-      IonIcon
     },
     props: ['imageList','imgHeight', 'mode'],
     setup() {

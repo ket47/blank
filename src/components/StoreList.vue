@@ -59,7 +59,7 @@ ion-card .store-title{
   color: var(--ion-color-primary);
 }
 
-@media screen and (min-width: 740px) {
+/* @media screen and (min-width: 740px) {
   .store-list > ion-card{
     width: 48%;
     float: right;
@@ -72,7 +72,7 @@ ion-card .store-title{
     float: right;
     margin: 1%;
   }
-}
+} */
 </style>
 
 <template>
@@ -107,7 +107,7 @@ ion-card .store-title{
     </ion-row>
   </ion-grid>
   <ion-list v-if="storeList && storeList.length > 0" class="store-list">
-    <ion-card style="position:relative" v-for="(store_item, store_index) in storeList"  :key="store_item.store_id"  :class="store_item.is_opened==0?'closed':''">
+    <ion-card style="position:relative;height:fit-content" v-for="(store_item, store_index) in storeList"  :key="store_item.store_id"  :class="store_item.is_opened==0?'closed':''">
       <router-link :to="`/catalog/store-${store_item.store_id}`">
         <div class="crop-to-fit" style="height: 180px">
             <ion-img v-if="store_item.image_hash" :src="$heap.state.hostname +'/image/get.php/' +store_item.image_hash +'.500.500.webp'"/>

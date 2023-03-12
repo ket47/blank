@@ -3,7 +3,7 @@
     <ion-content :class="'supplier-guide-page'">
       <ion-toolbar>
         <ion-buttons slot="start">
-          <ion-back-button default-href="/" color="light" style="padding:0px 10px"></ion-back-button>
+          <ion-back-button color="light" style="padding:0px 10px"></ion-back-button>
         </ion-buttons>
         <ion-icon  v-if="mainLogo" class="toolbar_svg_logo" style="color: white"  :icon="mainLogo"/>
       </ion-toolbar>  

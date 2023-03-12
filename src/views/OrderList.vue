@@ -54,7 +54,7 @@
             </ion-item>
             </div>
         </ion-list>
-        <ion-list v-if="orderList==null">
+        <ion-list v-if="['active','done'].includes(orderType) && orderList==null">
             <div v-for="i in [1,2,3]" :key="i">
             <ion-item lines="none">
                 <ion-skeleton-text style="width:50px" slot="start"/>
@@ -72,7 +72,7 @@
             </ion-item>
             </div>
         </ion-list>
-        <div v-else-if="(orderList?.length==0) && (!jobList || jobList.length==0)" style="display:flex;align-items:center;justify-content:center;height:70vh">
+        <div v-if="(!orderList || orderList?.length==0) && (!jobList || jobList?.length==0)" style="display:flex;align-items:center;justify-content:center;height:70vh">
             <div style="width:max-content;text-align:center">
                 <ion-icon :icon="sparklesOutline" size="large"></ion-icon>
                 <ion-label>Заказов нет</ion-label><br>
@@ -258,7 +258,7 @@ export default {
         },
         listTypeChanged(e){
             const listType=e.target.value;
-            this.orderList=[]
+            this.orderList=null
             this.listLoad(listType);
         },
         async listJobLoad(){
@@ -312,7 +312,7 @@ export default {
             this.itemOpen(order.order_id);
         },
         itemOpen(order_id){
-            router.push(`order-${order_id}`);
+            router.push(`/order/order-${order_id}`);
         }
     }
 }

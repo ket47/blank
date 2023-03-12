@@ -8,8 +8,8 @@ localStorage.already_visited_app=1;
 
 const routes = [
   {
-    path: '/home/',
-    redirect: '/'
+    path: '/home',
+    redirect: homePath
   },
   {
     path: '/',
@@ -19,10 +19,6 @@ const routes = [
     path: '/',
     component: BaseTabs,
     children: [
-      {
-        path: '',
-        redirect: "/catalog"
-      },
       {
         path: "/catalog",
         component: () => import('@/views/HomePage.vue')
@@ -49,7 +45,7 @@ const routes = [
 
 
       {
-        path: '/search/',
+        path: '/search',
         component: () => import('@/views/SearchView.vue')
       },
       {
@@ -73,8 +69,8 @@ const routes = [
 
 
       {
-        path: '/user/',
-        redirect: '/user/user-dashboard'
+        path: '/user',
+        component: () => import('@/views/UserDashboard.vue'),
       },
       {
         path: '/user/user-dashboard',
@@ -160,8 +156,8 @@ const routes = [
       
 
       {
-        path: '/order/',
-        redirect: '/order/order-list'
+        path: '/order',
+        component: () => import('@/views/OrderList.vue')
       },
       {
         path: '/order/order-list',
