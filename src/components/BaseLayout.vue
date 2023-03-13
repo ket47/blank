@@ -2,14 +2,12 @@
   <ion-page>
     <ion-header :class="[pageClass]">
       <ion-toolbar>
-        <ion-buttons slot="start">
-          <ion-back-button style="padding:0px 10px"></ion-back-button>
+        <ion-buttons v-if="canGoBack" slot="start">
+          <ion-button v-if="isIos" @click="goback()"><ion-icon :src="chevronBackOutline"/></ion-button>
+          <ion-button v-else @click="goback()"><ion-icon :src="arrowBackOutline"/></ion-button>
         </ion-buttons>
         <ion-title v-if="pageTitle" size="small"><div style="line-height: 1.5;max-height:3em;text-overflow: ellipsis;overflow: hidden;font-weight: bold;">{{ pageTitle }}</div></ion-title>
-        
-        <router-link to="/">
-          <ion-icon  v-if="pageLogo" class="toolbar_svg_logo" style="color: var(--ion-color-primary)"  :icon="pageLogo"/>
-        </router-link>
+        <ion-icon  v-if="pageLogo" class="toolbar_svg_logo" style="color: var(--ion-color-primary)"  :icon="pageLogo"/>
         <div slot="end">
           <cart-header slot="end"></cart-header>
         </div>
@@ -43,11 +41,18 @@ import {
   IonRefresher,
   IonRefresherContent,
   IonFab,
-  IonIcon
+  IonIcon,
+  IonButton,
+  isPlatform,
 }                           from "@ionic/vue";
 import CartHeader           from "@/components/CartHeader";
 import { defineComponent }  from "@vue/runtime-core";
-import TezkelLoader   from "@/components/TezkelLoader.vue"
+import TezkelLoader         from "@/components/TezkelLoader.vue"
+
+import {
+  arrowBackOutline,
+  chevronBackOutline,
+}                           from "ionicons/icons";
 
 export default defineComponent({
   props: [
@@ -71,17 +76,37 @@ export default defineComponent({
     IonRefresherContent,
     IonFab,
     IonIcon,
+    IonButton,
     CartHeader,
     TezkelLoader
+  },
+  setup(){
+    return {
+  arrowBackOutline,
+  chevronBackOutline,
+    }
   },
   computed:{
     isInteractingWithServer(){
       return this.$heap.state.isInteractingWithServer
-    }
+    },
+    canGoBack(){
+      return history.state.back?1:0
+    },
+    isIos(){
+      return isPlatform('ios')
+    },
+    // title(){
+    //   document.title=this.pageTitle
+    //   return this.pageTitle
+    // }
   },
   methods:{
     reload(){
       location.reload();
+    },
+    goback(){
+      history.back()
     }
   },
   // updated(){

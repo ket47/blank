@@ -83,22 +83,27 @@ export default({
             lang: 'ru_RU',
             coordorder: 'latlong',
             enterprise: false,
-            version: '2.1'
+            version: '2.1',
+            center: [55.751574, 37.573856],
         });
         var ymaps=window.ymaps;
 
 
-        ymaps.geolocation.get().then((res) => {
-            myMap.setCenter(res.geoObjects.position);
-        });
 
-        
+
         var myPlacemark;
         var myMap = new ymaps.Map('map', {
             center: self.mapCenter,
             zoom: 17,
             controls: []
         });
+        
+        const geoloc=await ymaps.geolocation.get();
+
+        myMap.setCenter(geoloc.geoObjects.position);
+
+
+
         self.mapBoundaries = JSON.parse('['+self.mapBoundaries[0]+']');
 
         var suggestView = new ymaps.SuggestView('suggest',{boundedBy:self.mapBoundaries});

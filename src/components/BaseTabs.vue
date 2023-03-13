@@ -204,6 +204,7 @@ import {
 import Order        from '@/scripts/Order'
 
 import {
+  homeOutline,
   storefrontOutline,
   searchOutline,
   personOutline,

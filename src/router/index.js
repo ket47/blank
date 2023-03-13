@@ -19,6 +19,10 @@ const routes = [
     path: '/',
     component: BaseTabs,
     children: [
+      // {
+      //   path: "",
+      //   redirect: '/catalog',
+      // },
       {
         path: "/catalog",
         component: () => import('@/views/HomePage.vue')
@@ -130,14 +134,6 @@ const routes = [
         component: () => import('@/views/TextPageEdit.vue')
       },
       {
-        path: '/user/text-list',
-        component: () => import('@/views/TextListView.vue')
-      },
-      {
-        path: '/user/admin-tariff-list',
-        component: () => import('@/views/AdminTariffList.vue')
-      },
-      {
         path: '/user/admin-tariff-edit-:id',
         component: () => import('@/views/AdminTariffEdit.vue')
       },
@@ -171,42 +167,49 @@ const routes = [
         path: '/order/order-:id',
         component: () => import('@/views/OrderView.vue')
       },
-
-
-
-      {
-        path: '/page/about-us',
-        component: () => import('@/views/AboutUs.vue')
-      },
-      {
-        path: '/page/supplier-guide',
-        component: () => import('@/views/SupplierGuide.vue')
-      },
-      {
-        path: '/page/:id',
-        component: () => import('@/views/TextPageView.vue')
-      },
-      {
-        path: '/error-offline',
-        component: () => import('@/views/ErrorOffline.vue')
-      },
-
-
-
-      
-      {
-        path: '/admin/transaction-edit-:id',
-        component: () => import('@/views/admin/TransactionEdit.vue')
-      },
-      {
-        path: '/admin/accounting',
-        component: () => import('@/views/admin/AccountingView.vue')
-      },
-      {
-        path: '/admin/list-moderation',
-        component: () => import('@/views/admin/ListModeration.vue')
-      },
   ]
+  },
+  
+
+  {
+    path: '/page/about-us',
+    component: () => import('@/views/AboutUs.vue')
+  },
+  {
+    path: '/page/supplier-guide',
+    component: () => import('@/views/SupplierGuide.vue')
+  },
+  {
+    path: '/page/:id',
+    component: () => import('@/views/TextPageView.vue')
+  },
+  {
+    path: '/error-offline',
+    component: () => import('@/views/ErrorOffline.vue')
+  },
+
+
+
+  
+  {
+    path: '/admin/transaction-edit-:id',
+    component: () => import('@/views/admin/TransactionEdit.vue')
+  },
+  {
+    path: '/admin/accounting',
+    component: () => import('@/views/admin/AccountingView.vue')
+  },
+  {
+    path: '/admin/list-moderation',
+    component: () => import('@/views/admin/ListModeration.vue')
+  },
+  {
+    path: '/admin/text-list',
+    component: () => import('@/views/TextListView.vue')
+  },
+  {
+    path: '/admin/tariff-list',
+    component: () => import('@/views/AdminTariffList.vue')
   },
   {
     path: '/catalog/store-:id/menu',

@@ -2,9 +2,9 @@
   <base-layout page-title="Мои адреса" pageDefaultBackLink="/user" ref="UserAddressPage">
         <ion-list v-if="locationList.length" lines="full">
           <ion-item v-for="(location,i) in locationList" :key="location.location_id">
-              <ion-img slot="start" alt="location icon" :src="`${$heap.state.hostname}/image/get.php/${location.image_hash}.32.32.png`" />
+              <ion-img slot="start" alt="location icon" :src="`${$heap.state.hostname}/image/get.php/${location.image_hash}.60.60.png`" style="height:24px" />
               <ion-label @click="locationSetMain(`${location.location_id}`,`${i}`)" style="white-space:normal;cursor:pointer;">{{ location.location_address }}</ion-label>
-              <ion-icon slot="end" :icon="trash" @click="locationDelete(`${location.location_id}`,`${i}`)"></ion-icon>
+              <ion-icon slot="end" :icon="trashOutline" @click="locationDelete(`${location.location_id}`,`${i}`)"></ion-icon>
           </ion-item>
         </ion-list>
         <ion-list v-else lines="full">
@@ -19,8 +19,9 @@
             <ion-label>Добавить адрес</ion-label>
           </ion-list-header>
           <ion-item  v-for="location in locationGroupList" :key="location.group_id" @click="modalLocationCreate(`${location.group_id}`,`${location.group_name}`)" style="cursor:pointer">
-              <ion-img :src="`${$heap.state.hostname}/image/get.php/${location.image_hash}.32.32.png`" />
-              <ion-label style="margin-left:5px;padding-left:5px;border-left:solid 1px black;white-space:normal">{{ location.group_name }}</ion-label>
+              <ion-img :src="`${$heap.state.hostname}/image/get.php/${location.image_hash}.60.60.png`" style="height:24px"  slot="start"/>
+              <ion-label>{{ location.group_name }}</ion-label>
+              <ion-icon :src="addOutline" slot="end"/>
           </ion-item>
         </ion-list>
   </base-layout>
@@ -43,7 +44,7 @@ import User              from '@/scripts/User.js'
 import jQuery             from 'jquery';
 import UserAddressPicker  from '@/components/UserAddressPicker.vue';
 
-import { locationOutline,trash }          from 'ionicons/icons';
+import { locationOutline,trashOutline,addOutline }          from 'ionicons/icons';
 
 
 export default{
@@ -57,7 +58,7 @@ export default{
   IonIcon,
   },
   setup(){
-    return { locationOutline,trash };
+    return { locationOutline,trashOutline,addOutline };
   },
   mounted(){
     this.locationListGet();
@@ -74,7 +75,7 @@ export default{
         component: UserAddressPicker,
         showBackdrop:true,
         backdropDismiss:true,
-        swipeToClose: true,
+        canDismiss: true,
         cssClass: 'update-profile-modal',
         presentingElement: this.$refs.UserAddressPage.$el,
         componentProps:{

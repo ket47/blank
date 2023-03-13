@@ -65,12 +65,12 @@ ion-accordion-group .accordion-expanding .product-description{
 
 
 
-        <ion-item lines="none" @click="$router.push('/store/store-view-'+productItem.store_id)" button>
+        <ion-item lines="none" @click="$router.push('/catalog/store-'+productItem.store_id)" button>
           <ion-avatar slot="start" v-if="productItem?.store?.avatar">
             <ion-img :src="`${$heap.state.hostname}image/get.php/${avatar.image_hash}.200.200.webp`" v-for="avatar in productItem?.store?.avatar" :key="avatar.image_id"/>
           </ion-avatar>
-          <ion-label>{{productItem.store.store_name}}</ion-label>
-          <ion-text v-if="categories" slot="end" color="medium">#{{categories[0].group_name}}</ion-text>
+          <ion-text>{{productItem.store.store_name}}</ion-text>
+          <ion-text v-if="categories && categories[0]" slot="end" color="medium">#{{categories[0].group_name}}</ion-text>
         </ion-item>
 
         <ion-item lines="none">

@@ -54,10 +54,17 @@ ion-card .store-title{
            line-clamp: 2; 
    -webkit-box-orient: vertical;
 }
-.perk-slider .perk-label {
+/* .perk-slider .perk-label {
   font-size: 16px;
-  color: var(--ion-color-primary);
-}
+  background-color: var(--ion-color-primary);
+  color:white;
+  border-radius: 20px;
+  width:40px;
+  height:40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+} */
 
 /* @media screen and (min-width: 740px) {
   .store-list > ion-card{
@@ -154,11 +161,11 @@ ion-card .store-title{
                 <ion-col size="3" style="max-width: 100px">
                     <ion-img class="perk-image" v-if="productPerk.image_hash" :src="`${$heap.state.hostname +'/image/get.php/' +productPerk.image_hash +'.100.100.webp'}`"/>
                 </ion-col>
-                <ion-col size="7">
+                <ion-col size="6">
                   <b class="perk-title">{{ productPerk.perk_title }}</b>
                 </ion-col>
-                <ion-col size="2">
-                  <b class="perk-label">{{ productPerk.perk_label }}</b>
+                <ion-col size="3">
+                  <ion-chip color="primary" outline><b>{{ productPerk.perk_label }}</b></ion-chip>
                 </ion-col>
               </ion-row>
             </ion-grid>
