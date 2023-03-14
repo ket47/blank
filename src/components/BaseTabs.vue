@@ -155,7 +155,7 @@ ion-icon{
   <ion-page>
     <ion-tabs>
       <ion-router-outlet></ion-router-outlet>
-      <ion-tab-bar class="bottom-bar" slot="bottom">
+      <ion-tab-bar v-if="isMobile" class="bottom-bar" slot="bottom">
         <ion-tab-button tab="catalog" href="/catalog" selected>
           <ion-icon :icon="storefrontOutline"/>
           <ion-label><b>Каталог</b></ion-label>
@@ -204,7 +204,6 @@ import {
 import Order        from '@/scripts/Order'
 
 import {
-  homeOutline,
   storefrontOutline,
   searchOutline,
   personOutline,
@@ -231,7 +230,11 @@ export default{
     };
   },
   data(){
+
+
+    const isMobile= /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(window.navigator.userAgent);
     return {
+      isMobile,
       activeOrderCount:0
     }
   },

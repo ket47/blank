@@ -14,6 +14,7 @@ import '@ionic/vue/css/text-transformation.css';
 import '@ionic/vue/css/flex-utils.css';
 import '@ionic/vue/css/display.css';
 
+import './theme/base_layout_desktop.css';
 
 /* Theme variables */
 import './theme/variables.css';
@@ -32,6 +33,7 @@ import heap                 from '@/heap';
 
 import BaseLayout           from '@/components/BaseLayout.vue';
 import BaseLayoutDesktop    from '@/components/BaseLayoutDesktop.vue';
+
 
 import Topic                from '@/scripts/Topic.js';
 import User                 from '@/scripts/User.js'
@@ -164,14 +166,13 @@ app.config.globalProperties.$flash = flash;
 app.config.globalProperties.$alert = alert;
 app.config.globalProperties.$topic = Topic;
 
-const platformMobile= /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(window.navigator.userAgent);
+const isMobile= /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(window.navigator.userAgent);
 
-if(platformMobile){
+
+if(isMobile){
   app.component('base-layout', BaseLayout);
-  //require('./theme/base_layout.css');
 } else {
   app.component('base-layout', BaseLayoutDesktop);
-  require('./theme/base_layout_desktop.css');
 }
 app.mount('#app');
 User.autoSignIn();

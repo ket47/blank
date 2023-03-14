@@ -44,7 +44,7 @@ ion-card .store-title{
   border-top: 1px solid #eee;
 }
 .perk-slider .perk-image {
-
+  border-radius:10px;
 }
 .perk-slider .perk-title {
    overflow: hidden;
@@ -66,11 +66,11 @@ ion-card .store-title{
   justify-content: center;
 } */
 
-/* @media screen and (min-width: 740px) {
-  .store-list > ion-card{
-    width: 48%;
-    float: right;
-    margin: 1%;
+/*
+ @media screen and (min-width: 740px) {
+  .store-list {
+    display: grid;
+
   }
 }
 @media screen and (min-width: 1080px) {
@@ -80,6 +80,14 @@ ion-card .store-title{
     margin: 1%;
   }
 } */
+
+
+ @media screen and (min-width: 740px) {
+    .store-list{
+      display: grid;
+      grid-template-columns: auto  auto;
+    }
+ }
 </style>
 
 <template>
@@ -151,24 +159,19 @@ ion-card .store-title{
 
         <swiper class="perk-slider" v-if="store_perks_slider[store_index].length > 0" 
           :modules="modules" 
-          :speed="400"
+          :speed="1000"
           :slidesPerView="1"
-          :navigation="true"
+          :navigation="false"
+          :autoplay='{delay: 3000, disableOnInteraction: true}'
         >
           <swiper-slide v-for="(productPerk, productPerkIndex) in store_perks_slider[store_index]" :key="productPerkIndex">
-            <ion-grid>
-              <ion-row class="ion-justify-content-around ion-align-items-center">
-                <ion-col size="3" style="max-width: 100px">
-                    <ion-img class="perk-image" v-if="productPerk.image_hash" :src="`${$heap.state.hostname +'/image/get.php/' +productPerk.image_hash +'.100.100.webp'}`"/>
-                </ion-col>
-                <ion-col size="6">
-                  <b class="perk-title">{{ productPerk.perk_title }}</b>
-                </ion-col>
-                <ion-col size="3">
-                  <ion-chip color="primary" outline><b>{{ productPerk.perk_label }}</b></ion-chip>
-                </ion-col>
-              </ion-row>
-            </ion-grid>
+            <ion-item>
+              <ion-thumbnail slot="start">
+                <ion-img v-if="productPerk.image_hash" :src="`${$heap.state.hostname +'/image/get.php/' +productPerk.image_hash +'.100.100.webp'}`" style="border-radius:10px" />
+              </ion-thumbnail>
+              <ion-text>{{ productPerk.perk_title }}</ion-text>
+              <ion-text slot="end"><ion-chip color="success" outline><b>{{ productPerk.perk_label }}</b></ion-chip></ion-text>
+            </ion-item>
           </swiper-slide>
         </swiper>
     </ion-card>

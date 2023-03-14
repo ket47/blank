@@ -251,8 +251,4 @@
   ion-header ion-tab-bar{
     --background: transparent;
   }
-
-  ion-tabs ion-tab-bar.bottom-bar{
-    display: none;
-  }
 }
