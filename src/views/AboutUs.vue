@@ -3,7 +3,7 @@
     <ion-content :class="'about-us-page'">
       <ion-toolbar>
         <ion-buttons slot="start">
-          <ion-back-button color="light" style="padding:0px 10px"></ion-back-button>
+          <ion-button @click="$router.push('/catalog')"><ion-icon :src="arrowBackOutline"/></ion-button>
         </ion-buttons>
         <ion-icon  v-if="mainLogo" class="toolbar_svg_logo" style="color: white"  :icon="mainLogo"/>
       </ion-toolbar>  
@@ -141,7 +141,8 @@
 import FooterDesktop  from "@/components/FooterDesktop";
 import mainLogo       from "@/assets/icons/tezkel_logo.svg";
 import {
-  logoGooglePlaystore
+  logoGooglePlaystore,
+  arrowBackOutline
 }                     from "ionicons/icons";
 
 import {
@@ -161,7 +162,8 @@ export default {
   setup() {
     return {
       mainLogo,
-      logoGooglePlaystore
+      logoGooglePlaystore,
+      arrowBackOutline
     }
   },
   components:{

@@ -91,6 +91,9 @@ export default defineComponent({
       return this.$heap.state.isInteractingWithServer
     },
     canGoBack(){
+      if(history.state.current=='/catalog'){
+        return 0
+      }
       return history.state.back?1:0
     },
     isIos(){
