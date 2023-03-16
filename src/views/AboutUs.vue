@@ -37,7 +37,7 @@
       </div>
 
 
-      <div style="padding:10px;margin-top:25px;">
+      <div style="padding:10px;margin-top:25px;display:none">
         <h2 style="text-align: left;">Сайт как приложение</h2>
         <p>
           С помощью сайта tezkel.com вы можете делать абсолютно все, потому что сайт сделан как <b>Веб приложение</b>. Вы можете создать ярлык сайта в телефоне и пользоваться полным функционалом сервиса. 
@@ -151,7 +151,6 @@ import {
   IonButton,
   IonButtons,
   IonToolbar,
-  IonBackButton,
   IonIcon,
 } from "@ionic/vue"
 
@@ -170,7 +169,6 @@ export default {
   IonPage, 
   IonContent, 
   IonButton,
-  IonBackButton,
   IonIcon,
   IonButtons,
   IonToolbar,
