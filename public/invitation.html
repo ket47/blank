@@ -14,6 +14,7 @@
             if(searchParams.has('inviter_user_id')){
                 localStorage.inviter_user_id=searchParams.get('inviter_user_id')
             }
+            setTimeout(()=>location.href='/catalog',5000)
         </script>
         <style>
             body{
@@ -83,11 +84,15 @@
         <div id="main_container">
             <div class="background-image"></div>
             <div id="main_content">
-                <h1>Сервис экспресс-доставки</h1>
+                <h1>Добро пожаловать</h1>
+                <h3>Сервис экспресс-доставки</h3>
+                <a class="button" href="/catalog">На главную страницу</a>
+                
                 <img src="/img/logo_full_transparent.png" style="width: 100%"/>
-                <h3>
+
+                <h4>
                     Зарегистрируйтесь и получите <b>5</b> подарочных сертификатов по <b>200руб</b>
-                </h3>
+                </h4>
                 <a class="button" href="/user/sign-up">Регистрация ➜</a>
             </div>
         </div>

@@ -209,8 +209,12 @@ const User = {
         timeout:1000*60*60,
         lastPosition:{},
         async get(){
-            await User.geo.permissionCheck();
-            return Geolocation.getCurrentPosition();
+            try{
+                await User.geo.permissionCheck();
+                return Geolocation.getCurrentPosition();
+            } catch(err){
+                console.log('User.geo.get',err)
+            }
         },
         async locationSelect(){
             let location_main=heap.state.user.location_main
@@ -261,8 +265,14 @@ const User = {
             }
         },
         async permissionCheck(){
-            const result=await Geolocation.checkPermissions()
-            return result.location
+            try{
+                const result=await Geolocation.checkPermissions()
+                return result.location
+            } catch(err){
+                console.log('User.geo.permissionCheck',err)
+            }
+            return null
+            
         },
         async trackingStart(){
             const permission=await User.geo.permissionCheck();
@@ -270,32 +280,41 @@ const User = {
                 return
             }
             User.geo.trackingStop();
-            User.geo.clock=await Geolocation.watchPosition({timeout:User.geo.timeout},(position)=>{
-                const lat_shift_m=Math.abs(User.geo.lastPosition?.coords?.latitude-position?.coords?.latitude)/0.000009
-                const lon_shift_m=Math.abs(User.geo.lastPosition?.coords?.longitude-position?.coords?.longitude)/0.000009
-                const tolerance_m=1000
-                if( !position || (lat_shift_m<tolerance_m&&lon_shift_m<tolerance_m) ){
-                    return;
-                }
-                if( User.geo.lastPosition?.coords && !position?.coords?.speed ){
-                    return
-                }
-                User.geo.lastPosition=position;
-                const loc={
-                    location_latitude:position.coords.latitude,
-                    location_longitude:position.coords.longitude,
-                    location_address:'Ваше местоположение',
-                    timestamp:position.timestamp
-                  }
-                heap.commit('setUserCurrentLocation', loc);
-                Topic.publish('userCurrentLocationSet',heap.state.user.location_current)
-            });
+            try{
+                User.geo.clock=await Geolocation.watchPosition({timeout:User.geo.timeout},(position)=>{
+                    const lat_shift_m=Math.abs(User.geo.lastPosition?.coords?.latitude-position?.coords?.latitude)/0.000009
+                    const lon_shift_m=Math.abs(User.geo.lastPosition?.coords?.longitude-position?.coords?.longitude)/0.000009
+                    const tolerance_m=1000
+                    if( !position || (lat_shift_m<tolerance_m&&lon_shift_m<tolerance_m) ){
+                        return;
+                    }
+                    if( User.geo.lastPosition?.coords && !position?.coords?.speed ){
+                        return
+                    }
+                    User.geo.lastPosition=position;
+                    const loc={
+                        location_latitude:position.coords.latitude,
+                        location_longitude:position.coords.longitude,
+                        location_address:'Ваше местоположение',
+                        timestamp:position.timestamp
+                    }
+                    heap.commit('setUserCurrentLocation', loc);
+                    Topic.publish('userCurrentLocationSet',heap.state.user.location_current)
+                });
+            } catch(err){
+                console.log('User.geo.trackingStart',err)
+            }
         },
         trackingStop(){
             if( !User.geo.clock ){
                 //return;
             }
-            Geolocation.clearWatch({id:User.geo.clock});
+            try{
+                Geolocation.clearWatch({id:User.geo.clock});
+            }
+            catch(err){
+                console.log('User.geo.trackingStop',err)
+            }
         }
     },
     firebase:{
@@ -314,10 +333,10 @@ const User = {
             })
         },
         async saveNotificationToken(){
-            if(Notification.permission!='granted'){
-                return
-            }
             try{
+                if(Notification.permission!='granted'){
+                    return
+                }
                 const vapidKey=heap.state.settings.firebase.vapidKey
                 const messaging = getMessaging();
                 const token=await getToken(messaging, {vapidKey});
@@ -329,7 +348,7 @@ const User = {
                 await jQuery.post(`${heap.state.hostname}MessageSub/itemCreate`,request)
                 User.firebase.tokenSaved=true;
             }catch(err){
-                console.log(err)
+                console.log('saveNotificationToken',err)
             }
         },
     }

@@ -23,17 +23,20 @@ messaging.onBackgroundMessage(async (payload) => {
   //   cl.forEach(client => client.postMessage(payload));
   //   return false;
   // }
-  
-  if(payload.data.body){//if body is set then this is foreground notification!
-    const notificationTitle = payload.data.title??'Tezkel'
-    const notificationOptions = {
-      body: payload.data.body,
-      icon: payload.data.icon,
-      link: payload.data.link??'',
-      tag: payload.data.tag??'',
-      vibrate: [200, 100, 200]
+  try{
+    if(payload.data.body){//if body is set then this is foreground notification!
+      const notificationTitle = payload.data.title??'Tezkel'
+      const notificationOptions = {
+        body: payload.data.body,
+        icon: payload.data.icon,
+        link: payload.data.link??'',
+        tag: payload.data.tag??'',
+        vibrate: [200, 100, 200]
+      }
+      return self.registration.showNotification(notificationTitle,notificationOptions);
     }
-    return self.registration.showNotification(notificationTitle,notificationOptions);
+    return self.registration.showNotification(payload.title,payload);
+  } catch (err){
+    console.log('messaging.onBackgroundMessage',err)
   }
-  return self.registration.showNotification(payload.title,payload);
 });

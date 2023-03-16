@@ -30,12 +30,12 @@
                         <ion-icon :src="mailOutline"/>
                         <a :href="`mailto:${orderData.info.customer_email}`">{{orderData.info.customer_email}}</a>
                     </ion-chip>
-                    <ion-chip color="primary" v-if="orderData.info.customer_location_address">
-                        <ion-icon :src="locationOutline"/>
+                    <div v-if="orderData.info.customer_location_address">
+                        <ion-icon :src="locationOutline" color="primary"/>
                         <a :href="`https://yandex.ru/maps/?pt=${orderData.info.customer_location_longitude},${orderData.info.customer_location_latitude}&z=19&l=map,trf`" target="_new">
                             {{orderData.info.customer_location_address}} 
                         </a>
-                    </ion-chip>
+                    </div>
                     <ion-note v-if="orderData.info.customer_location_comment">
                         Комментарий к адресу: {{orderData.info.customer_location_comment}} 
                     </ion-note>
@@ -56,12 +56,12 @@
                         <ion-icon :src="mailOutline"/>
                         <a :href="`mailto:${orderData.info.supplier_email}`">{{orderData.info.supplier_email}}</a>
                     </ion-chip>
-                    <ion-chip color="primary" v-if="orderData.info.supplier_location_address">
-                        <ion-icon :src="locationOutline"/>
+                    <div v-if="orderData.info.supplier_location_address">
+                        <ion-icon :src="locationOutline" color="primary"/>
                         <a :href="`https://yandex.ru/maps/?pt=${orderData.info.supplier_location_longitude},${orderData.info.supplier_location_latitude}&z=19&l=map,trf`" target="_new">
                             {{orderData.info.supplier_location_address}}
                         </a>
-                    </ion-chip>
+                    </div>
                     <ion-note v-if="orderData.info.supplier_location_comment">
                         Комментарий к адресу: {{orderData.info.supplier_location_comment}} 
                     </ion-note>

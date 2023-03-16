@@ -165,7 +165,7 @@ ion-card .store-title{
           :autoplay='{delay: 3000, disableOnInteraction: true}'
         >
           <swiper-slide v-for="(productPerk, productPerkIndex) in store_perks_slider[store_index]" :key="productPerkIndex">
-            <ion-item @click="$router.push(`/catalog/product-${productPerk.product_id}`)" button>
+            <ion-item @click="$router.push(`/catalog/product-${productPerk.product_id}`)" button detail="false" lines="none">
               <ion-thumbnail slot="start">
                 <ion-img v-if="productPerk.image_hash" :src="`${$heap.state.hostname +'/image/get.php/' +productPerk.image_hash +'.100.100.webp'}`" style="border-radius:10px" />
               </ion-thumbnail>

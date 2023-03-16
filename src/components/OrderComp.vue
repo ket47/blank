@@ -41,7 +41,12 @@
                     </div>
                     <div v-if="entry.product_id"  style="position:relative;min-height:40px;">
                         <cart-add-buttons v-if="isEditable" buttonLayout="horizontal" :entry="entry" :orderData="orderData"></cart-add-buttons>
-                        <ion-text v-else color="primary">x {{entry.entry_quantity}}{{entry.product_unit}}</ion-text>
+                        <ion-text v-else color="primary"> 
+                            {{entry.entry_quantity}}
+                            <span v-if="entry.product_unit=='порция'">по {{entry.product_weight*1000}}г</span>
+                            <span v-else-if="entry.product_unit=='порция мл'">по {{entry.product_weight*1000}}мл</span>
+                            <span v-else>{{entry.product_unit}}</span>
+                        </ion-text>
                     </div>
                     <div v-if="entry.entry_comment" style="grid-column: 1 / span 2">
                         <ion-icon color="medium" :src="chatboxEllipsesOutline" @click="itemCommentEdit(entry)"/> <ion-note>{{ entry.entry_comment }}</ion-note>
@@ -264,7 +269,7 @@ export default({
                 }
             } 
             return buttons;
-        }
+        },
     },
     methods:{
         storeOpen(){

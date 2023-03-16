@@ -74,11 +74,11 @@ ion-accordion-group .accordion-expanding .product-description{
         </ion-item>
 
         <ion-item lines="none">
-          <ion-chip color="medium" v-if="0">
-            <ion-icon :src="thumbsUpSharp" @click="itemReactionLike()" color="medium"/>
+          <ion-chip color="medium" v-if="0" @click="reactionTargetPick()">
+            <ion-icon :src="thumbsUpSharp" color="dark"/>
             <ion-label>2353</ion-label>
             <ion-label color="medium">&nbsp;|&nbsp;</ion-label> 
-            <ion-icon :src="thumbsDownSharp" @click="itemReactionDislike()" color="dark"/>
+            <ion-icon :src="thumbsDownSharp" color="dark"/>
           </ion-chip>
 
           <ion-chip @click="itemShare()" color="medium">
@@ -174,13 +174,16 @@ import {
   IonButton,
   IonAvatar,
   IonImg,
+  modalController,
 }                       from '@ionic/vue'
 
-import ImageSliderComp      from '@/components/ImageSliderComp'
+import ImageSliderComp  from '@/components/ImageSliderComp'
 import CartAddButtons   from '@/components/CartAddButtons'
 import CartHeader       from '@/components/CartHeader'
 
 import Order            from '@/scripts/Order.js'
+
+import ReactionTargetPicker from '@/components/ReactionTargetPicker.vue'
 
 export default  {
   components: { 
@@ -328,33 +331,26 @@ export default  {
       },
 
 
-      async itemReact( request ){
-        try{
-          await jQuery.post(`${heap.state.hostname}Reaction/itemCreate`,request)
-        }catch(err){
-          const exception_code=err?.responseJSON?.messages?.error;
-          switch(exception_code){
-              case 'notfound':
-                  this.$flash("Нужно купить товар, чтобы его оценить")
-                  break;
-          }
-          return false
+      async reactionTargetPick(){
+        const targetId=this.productId
+        const targetType='product'
+        const modal = await modalController.create({
+            component: ReactionTargetPicker,
+            componentProps:{targetType,targetId},
+            initialBreakpoint: 0.5,
+            breakpoints: [0.5,0.75, 1],
+            canDissmiss:true,
+        });
+        modal.present()
+        this.$topic.on('dismissModal',()=>modal.dismiss())
+        const target=await modal.onDidDismiss();
+        console.log(target)
+        if(!target.data){
+            return
         }
       },
-      async itemReactionLike(){
-        const request={
-          tagQuery:`product:${this.productId}`,
-          is_like:1
-        }
-        await this.itemReact(request)
-      },
-      async itemReactionDislike(){
-        const request={
-          tagQuery:`product:${this.productId}`,
-          is_dislike:1
-        }
-        await this.itemReact(request)
-      }
+
+
   },
 }
 </script>
