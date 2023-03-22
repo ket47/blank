@@ -36,7 +36,8 @@
 <template>
   <ion-list v-if="isMainLocationSet" @click="selectDeliveryAddress()">
       <ion-item lines="none">
-        <ion-text color="medium">Адрес доставки заказа</ion-text>
+        <ion-text v-if="location_shown.group_name=='Current'" color="medium">Ваше местоположение</ion-text>
+        <ion-text v-else color="medium">Адрес доставки заказа</ion-text>
         <ion-icon slot="end" :icon="chevronDownOutline"/>
       </ion-item>
       <ion-item lines="none">

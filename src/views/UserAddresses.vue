@@ -1,16 +1,43 @@
+<style scoped>
+.is_main{
+    font-weight: bold;
+}
+</style>
 <template>
   <base-layout page-title="Мои адреса" pageDefaultBackLink="/user" ref="UserAddressPage">
+        <ion-card v-if="mainAddress">
+          <ion-card-header>
+            <ion-card-subtitle>
+              Адрес доставки заказа
+            </ion-card-subtitle>
+          </ion-card-header>
+          <ion-card-content>
+            <p>Вы выбрали <b style="color:var(--ion-color-primary)">{{mainAddress.location_address}}</b>, как адрес доставки заказов.</p>
+            <p>Вы сможете заказать из ресторанов и магазинов в пределах радиуса доставки.</p>
+          </ion-card-content>
+        </ion-card>
+        <ion-card v-else>
+          <ion-card-header>
+            <ion-card-subtitle>
+              Адрес не установлен
+            </ion-card-subtitle>
+          </ion-card-header>
+          <ion-card-content>
+            <p>Вы пока не добавили адрес доставки заказа.</p>
+            <p>Для поиска ресторанов и магазинов будет использоваться адрес по умолчанию.</p>
+          </ion-card-content>
+        </ion-card>
+
         <ion-list v-if="locationList.length" lines="full">
           <ion-item v-for="(location,i) in locationList" :key="location.location_id">
               <ion-img slot="start" alt="location icon" :src="`${$heap.state.hostname}/image/get.php/${location.image_hash}.60.60.png`" style="height:24px" />
-              <ion-label @click="locationSetMain(`${location.location_id}`,`${i}`)" style="white-space:normal;cursor:pointer;">{{ location.location_address }}</ion-label>
+              <ion-label @click="locationSetMain(`${location.location_id}`,`${i}`)" style="white-space:normal;cursor:pointer;"  :class="location.is_main==1?'is_main':''">{{ location.location_address }}</ion-label>
               <ion-icon slot="end" :icon="trashOutline" @click="locationDelete(`${location.location_id}`,`${i}`)"></ion-icon>
           </ion-item>
         </ion-list>
         <ion-list v-else lines="full">
-          <ion-item button @click="locationCurrentSet()">
-            <ion-icon slot="start" color="primary" :icon="locationOutline"/>
-            <ion-label color="dark">Ваше местоположение</ion-label>
+          <ion-item>
+            <ion-label color="dark">Адрес доставки заказа не добавлен</ion-label>
           </ion-item>
         </ion-list>
 
@@ -36,11 +63,16 @@ import {
   IonList,
   IonListHeader,
   IonIcon,
+  IonCard,
+  IonCardHeader,
+  IonCardContent,
+  IonCardSubtitle,
   modalController,
+  loadingController,
 }                         from "@ionic/vue";
 import router             from '@/router';
 import heap               from '@/heap';
-import User              from '@/scripts/User.js'
+import User               from '@/scripts/User.js'
 import jQuery             from 'jquery';
 import UserAddressPicker  from '@/components/UserAddressPicker.vue';
 
@@ -56,12 +88,21 @@ export default{
   IonList,
   IonListHeader,
   IonIcon,
+  IonCard,
+  IonCardHeader,
+  IonCardContent,
+  IonCardSubtitle,
   },
   setup(){
     return { locationOutline,trashOutline,addOutline };
   },
   mounted(){
     this.locationListGet();
+  },
+  computed:{
+    mainAddress(){
+      return this.locationList?.find(location=>location.is_main==1)
+    }
   },
   methods:{
     async modalLocationCreate( location_group_id, location_group_name ) {
@@ -157,6 +198,9 @@ export default{
       this.$topic.publish('userMainLocationSet',heap.state.user.location_main)
     },
     async locationDelete( location_id, index ){
+      if(!confirm("Удалить адрес доставки?")){
+        return
+      }
       try{
         this.locationList.splice(index,1);
         await jQuery.post(heap.state.hostname + "User/locationDelete",{location_id})
@@ -164,7 +208,18 @@ export default{
       this.locationListGet();
     },
     async locationCurrentSet(){
-      await User.geo.locationCurrentGet()
+      const loading = await loadingController.create({
+        message: 'Определяем ваше местоположение',
+      });
+      loading.present();
+      try{
+        await User.geo.locationCurrentGet()
+        this.$flash("Ваше местоположение определено")
+      } catch(err){
+        console.log(err)
+        this.$flash("Не удалось получить ваше местоположение")
+      }
+      loading.dismiss();
       router.go(-1)
     }
   },

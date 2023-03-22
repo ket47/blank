@@ -1,16 +1,28 @@
 <template>
     <ion-header>
-        <ion-toolbar color="secondary">
-            <ion-title><ion-icon :icon="locationOutline" /> Добавить адрес</ion-title>
-            <ion-icon :icon="closeOutline" @click="closeModal();" slot="end" size="large"></ion-icon>
+        <ion-toolbar>
+            <ion-item lines="none">
+                <ion-icon :icon="locationOutline" slot="start" />
+                <ion-title>Выбор нового адреса</ion-title>
+                <ion-icon :icon="closeOutline" @click="closeModal();" slot="end" size="large"/>
+            </ion-item>
         </ion-toolbar>
-            <ion-searchbar id="suggest" placeholder="название улицы, номер дома"></ion-searchbar>
-            <ion-button @click="pickAddress" :disabled="!selectedPlacemark" color="primary" expand="full">
+            <ion-button @click="pickAddress()" :disabled="!coords" color="primary" expand="block">
                 Добавить {{location_group_name_low}} адрес
-            </ion-button>
+            </ion-button> 
+
+        <!--<ion-toolbar>
+             <ion-button @click="pickAddress" :disabled="!selectedPlacemark" color="primary" expand="block">
+                Добавить {{location_group_name_low}} адрес
+            </ion-button>             
+        </ion-toolbar>-->
+            
         </ion-header>
   <ion-content>
-        <div id="map" style="width: 100%; height: 100%;"></div>
+    <ion-searchbar id="suggest" placeholder="название улицы, номер дома"/>
+    <yandex-map :coords="coords" :zoom="16" @click="onClick($event)" style="height:100%" :settings="settings">
+        <ymap-marker :coords="coords" marker-id="1" :properties="placemarkProperties"/>
+    </yandex-map>
   </ion-content>
 </template>
 
@@ -23,9 +35,10 @@ import {
     IonHeader,
     IonIcon,
     IonTitle,
+    IonItem,
     modalController
 }                           from "@ionic/vue";
-import { loadYmap }         from "vue-yandex-maps";
+import { yandexMap,ymapMarker,loadYmap }         from "vue-yandex-maps";
 import { locationOutline,closeOutline }  from 'ionicons/icons';
 
 export default({
@@ -36,7 +49,10 @@ export default({
     IonSearchbar,
     IonHeader,
     IonIcon,
-    IonTitle
+    IonTitle,
+    IonItem,
+    yandexMap,
+    ymapMarker,
     },
     setup() {
         const closeModal = function(){
@@ -51,111 +67,73 @@ export default({
     data(){
         let locationType=this.location_group_name_low+" адрес"
         let locSettings=this.$heap.state.settings.location;
+        let mapCenter=JSON.parse(locSettings.mapCenter)
+
         return {
-            mapBoundaries:locSettings.mapBoundaries,
-            mapCenter:locSettings.mapCenter,
+            settings: {
+                apiKey: locSettings.ymapApiKey,
+                lang: "ru_RU",
+                coordorder: "latlong",
+                version: "2.1",
+            },
+            placemarkProperties:{
+                iconCaption:locationType
+            },
             locationType,
-            ymapApiKey:locSettings.ymapApiKey,
-            addressErase:locSettings.addressErase,
+            locSettings,
             selectedPlacemark:0,
             selectedAddress:'',
-            selectedCoords:[]
+            selectedCoords:[],
+            coords: mapCenter
         };
     },
     methods:{
-        pickAddress(){
-            var coords=JSON.parse(JSON.stringify(this.selectedCoords)) || [];
+        async pickAddress(){
+            try{
+                const result=await window.ymaps.geocode(this.coords)
+                this.selectedAddress=result.geoObjects.get(0)?.getAddressLine();
+            } catch(err){
+                console.log(err)
+            }
             var location={
-                location_address:this.clearAddress(this.selectedAddress),
-                location_latitude:coords[0],
-                location_longitude:coords[1],
+                location_address:this.filterAddress(this.selectedAddress),
+                location_latitude:this.coords[0],
+                location_longitude:this.coords[1],
             };
             modalController.dismiss(location);
         },
-        clearAddress( address ){
-            return String(address).replace(this.addressErase,'');
+        filterAddress( address ){
+            const bannedParts=this.locSettings.addressErase.split(', ')
+            const parts=address.split(', ')
+            let filtered=[]
+            for(const part of parts){
+                if(bannedParts.find(pt=>pt==part)){
+                    continue
+                }
+                filtered.push(part)
+            }
+            return filtered.reverse().join(', ')
+        },
+        onClick(e) {
+            this.coords=e.get('coords')
         }
     },
-    async mounted() {
-        var self=this;
-        await loadYmap({
-            apiKey: self.ymapApiKey,
-            lang: 'ru_RU',
-            coordorder: 'latlong',
-            enterprise: false,
-            version: '2.1',
-            center: [55.751574, 37.573856],
-        });
-        var ymaps=window.ymaps;
-
-
-
-
-        var myPlacemark;
-        var myMap = new ymaps.Map('map', {
-            center: self.mapCenter,
-            zoom: 17,
-            controls: []
-        });
-        
-        const geoloc=await ymaps.geolocation.get();
-
-        myMap.setCenter(geoloc.geoObjects.position);
-
-
-
-        self.mapBoundaries = JSON.parse('['+self.mapBoundaries[0]+']');
-
-        var suggestView = new ymaps.SuggestView('suggest',{boundedBy:self.mapBoundaries});
-        suggestView.events.add('select',function(e){
-            self.selectedAddress=e.get('item').displayName;
-            ymaps.geocode(self.selectedAddress).then(function (res) {
-                var coords=res.geoObjects.get(0).geometry.getCoordinates();
-                createPlacemark(coords);
-                myMap.setCenter(coords);
+    async mounted(){
+        await loadYmap();
+        let ymaps=window.ymaps
+        const mapBoundaries = JSON.parse('['+this.locSettings.mapBoundaries[0]+']');
+        const suggestView = new ymaps.SuggestView('suggest',{boundedBy:mapBoundaries});
+        suggestView.events.add('select',(e)=>{
+            this.selectedAddress=e.get('item').displayName;
+            ymaps.geocode(this.selectedAddress).then(res=>{
+                this.coords=res.geoObjects.get(0).geometry.getCoordinates();
             });
         });
-        myMap.events.add('click', function (e) {
-            var coords = e.get('coords');
-            self.selectedCoords=coords;
-            createPlacemark(coords);
-            getAddress(coords);
+        this.$flash("Получаем местоположение устройства")
+        ymaps.geolocation.get().then(res => {
+            this.coords = res.geoObjects.position;
+            this.$flash("На карте отмечено ваше местоположение")
         });
-        function createPlacemark(coords) {
-            self.selectedCoords=coords;
-            self.selectedPlacemark=1;
-            if (myPlacemark) {
-                myPlacemark.geometry.setCoordinates(coords);
-            }
-            else {
-                myPlacemark = new ymaps.Placemark(coords, {
-                    iconCaption: self.locationType
-                }, {
-                    preset: 'islands#violetDotIconWithCaption',
-                    draggable: true
-                });
-                myMap.geoObjects.add(myPlacemark);
-                myPlacemark.events.add('dragend', function () {
-                    self.selectedCoords=myPlacemark.geometry.getCoordinates();
-                    getAddress(self.selectedCoords);
-                });
-            }
-        }
-        function getAddress(coords) {
-            myPlacemark.properties.set('iconCaption', self.locationType);
-            ymaps.geocode(coords).then(function (res) {
-                var firstGeoObject = res.geoObjects.get(0);
-                myPlacemark.properties
-                        .set({
-                            iconCaption: self.locationType,
-                            balloonContent: [
-                                    firstGeoObject.getLocalities().length ? firstGeoObject.getLocalities() : firstGeoObject.getAdministrativeAreas(),
-                                    firstGeoObject.getThoroughfare() || firstGeoObject.getPremise()
-                                ].filter(Boolean).join(', ')
-                        });
-                self.selectedAddress=firstGeoObject.getAddressLine();
-            });
-        }
-    },
+    }
 });
 </script>

@@ -155,7 +155,7 @@ ion-icon{
   <ion-page>
     <ion-tabs>
       <ion-router-outlet></ion-router-outlet>
-      <ion-tab-bar v-if="isMobile" class="bottom-bar" slot="bottom">
+      <ion-tab-bar v-if="isMobile || narrowScreen" class="bottom-bar" slot="bottom">
         <ion-tab-button tab="catalog" href="/catalog" selected>
           <ion-icon :icon="storefrontOutline"/>
           <ion-label><b>Каталог</b></ion-label>
@@ -230,11 +230,11 @@ export default{
     };
   },
   data(){
-
-
     const isMobile= /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(window.navigator.userAgent);
+    const narrowScreen=screen.width<740;
     return {
       isMobile,
+      narrowScreen,
       activeOrderCount:0
     }
   },
@@ -244,6 +244,7 @@ export default{
       self.activeOrderCount=data?.orderActiveCount
     })
     this.activeOrderCount=await Order.api.listCount()
+    addEventListener("resize", (event) => {this.narrowScreen=screen.width<740});
   }
 }
 </script>

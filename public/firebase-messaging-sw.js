@@ -18,11 +18,10 @@ firebase.initializeApp({
 const messaging = firebase.messaging();
 messaging.onBackgroundMessage(async (payload) => {
 
-  // const cl=await clients.matchAll({includeUncontrolled: false, type: 'window'});
-  // if( cl.length ){
-  //   cl.forEach(client => client.postMessage(payload));
-  //   return false;
-  // }
+  const cl=await clients.matchAll({includeUncontrolled: false, type: 'window'});
+  if( cl.length ){
+    cl.forEach(client => client.postMessage(payload));
+  }
   try{
     if(payload.data.body){//if body is set then this is foreground notification!
       const notificationTitle = payload.data.title??'Tezkel'

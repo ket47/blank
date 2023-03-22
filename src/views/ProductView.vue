@@ -74,17 +74,27 @@ ion-accordion-group .accordion-expanding .product-description{
         </ion-item>
 
         <ion-item lines="none">
-          <ion-chip color="medium" v-if="0" @click="reactionTargetPick()">
-            <ion-icon :src="thumbsUpSharp" color="dark"/>
-            <ion-label>2353</ion-label>
+          <ion-chip color="medium" @click="reactionTargetPick()" v-if="0">
+            <ion-icon :src="thumbsUpSharp" :color="productItem.reactionSummary.reaction_is_like==1?'dark':'medium'"/>
+            <ion-label>{{productItem.reactionSummary.sum_is_like??''}}</ion-label>
             <ion-label color="medium">&nbsp;|&nbsp;</ion-label> 
-            <ion-icon :src="thumbsDownSharp" color="dark"/>
+            <ion-icon :src="thumbsDownSharp" :color="productItem.reactionSummary.reaction_is_dislike==1?'dark':'medium'"/>
           </ion-chip>
 
           <ion-chip @click="itemShare()" color="medium">
-            <ion-icon :src="shareSocialOutline"/>
+            <ion-icon :src="arrowRedoOutline"/>
             <ion-label>Поделиться</ion-label>
           </ion-chip>
+        </ion-item>
+
+        <ion-item v-if="0" color="light" lines="none" style="border-radius:10px;margin:10px;" @click="reactionCommentView()">
+          <ion-label position="stacked">
+            <b>Комментарии {{itemCommentCount}}</b>
+          </ion-label>
+          <ion-text style="margin-top:15px;margin-bottom:10px;" color="dark">
+            {{productItem.reactionSummary.last_comment}}
+          </ion-text>
+          <ion-icon :src="chevronDownOutline" slot="end" size="small"/>
         </ion-item>
 
 
@@ -155,12 +165,14 @@ import {
   chatboxEllipsesOutline,
   settingsOutline,
   layersOutline,
-  shareSocialOutline,
+  arrowRedoOutline,
   thumbsUpSharp,
   thumbsDownSharp,
+  chevronDownOutline,
 }                       from 'ionicons/icons'
 
 import {
+  modalController,
   IonTextarea,
   IonListHeader,
   IonText,
@@ -174,7 +186,9 @@ import {
   IonButton,
   IonAvatar,
   IonImg,
-  modalController,
+  IonCard,
+  IonCardContent,
+  IonCardTitle,
 }                       from '@ionic/vue'
 
 import ImageSliderComp  from '@/components/ImageSliderComp'
@@ -184,24 +198,28 @@ import CartHeader       from '@/components/CartHeader'
 import Order            from '@/scripts/Order.js'
 
 import ReactionTargetPicker from '@/components/ReactionTargetPicker.vue'
+import ReactionCommentViewer from '@/components/ReactionCommentViewer.vue'
 
 export default  {
   components: { 
     ImageSliderComp,
     CartAddButtons,
-    IonTextarea,
-    IonListHeader,
-    IonText,
-    IonIcon,
-    IonItem,
-    IonChip,
-    IonLabel,
-    IonList,
-    IonAccordion,
-    IonAccordionGroup,
-    IonButton,
-    IonAvatar,
-    IonImg,
+  IonTextarea,
+  IonListHeader,
+  IonText,
+  IonIcon,
+  IonItem,
+  IonChip,
+  IonLabel,
+  IonList,
+  IonAccordion,
+  IonAccordionGroup,
+  IonButton,
+  IonAvatar,
+  IonImg,
+  IonCard,
+  IonCardContent,
+  IonCardTitle,
   },
   setup(){
     return {
@@ -214,9 +232,10 @@ export default  {
       chatboxEllipsesOutline,
       settingsOutline,
       layersOutline,
-      shareSocialOutline,
+      arrowRedoOutline,
       thumbsUpSharp,
       thumbsDownSharp,
+      chevronDownOutline,
       }
   },
   data() {
@@ -279,6 +298,15 @@ export default  {
     },
     itemDescription(){
       return this.productItem?.product_description?.replace(/<\/?[^>]+(>|$)/g, "").replace(/[\n\r]/g,'<br>')
+    },
+    itemCommentCount(){
+      if(! this.productItem.reactionSummary.sum_comment??0 ){
+        return ''
+      }
+      if(this.productItem.reactionSummary.sum_comment>1000){
+        return Math.round(this.productItem.reactionSummary.sum_comment/100)/10+'k'
+      }
+      return this.productItem.reactionSummary.sum_comment
     }
   },
   methods: {
@@ -337,16 +365,36 @@ export default  {
         const modal = await modalController.create({
             component: ReactionTargetPicker,
             componentProps:{targetType,targetId},
-            initialBreakpoint: 0.5,
-            breakpoints: [0.5,0.75, 1],
+            initialBreakpoint: 0.6,
+            breakpoints: [0.6,0.75, 1],
+            handleBehavior:"cycle",
             canDissmiss:true,
         });
         modal.present()
         this.$topic.on('dismissModal',()=>modal.dismiss())
         const target=await modal.onDidDismiss();
-        console.log(target)
+        this.getProduct()
         if(!target.data){
             return
+        }
+      },
+      async reactionCommentView(){
+        const targetId=this.productId
+        const targetType='product'
+        const targetTitle=this.productItem.product_name
+        const modal = await modalController.create({
+            component: ReactionCommentViewer,
+            componentProps:{targetType,targetId,targetTitle},
+            initialBreakpoint: 0.6,
+            breakpoints: [0.6,0.75, 1],
+            handleBehavior:"cycle",
+            canDissmiss:true,
+        });
+        modal.present()
+        this.$topic.on('dismissModal',()=>modal.dismiss())
+        const target=await modal.onDidDismiss();
+        if(target?.data=='commentAdd'){
+          this.reactionTargetPick()
         }
       },
 

@@ -44,8 +44,8 @@ class Catalog{
         $product=$CatalogModel->productItemGet($product_id);
 
         $context['image_host']='https://api.tezkel.com/image/get.php/';
-        $context['title']="{$product->product_name} на Тезкель";
-        $context['description']="{$product->product_description} Вы можете заказать через Тезкель.";
+        $context['title']="{$product->product_name} из {$product->store_name} на Тезкель";
+        $context['description']="{$product->product_description} из {$product->store_name} Вы можете заказать через Тезкель.";
         $context['product']=$product;
         view('product',$context);
     }

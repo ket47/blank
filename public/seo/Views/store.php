@@ -20,7 +20,11 @@
             <?php foreach($productList as $product): ?>
                 <div class="product-item">
                     <div class="product-right">
-                        <div class="image"><img src="<?=$image_host?>/<?=$product->image_hash?>.150.150.webp" alt="<?=$product->product_name?>"/></div>
+                        <div class="image">
+                            <a href="<?=$image_host?>/<?=$product->image_hash?>.1000.1000.webp" target="_new" title="<?=$product->product_name?>">
+                                <img src="<?=$image_host?>/<?=$product->image_hash?>.150.150.webp" alt="<?=$product->product_name?>"/>
+                            </a>
+                        </div>
                     </div>
                     <div class="product-right">
                         <a href="/catalog/store-<?=$product->store_id ?>">

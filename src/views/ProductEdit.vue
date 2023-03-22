@@ -522,16 +522,15 @@ export default  {
       }catch{/** */}
     },
 
-
-
-
     checkPromoPrice(field_name){
-      if( this.productItem.product_price>0 && this.productItem.product_promo_price>0 && this.productItem.product_price<=this.productItem.product_promo_price ){
+      const promo=parseFloat(this.productItem.product_promo_price)
+      const price=parseFloat(this.productItem.product_price)
+      if( price>0 && promo>0 && price<=promo ){
         if(field_name=='product_promo_price'){
-          this.productItem.product_price=Number(this.productItem.product_promo_price)+1;
+          this.productItem.product_price=promo+1;
         }
         if(field_name=='product_price'){
-          this.productItem.product_promo_price=Number(this.productItem.product_price)-1;
+          this.productItem.product_promo_price=price-1;
         }
         const request = {
           product_id:this.productId,

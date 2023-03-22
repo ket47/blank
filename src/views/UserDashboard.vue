@@ -410,7 +410,7 @@ export default {
     },
     toLocDateTime( iso ){
         const event = new Date(Date.parse(iso));
-        const options = { month: 'short', day: 'numeric',hour:'numeric', hc:'h24', minute:'numeric',year:'numeric',timeZone:'Europe/Kyiv' };
+        const options = { month: 'short', day: 'numeric',hour:'numeric', hc:'h24', minute:'numeric',year:'numeric' };//,timeZone:'Europe/Kyiv' not supported on safari
         return event.toLocaleDateString('ru-RU', options);
     },
   },

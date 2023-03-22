@@ -266,6 +266,7 @@ export default({
             termsAccepted:1,
             storeIsReady:0,
             errNotfound:0,
+            errTooFar:0,
 
             paymentType:'use_card',
             bankCard:null,
@@ -291,14 +292,17 @@ export default({
             if(this.order_sum_total<=10){
                 return `Сумма к оплате слишком маленькая`
             }
+            if( this.errTooFar==1 ){
+                return "Адрес доставки заказа вне зоны обслуживания"
+            }
+            if( this.errNotfound==1 ){
+                return `Заказ удален`
+            }
             if( this.storeIsReady==0 ){
                 return `К сожалению, ${this.order?.store?.store_name||'продавец'} не готов к заказам`
             }
             if( this.termsAccepted==0 ){
                 return `К сожалению, мы не можем доставить вам заказ, без согласия с условиями`
-            }
-            if( this.errNotfound==1 ){
-                return `Заказ удален`
             }
             if( this.tariffRule.deliveryByCourier==1 && this.tariffRule.deliveryIsReady==0 ){
                 return `К сожалению, нет доступных курьеров`;
@@ -367,17 +371,17 @@ export default({
                 this.promo=bulkResponse.Promo_itemLinkGet
                 this.promoCount=bulkResponse.Promo_listGet
                 this.storeIsReady=Array.isArray(bulkResponse.Store_deliveryOptions)?1:0
+                this.errTooFar=0
                 this.bankCard=bulkResponse?.bankCard;
                 this.tariffRuleList=bulkResponse.Store_deliveryOptions
                 this.tariffRuleSet(this.tariffRuleList[0]||{})
             }
             catch(err){
-                const exception=err?.responseJSON;
-                if(!exception){
-                  return false;
-                }
-                const exception_code=exception.messages.error;
+                const exception_code=err?.responseJSON?.messages?.error;
                 switch(exception_code){
+                    case 'too_far':
+                        this.errTooFar=1
+                        break;
                     case 'not_ready':
                     case 'no_tariff':
                         this.storeIsReady=0

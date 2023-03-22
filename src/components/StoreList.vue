@@ -247,6 +247,7 @@ export default {
     return {
       storeList: null,
       can_reload_at:0,
+      loadedLocation:{}
     };
   },
   computed: {
@@ -262,27 +263,24 @@ export default {
     }
   },
   methods: {
-    async listGet() {
-      let main_address = heap.state.user.location_main
-      if (!main_address) {
-        return;
-      }
-      let location={location_id: main_address.location_id}
-      if( main_address.is_default==1 && heap.state.user.location_current ){
-        location={
-          location_latitude: heap.state.user.location_current.location_latitude,
-          location_longitude:heap.state.user.location_current.location_longitude
-          }
-      }
+    async listNearGet(loc) {
       const now=Date.now()
-      if(this.can_reload_at>now){
+      if(loc?.location_latitude!=this.loadedLocation.location_latitude || loc?.location_latitude!=this.loadedLocation.location_latitude){
+        this.can_reload_at=0
+      }
+      if( this.can_reload_at>now ){
         return
       }
-      this.can_reload_at=now+2000
-
+      this.can_reload_at=now+10000
       try{
+        const location={
+          location_id:loc.location_id,
+          location_latitude:loc.location_latitude,
+          location_longitude:loc.location_longitude,
+        }
         const found=await jQuery.post(heap.state.hostname + "Store/listNearGet", location)
         this.storeList=this.storeListCalculate(found)
+        this.loadedLocation=location
       }catch{/** */}
     },
     storeListCalculate(found){
@@ -293,18 +291,13 @@ export default {
     },
   },
   mounted(){
-    this.$topic.on('userGet',()=>{
-      //this.listGet();
-    }) 
     this.$topic.on('userMainLocationSet',loc=>{
-      this.can_reload_at=0
-      this.listGet();
+      this.listNearGet(loc);
     })
     this.$topic.on('userCurrentLocationSet',loc=>{
-      this.can_reload_at=0
-      this.listGet();
+      this.listNearGet(loc);
     })
-    this.listGet();
+    this.listNearGet(heap.state.user.location_main);
   }
 };
 </script>

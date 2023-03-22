@@ -16,7 +16,7 @@
         </ion-card-content>        
       </ion-card>
 
-      <ion-item v-if="permission=='notsupported'" lines="none">
+      <ion-item v-if="permission=='notsupported' && 0" lines="none">
         <ion-icon :src="notificationsOffOutline" color="primary" slot="start"/>
         Уведомления не поддерживаются этим устройством.
       </ion-item>

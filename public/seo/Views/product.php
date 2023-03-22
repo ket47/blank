@@ -7,7 +7,7 @@
                 <div class="store-name"><?=$product->store_name?></div>
             </a>
             <div class="name">
-                <h1>Купить <?=$product->product_name?></h1>
+                <h1>Купить <?=$product->product_name?> из <?=$product->store_name?></h1>
             </div>
             <div class="barcode">Штрихкод: <?=$product->product_barcode?></div>
             <div class="description"><?=$product->product_description?></div>

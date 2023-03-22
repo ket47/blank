@@ -11,8 +11,9 @@
 import HomeSlider                 from "@/components/HomeSlider";
 import StoreList                  from "@/components/StoreList";
 import UserAddressWidget          from "@/components/UserAddressWidget";
-import GeoPermissionComp          from "@/components/GeoPermissionComp";
 import mainLogo                   from "@/assets/icons/tezkel_logo.svg";
+
+import User                       from "@/scripts/User.js"
 
 export default {
   setup() {
@@ -32,7 +33,8 @@ export default {
     }
   },
   ionViewDidEnter(){
-    this.$refs.homeStoreList.listGet();
+    User.geo.switch();
+    //this.$refs.homeStoreList.listGet();
   }
 };
 </script>

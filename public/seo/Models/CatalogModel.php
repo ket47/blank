@@ -25,7 +25,7 @@ class CatalogModel{
             FROM
                 store_list
                     LEFT JOIN
-                location_list ON location_holder='store' AND location_holder_id=store_id
+                location_list ON location_holder='store' AND location_holder_id=store_id AND location_list.deleted_at IS NULL
                     LEFT JOIN
                 image_list ON image_holder='store' AND image_holder_id=store_id AND image_list.is_main=1
             WHERE
@@ -50,6 +50,7 @@ class CatalogModel{
             WHERE
                 store_list.is_disabled=0
                 AND store_list.deleted_at IS NULL
+                AND location_list.deleted_at IS NULL
         ";
         $count=$this->db->query($sql)->row();
 
@@ -94,31 +95,33 @@ class CatalogModel{
         $limit=$filter['limit']?$this->db->esc($filter['limit']):12;
         $offset=($filter['page']??0)*$limit;
 
-        $store_case=isset($filter['store_id'])?"AND store_id='{$filter['store_id']}'":'';
+        $store_case=isset($filter['store_id'])?"AND pl.store_id='{$filter['store_id']}'":'';
 
         $sql="
             SELECT
-                product_id,
-                product_name,
-                product_description,
-                product_barcode,
-                store_id,
+                pl.product_id,
+                CONCAT(COALESCE(pl_parent.product_name,pl.product_name),' ',COALESCE(pl.product_option,'')) product_name,
+                COALESCE(pl_parent.product_description,pl.product_description) product_description,
+                pl.product_barcode,
+                pl.store_id,
                 store_name,
-                product_price,
-                ROUND(IF(IFNULL(`product_promo_price`,0)>0 AND `product_price`>`product_promo_price` AND `product_promo_start` < NOW() AND `product_promo_finish` > NOW(),`product_promo_price`,`product_price`)) product_final_price,
+                pl.product_price,
+                ROUND(IF(IFNULL(`pl`.`product_promo_price`,0)>0 AND `pl`.`product_price`>`pl`.`product_promo_price` AND `pl`.`product_promo_start` < NOW() AND `pl`.`product_promo_finish` > NOW(),`pl`.`product_promo_price`,`pl`.`product_price`)) product_final_price,
                 image_hash,
-                product_list.updated_at
+                pl.updated_at
             FROM
-                product_list
+                product_list pl
                     LEFT JOIN
-                store_list USING(store_id)
+                product_list pl_parent ON pl.product_parent_id=pl_parent.product_id
                     LEFT JOIN
-                image_list ON image_holder='product' AND image_holder_id=product_id AND image_list.is_main=1
+                store_list ON store_list.store_id=pl.store_id
+                    LEFT JOIN
+                image_list ON image_holder='product' AND image_holder_id=COALESCE(pl_parent.product_id,pl.product_id) AND image_list.is_main=1
             WHERE
-                product_list.is_disabled=0
-                AND product_list.deleted_at IS NULL
+                pl.is_disabled=0
+                AND pl.deleted_at IS NULL
                 $store_case
-            ORDER BY product_list.updated_at DESC
+            ORDER BY pl.updated_at DESC
             LIMIT $limit OFFSET $offset
         ";
         return $this->db->query($sql)->rows();
@@ -165,6 +168,31 @@ class CatalogModel{
                 product_list.is_disabled=0
                 AND product_list.deleted_at IS NULL
                 AND product_id=$product_id
+        ";
+        $sql="
+            SELECT
+                pl.product_id,
+                CONCAT(COALESCE(pl_parent.product_name,pl.product_name),' ',COALESCE(pl.product_option,'')) product_name,
+                COALESCE(pl_parent.product_description,pl.product_description) product_description,
+                pl.product_barcode,
+                pl.store_id,
+                store_name,
+                pl.product_price,
+                ROUND(IF(IFNULL(`pl`.`product_promo_price`,0)>0 AND `pl`.`product_price`>`pl`.`product_promo_price` AND `pl`.`product_promo_start` < NOW() AND `pl`.`product_promo_finish` > NOW(),`pl`.`product_promo_price`,`pl`.`product_price`)) product_final_price,
+                image_hash,
+                pl.updated_at
+            FROM
+                product_list pl
+                    LEFT JOIN
+                product_list pl_parent ON pl.product_parent_id=pl_parent.product_id
+                    LEFT JOIN
+                store_list ON store_list.store_id=pl.store_id
+                    LEFT JOIN
+                image_list ON image_holder='product' AND image_holder_id=COALESCE(pl_parent.product_id,pl.product_id) AND image_list.is_main=1
+            WHERE
+                pl.is_disabled=0
+                AND pl.deleted_at IS NULL
+                AND pl.product_id=$product_id
         ";
         return $this->db->query($sql)->row();        
     }
