@@ -219,7 +219,7 @@ const User = {
                 Topic.publish('userCurrentLocationSet',lastStoredPosition)
                 this.trackingStart()
             } else
-            if( location_main.group_name=='Current' ){//load app's default location
+            if( location_main?.group_name=='Current' ){//load app's default location
                 heap.commit('setUserCurrentLocation', location_main)
                 Topic.publish('userCurrentLocationSet',location_main)
                 this.trackingStart()
