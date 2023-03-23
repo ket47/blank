@@ -167,54 +167,59 @@ const routes = [
         path: '/order/order-:id',
         component: () => import('@/views/OrderView.vue')
       },
+
+
+
+
+          
+      {
+        path: '/page/about-us',
+        component: () => import('@/views/AboutUs.vue')
+      },
+      {
+        path: '/page/supplier-guide',
+        component: () => import('@/views/SupplierGuide.vue')
+      },
+      {
+        path: '/page/:id',
+        component: () => import('@/views/TextPageView.vue')
+      },
+      {
+        path: '/error-offline',
+        component: () => import('@/views/ErrorOffline.vue')
+      },
+
+
+
+      
+      {
+        path: '/admin/transaction-edit-:id',
+        component: () => import('@/views/admin/TransactionEdit.vue')
+      },
+      {
+        path: '/admin/accounting',
+        component: () => import('@/views/admin/AccountingView.vue')
+      },
+      {
+        path: '/admin/list-moderation',
+        component: () => import('@/views/admin/ListModeration.vue')
+      },
+      {
+        path: '/admin/text-list',
+        component: () => import('@/views/TextListView.vue')
+      },
+      {
+        path: '/admin/tariff-list',
+        component: () => import('@/views/AdminTariffList.vue')
+      },
+      {
+        path: '/catalog/store-:id/menu',
+        component: () => import('@/views/StoreMenu.vue')
+      },
   ]
   },
   
 
-  {
-    path: '/page/about-us',
-    component: () => import('@/views/AboutUs.vue')
-  },
-  {
-    path: '/page/supplier-guide',
-    component: () => import('@/views/SupplierGuide.vue')
-  },
-  {
-    path: '/page/:id',
-    component: () => import('@/views/TextPageView.vue')
-  },
-  {
-    path: '/error-offline',
-    component: () => import('@/views/ErrorOffline.vue')
-  },
-
-
-
-  
-  {
-    path: '/admin/transaction-edit-:id',
-    component: () => import('@/views/admin/TransactionEdit.vue')
-  },
-  {
-    path: '/admin/accounting',
-    component: () => import('@/views/admin/AccountingView.vue')
-  },
-  {
-    path: '/admin/list-moderation',
-    component: () => import('@/views/admin/ListModeration.vue')
-  },
-  {
-    path: '/admin/text-list',
-    component: () => import('@/views/TextListView.vue')
-  },
-  {
-    path: '/admin/tariff-list',
-    component: () => import('@/views/AdminTariffList.vue')
-  },
-  {
-    path: '/catalog/store-:id/menu',
-    component: () => import('@/views/StoreMenu.vue')
-  },
   {
     path: '/:catchAll(.*)',
     redirect: homePath

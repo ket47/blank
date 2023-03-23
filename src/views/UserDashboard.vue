@@ -7,16 +7,13 @@ ion-icon{
   <base-layout page-title="Личный кабинет">
     <div class="user-dashboard-header">
       <ion-list>
-        <ion-item v-if="isSignedIn" lines="full" class="avatar-row">
+        <ion-item v-if="isSignedIn" lines="full" class="avatar-row" @click="$router.push('/user/user-edit')" button>
           <ion-avatar slot="start">
             <ion-img v-if="user.user_avatar_name" :src="$heap.state.hostname +'img/avatar/' +user.user_avatar_name +'.png'"/>
+            <ion-icon v-else :icon="personCircleOutline" color="primary" size="large"></ion-icon>
           </ion-avatar>
           <ion-label>{{ user.user_name }}</ion-label>
-          <ion-label slot="end">
-            <router-link class="section-button" to="/user/user-edit" slot="end">
-              <ion-icon :icon="settingsOutline"></ion-icon>
-            </router-link>
-          </ion-label>
+          <ion-icon :icon="settingsOutline" color="primary" slot="end"></ion-icon>
         </ion-item>
         <!--<ion-item v-if="user.user_phone" lines="full">
           <ion-icon slot="start" :icon="callOutline" color="primary" />

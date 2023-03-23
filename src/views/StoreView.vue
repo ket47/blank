@@ -305,7 +305,7 @@ ion-chip .active-chip {
                 <ion-label color="medium">Телефон</ion-label>
                 <ion-text color="dark">{{storeItem.store_phone}}</ion-text>
               </ion-item>
-              <ion-item lines="none" v-if="storeItem.locations">
+              <ion-item lines="none" v-if="storeItem.locations?.length>0">
                 <ion-text color="dark">{{storeItem.locations?.[0].location_address}}</ion-text>
               </ion-item>
             </ion-list>
@@ -681,10 +681,7 @@ export default{
       //this.productListPrepare(response.product_list);
 
       this.groupOtherAdd()
-      let self=this
-      setTimeout(()=>{
-        self.groupSelect();
-      }, 0)
+      setTimeout(()=>{this.groupSelect()}, 0)
     },
     // productListPrepare(product_list) {
     //   let category_order=1
