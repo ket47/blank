@@ -35,11 +35,6 @@
               <ion-icon slot="end" :icon="trashOutline" @click="locationDelete(`${location.location_id}`,`${i}`)"></ion-icon>
           </ion-item>
         </ion-list>
-        <ion-list v-else lines="full">
-          <ion-item>
-            <ion-label color="dark">Адрес доставки заказа не добавлен</ion-label>
-          </ion-item>
-        </ion-list>
 
         <ion-list>
           <ion-list-header>
@@ -106,9 +101,10 @@ export default{
   },
   methods:{
     async modalLocationCreate( location_group_id, location_group_name ) {
-      if(!heap.state.user.user_id){
-        this.$flash('Чтобы добавленные адреса сохранились, пожалуйста войдите в систему');
-        router.push('/user/sign-in');
+      if(!heap.getters.userIsLogged){
+        if( confirm('Чтобы добавленный адрес сохранился, необходимо авторизироваться') ){
+          router.push('/user/sign-in');
+        }
         return;
       }
       var location_group_name_low=String(location_group_name).toLowerCase();

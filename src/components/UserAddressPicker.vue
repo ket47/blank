@@ -8,7 +8,8 @@
             </ion-item>
         </ion-toolbar>
             <ion-button @click="pickAddress()" :disabled="!coords" color="primary" expand="block">
-                Добавить {{location_group_name_low}} адрес
+                <ion-icon :src="checkmark" slot="start"/>
+                Ок
             </ion-button> 
 
         <!--<ion-toolbar>
@@ -39,7 +40,7 @@ import {
     modalController
 }                           from "@ionic/vue";
 import { yandexMap,ymapMarker,loadYmap }         from "vue-yandex-maps";
-import { locationOutline,closeOutline }  from 'ionicons/icons';
+import { locationOutline,closeOutline,checkmark }  from 'ionicons/icons';
 
 export default({
     components: {
@@ -58,7 +59,7 @@ export default({
         const closeModal = function(){
             modalController.dismiss();
         };
-        return { closeModal, locationOutline,closeOutline };
+        return { closeModal, locationOutline,closeOutline,checkmark };
     },
     props: {
 		location_group_name_low: String,
@@ -115,6 +116,9 @@ export default({
             return filtered.reverse().join(', ')
         },
         onClick(e) {
+            if( !e || !e.get ){
+                return
+            }
             this.coords=e.get('coords')
         }
     },

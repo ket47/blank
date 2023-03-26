@@ -17,21 +17,10 @@
 </style>
 <template>
     <base-layout :pageTitle="`Оформление заказа`" pageDefaultBackLink="/order/order-list">
-        <user-address-widget :deliveryTime="deliveryTime" showComment="1"></user-address-widget>
+        <order-checkout-address :deliveryTime="deliveryTime" deliveryAddressOnly="1" showComment="1" :nextRoute="`/order/order-checkout-${order_id}`"></order-checkout-address>
 
         <ion-list v-if="order">
             <ion-item-divider>Заказ #{{order?.order_id}} из "{{order?.store?.store_name}}"</ion-item-divider>
-            <!--
-            <ion-item>
-                <ion-icon :icon="ordersIcon" slot="start" color="primary"></ion-icon>
-                Номер 
-                <ion-text slot="end">#{{order?.order_id}}</ion-text>
-            </ion-item>            
-            <ion-item>
-                <ion-icon :icon="storefrontOutline" slot="start" color="primary"></ion-icon>
-                Из "{{order?.store?.store_name}}"
-            </ion-item>
-            --> 
             <ion-item>
                 <ion-textarea rows="2" placeholder="комментарий к заказу" @change="orderDescriptionChanged()" v-model="order.order_description"></ion-textarea>
             </ion-item>
@@ -217,13 +206,13 @@ import {
     IonImg,
     IonLabel,
 }                               from "@ionic/vue";
-import UserAddressWidget        from '@/components/UserAddressWidget.vue';
+import OrderCheckoutAddress     from '@/components/OrderCheckoutAddress.vue';
 import OrderPaymentCardModal    from '@/components/OrderPaymentCardModal.vue';
 import PromoPickerComp          from '@/components/PromoPickerComp.vue'
 
 export default({
     components: { 
-    UserAddressWidget,
+    OrderCheckoutAddress,
     IonTextarea,
     IonItemDivider,
     IonIcon,
@@ -294,6 +283,9 @@ export default({
             }
             if( this.errTooFar==1 ){
                 return "Адрес доставки заказа вне зоны обслуживания"
+            }
+            if(this.$heap.state.user?.location_main?.is_default==1){
+                return `Нужно указать адрес, куда доставить заказ`;
             }
             if( this.errNotfound==1 ){
                 return `Заказ удален`
@@ -419,7 +411,7 @@ export default({
             Order.api.itemUpdate(request);
         },
         async proceed(){
-            if( !await this.multipleAdressesConfirm() ){
+            if( !await this.deliveryAddressConfirm() ){
                 return
             }
             const orderData={
@@ -541,7 +533,33 @@ export default({
                 }
             }
         },
-        async multipleAdressesConfirm(){
+        // async deliveryAddressCheck(){
+        //     if( heap.state?.user?.location_main && heap.state.user.location_main.is_default!=1 && heap.state.user.location_main.group_name!='Current' ){
+        //         return true
+        //     }
+        //     const alert = await alertController.create({
+        //         header: 'Нет адреса доставки',
+        //         message:"Нам нужно знать точный адрес, куда доставить заказ. ",
+        //         buttons: [
+        //           {
+        //             text: 'Изменить',
+        //             role: 'cancel',
+        //           },
+        //           {
+        //             text: 'Верно',
+        //             role: 'confirm',
+        //           },
+        //         ],
+        //     });
+        //     await alert.present();
+        //     const { role } = await alert.onDidDismiss();
+        //     if( role=='confirm' ){
+        //         return true
+        //     }
+        //     this.$router.push('/user/user-addresses');
+        //     return false
+        // },
+        async deliveryAddressConfirm(){
             const alert = await alertController.create({
                 header: 'Адрес доставки',
                 message:this.$heap.state.user.location_main.location_address,

@@ -108,7 +108,7 @@ export default {
             for(let item of this.items){
                 item.image_hash=item.image_hash||item.courier_photo_image_hash
                 item.item_id=item.image_id||item.store_id||item.courier_id||item.product_id
-                item.item_name=this.holders[item.image_holder]||item.store_name||item.user_name||item.product_name
+                item.item_name=this.holders[item.image_holder]||(item.store_name??item.store_name_new)||item.user_name||item.product_name
                 item.date_time=this.toLocDateTime(item.updated_at)
                 item.class=item.deleted_at?'deleted':''
             }

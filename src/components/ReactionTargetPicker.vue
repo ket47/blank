@@ -27,8 +27,8 @@
   </ion-header>
   <ion-content>
 
-    <ion-backdrop :visible="commentCurrent?true:false"></ion-backdrop>
-    <div class="commentEdit" v-if="commentCurrent">
+    <!-- <ion-backdrop :visible="commentCurrent"></ion-backdrop> -->
+    <div class="commentEdit" v-if="commentCurrent?true:false">
         <ion-item lines="none">
             <ion-textarea
             rows="1"

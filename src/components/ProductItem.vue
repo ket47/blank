@@ -37,7 +37,7 @@
     border: 4px solid #666;
 }
 .promo .product_list_item_img{
-    border: 4px solid green;
+    /** */
 }
 </style>
 <template>
@@ -50,6 +50,7 @@
             <div style="position:relative;top:-50%;" v-if="productItem.is_disabled=='0' && !productItem.deleted_at">
                 <cart-add-buttons buttonLayout="vertical" :productItem="productItem"></cart-add-buttons>
             </div> 
+            <ion-chip v-if="discount<0" style="position:absolute;right:0px;top:0px;background-color:var(--ion-color-success-tint)" outline color="success">{{discount}}%</ion-chip>
             <ion-img class="blur-image" :src="`${$heap.state.hostname}image/get.php/${productItem.image_hash}.200.200.webp`"/>
             <ion-img @click="$router.push(`/catalog/product-${productItem.product_id}`)" :src="`${$heap.state.hostname}image/get.php/${productItem.image_hash}.200.200.webp`"/>
             <ion-icon v-if="productItem.options" :src="layersOutline" color="primary" size="large" style="position:absolute;bottom:3px;right:3px"/>
@@ -76,6 +77,7 @@
 import {
   IonImg,
   IonIcon,
+  IonChip,
 }                       from '@ionic/vue'
 import CartAddButtons   from '@/components/CartAddButtons';
 import { 
@@ -85,6 +87,7 @@ export default {
     components:{
         IonImg,
         IonIcon,
+        IonChip,
         CartAddButtons,
     },
     props:['productItem'],
@@ -106,6 +109,9 @@ export default {
                 return 'absent'
             }
             return ''
+        },
+        discount(){
+            return Math.round(this.productItem.product_final_price/this.productItem.product_price*100-100)
         },
         weight_in_gramms(){
             return this.productItem.product_weight*1000

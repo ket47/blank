@@ -301,7 +301,7 @@ ion-chip .active-chip {
                 <ion-label color="medium">ИНН</ion-label>
                 <ion-text color="dark">{{storeItem.store_tax_num}}</ion-text>
               </ion-item>
-              <ion-item lines="none" v-if="storeItem.store_phone">
+              <ion-item lines="none" v-if="storeItem.store_phone&&0">
                 <ion-label color="medium">Телефон</ion-label>
                 <ion-text color="dark">{{storeItem.store_phone}}</ion-text>
               </ion-item>
@@ -453,6 +453,9 @@ ion-chip .active-chip {
     <ion-label v-else-if="searchQuery">
       К сожалению, в <b>{{storeItem.store_name}}</b> по запросу <b>"{{searchQuery}}"</b> ничего не найдено. <ion-chip @click="this.searchQuery=null">Сбросить фильтр</ion-chip>
     </ion-label>
+    <ion-label v-else-if="productListIsEmpty">
+      К сожалению, в <b>{{storeItem.store_name}}</b> пока нет доступных товаров.
+    </ion-label>
     <div v-else-if="!storeGroupsFiltered">
       <h4 style="margin: 8px 16px;"><b><ion-skeleton-text style="height:30px;width:150px"></ion-skeleton-text></b></h4>
       <div>
@@ -564,6 +567,7 @@ export default{
       storeItem: [],
       //storeProducts: {},
       productList:[],
+      productListIsEmpty:0,
       storeGroups: null,
       groupSelectedParentId: -1,
       sliderMaxHeight: 500,
@@ -675,6 +679,7 @@ export default{
       let response={};
       try{
         response=await jQuery.post(heap.state.hostname + "Product/listGet", filter)
+        this.productListIsEmpty=response?.product_list?.length>0?0:1
       }catch(err){/** */}
       this.productList=response.product_list
 
@@ -748,7 +753,7 @@ export default{
         })
       }
     },
-    groupSelect(){
+    groupSelect(){//if there is parameter in route then scrollto category
       let parent_group_id=this.query.parent_group_id
       let sub_group_id=this.query.sub_group_id
       if( sub_group_id ){
@@ -822,12 +827,14 @@ export default{
       this.groupSelectParent(parent_groud_id,1)
     },
     groupSliderAdjustHeight(){
-      const sliderContentHeight=document.querySelector('.product-list-slider .swiper-slide.swiper-slide-active')?.scrollHeight
-      if(sliderContentHeight>0){
-        document.querySelector('.product-list-slider.swiper').style.maxHeight=sliderContentHeight+'px'
-      } else {
-        document.querySelector('.product-list-slider.swiper').style.maxHeight=''
-      }
+      try{
+        const sliderContentHeight=document.querySelector('.product-list-slider .swiper-slide.swiper-slide-active')?.scrollHeight
+        if(sliderContentHeight>0){
+          document.querySelector('.product-list-slider.swiper').style.maxHeight=sliderContentHeight+'px'
+        } else {
+          document.querySelector('.product-list-slider.swiper').style.maxHeight=''
+        }
+      }catch{/** */}
     },
     // scrollTo(sub_group_id) {
     //   if (!this.$refs["group-" + sub_group_id]?.[0] ) {

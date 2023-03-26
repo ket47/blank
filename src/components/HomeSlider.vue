@@ -1,6 +1,12 @@
 <template>
-      <swiper :modules="modules" :autoplay='{delay: 6000, disableOnInteraction: false}' :loop="true" class="home-swiper">
-        <swiper-slide v-for="hslide in home_slides" :key="hslide.title" :style="`background-color:${hslide.color};`">
+      <swiper 
+        :modules="modules" 
+        :autoplay='{delay: 6000, disableOnInteraction: false}' 
+        :loop="true" 
+        class="home-swiper">
+        <swiper-slide v-for="hslide in home_slides" :key="hslide.title" 
+          :style="`background-color:${hslide.color};`"
+          @click="go(hslide.link)">
           <ion-img :src="hslide.image" class="home_slide_img" :alt="hslide.alt"/>
           <div class="home_slide">
             <h1 style="font-size:3em">{{hslide.title}}</h1>
@@ -60,15 +66,20 @@
         this.getSlideList();
     },
     methods: {
-        getSlideList(){
-            var self = this;
-            jQuery.get( "/assets/homeslider/conf.json")
-            .done(function(response) {
-              self.home_slides=response.slides;
-            })
-            .fail(function(err) {
-                self.error = err.responseJSON.messages.error;
-            });
+        async getSlideList(){
+          try{
+            const response=await jQuery.get( "/assets/homeslider/conf.json")
+            this.home_slides=response.slides
+          }catch{
+            /** */
+          }
+        },
+        go(link){
+          console.log(link)
+          if(!link){
+            return
+          }
+          this.$router.push(link)
         }
     },
   });

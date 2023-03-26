@@ -3,6 +3,22 @@
         {
             "title":"",
             "description":"",
+            "alt":"Ифтар меню",
+            "image":"/assets/homeslider/iftar_banner_aladdin.jpg",
+            "color":"#009dcd",
+            "link":"/catalog/store-62"
+        },
+        {
+            "title":"",
+            "description":"",
+            "alt":"Ифтар меню",
+            "image":"/assets/homeslider/iftar_banner_osman.jpg",
+            "color":"#009dcd",
+            "link":"/catalog/store-45"
+        },
+        {
+            "title":"",
+            "description":"",
             "alt":"Отдыхай и покупай",
             "image":"/assets/homeslider/1.jpg",
             "color":"#009dcd",
