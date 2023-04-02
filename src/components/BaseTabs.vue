@@ -184,7 +184,6 @@ ion-icon{
             </div>
           </div>
         </div>
-
       </ion-tab-bar>
     </ion-tabs>
   </ion-page>

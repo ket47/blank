@@ -103,7 +103,7 @@ export default{
     async modalLocationCreate( location_group_id, location_group_name ) {
       if(!heap.getters.userIsLogged){
         if( confirm('Чтобы добавленный адрес сохранился, необходимо авторизироваться') ){
-          router.push('/user/sign-in');
+          this.$go('/user/sign-in');
         }
         return;
       }

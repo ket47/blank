@@ -5,7 +5,7 @@
 }
 </style>
 <template>
-  <base-layout page-title="Поиск товаров">
+  <base-layout page-title="Поиск товаров" hideBackLink="true">
     <ion-searchbar class="search-container" v-model="query" @input="delayedListGet()" placeholder="начните искать"></ion-searchbar>
     <div v-if="found">
       <ion-title>Найденные товары</ion-title>
@@ -128,7 +128,8 @@ export default  {
         query:this.query,
         in_products:1,
         in_stores:0,
-        location_id:this.locMainGet()
+        location_id:this.locMainGet(),
+        limit:3
       }
       if(!request.location_id){
         return

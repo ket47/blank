@@ -103,6 +103,12 @@ const alert = async (message:string,title:string)=>{
 const go = async (route:string)=>{
   const chunks=route.split('/')
   if(chunks?.[1] && chunks?.[2]){
+
+    // if(history.state.current==`/${chunks[1]}`){
+    //   console.log('sammmmmme')
+    // }
+
+
     await router.push(`/${chunks[1]}`)
   }
   router.push(route)

@@ -1,5 +1,5 @@
 <template>
-  <base-layout :pageLogo="mainLogo">
+  <base-layout :pageLogo="mainLogo" hideBackLink="true">
       <home-slider/>
       <user-address-widget :deliveryTime="primaryDeliveryTime"/>
       <!-- <home-primary-category-widget @deliveryTimeGet="deliveryTime=>{primaryDeliveryTime=deliveryTime}"/> -->

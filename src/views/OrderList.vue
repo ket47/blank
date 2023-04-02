@@ -1,5 +1,5 @@
 <template>
-  <base-layout page-title="Заказы">
+  <base-layout page-title="Заказы" hideBackLink="true">
         <ion-segment swipe-gesture="true" v-model="orderType" @ionChange="listTypeChanged($event)">
             <ion-segment-button value="jobs" v-if="courierJobsInclude">
                 Задания
@@ -114,7 +114,6 @@ import ordersIcon   from "@/assets/icons/orders.svg";
 import Order        from '@/scripts/Order.js';
 import User         from '@/scripts/User.js';
 import Topic        from '@/scripts/Topic.js';
-import router       from '@/router';
 import CourierJobPreview    from '@/components/CourierJobPreview.vue';
 
 export default {
@@ -312,7 +311,7 @@ export default {
             this.itemOpen(order.order_id);
         },
         itemOpen(order_id){
-            router.push(`/order/order-${order_id}`);
+            this.$go(`/order/order-${order_id}`);
         }
     }
 }

@@ -20,6 +20,21 @@
       </ion-refresher>
 
       <slot />
+
+
+
+      <div v-if="iosInstallPromptShow" class="installPrompt">
+        <div>
+          Установите это приложение на iPhone: <br/> 
+          - нажмите <ion-icon :src="shareOutline" color="primary" size="large" /> и потом <br/> 
+          - На экран «Домой» <ion-icon :src="addCircleOutline" size="large" color="light" />
+        </div>
+        <div>
+          <ion-icon :src="closeOutline" style="float:right" size="large" color="medium" @click="iosInstallPromptDissmiss()" />
+        </div>
+      </div>
+
+
       <div style="height:30px"><!--spacer for bottom main tabs--></div>
       <ion-fab v-if="isInteractingWithServer" vertical="bottom" slot="fixed">
         <tezkel-loader/>
@@ -51,6 +66,9 @@ import TezkelLoader         from "@/components/TezkelLoader.vue"
 import {
   arrowBackOutline,
   chevronBackOutline,
+  closeOutline,
+  shareOutline,
+  addCircleOutline,
 }                           from "ionicons/icons";
 
 export default defineComponent({
@@ -58,6 +76,7 @@ export default defineComponent({
     "pageTitle",
     "pageLogo",
     "pageDefaultBackLink",
+    "hideBackLink",
     "errorMessage",
     "pageClass",
     "cartComponent",
@@ -80,8 +99,16 @@ export default defineComponent({
   },
   setup(){
     return {
-  arrowBackOutline,
-  chevronBackOutline,
+      arrowBackOutline,
+      chevronBackOutline,
+      closeOutline,
+      shareOutline,
+      addCircleOutline,
+    }
+  },
+  data(){
+    return {
+      isIosPromptDisssmissed:localStorage.iosInstallPromptDissmissed?1:0
     }
   },
   computed:{
@@ -89,7 +116,7 @@ export default defineComponent({
       return this.$heap.state.isInteractingWithServer
     },
     canGoBack(){
-      if(history.state.current=='/catalog'){
+      if(this.hideBackLink){
         return 0
       }
       return history.state.back?1:0
@@ -97,10 +124,9 @@ export default defineComponent({
     isIos(){
       return isPlatform('ios')
     },
-    // title(){
-    //   document.title=this.pageTitle
-    //   return this.pageTitle
-    // }
+    iosInstallPromptShow(){
+      return isPlatform('ios') && !this.isIosPromptDisssmissed
+    }
   },
   methods:{
     reload(){
@@ -108,17 +134,11 @@ export default defineComponent({
     },
     goback(){
       history.back()
+    },
+    iosInstallPromptDissmiss(){
+      this.isIosPromptDisssmissed=localStorage.iosInstallPromptDissmissed=1
     }
   },
-  // updated(){
-  //   //console.log(this.pageTitle)
-  //   document.title=this.pageTitle
-  // },
-  // watch:{
-  //   pageTitle:function(val){
-  //     document.title=val
-  //   }
-  // }
 })
 </script>
 
@@ -139,5 +159,21 @@ ion-header ion-toolbar ion-title{
     width: 161px;
     margin: 0 auto;
     display: block;
+}
+.installPrompt{
+  position:fixed;
+  bottom:25px;
+  background: #000c;
+  color:white;
+  border-radius: 10px;
+  width: 100%;
+  padding: 10px;
+  display: grid;
+  grid-template-columns: auto 30px;
+  font-size: 1.2em;
+  line-height: 25px;
+}
+.installPrompt ion-icon{
+  margin-bottom: -10px;
 }
 </style>

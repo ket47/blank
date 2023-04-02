@@ -115,7 +115,7 @@ export default {
       if(this.nextRoute){
         this.$heap.state.next_route=this.nextRoute
       }
-      router.push('/user/user-addresses');
+      this.$go('/user/user-addresses');
     },
     async locationCommentChanged(){
       const request={
