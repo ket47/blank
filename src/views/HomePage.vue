@@ -33,8 +33,8 @@ export default {
     }
   },
   ionViewDidEnter(){
-    User.geo.switch();
-    //this.$refs.homeStoreList.listGet();
+    //User.geo.switch();
+    //this.$refs.homeStoreList.listNearGet();
   }
 };
 </script>

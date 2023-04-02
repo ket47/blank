@@ -68,7 +68,7 @@
 
 
       <ion-item-divider></ion-item-divider>
-      <ion-item button @click="$router.push('/catalog/store-'+storeId)">
+      <ion-item button @click="$go('/catalog/store-'+storeId)">
         <ion-icon :src="chevronBack" slot="start"/>
         Показать {{storeItem.store_name}}
       </ion-item>
@@ -606,7 +606,7 @@ export default  {
         const message=err.responseJSON?.messages?.error;
         if(message=='notfound'){
           this.$flash("Не найден")
-          this.$router.push('/')
+          this.$go('/')
         }
       }
     },
@@ -681,7 +681,7 @@ export default  {
           product_promo_price:1000
         }
         const product_id=await jQuery.post(`${heap.state.hostname}Product/itemCreate`,request)
-        this.$router.push(`/catalog/product-edit-${product_id}`)
+        this.$go(`/catalog/product-edit-${product_id}`)
       }catch{
         this.$flash("Не удалось создать товар")
       }
@@ -859,7 +859,7 @@ export default  {
     async modalLocationCreate() {
       if(!heap.state.user.user_id){
         this.$flash('Чтобы добавленные адреса сохранились, пожалуйста войдите в систему');
-        this.$router.push({name: 'UserSignIn'});
+        this.$go({name: 'UserSignIn'});
         return;
       }
       var location_group_name_low="рабочий";

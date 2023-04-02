@@ -165,7 +165,7 @@ ion-card .store-title{
           :autoplay='{delay: 3000, disableOnInteraction: true}'
         >
           <swiper-slide v-for="(productPerk, productPerkIndex) in store_perks_slider[store_index]" :key="productPerkIndex">
-            <ion-item @click="$router.push(`/catalog/product-${productPerk.product_id}`)" button detail="false" lines="none">
+            <ion-item @click="$go(`/catalog/product-${productPerk.product_id}`)" button detail="false" lines="none">
               <ion-thumbnail slot="start">
                 <ion-img v-if="productPerk.image_hash" :src="`${$heap.state.hostname +'/image/get.php/' +productPerk.image_hash +'.100.100.webp'}`" style="border-radius:10px" />
               </ion-thumbnail>
@@ -177,6 +177,12 @@ ion-card .store-title{
     </ion-card>
   </ion-list>
 
+
+  <ion-card v-if="hiddenCount>0">
+    <ion-card-content>
+      Количество продавцов, находящихся за пределами радиуса доставки, скрытых из результатов <b>{{hiddenCount}}</b>
+    </ion-card-content>
+  </ion-card>
 </template>
 
 <script>
@@ -247,7 +253,8 @@ export default {
     return {
       storeList: null,
       can_reload_at:0,
-      loadedLocation:{}
+      loadedLocation:{},
+      hiddenCount:null
     };
   },
   computed: {
@@ -264,10 +271,10 @@ export default {
   },
   methods: {
     async listNearGet(loc) {
-      const now=Date.now()
-      if(loc?.location_latitude!=this.loadedLocation.location_latitude || loc?.location_latitude!=this.loadedLocation.location_latitude){
+      if(loc?.location_latitude!=this.loadedLocation.location_latitude || loc?.location_longitude!=this.loadedLocation.location_longitude){
         this.can_reload_at=0
       }
+      const now=Date.now()
       if( this.can_reload_at>now ){
         return
       }
@@ -278,9 +285,10 @@ export default {
           location_latitude:loc.location_latitude,
           location_longitude:loc.location_longitude,
         }
-        const found=await jQuery.post(heap.state.hostname + "Store/listNearGet", location)
-        this.storeList=this.storeListCalculate(found)
         this.loadedLocation=location
+        const response=await jQuery.post(heap.state.hostname + "Store/listNearGet", location)
+        this.hiddenCount=response.hidden_count
+        this.storeList=this.storeListCalculate(response.store_list)
       }catch{/** */}
     },
     storeListCalculate(found){
@@ -291,12 +299,13 @@ export default {
     },
   },
   mounted(){
-    this.$topic.on('userMainLocationSet',loc=>{
-      this.listNearGet(loc);
-    })
-    this.$topic.on('userCurrentLocationSet',loc=>{
-      this.listNearGet(loc);
-    })
+    const self=this
+    this.$topic.on('userMainLocationSet',function(loc){
+      self.listNearGet(loc) 
+      })
+    this.$topic.on('userCurrentLocationSet',function(loc){
+      self.listNearGet(loc)
+      })
     this.listNearGet(heap.state.user.location_main);
   }
 };

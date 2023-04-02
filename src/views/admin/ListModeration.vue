@@ -190,13 +190,13 @@ export default {
                 this.imageEdit(item)
             }
             if( this.moderationType=='products' ){
-                this.$router.push('/catalog/product-edit-'+item.product_id)
+                this.$go('/catalog/product-edit-'+item.product_id)
             }
             if( this.moderationType=='stores' ){
-                this.$router.push('/catalog/store-edit-'+item.store_id)
+                this.$go('/catalog/store-edit-'+item.store_id)
             }
             if( this.moderationType=='couriers' ){
-                this.$router.push('/user/courier-dashboard?courier_id='+item.courier_id)
+                this.$go('/user/courier-dashboard?courier_id='+item.courier_id)
             }
         },
         async imageEdit(item){

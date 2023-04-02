@@ -1,7 +1,7 @@
 <template>
     <base-layout pageDefaultBackLink="/user" page-title="Список тарифов">
         <ion-list>
-            <ion-item v-for="tariff in tariffList" :key="tariff.tariff_id" detail button @click="$router.push(`/user/admin-tariff-edit-${tariff.tariff_id}`)">
+            <ion-item v-for="tariff in tariffList" :key="tariff.tariff_id" detail button @click="$go(`/user/admin-tariff-edit-${tariff.tariff_id}`)">
                 <ion-icon :icon="briefcaseOutline" slot="start" color="primary"></ion-icon>
                 <ion-label>{{tariff.tariff_name}}</ion-label>
             </ion-item>
@@ -54,7 +54,7 @@ export default {
             };
             try{
                 let tariff_id=await jquery.post(`${this.$heap.state.hostname}Admin/Tariff/itemCreate`,JSON.stringify(request))
-                this.$router.push(`/user/admin-tariff-edit-${tariff_id}`)
+                this.$go(`/user/admin-tariff-edit-${tariff_id}`)
             }
             catch(err){
                 const exception=err.responseJSON;

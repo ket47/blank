@@ -5,6 +5,7 @@ class Topic{
 
     on(eventName, fn) {
         this.events[eventName] = this.events[eventName] || [];
+        this.off(eventName, fn)
         this.events[eventName].push(fn);
     }
 

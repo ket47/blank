@@ -31,7 +31,7 @@
             <ion-text slot="end" color="success">{{promo.promo_value}}{{$heap.state.currencySign}}</ion-text>
         </ion-item>
         
-        <ion-item button detail @click="$router.push('/user/user-promo');$topic.publish('dismissModal')">
+        <ion-item button detail @click="$go('/user/user-promo');$topic.publish('dismissModal')">
             <ion-text>Показать все ваши скидки <span v-if="!promoList?.length">или получить ещё</span></ion-text>
         </ion-item>
     </ion-list>

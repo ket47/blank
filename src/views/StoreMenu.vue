@@ -448,7 +448,7 @@ export default{
           switch(exception_code){
               case 'notfound':
                   this.$flash("Продавец не найден")
-                  this.$router.push("/catalog")
+                  this.$go("/catalog")
                   break;
           }
           return false
@@ -518,7 +518,7 @@ export default{
           product_promo_price:1000
         }
         const product_id=await jQuery.post(`${heap.state.hostname}Product/itemCreate`,request)
-        this.$router.push(`/catalog/product-edit-${product_id}`)
+        this.$go(`/catalog/product-edit-${product_id}`)
         this.$flash("Добавлен 'Новый товар' в категорию 'Другое'")
       }catch{
         this.$flash("Не удалось создать товар")

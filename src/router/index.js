@@ -1,6 +1,9 @@
 import { createRouter, createWebHistory, } from '@ionic/vue-router';
 
 import BaseTabs from '@/components/BaseTabs.vue'
+import HomePage from '@/views/HomePage.vue'
+import SearchView from '@/views/SearchView.vue'
+import UserDashboard from '@/views/UserDashboard.vue'
 
 const already_visited_app=localStorage?.already_visited_app?true:false;
 const homePath=already_visited_app?"/catalog":'/page/about-us';
@@ -25,7 +28,7 @@ const routes = [
       // },
       {
         path: "/catalog",
-        component: () => import('@/views/HomePage.vue')
+        component: HomePage
       },
       {
         path: '/catalog/store-edit-:id',
@@ -50,7 +53,7 @@ const routes = [
 
       {
         path: '/search',
-        component: () => import('@/views/SearchView.vue')
+        component: SearchView
       },
       {
         path: '/search/store-edit-:id',
@@ -74,12 +77,7 @@ const routes = [
 
       {
         path: '/user',
-        component: () => import('@/views/UserDashboard.vue'),
-      },
-      {
-        path: '/user/user-dashboard',
-        component: () => import('@/views/UserDashboard.vue'),
-        props: true
+        component: UserDashboard,
       },
       {
         path: '/user/courier-dashboard',

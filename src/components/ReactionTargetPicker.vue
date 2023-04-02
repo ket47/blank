@@ -5,8 +5,8 @@
   }
 
   .commentEdit {
-    position: absolute;
-    z-index: 100;
+    -position: absolute;
+    -z-index: 100;
     background: var(--ion-background-color, #fff);
     width: 100%;
     padding-bottom: 5px;
@@ -19,7 +19,6 @@
   <ion-header>
       <ion-toolbar>
         <ion-item lines="none">
-            <ion-icon :icon="chatboxOutline" slot="start"></ion-icon>
             <ion-title>Ваши отзывы и реакции</ion-title>
             <ion-icon :icon="closeOutline" @click="closeModal();" slot="end" size="large"></ion-icon>
         </ion-item>
@@ -45,8 +44,8 @@
     <ion-list v-if="!itemList">
         <div v-for="i in [0,1,2,3,4,5]" :key="i">
             <ion-item lines="none">
-                <ion-skeleton-text style="height:35px;width:40px" animated/>
-                <ion-skeleton-text style="width:100%" animated/>
+                <ion-skeleton-text style="height:35px;width:40px;border-radius:20px" animated/>
+                <ion-skeleton-text style="width:100%;margin:5px" animated/>
             </ion-item>
             <ion-item>
                 <ion-skeleton-text style="width:100%" animated/>
@@ -68,9 +67,13 @@
                     </ion-chip>
                 </ion-item>
                 <ion-item lines="full" @click="itemCommentEdit(item)">
-                    <ion-text>
-                    {{item.reaction_comment??"добавьте отзыв" }}
+                    <ion-text v-if="item.reaction_comment">
+                    {{item.reaction_comment}}
                     </ion-text>
+                    <ion-chip v-else color="medium">
+                        <ion-icon :src="chatboxOutline"/>
+                        <ion-label> добавить отзыв</ion-label>
+                    </ion-chip>
                 </ion-item>
             </div>
             <div v-if="item.is_sealed==1">
@@ -274,7 +277,7 @@ export default {
             }
         },
         async itemCommentEdit( item ){
-            this.commentCurrent=item.reaction_comment
+            this.commentCurrent=item.reaction_comment+'-'
         },
         async itemCommentSave(){
             this.commentCurrent=null

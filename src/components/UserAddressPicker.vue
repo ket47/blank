@@ -1,26 +1,23 @@
 <template>
     <ion-header>
         <ion-toolbar>
-            <ion-item lines="none">
-                <ion-icon :icon="locationOutline" slot="start" />
-                <ion-title>Выбор нового адреса</ion-title>
-                <ion-icon :icon="closeOutline" @click="closeModal();" slot="end" size="large"/>
-            </ion-item>
-        </ion-toolbar>
-            <ion-button @click="pickAddress()" :disabled="!coords" color="primary" expand="block">
+          <ion-buttons slot="start">
+            <ion-button @click="closeModal()" color="primary">
+                <ion-icon :icon="closeOutline" slot="start"/>
+                Закрыть
+            </ion-button>
+          </ion-buttons>
+          <ion-label size="large">Добавление адреса</ion-label>
+          <ion-buttons slot="end">
+            <ion-button :strong="true" @click="pickAddress()" color="primary">
                 <ion-icon :src="checkmark" slot="start"/>
                 Ок
-            </ion-button> 
-
-        <!--<ion-toolbar>
-             <ion-button @click="pickAddress" :disabled="!selectedPlacemark" color="primary" expand="block">
-                Добавить {{location_group_name_low}} адрес
-            </ion-button>             
-        </ion-toolbar>-->
-            
-        </ion-header>
+            </ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+        <ion-searchbar id="suggest" placeholder="название улицы, номер дома"/>
+    </ion-header>
   <ion-content>
-    <ion-searchbar id="suggest" placeholder="название улицы, номер дома"/>
     <yandex-map :coords="coords" :zoom="16" @click="onClick($event)" style="height:100%" :settings="settings">
         <ymap-marker :coords="coords" marker-id="1" :properties="placemarkProperties"/>
     </yandex-map>
@@ -32,6 +29,7 @@ import {
     IonContent,
     IonToolbar,
     IonButton,
+    IonButtons,
     IonSearchbar,
     IonHeader,
     IonIcon,
@@ -47,6 +45,7 @@ export default({
     IonContent,
     IonToolbar,
     IonButton,
+    IonButtons,
     IonSearchbar,
     IonHeader,
     IonIcon,

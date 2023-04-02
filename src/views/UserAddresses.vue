@@ -111,10 +111,6 @@ export default{
       const modal = await modalController.create({
         component: UserAddressPicker,
         showBackdrop:true,
-        backdropDismiss:true,
-        canDismiss: true,
-        cssClass: 'update-profile-modal',
-        presentingElement: this.$refs.UserAddressPage.$el,
         componentProps:{
           location_group_name_low
         },
@@ -164,7 +160,7 @@ export default{
       try{
         await jQuery.post(heap.state.hostname + "User/locationCreate",request)
         if(this.$heap.state.next_route){
-          this.$router.push(this.$heap.state.next_route)
+          this.$go(this.$heap.state.next_route)
           this.$heap.state.next_route=null
         }
         this.locationListGet();
@@ -185,7 +181,7 @@ export default{
       heap.state.user.location_main={
         location_id:loc.location_id,
         location_latitude:loc.location_latitude,
-        location_altitude:loc.location_altitude,
+        location_longitude:loc.location_longitude,
         location_address:loc.location_address,
         image_hash:loc.image_hash
       };

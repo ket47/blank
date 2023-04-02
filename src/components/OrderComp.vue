@@ -273,11 +273,11 @@ export default({
     },
     methods:{
         storeOpen(){
-            this.$router.push({path: `/catalog/store-${this.orderData.order_store_id}`});
+            this.$go(`/catalog/store-${this.orderData.order_store_id}`);
             this.parentClose();
         },
         productOpen(product_id){
-            this.$router.push({path: `/catalog/product-${product_id}`});
+            this.$go(`/catalog/product-${product_id}`);
             this.parentClose();
         },
         parentClose(){

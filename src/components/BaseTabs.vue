@@ -157,7 +157,7 @@ ion-icon{
       <ion-router-outlet></ion-router-outlet>
       <ion-tab-bar v-if="isMobile || narrowScreen" class="bottom-bar" slot="bottom">
         <ion-tab-button tab="catalog" href="/catalog" selected>
-          <ion-icon :icon="storefrontOutline"/>
+          <ion-icon :icon="homeOutline"/>
           <ion-label><b>Каталог</b></ion-label>
         </ion-tab-button>
 
@@ -204,7 +204,7 @@ import {
 import Order        from '@/scripts/Order'
 
 import {
-  storefrontOutline,
+  homeOutline,
   searchOutline,
   personOutline,
   readerOutline,
@@ -223,7 +223,7 @@ export default{
   },
   setup() {
     return {
-      storefrontOutline,
+      homeOutline,
       searchOutline,
       personOutline,
       readerOutline,
@@ -245,6 +245,14 @@ export default{
     })
     this.activeOrderCount=await Order.api.listCount()
     addEventListener("resize", (event) => {this.narrowScreen=screen.width<740});
+  },
+  methods:{
+    tabClicked(event,route){
+      console.log(event)
+      //event.stopImmediatePropagation()
+      //this.$go(route)
+      
+    }
   }
 }
 </script>

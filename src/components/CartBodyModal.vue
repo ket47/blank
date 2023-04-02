@@ -88,7 +88,7 @@ export default{
     },
     async onStageCreate(order_id, order_stage_code){
         if(order_stage_code=='customer_purged'){
-          //this.$router.push('/order/order-list');
+          //this.$go('/order/order-list');
           return this.clearCart(order_id,'purge_on_server');
         }
         if(order_stage_code=='customer_action_confirm'){
@@ -104,10 +104,10 @@ export default{
             if(stateChangeResult=='ok' && order_stage_code=='customer_confirmed'){
               const confirmedOrder=await Order.api.itemGet(syncedOrder.order_id)
               this.$heap.commit('setCurrentOrder',confirmedOrder);
-              this.$router.push(`/order/order-checkout-${syncedOrder.order_id}`);
+              this.$go(`/order/order-checkout-${syncedOrder.order_id}`);
               return;
             }
-            this.$router.push('/order/order-'+syncedOrder.order_id);
+            this.$go('/order/order-'+syncedOrder.order_id);
         } catch(err){
                 const exception=err?.responseJSON;
                 if(!exception){
@@ -121,7 +121,7 @@ export default{
                     case 'address_not_set':
                         this.$flash("Необходимо добавить адрес доставки")
                         this.$topic.publish('dismissModal')
-                        this.$router.push('/user/user-addresses')
+                        this.$go('/user/user-addresses')
                         this.$heap.state.next_route='/order/order-'+order_id;
                         break;
                 }

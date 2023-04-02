@@ -119,7 +119,7 @@
 
       <div v-if="!is_option_child">
       <ion-item-divider></ion-item-divider>
-      <ion-item button @click="$router.push('/catalog/product-'+productItem.product_id)">
+      <ion-item button @click="$go('/catalog/product-'+productItem.product_id)">
         <ion-icon :src="chevronBack" slot="start"/>
         Показать товар
       </ion-item>
@@ -127,7 +127,7 @@
         <ion-icon :src="chevronBack" slot="start"/>
         Показать в магазине
       </ion-item>
-      <ion-item button @click="$router.push('/catalog/store-edit-'+productItem.store_id)">
+      <ion-item button @click="$go('/catalog/store-edit-'+productItem.store_id)">
         <ion-icon :src="chevronBack" slot="start"/>
         Управление магазином
       </ion-item>
@@ -612,7 +612,7 @@ export default  {
       try{
         sub_group_id=this.productItem.member_of_groups.group_ids.split(',')[0];
       } catch{/** */}
-      this.$router.push({path:('store-'+this.productItem.store_id),query:{sub_group_id}})
+      this.$go({path:('store-'+this.productItem.store_id),query:{sub_group_id}})
     }
   },
 }

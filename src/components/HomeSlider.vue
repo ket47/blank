@@ -79,7 +79,7 @@
           if(!link){
             return
           }
-          this.$router.push(link)
+          this.$go(link)
         }
     },
   });

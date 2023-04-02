@@ -1,9 +1,9 @@
 import { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'io.ionic.starter',
-  appName: 'blank',
-  webDir: 'dist',
+  appId: 'com.tezkel.app',
+  appName: ' Тезкель экспресс доставка',
+  webDir: 'public',
   bundledWebRuntime: false
 };
 

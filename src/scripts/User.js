@@ -102,6 +102,7 @@ const User = {
         } catch{/** */}
     },
     async signUp(requestData){
+        requestData.metric_id=localStorage.metric_id??0
         return await jQuery.post( heap.state.hostname + "User/signUp", requestData)
     },
     isOnline(){
@@ -205,6 +206,7 @@ const User = {
         }
     },
     geo:{
+        trackingActive:false,
         clock:null,
         async switch(){
             const location_main=heap.state.user.location_main
@@ -236,6 +238,7 @@ const User = {
         async trackingStart(){
             try{
                 User.geo.trackingStop();
+                User.geo.trackingActive=true
                 User.geo.clock=await Geolocation.watchPosition({ enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 },async (position)=>{
                     const curr_lat=parseFloat(position?.coords?.latitude??0)
                     const curr_lon=parseFloat(position?.coords?.longitude??0)
@@ -260,10 +263,12 @@ const User = {
                         location_address: 'около ' + (current_address??'текущего местоположения'),
                         timestamp:position.timestamp
                     }
-                    User.geo.lastStoredSet(current_location)
-
-                    heap.commit('setUserCurrentLocation',current_location);
-                    Topic.publish('userCurrentLocationSet',current_location)
+                    
+                    if(User.geo.trackingActive){
+                        User.geo.lastStoredSet(current_location)
+                        heap.commit('setUserCurrentLocation',current_location);
+                        Topic.publish('userCurrentLocationSet',current_location)
+                    }
                 });
             } catch (err){
                 console.log('trackingStart',err)
@@ -272,6 +277,7 @@ const User = {
         trackingStop(){
             try{
                 Geolocation.clearWatch({id:User.geo.clock});
+                User.geo.trackingActive=false
             }catch(err){
                 console.log('trackingStop',err)
             }

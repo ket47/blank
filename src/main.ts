@@ -35,10 +35,10 @@ import BaseLayout           from '@/components/BaseLayout.vue';
 import BaseLayoutDesktop    from '@/components/BaseLayoutDesktop.vue';
 
 
+import jQuery               from "jquery";
 import Topic                from '@/scripts/Topic.js';
 import User                 from '@/scripts/User.js'
 import Order                from '@/scripts/Order.js'
-import jQuery               from "jquery";
 import Metrics              from '@/scripts/Metrics.js'
 
 import './registerServiceWorker';
@@ -69,7 +69,7 @@ const FlashNotice={
       .create({
         message: message,
         duration: 2000,
-        color:'secondary',
+        color:'dark',
         translucent:true,
         position:'bottom'
       })
@@ -100,6 +100,14 @@ const alert = async (message:string,title:string)=>{
     return globalAlertPrompt.present();
 }
 
+const go = async (route:string)=>{
+  const chunks=route.split('/')
+  if(chunks?.[1] && chunks?.[2]){
+    await router.push(`/${chunks[1]}`)
+  }
+  router.push(route)
+}
+
 jQuery( document ).ajaxError(( event, jqxhr, settings, thrownError )=>{
   const status_code=jqxhr.status;
   if(status_code==403){
@@ -118,16 +126,16 @@ jQuery( document ).ajaxError(( event, jqxhr, settings, thrownError )=>{
   }
 
   if(status_code==0){
-    flash('Похоже нет связи с интерентом. Попробуйте позже');
+    flash('Похоже нет связи с интерентом.');
     Topic.publish('dismissModal')
     //router.push({path: `/error-offline`});
   } else
   if(thrownError === 'abort'){
-    flash('Похоже нет связи с интерентом. Попробуйте позже');
+    //flash('Похоже нет связи с интерентом.');
     //router.push({path: `/error-offline`});
   } else
   if(thrownError === 'timeout'){
-    flash('Похоже нет связи с интерентом. Попробуйте позже');
+    flash('Похоже нет связи с интерентом.');
     //router.push({path: `/error-offline`});
   }
 })
@@ -165,6 +173,7 @@ app.config.globalProperties.$heap = heap;
 app.config.globalProperties.$flash = flash;
 app.config.globalProperties.$alert = alert;
 app.config.globalProperties.$topic = Topic;
+app.config.globalProperties.$go = go;
 
 const isMobile= /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(window.navigator.userAgent);
 

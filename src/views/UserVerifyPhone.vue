@@ -137,7 +137,7 @@ export default  {
         this.$flash("Номер телефона верифицирован")
         this.$router.replace('/user')
         await User.autoSignIn()
-        this.$router.push('/catalog')
+        this.$go('/catalog')
       } catch(err){
         const message=err.responseJSON.messages.error
         switch(message){

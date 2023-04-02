@@ -234,7 +234,7 @@ export default  {
       const user_phone=this.fields.user_phone.replace(/\D/g,"")
       try{
         jQuery.post( `${this.$heap.state.hostname}User/phoneVerificationSend`, {user_phone})
-        this.$router.push({name: 'UserVerifyPhone', params: {phone: user_phone}});
+        this.$go({name: 'UserVerifyPhone', params: {phone: user_phone}});
       }catch{/** */}
     },
     async passwordSave(){

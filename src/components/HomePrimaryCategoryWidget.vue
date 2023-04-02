@@ -58,7 +58,7 @@ ion-img{
 <template>
     <div id="hcat_widget_wrapper" v-if="productGroupList">
 
-        <div id="hcat_widget_header" @click="this.$router.push('/catalog/store-'+primaryStoreData.store_id)"  :style="`background-image:url(${$heap.state.hostname}image/get.php/${primaryStoreData.image_hash}.500.500.webp)`">
+        <div id="hcat_widget_header" @click="this.$go('/catalog/store-'+primaryStoreData.store_id)"  :style="`background-image:url(${$heap.state.hostname}image/get.php/${primaryStoreData.image_hash}.500.500.webp)`">
           <div id="hcat_widget_info">
             <ion-title size="large">{{primaryStoreData.store_name}}</ion-title>
             <ion-title size="small">опорный поставщик</ion-title>
@@ -68,7 +68,7 @@ ion-img{
           <ion-chip v-if="deliveryTime.timeMin" color="primary">доставка {{deliveryTime.timeMin}}-{{deliveryTime.timeMax}}мин</ion-chip>
 
         <div id="hcat_widget_grid">
-            <div v-for="group in productGroupList" :key="group.group_id" @click="$router.push(`/catalog/store-${primaryStoreData.store_id}?parent_group_id=${group.group_id}`)">
+            <div v-for="group in productGroupList" :key="group.group_id" @click="$go(`/catalog/store-${primaryStoreData.store_id}?parent_group_id=${group.group_id}`)">
                 <ion-thumbnail>
                     <ion-img :src="$heap.state.hostname + 'image/get.php/'+group.image_hash+'.250.250.webp'"/>
                 </ion-thumbnail>

@@ -70,7 +70,7 @@ export default {
     },
     methods:{
         itemCreate(){
-            this.$router.push('/admin/transaction-edit-0')
+            this.$go('/admin/transaction-edit-0')
         }
     },
     ionViewDidEnter(){

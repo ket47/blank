@@ -3,7 +3,7 @@
     <ion-content :class="'about-us-page'">
       <ion-toolbar>
         <ion-buttons slot="start">
-          <ion-button @click="$router.push('/catalog')"><ion-icon :src="arrowBackOutline"/></ion-button>
+          <ion-button @click="$go('/catalog')"><ion-icon :src="arrowBackOutline"/></ion-button>
         </ion-buttons>
         <ion-icon  v-if="mainLogo" class="toolbar_svg_logo" style="color: white"  :icon="mainLogo"/>
       </ion-toolbar>  

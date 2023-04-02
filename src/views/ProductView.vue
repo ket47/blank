@@ -45,7 +45,7 @@ ion-accordion-group .accordion-expanding .product-description{
           <ion-label>
             {{ productItem.product_name }}<b v-if="productItem.product_option"> [{{productItem.product_option}}]</b> <span v-if="!isAvailable">(Нет в наличии)</span>
           </ion-label>
-          <ion-button v-if="productItem.is_writable" @click="$router.push('/catalog/product-edit-'+productId)">
+          <ion-button v-if="productItem.is_writable" @click="$go('/catalog/product-edit-'+productId)">
             <ion-icon color="primary" :src="settingsOutline"/>
           </ion-button>
         </ion-list-header>
@@ -65,7 +65,7 @@ ion-accordion-group .accordion-expanding .product-description{
 
 
 
-        <ion-item lines="none" @click="$router.push('/catalog/store-'+productItem.store_id)" button>
+        <ion-item lines="none" @click="$go('/catalog/store-'+productItem.store_id)" button>
           <ion-avatar slot="start" v-if="productItem?.store?.avatar">
             <ion-img :src="`${$heap.state.hostname}image/get.php/${avatar.image_hash}.200.200.webp`" v-for="avatar in productItem?.store?.avatar" :key="avatar.image_id"/>
           </ion-avatar>
@@ -186,9 +186,6 @@ import {
   IonButton,
   IonAvatar,
   IonImg,
-  IonCard,
-  IonCardContent,
-  IonCardTitle,
 }                       from '@ionic/vue'
 
 import ImageSliderComp  from '@/components/ImageSliderComp'
@@ -217,9 +214,6 @@ export default  {
   IonButton,
   IonAvatar,
   IonImg,
-  IonCard,
-  IonCardContent,
-  IonCardTitle,
   },
   setup(){
     return {

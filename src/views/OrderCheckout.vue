@@ -94,7 +94,7 @@
                         <input type="radio" name="paymentType" id="use_card_recurrent" value="registered_card"  :checked="paymentType == 'use_card_recurrent'">
                     </div>
                 </ion-item>
-                <ion-item v-if="recurrentPaymentAllow" button detail @click="$router.push('/user/user-cards')">
+                <ion-item v-if="recurrentPaymentAllow" button detail @click="$go('/user/user-cards')">
                     <ion-label v-if="bankCard?.card_type" color="medium">Выбрать другую карту</ion-label>
                     <ion-label v-else color="medium">Привязать карту</ion-label>
                 </ion-item>
@@ -350,7 +350,7 @@ export default({
             }
             if( !this.order ){
                 this.$flash("Заказ не найден");
-                //this.$router.push('/order/order-list')
+                //this.$go('/order/order-list')
                 return
             }
             if( this.order.stage_current!="customer_confirmed" ){
@@ -471,7 +471,7 @@ export default({
                         case 'address_not_set':
                             this.$flash("Необходимо добавить адрес доставки")
                             this.$topic.publish('dismissModal')
-                            this.$router.push('/user/user-addresses')
+                            this.$go('/user/user-addresses')
                             break;
                     }
                     return false
@@ -556,7 +556,7 @@ export default({
         //     if( role=='confirm' ){
         //         return true
         //     }
-        //     this.$router.push('/user/user-addresses');
+        //     this.$go('/user/user-addresses');
         //     return false
         // },
         async deliveryAddressConfirm(){
@@ -579,7 +579,7 @@ export default({
             if( role=='confirm' ){
                 return true
             }
-            this.$router.push('/user/user-addresses');
+            this.$go('/user/user-addresses');
             return false
         },
         async promoPick() {

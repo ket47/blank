@@ -234,7 +234,7 @@ export default {
       if( !User.isAdmin() ){
         return
       }
-      this.$router.push(`/admin/transaction-edit-${trans_id}`)
+      this.$go(`/admin/transaction-edit-${trans_id}`)
     },
     async itemTagPick( itemType ){
       const modal = await modalController.create({

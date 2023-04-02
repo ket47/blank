@@ -23,7 +23,7 @@ ion-text{
 }
 </style>
 <template>
-  <base-layout page-title="Панель управления продавца"  pageDefaultBackLink="/user/user-dashboard">
+  <base-layout page-title="Панель управления продавца">
       <ion-card color="light" v-if="$heap.state.user.user_id>1">
         <ion-card-header>
           <ion-card-title>Регистрация нового магазина</ion-card-title>
@@ -49,7 +49,7 @@ ion-text{
         </ion-card-header>
         <ion-card-content>
           Чтобы стать продавцом, нужно быть зарегистрированным пользователем. Вы можете зарегистрироваться за 2 минуты.
-        <ion-button expand="block" @click="$router.push('/user/sign-up')">Зарегистрироваться</ion-button>
+        <ion-button expand="block" @click="$go('/user/sign-up')">Зарегистрироваться</ion-button>
         </ion-card-content>
       </ion-card>
 
@@ -61,7 +61,7 @@ ion-text{
         </ion-card-header>
         <ion-card-content>
 
-          <ion-item v-for="store in storeList" :key="store.store_id" detail button @click="$router.push(`/catalog/store-edit-${store.store_id}`)">
+          <ion-item v-for="store in storeList" :key="store.store_id" detail button @click="$go(`/catalog/store-edit-${store.store_id}`)">
             <ion-icon :icon="storefrontOutline" slot="start"></ion-icon>
             {{store.store_name||store.store_name_new||'- - -'}}
           </ion-item>        
@@ -144,7 +144,7 @@ export default  {
           this.$flash("Не удалось создать магазин или ресторан")
           return
         }
-        this.$router.push(`/catalog/store-edit-${store_id}`)
+        this.$go(`/catalog/store-edit-${store_id}`)
       }catch(err){
         const message=err.responseJSON?.messages?.error;
         if( message=='limit_exeeded' ){

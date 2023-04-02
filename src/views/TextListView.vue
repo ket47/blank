@@ -1,14 +1,14 @@
 <template>
-  <base-layout pageTitle="Страницы" pageDefaultBackLink="/user/user-dashboard">
+  <base-layout pageTitle="Страницы">
     <ion-list>
-      <ion-item v-for="page in pageList" :key="page.page_id" detail button @click="$router.push('text-edit-' + page.page_id)">
+      <ion-item v-for="page in pageList" :key="page.page_id" detail button @click="$go('text-edit-' + page.page_id)">
         <ion-icon slot="start" :icon="documentTextOutline"/>
         <ion-label>{{ page.page_title }}</ion-label>
         <ion-note slot="end" style="width: 80px">{{
           page.updated_at
         }}</ion-note>
       </ion-item>
-      <ion-item detail button @click="$router.push('text-edit-0')">
+      <ion-item detail button @click="$go('text-edit-0')">
         <ion-icon slot="start" :icon="addOutline"/>
         <ion-label>Добавить страницу</ion-label>
       </ion-item>
@@ -51,7 +51,7 @@ export default {
         this.listGet();
     } else {
         this.$flash('Страница для администраторов')
-        this.$router.push('/home')
+        this.$go('/home')
     }
   },
   ionViewDidEnter() {

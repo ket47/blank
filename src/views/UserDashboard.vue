@@ -7,7 +7,7 @@ ion-icon{
   <base-layout page-title="Личный кабинет">
     <div class="user-dashboard-header">
       <ion-list>
-        <ion-item v-if="isSignedIn" lines="full" class="avatar-row" @click="$router.push('/user/user-edit')" button>
+        <ion-item v-if="isSignedIn" lines="full" class="avatar-row" @click="$go('/user/user-edit')" button>
           <ion-avatar slot="start">
             <ion-img v-if="user.user_avatar_name" :src="$heap.state.hostname +'img/avatar/' +user.user_avatar_name +'.png'"/>
             <ion-icon v-else :icon="personCircleOutline" color="primary" size="large"></ion-icon>
@@ -29,11 +29,11 @@ ion-icon{
             <ion-icon :icon="exitOutline" slot="start" color="primary"></ion-icon>
             <ion-label>Выйти</ion-label>
         </ion-item>
-        <ion-item v-else lines="full" button detail @click="$router.push('/user/sign-in')">
+        <ion-item v-else lines="full" button detail @click="$go('/user/sign-in')">
             <ion-icon :icon="logInOutline" slot="start" color="primary"></ion-icon>
             <ion-label>Войти</ion-label>
         </ion-item>
-        <ion-item v-if="!isSignedIn" lines="full" button detail @click="$router.push('/user/sign-up')">
+        <ion-item v-if="!isSignedIn" lines="full" button detail @click="$go('/user/sign-up')">
             <ion-icon :icon="personAddOutline" slot="start" color="primary"></ion-icon>
             <ion-label>Зарегистрироваться</ion-label>
         </ion-item>
@@ -46,23 +46,23 @@ ion-icon{
           <ion-label>Пользователь</ion-label>
         </ion-item-divider>
         <div>
-          <ion-item lines="full" button detail @click="$router.push('/user/user-addresses')">
+          <ion-item lines="full" button detail @click="$go('/user/user-addresses')">
               <ion-icon :icon="locationOutline" slot="start" color="primary"></ion-icon>
               <ion-label>Мои адреса</ion-label>
           </ion-item>
-          <ion-item lines="full" button detail @click="$router.push('/order/order-list')">
+          <ion-item lines="full" button detail @click="$go('/order')">
               <ion-icon :icon="cartOutline" slot="start" color="primary"></ion-icon>
               <ion-label>Мои заказы</ion-label>
           </ion-item>
-          <ion-item lines="full" button detail @click="$router.push('/user/user-promo')">
+          <ion-item lines="full" button detail @click="$go('/user/user-promo')">
               <ion-icon :icon="giftOutline" slot="start" color="primary"></ion-icon>
               <ion-label>Мои скидки</ion-label>
           </ion-item>
-          <ion-item lines="full" button detail @click="$router.push('/user/user-invoice')">
+          <ion-item lines="full" button detail @click="$go('/user/user-invoice')">
               <ion-icon :icon="receiptOutline" slot="start" color="primary"></ion-icon>
               <ion-label>Мои чеки</ion-label>
           </ion-item>
-          <ion-item @click="$router.push('/user/user-cards')" lines="full" button detail>
+          <ion-item @click="$go('/user/user-cards')" lines="full" button detail>
               <ion-icon :icon="cardOutline" slot="start" color="primary"></ion-icon>
               <ion-label>Мои карты</ion-label>
           </ion-item>
@@ -76,19 +76,19 @@ ion-icon{
           <ion-item-divider>
             <ion-label>Администратор</ion-label>
           </ion-item-divider>
-          <ion-item @click="$router.push('/admin/text-list')" lines="full" button detail>
+          <ion-item @click="$go('/admin/text-list')" lines="full" button detail>
               <ion-icon :icon="documentTextOutline" slot="start" color="primary"></ion-icon>
               <ion-label>Редактирование страниц</ion-label>
           </ion-item>
-          <ion-item @click="$router.push('/admin/list-moderation')" lines="full" button detail>
+          <ion-item @click="$go('/admin/list-moderation')" lines="full" button detail>
               <ion-icon :icon="ribbonOutline" slot="start" color="primary"></ion-icon>
               <ion-label>Модерация элементов</ion-label>
           </ion-item>
-          <ion-item @click="$router.push('/admin/tariff-list')" lines="full" button detail>
+          <ion-item @click="$go('/admin/tariff-list')" lines="full" button detail>
               <ion-icon :icon="briefcaseOutline" slot="start" color="primary"></ion-icon>
               <ion-label>Список тарифов</ion-label>
           </ion-item>
-          <ion-item @click="$router.push('/admin/accounting')" lines="full" button detail>
+          <ion-item @click="$go('/admin/accounting')" lines="full" button detail>
               <ion-icon :icon="pieChartOutline" slot="start" color="primary"></ion-icon>
               <ion-label>Бухгалтерия</ion-label>
           </ion-item>
@@ -173,17 +173,17 @@ ion-icon{
               <ion-note>Подайте заявку, чтобы стать курьером</ion-note>
             </ion-text>
           </ion-item>
-          <ion-item button lines="full" @click="$router.push('/user/courier-dashboard')">
+          <ion-item button lines="full" @click="$go('/user/courier-dashboard')">
             <ion-icon :icon="rocketOutline" slot="start"></ion-icon>
             <ion-button slot="end" color="light">Стать курьером</ion-button>
           </ion-item>
         </div>
         <div v-else>
-          <ion-item lines="full" button detail @click="$router.push('/user/courier-dashboard')">
+          <ion-item lines="full" button detail @click="$go('/user/courier-dashboard')">
               <ion-icon :icon="documentTextOutline" slot="start" color="primary"></ion-icon>
               <ion-label>Анкета курьера</ion-label>
           </ion-item>
-          <ion-item lines="full" button detail @click="$router.push('/user/courier-statistics')">
+          <ion-item lines="full" button detail @click="$go('/user/courier-statistics')">
               <ion-icon :icon="pieChartOutline" slot="start" color="primary"></ion-icon>
               <ion-label>Статистика</ion-label>
           </ion-item>
@@ -202,12 +202,12 @@ ion-icon{
           </ion-item>   
         </div>
         <div v-else-if="storeList.length>0">
-          <ion-item v-for="store in storeList" :key="store.store_id" detail button @click="$router.push(`/catalog/store-edit-${store.store_id}`)">
+          <ion-item v-for="store in storeList" :key="store.store_id" detail button @click="$go(`/catalog/store-edit-${store.store_id}`)">
             <ion-icon :icon="storefrontOutline" slot="start"></ion-icon>
             {{store.store_name||store.store_name_new||'- - -'}}
           </ion-item>
 
-          <ion-item lines="full" button detail @click="$router.push('/user/supplier-statistics')">
+          <ion-item lines="full" button detail @click="$go('/user/supplier-statistics')">
               <ion-icon :icon="pieChartOutline" slot="start" color="primary"></ion-icon>
               <ion-label>Статистика</ion-label>
           </ion-item>
@@ -220,7 +220,7 @@ ion-icon{
               <ion-note>Зарегистрируйте свой магазин или ресторан</ion-note>
             </ion-text>
           </ion-item>
-          <ion-item @click="$router.push(`/user/supplier-dashboard`)" lines="full">
+          <ion-item @click="$go(`/user/supplier-dashboard`)" lines="full">
             <ion-icon :icon="storefrontOutline" slot="start"></ion-icon>
             <ion-button slot="end" color="light">Стать продавцом</ion-button>
           </ion-item>
@@ -231,27 +231,27 @@ ion-icon{
         <ion-item-divider>
           <ion-label>Информация</ion-label>
         </ion-item-divider>
-        <ion-item lines="full" button detail @click="$router.push('/page/about-us')">
+        <ion-item lines="full" button detail @click="$go('/page/about-us')">
             <ion-icon :icon="informationCircleOutline" slot="start" color="primary"></ion-icon>
             <ion-text>О нас</ion-text>
         </ion-item>
-        <ion-item lines="full" button detail @click="$router.push('/page/contacts')">
+        <ion-item lines="full" button detail @click="$go('/page/contacts')">
             <ion-icon :icon="informationCircleOutline" slot="start" color="primary"></ion-icon>
             <ion-text>Контакты</ion-text>
         </ion-item>
-        <ion-item lines="full" button detail @click="$router.push('/page/rules-customer')">
+        <ion-item lines="full" button detail @click="$go('/page/rules-customer')">
             <ion-icon :icon="informationCircleOutline" slot="start" color="primary"></ion-icon>
             <ion-text>Правила пользования</ion-text>
         </ion-item>
-        <ion-item lines="full" button detail @click="$router.push('/page/rules-supplier')">
+        <ion-item lines="full" button detail @click="$go('/page/rules-supplier')">
             <ion-icon :icon="informationCircleOutline" slot="start" color="primary"></ion-icon>
             <ion-text>Правила пользования для продавца</ion-text>
         </ion-item>
-        <ion-item lines="full" button detail @click="$router.push('/page/rules-courier')">
+        <ion-item lines="full" button detail @click="$go('/page/rules-courier')">
             <ion-icon :icon="informationCircleOutline" slot="start" color="primary"></ion-icon>
             <ion-text>Правила пользования для курьера</ion-text>
         </ion-item>
-        <ion-item lines="full" button detail @click="$router.push('/page/privacy_policy')">
+        <ion-item lines="full" button detail @click="$go('/page/privacy_policy')">
             <ion-icon :icon="informationCircleOutline" slot="start" color="primary"></ion-icon>
             <ion-text>Политика конфиденциальности</ion-text>
         </ion-item>

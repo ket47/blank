@@ -107,7 +107,7 @@ export default({
                     case 404:
                         this.$flash("Заказ не найден");
                         this.order='notfound';
-                        this.$router.push('/order/order-list');
+                        this.$go('/order/order-list');
                         break;
                 }
             }
@@ -137,7 +137,7 @@ export default({
                     if( order_stage_code=='customer_purged' ){
                         this.$flash("Заказ удален");
                         this.order=null;
-                        this.$router.push('/order/order-list');
+                        this.$go('/order/order-list');
                         Order.cart.itemDelete(order_id)//if copy of order there is in cart
                         return;
                     }
@@ -171,7 +171,7 @@ export default({
                         break;
                     case 'address_not_set':
                         this.$flash("Необходимо добавить адрес доставки")
-                        this.$router.push('/user/user-addresses');
+                        this.$go('/user/user-addresses');
                         break;
                     case 'order_sum_exceeded':
                         this.$flash("Сумма заказа должна быть меньше предоплаты")
@@ -197,7 +197,7 @@ export default({
         },
         async action_checkout(){
             this.$heap.commit('setCurrentOrder',this.order);
-            this.$router.push(`/order/order-checkout-${this.order_id}`);
+            this.$go(`/order/order-checkout-${this.order_id}`);
         },
         async action_add(){
             const modal = await modalController.create({

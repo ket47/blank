@@ -285,7 +285,7 @@ ion-chip .active-chip {
             </div>
           </div>
           <ion-text style="font-size:1.2em;"><b>{{ storeItem.store_name }}</b></ion-text>
-          <ion-icon v-if="storeItem.is_writable" slot="end" color="primary" @click="$router.push(`/catalog/store-edit-${storeItem.store_id}`)" :icon="settingsOutline" style="font-size:24px"></ion-icon>
+          <ion-icon v-if="storeItem.is_writable" slot="end" color="primary" @click="$go(`/catalog/store-edit-${storeItem.store_id}`)" :icon="settingsOutline" style="font-size:24px"></ion-icon>
         </ion-item>
         <ion-accordion-group style="width:100%">
           <ion-accordion>
@@ -713,7 +713,7 @@ export default{
         if(group_id){
           await jQuery.post(`${heap.state.hostname}Product/itemUpdateGroup`,{product_id,group_id,is_joined:1})
         }
-        this.$router.push(`/catalog/product-edit-${product_id}`)
+        this.$go(`/catalog/product-edit-${product_id}`)
         this.$flash("Добавлен 'Новый товар'")
       }catch{
         this.$flash("Не удалось создать товар")

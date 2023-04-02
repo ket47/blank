@@ -11,7 +11,7 @@
       <ion-title>Найденные товары</ion-title>
       <ion-card v-for="store in found.product_matches" :key="store.store_id">
         <ion-card-header>
-          <ion-item detail button @click="$router.push(`/search/store-${store.store_id}`)" lines="full">
+          <ion-item detail button @click="$go(`/search/store-${store.store_id}`)" lines="full">
             <ion-thumbnail slot="start">
               <ion-img style="border-radius:10px" :src="`${$heap.state.hostname}image/get.php/${store.image_hash}.150.150.webp`"/>
             </ion-thumbnail>

@@ -52,11 +52,11 @@
             </div> 
             <ion-chip v-if="discount<0" style="position:absolute;right:0px;top:0px;background-color:var(--ion-color-success-tint)" outline color="success">{{discount}}%</ion-chip>
             <ion-img class="blur-image" :src="`${$heap.state.hostname}image/get.php/${productItem.image_hash}.200.200.webp`"/>
-            <ion-img @click="$router.push(`/catalog/product-${productItem.product_id}`)" :src="`${$heap.state.hostname}image/get.php/${productItem.image_hash}.200.200.webp`"/>
+            <ion-img @click="$go(`/catalog/product-${productItem.product_id}`)" :src="`${$heap.state.hostname}image/get.php/${productItem.image_hash}.200.200.webp`"/>
             <ion-icon v-if="productItem.options" :src="layersOutline" color="primary" size="large" style="position:absolute;bottom:3px;right:3px"/>
         </div>
         <div style="height:5em;overflow:hidden">
-            <div style="color:black;height:3em;font-size:1em;overflow:hidden;line-height:1.4em; font-weight: bold;" @click="$router.push(`/catalog/product-${productItem.product_id}`)">
+            <div style="color:black;height:3em;font-size:1em;overflow:hidden;line-height:1.4em; font-weight: bold;" @click="$go(`/catalog/product-${productItem.product_id}`)">
                 {{ productItem.product_name }}
             </div>
             <span v-if="productItem.product_price!=productItem.product_final_price" style="color:var(--ion-color-danger)">
