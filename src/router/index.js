@@ -1,9 +1,13 @@
 import { createRouter, createWebHistory, } from '@ionic/vue-router';
 
-import BaseTabs from '@/components/BaseTabs.vue'
-import HomePage from '@/views/HomePage.vue'
-import SearchView from '@/views/SearchView.vue'
-import UserDashboard from '@/views/UserDashboard.vue'
+import BaseTabs       from '@/components/BaseTabs.vue'
+import HomePage       from '@/views/HomePage.vue'
+import SearchView     from '@/views/SearchView.vue'
+import UserDashboard  from '@/views/UserDashboard.vue'
+import StoreView      from '@/views/StoreView.vue'
+import ProductView    from '@/views/ProductView.vue'
+import OrderCheckout  from '@/views/OrderCheckout.vue'
+import OrderView      from '@/views/OrderView.vue'
 
 const already_visited_app=localStorage?.already_visited_app?true:false;
 const homePath=already_visited_app?"/catalog":'/page/about-us';
@@ -36,7 +40,7 @@ const routes = [
       },
       {
         path: '/catalog/store-:id',
-        component: () => import('@/views/StoreView.vue')
+        component: StoreView
       },
       {
         path: '/catalog/product-edit-:id',
@@ -44,7 +48,7 @@ const routes = [
       },
       {
         path: '/catalog/product-:id',
-        component: () => import('@/views/ProductView.vue')
+        component: ProductView
       },
 
 
@@ -159,11 +163,11 @@ const routes = [
       },
       {
         path: '/order/order-checkout-:id',
-        component: () => import('@/views/OrderCheckout.vue')
+        component: OrderCheckout
       },
       {
         path: '/order/order-:id',
-        component: () => import('@/views/OrderView.vue')
+        component: OrderView
       },
 
 
@@ -210,14 +214,14 @@ const routes = [
         path: '/admin/tariff-list',
         component: () => import('@/views/AdminTariffList.vue')
       },
-      {
-        path: '/catalog/store-:id/menu',
-        component: () => import('@/views/StoreMenu.vue')
-      },
   ]
   },
   
 
+  {
+    path: '/catalog/store-:id/menu',
+    component: () => import('@/views/StoreMenu.vue')
+  },
   {
     path: '/:catchAll(.*)',
     redirect: homePath

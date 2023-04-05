@@ -163,7 +163,8 @@ ion-header ion-toolbar ion-title{
 .installPrompt{
   position:fixed;
   bottom:25px;
-  background: #000c;
+  background-color: #000;
+  background-color: rgba(0,0,0,0.8);
   color:white;
   border-radius: 10px;
   width: 100%;

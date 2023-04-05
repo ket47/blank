@@ -6,7 +6,7 @@
 </style>
 <template>
   <base-layout page-title="Поиск товаров" hideBackLink="true">
-    <ion-searchbar class="search-container" v-model="query" @input="delayedListGet()" placeholder="начните искать"></ion-searchbar>
+    <ion-searchbar class="search-container" v-model="query" @input="delayedListGet()" @ionClear="delayedListGet()" placeholder="начните искать"></ion-searchbar>
     <div v-if="found">
       <ion-title>Найденные товары</ion-title>
       <ion-card v-for="store in found.product_matches" :key="store.store_id">
@@ -27,7 +27,7 @@
             <div v-for="productItem in store.matches" :key="productItem.product_id">                
               <product-item :productItem="productItem" :storeName="store.store_name"/>
             </div>
-          </div>          
+          </div>
         </ion-card-content>
       </ion-card>
     </div>
@@ -128,8 +128,7 @@ export default  {
         query:this.query,
         in_products:1,
         in_stores:0,
-        location_id:this.locMainGet(),
-        limit:3
+        location_id:this.locMainGet()
       }
       if(!request.location_id){
         return

@@ -115,7 +115,7 @@
         
         <ion-row responsive-sm>
           <ion-col>
-            <ion-button color="light" expand="block" @click="$go('/user/sign-in')">Уже есть учетная запись?</ion-button>
+            <ion-button color="light" expand="block" @click="$router.replace('/user/sign-in')">Уже есть учетная запись?</ion-button>
           </ion-col>
         </ion-row>
 
@@ -274,12 +274,14 @@ export default  {
         this.user_phone=user_phone
       } catch{/** */}
     },
-    async phoneVerify(){
-      let requestData = {
-        user_phone: this.user_phone_prefix+this.user_phone
-      }
+    phoneVerify(){
+      // let requestData = {
+      //   user_phone: this.user_phone_prefix+this.user_phone
+      // }
       try{
-        this.$router.replace({name:'UserVerifyPhone',params:requestData})
+        this.$heap.state.user.tmp_userphone=this.user_phone_prefix+this.user_phone
+        this.$go('/user/verify-phone')
+        //this.$router.push({name:'UserVerifyPhone',query:requestData})
       } catch{
         this.$flash("Не удалось выслать смс с подтверждением")
       }

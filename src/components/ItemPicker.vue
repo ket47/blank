@@ -10,7 +10,7 @@
       </ion-toolbar>
   </ion-header>
   <ion-content>
-    <ion-searchbar v-if="itemTypeLabel!='acc'" v-model="query" placeholder="поиск" :debounce="100" @ionChange="listGet()" />
+    <ion-searchbar v-if="itemTypeLabel!='acc'" v-model="query" placeholder="поиск" :debounce="100" @ionInput="listGet()" />
     <ion-list v-if="!itemList">
         <ion-item v-for="i in [0,1,2,3,4,5,6,7,8,9]" :key="i" button detail>
             <ion-skeleton-text style="height:35px;width:40px" animated/>

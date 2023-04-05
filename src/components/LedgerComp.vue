@@ -66,7 +66,7 @@
       </ion-list>
     </ion-accordion>
   </ion-accordion-group>
-  <ion-searchbar v-model="searchQuery" placeholder="Поиск по сумме или описанию" @ionChange="listGet()" />
+  <ion-searchbar v-model="searchQuery" placeholder="Поиск по сумме или описанию" debounce="300" @ionInput="listGet()"/>
   <ion-list v-if="ledger==null">
     <ion-item v-for="i in [1,2,3]" :key="i">
         <ion-text slot="start"><ion-skeleton-text animated style="width:50px" /></ion-text>
@@ -74,6 +74,9 @@
         <ion-label slot="end" color="success"><ion-skeleton-text animated style="width:50px" /></ion-label>
     </ion-item>
   </ion-list>
+
+
+
   <ion-list v-else-if="ledger.length>0">
     <div v-for="trans in ledgerCalc" :key="trans.trans_id">
       <ion-item :detail="is_admin" lines="none" @click="itemClick(trans.trans_id)">
@@ -92,12 +95,19 @@
       </ion-item>
     </div>
   </ion-list>
+
+
   <ion-list v-else>
     <ion-item>
         Нет операций в данном периоде
     </ion-item>
   </ion-list>
 
+
+
+  <ion-infinite-scroll @ionInfinite="listLoadMore($event)" id="moderation-infinite-scroll">
+      <ion-infinite-scroll-content loading-spinner="bubbles" loading-text="Загрузка..."></ion-infinite-scroll-content>
+  </ion-infinite-scroll>
 </div>
 </template>
 
@@ -115,6 +125,8 @@ import {
   IonSkeletonText,
   IonSearchbar,
   IonChip,
+  IonInfiniteScroll,
+  IonInfiniteScrollContent,
   modalController,
   actionSheetController,
 }                             from "@ionic/vue";
@@ -143,6 +155,8 @@ export default {
     IonSkeletonText,
     IonSearchbar,
     IonChip,
+  IonInfiniteScroll,
+  IonInfiniteScrollContent,
   },
   props:['permanentTag'],
   setup(){
@@ -169,6 +183,8 @@ export default {
       meta:{},
       today:today,
       settingsType:null,
+
+      can_reload_at:0
     };
   },
   computed:{
@@ -194,16 +210,34 @@ export default {
     }
   },
   methods: {
-    async listGet() {
+    async listLoadMore(ev){
+        await this.listGet('append')
+        ev.target.complete();
+    },
+    async listGet(mode) {
+      const now=Date.now()
+      if(!mode && this.can_reload_at>now){
+        return
+      }
+      this.can_reload_at=now+1000
       try {
         const tagQuery=Object.keys(this.tagDict??{})?.join(' ')
         const request={
             start_at:this.start_at,
             finish_at:this.finish_at,
             tagQuery:`${tagQuery} ${this.permanentTag??''}`,
-            searchQuery:this.searchQuery
+            searchQuery:this.searchQuery,
+            limit:10
+        }
+        if(mode=='append'){
+            request.offset=this.ledger?.length??0
+            request.limit=10
         }
         const response= await jquery.post(`${this.$heap.state.hostname}Transaction/listGet`,request)
+        if( mode=='append' ){
+            this.ledger??=[]
+            response.ledger=this.ledger.concat(response.ledger)
+        }
         this.ledger=response.ledger
         this.meta=response.meta
         if( this.finish_at==this.today.toISOString().slice(0, 10) ){

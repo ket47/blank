@@ -100,16 +100,28 @@ const alert = async (message:string,title:string)=>{
     return globalAlertPrompt.present();
 }
 
-const go = async (route:string)=>{
-  const chunks=route.split('/')
-  if(chunks?.[1] && chunks?.[2]){
-
-    // if(history.state.current==`/${chunks[1]}`){
-    //   console.log('sammmmmme')
-    // }
-
-
-    await router.push(`/${chunks[1]}`)
+const tabRoutesUninited={user:1,catalog:1,search:1,order:1};
+const go = async (route:any)=>{
+  const route_path=route.path??route
+  if(route_path && typeof route_path === 'string' ){
+    const chunks=route_path?.split('/')
+    const tabRoute=chunks?.[1]
+    const subRoute=chunks?.[2]
+    if(tabRoute && tabRoutesUninited[tabRoute]){
+      /**
+       * We have uninited tabRoute so need to push tabRoute first
+       */
+      if( history.state.current==`/${tabRoute}` || history.state.back==`/${tabRoute}` ){
+        /**
+         * We was visited tabRoute so skip initing
+         */
+        delete tabRoutesUninited[tabRoute]
+      } else 
+      if( subRoute ){
+        await router.push(`/${tabRoute}`)
+        delete tabRoutesUninited[tabRoute]
+      }
+    }
   }
   router.push(route)
 }

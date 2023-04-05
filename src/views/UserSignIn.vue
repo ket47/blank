@@ -67,7 +67,7 @@
         
         <ion-row responsive-sm>
           <ion-col>
-            <ion-button color="light" expand="block" @click="$go({path: `/user/sign-up`})">Зарегистрироваться</ion-button>
+            <ion-button color="light" expand="block" @click="$router.push({path: `/user/sign-up`})">Зарегистрироваться</ion-button>
           </ion-col>
         </ion-row>
         
@@ -211,11 +211,13 @@ export default{
       return modal.present();
     },
     phoneVerify(){
-      let requestData = {
-        user_phone: this.user_phone_prefix+this.user_phone
-      }
+      // let requestData = {
+      //   user_phone: this.user_phone_prefix+this.user_phone
+      // }
       try{
-        this.$go({name:'UserVerifyPhone',query:requestData})
+        this.$heap.state.user.tmp_userphone=this.user_phone_prefix+this.user_phone
+        this.$go('/user/verify-phone')
+        //this.$router.push({name:'UserVerifyPhone',query:requestData})
       } catch{
         this.$flash("Не удалось выслать смс с подтверждением")
       }

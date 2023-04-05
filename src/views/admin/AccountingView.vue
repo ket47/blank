@@ -5,7 +5,7 @@
 </style>
 <template>
     <base-layout pageDefaultBackLink="/user" page-title="Бухгалтерия">
-        <ion-segment swipe-gesture="true" v-model="activeTab" @ionChange="listTypeChanged($event)">
+        <ion-segment swipe-gesture="true" v-model="activeTab" @ionInput="listTypeChanged($event)">
             <ion-segment-button value="ledger">
                 Проводки
             </ion-segment-button>

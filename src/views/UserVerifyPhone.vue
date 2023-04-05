@@ -83,7 +83,7 @@ export default  {
   data(){
     return {
       verification_code:null,
-      user_phone:this.$route.params.user_phone||this.$route.query.user_phone||'',
+      user_phone:this.$heap.state.user.tmp_userphone||this.$route.params.user_phone||this.$route.query.user_phone||'',//this.$heap.state.user.tmp_userphone seems is more reliable
       is_sent:false,
       timeToResend:120
     }
@@ -113,7 +113,7 @@ export default  {
       if(this.is_sent){
         return
       }
-      this.user_phone=this.$route.params.user_phone||this.$route.query.user_phone||'';
+      //this.user_phone=this.$route.params.user_phone||this.$route.query.user_phone||'';
       if(!this.user_phone){
         this.$router.replace('/user')
         return;
