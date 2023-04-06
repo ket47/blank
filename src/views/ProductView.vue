@@ -236,17 +236,16 @@ export default  {
     return { 
       productId: this.$route.params.id,
       productItem: null,
-      is_loading:0
+      can_reload_at:0,
     };
   },
   mounted(){
     this.getProduct();
   },
-  // ionViewDidEnter(){
-  //   this.productId=this.$route.params.id
-  //   this.getProduct();
-  //   console.log('enter');
-  // },
+  ionViewDidEnter(){
+    this.productId=this.$route.params.id
+    this.getProduct();
+  },
   computed:{
     categories(){
       if(!this.productItem?.member_of_groups?.group_ids){
@@ -304,8 +303,15 @@ export default  {
     }
   },
   methods: {
+    is_busy(){
+      const now=Date.now()
+      if(this.can_reload_at>now){
+        return
+      }
+      this.can_reload_at=now+2000
+    },
       async getProduct(){
-        if( this.is_loading==1 ){
+        if( this.is_busy() ){
           return
         }
         try{
@@ -324,7 +330,6 @@ export default  {
           }
           return false
         }
-        this.is_loading=0
       },
       cartCommentUpdate(comment){
         const entry={

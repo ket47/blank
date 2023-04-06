@@ -109,7 +109,7 @@ export default{
     propsCalculate(){
       let order_store_id=0;
       let productData=(this.entry||this.productItem);
-      productData.product_quantity_min= productData.product_quantity_min | 1;
+      productData.product_quantity_min= productData.product_quantity_min || 1;
 
       if( this.productItem ){
         productData.entry_quantity=0;
@@ -143,11 +143,6 @@ export default{
       if( newQuantity==0 && this.orderData?.order_id>0 && confirm("Удалить?")===false ){
           return;
       }
-
-      if(this.productItem?.options && this.currentQuantity==0 && newQuantity==1){
-        console.log(this.productItem?.options)
-      }
-
       return this.updateOrder(newQuantity);
     },
     setInOrder(){
