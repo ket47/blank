@@ -220,7 +220,9 @@ ion-accordion-group .accordion-expanding .store-description{
   z-index: 10000;
   width: 100vw;
   background-color: white;
-  ----border-bottom: 1px solid lightgray;
+}
+.md .group-fixed-block{
+  border-bottom: 1px solid lightgray;
 }
 .group-fixed-block.hidden-block {
   display: none;
@@ -273,7 +275,7 @@ ion-chip .active-chip {
 </style>
 
 <template>
-  <base-layout pageDefaultBackLink="/catalog" page-class="store-page" :page-title="this.storeItem.store_name??'Магазин'">
+  <base-layout pageDefaultBackLink="/catalog" page-class="store-page" :contentOnScroll="onScroll" :page-title="this.storeItem.store_name??'Магазин'">
   <div>
     <div class="store-info-container">
       <image-slider-comp :imageList="storeItem.images" :imgHeight="300" :mode="'crop-to-fit'"></image-slider-comp>
@@ -322,28 +324,6 @@ ion-chip .active-chip {
               </ion-chip>
             </ion-col>
           </ion-row>
-          <!-- <ion-row>
-            <ion-col size="auto" style="overflow-y: scroll;white-space: nowrap;">
-
-              <ion-chip color="medium">
-                <ion-icon color="primary" :src="`/img/icons/favicon.svg`"/>
-                Доставит {{$heap.getters.settings.app_title}} 
-                <span v-if="storeItem?.deliveryTime?.timeMin">&nbsp;за {{storeItem.deliveryTime.timeMin}}-{{storeItem.deliveryTime.timeMax}}мин</span>&nbsp;
-                <ion-badge>90₽</ion-badge>
-              </ion-chip>
-
-              <ion-chip color="medium" v-if="storeItem.store_delivery_allow">
-                Доставит {{storeItem.member_of_groups.group_names}}&nbsp;
-                <ion-badge>{{storeItem.store_delivery_cost}}₽</ion-badge>
-              </ion-chip>
-
-              <ion-chip color="medium" v-if="storeItem.store_pickup_allow">
-                Самовывоз&nbsp;
-                <ion-badge>0₽</ion-badge>
-              </ion-chip>
-
-            </ion-col>
-          </ion-row>-->
         </ion-grid> 
       </ion-list>
 
@@ -376,7 +356,7 @@ ion-chip .active-chip {
         </div>
     </div>
 
-    <div v-if="storeGroupsFiltered" class="group-fixed-block hidden-block">
+    <div v-if="storeGroupsFiltered" ref="groupFixedBlock" class="group-fixed-block hidden-block">
       <ion-segment v-model="groupSelectedParentId" scrollable style="scrollbar-width: none;" class="groups-container">
         <ion-segment-button
           v-for="group_item in storeGroupsFiltered"
@@ -388,23 +368,6 @@ ion-chip .active-chip {
           <ion-label>{{ group_item.group_name }}</ion-label>
         </ion-segment-button>
       </ion-segment>
-
-      <!--
-      <ion-segment color="light"   v-if="storeGroups[groupSelectedParentId]" scrollable class="sub-groups-container">
-        <span
-          v-show="storeProducts[group_item.group_id]"
-          v-for="group_item in storeGroups[groupSelectedParentId].children"
-          :key="group_item.group_id"
-          :ref="`group-chip-${group_item.group_id}`"
-          @click="groupSelectSub(group_item.group_id)"
-        >
-          <ion-chip :outline="true" color="primary">{{group_item.group_name}}</ion-chip>
-
-        </span>
-      </ion-segment>
-
-      -->
-
     </div>
 
     <ion-searchbar class="search-container" v-model="searchQuery" placeholder="Поиск у этого продавца"/>
@@ -425,6 +388,7 @@ ion-chip .active-chip {
         :centeredSlides="false" 
         class="product-list-slider" 
         @slideChange="groupSliderChanged($event)"
+        ref="productListSlider"
       >
         <swiper-slide v-for="parent_group_item in storeGroupsFiltered" :key="parent_group_item.group_id">
           <ion-grid class="product-list">
@@ -453,10 +417,7 @@ ion-chip .active-chip {
     <ion-label v-else-if="searchQuery">
       К сожалению, в <b>{{storeItem.store_name}}</b> по запросу <b>"{{searchQuery}}"</b> ничего не найдено. <ion-chip @click="this.searchQuery=null">Сбросить фильтр</ion-chip>
     </ion-label>
-    <ion-label v-else-if="productListIsEmpty">
-      К сожалению, в <b>{{storeItem.store_name}}</b> пока нет доступных товаров.
-    </ion-label>
-    <div v-else-if="!storeGroupsFiltered">
+    <div v-else-if="!productList">
       <h4 style="margin: 8px 16px;"><b><ion-skeleton-text style="height:30px;width:150px"></ion-skeleton-text></b></h4>
       <div>
         <div v-for="i in [1,2,3,4]" :key="i" style="display:inline-block;margin:10px">
@@ -479,7 +440,9 @@ ion-chip .active-chip {
         </ion-row>
       </ion-grid>
     </div>
-    
+    <ion-label v-else-if="productListIsEmpty">
+      К сожалению, в <b>{{storeItem.store_name}}</b> пока нет доступных товаров.
+    </ion-label>    
     </div>
   </base-layout>
 </template>
@@ -509,6 +472,7 @@ import {
   Swiper,
   SwiperSlide 
  }                        from 'swiper/vue';
+import 'swiper/css';
 import { 
   search,
   settingsOutline,
@@ -565,9 +529,8 @@ export default{
       query:this.$route.query,
       searchQuery: null,
       storeItem: [],
-      //storeProducts: {},
-      productList:[],
-      productListIsEmpty:0,
+
+      productList:null,
       storeGroups: null,
       groupSelectedParentId: -1,
       sliderMaxHeight: 500,
@@ -604,6 +567,9 @@ export default{
       return storeGroupsFiltered
     },
     storeProductsFiltered() {
+      if(!this.productList){
+        return null
+      }
       let category_order=1
       let storeProductsFiltered = {}
       for (let product of this.productList) {
@@ -629,19 +595,25 @@ export default{
       }
       return storeProductsFiltered
     },
+    productListIsEmpty(){
+      return this.productList?.length>0?0:1
+    }
   },
   methods: {
     async itemGet() {
-      const now=Date.now()
-      if(this.can_reload_at>now){
-        return
-      }
-      this.can_reload_at=now+10000
       try{
-        const store=await jQuery.post(`${heap.state.hostname}Store/itemGet`, {store_id: this.storeId,distance_include:1})
-        this.storeItem = this.itemPrepare(store); 
-        this.storeId = store.store_id;
-        this.groupTreeGet({ store_id: this.storeId });
+        const request={
+          store_id: this.storeId,
+          distance_include:1,
+          products_include:1,
+          }
+        let store
+        store=await Utils.prePost(`${heap.state.hostname}Store/itemGet`,request )
+        if(store){
+          this.storeItem = this.itemPrepare(store);
+        }
+        store=await Utils.post(`${heap.state.hostname}Store/itemGet`,request )
+        this.storeItem = this.itemPrepare(store);
         heap.commit('setCurrentStore',this.storeItem);
       } catch(err){
         const exception_code=err?.responseJSON?.messages?.error;
@@ -668,46 +640,12 @@ export default{
       }
       return storeItem;
     },
-    async productListGet(filter = {}) {
-      filter.store_id = this.storeId;
-      filter.is_active = 1;
-      if (filter.name_query && filter.name_query == "") {
-        this.groupTreeGet({ store_id: this.storeId });
-        return;
-      }
-      filter.limit=200;
-      let response={};
-      try{
-        response=await jQuery.post(heap.state.hostname + "Product/listGet", filter)
-        this.productListIsEmpty=response?.product_list?.length>0?0:1
-      }catch(err){/** */}
-      this.productList=response.product_list
-
-      //this.productListPrepare(response.product_list);
-
-      this.groupOtherAdd()
-      setTimeout(()=>{this.groupSelect()}, 0)
-    },
-    // productListPrepare(product_list) {
-    //   let category_order=1
-    //   this.storeProducts = {}
-    //   for (var product of product_list) {
-    //     if (this.storeGroups){
-    //       if (!this.storeProducts[product.group_id??0]) {
-    //         this.storeProducts[product.group_id??0] = []
-    //         this.storeProducts[product.group_id??0].category_order=category_order++
-    //       }
-    //     }
-    //     this.storeProducts[product.group_id??0].push(product);
-    //   }
-    // },
     async productItemCreate( group_id ){
       try{
         const request={
           store_id:this.storeId,
           product_name:"Новый товар",
-          product_price:1000,
-          product_promo_price:1000
+          product_price:1000
         }
         const product_id=await jQuery.post(`${heap.state.hostname}Product/itemCreate`,request)
         if(group_id){
@@ -719,17 +657,33 @@ export default{
         this.$flash("Не удалось создать товар")
       }
     },
-    async groupTreeGet(filter) {
+    async productListGet() {
+      const request={
+        store_id:this.storeId,
+        is_active:1,
+        limit:200,
+        grouptree_include:1
+      }
       try{
-        const storeGroupsUnordered=await jQuery.get(`${heap.state.hostname}Product/groupTreeGet`, {store_id: filter.store_id})
-        let storeGroupsOrdered=[]
-        for( let group_id in storeGroupsUnordered){
-          storeGroupsOrdered[storeGroupsUnordered[group_id].order]=storeGroupsUnordered[group_id]
+        let response=await Utils.prePost(`${heap.state.hostname}Product/listGet`, request)
+        if(response){
+          this.productList=response.product_list
+          this.groupTreePrepare(response.group_tree)
         }
-        this.storeGroups=storeGroupsOrdered
 
-        this.productListGet();
+        response=await Utils.post(`${heap.state.hostname}Product/listGet`, request)
+        this.productList=response.product_list
+        this.groupTreePrepare(response.group_tree)
       }catch(err){/** */}
+    },
+    async groupTreePrepare(storeGroupsUnordered) {
+      let storeGroupsOrdered=[]
+      for( let group_id in storeGroupsUnordered){
+        storeGroupsOrdered[storeGroupsUnordered[group_id].order]=storeGroupsUnordered[group_id]
+      }
+      this.storeGroups=storeGroupsOrdered
+      this.groupOtherAdd()
+      setTimeout(()=>{this.groupSelect()}, 0)
     },
     groupOtherAdd(){
       if(this.storeProductsFiltered[0]){
@@ -769,121 +723,56 @@ export default{
       if( !parent_group_id ){
         parent_group_id = this.storeGroups[0]?.group_id
       }
-      
       const selectFirstChip=false;//sub_group_id?false:true
       this.groupSelectParent(parent_group_id,selectFirstChip)
-      // if(sub_group_id){
-      //   const self=this
-      //   setTimeout(()=>{
-      //     self.groupSelectSub(sub_group_id)
-      //   },0)
-      // }
     },
-    groupSelectParent(parent_group_id,selectFirstChip=false){
-      if(this.groupSelectedParentId == parent_group_id || !document.querySelector('.product-list-slider')){
+    groupSelectParent(parent_group_id){
+      if(this.groupSelectedParentId == parent_group_id){
         return
       }
       this.groupSelectedParentId = parent_group_id;
-      const swiper = document.querySelector('.product-list-slider').swiper;
+      const swiper = this.$refs.productListSlider.$el.swiper
       const slide_index =this.storeGroups.findIndex(group=>group.group_id==parent_group_id)
       if(slide_index>=0){
-        swiper.slideTo(slide_index,100,false);
+        swiper.slideTo(slide_index,100,false)
         this.groupSliderAdjustHeight()
       }
-
-      //const slide_index = Object.keys(this.storeGroups).indexOf(this.groupSelectedParentId);
-
-      // try{
-      //   if(selectFirstChip){
-      //     const first_sub_group_id=Object.keys(this.storeGroups[parent_group_id].children)[0];
-      //     const self=this
-      //     setTimeout(()=>{
-      //       self.groupSelectSub(first_sub_group_id)
-      //     },0)
-      //   }
-      // } catch(err){/** */}
     },
-
-    // groupSelectSub(sub_group_id){
-    //   if(this.groupSelectedSubId == sub_group_id){
-    //     //return
-    //   }
-
-    //   this.groupSelectedSubId = sub_group_id
-    //   document.querySelectorAll(".groups-container ion-chip").forEach(chip=>{
-    //     chip.classList.remove("active-chip");
-    //   });
-    //   try{
-    //     this.$refs[`group-chip-${sub_group_id}`][0].$el.classList.add("active-chip");
-    //   }catch(err){ 
-    //     /** */
-    //   }
-      
-    //   this.scrollTo(sub_group_id);
-    // },
     groupSliderChanged(event) {
       const slideIndex=event.activeIndex
       const parent_groud_id = this.storeGroups[slideIndex].group_id;
       this.groupSelectParent(parent_groud_id,1)
     },
     groupSliderAdjustHeight(){
-      try{
-        const sliderContentHeight=document.querySelector('.product-list-slider .swiper-slide.swiper-slide-active')?.scrollHeight
+        const sliderContentHeight=this.$refs.productListSlider.$el.querySelector('.swiper-slide-active')?.scrollHeight
         if(sliderContentHeight>0){
-          document.querySelector('.product-list-slider.swiper').style.maxHeight=sliderContentHeight+'px'
+          this.$refs.productListSlider.$el.style.maxHeight=sliderContentHeight+'px'
         } else {
-          document.querySelector('.product-list-slider.swiper').style.maxHeight=''
+          this.$refs.productListSlider.$el.style.maxHeight=''
         }
-      }catch{/** */}
     },
-    // scrollTo(sub_group_id) {
-    //   if (!this.$refs["group-" + sub_group_id]?.[0] ) {
-    //     return;
-    //   }
-    //   const offset=document.querySelector("ion-content.store-page").shadowRoot.querySelector("main").scrollTop;
-    //   const anchor=this.$refs["group-" + sub_group_id][0].$el.getBoundingClientRect().top;
-    //   var elementPosition = offset + anchor - this.offsetModificator - (window.innerHeight/4);
-    //   var first_group_id = Object.keys(this.storeGroups[this.groupSelectedParentId]?.children)[0] || 0;
-    //   if(first_group_id == sub_group_id){
-    //     elementPosition = offset+anchor - this.offsetModificator;
-    //   }
-    //   document
-    //     .querySelector("ion-content.store-page")
-    //     .shadowRoot.querySelector("main")
-    //     .scrollTo({ top: elementPosition, behavior: "smooth" });
-    // },
-    
-    // onScroll(event) {
-    //   const offsetTop=document.querySelector(".product-list-slider")?.offsetTop;
-    //   const offsetHeight=document.querySelector(".group-fixed-block")?.offsetHeight;
-    //   if (offsetTop - offsetHeight - 100 < event.detail.scrollTop ) {
-    //     document.querySelector(".group-fixed-block") && (document.querySelector(".group-fixed-block").className = "group-fixed-block");
-    //   } else {
-    //     document.querySelector(".group-fixed-block") && (document.querySelector(".group-fixed-block").className = "group-fixed-block hidden-block");
-    //   }
-    //   var productGroupElementList = document.querySelectorAll(".swiper-slide-active .product-list ion-row");
-    //   for (var row of productGroupElementList) {
-    //     if (
-    //       row.getBoundingClientRect().top - this.offsetModificator <= (window.innerHeight - window.innerHeight/4) &&
-    //       row.getBoundingClientRect().bottom + this.offsetModificator >= (window.innerHeight - window.innerHeight/4) &&
-    //       row.dataset.group_id
-    //     ) {
-    //       break;
-    //     }
-    //   }
-    // },
+    onScroll(event) {
+      if(!this.$refs.productListSlider || !this.$refs.groupFixedBlock){
+        return
+      }
+      const offsetTop=this.$refs.productListSlider.$el?.offsetTop;
+      const offsetHeight=this.$refs.groupFixedBlock.offsetHeight;
+      if (offsetTop - offsetHeight - 100 < event.detail.scrollTop ) {
+        this.$refs.groupFixedBlock.classList.remove("hidden-block");
+      } else {
+        this.$refs.groupFixedBlock.classList.add("hidden-block");
+      }
+    },
   },
   mounted(){
     this.query = this.$route.query;
     this.itemGet();
+    this.productListGet();
   },
-  // ionViewDidEnter() {//unnecessary  loadings when return from productView
-  //   this.query = this.$route.query;
-  //   this.itemGet();
-  // },
-  // ionViewDidLeave(){
-  //   this.storeItem=[];
-  // },
+  ionViewDidEnter() {//unnecessary  loadings when return from productView???
+    this.query = this.$route.query;
+    this.itemGet();
+  },
   watch: {
     $route(currentRoute) {
       this.storeId = currentRoute.params.id;

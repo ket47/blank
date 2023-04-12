@@ -16,7 +16,7 @@
               <ion-img style="border-radius:10px" :src="`${$heap.state.hostname}image/get.php/${store.image_hash}.150.150.webp`"/>
             </ion-thumbnail>
             <p style="font-size:1.1em">{{store?.store_name}}</p>
-            <ion-note slot="helper">{{store.store_description}}</ion-note>
+            <ion-note slot="helperText">{{store.store_description}}</ion-note>
           </ion-item>
         </ion-card-header>
         <ion-card-content>
@@ -40,7 +40,7 @@
               <ion-skeleton-text style="width:50px;height:50px" animated></ion-skeleton-text>
             </ion-thumbnail>
             <ion-skeleton-text style="width:300px;height:30px" animated></ion-skeleton-text>
-            <ion-note slot="helper"><ion-skeleton-text style="width:300px"></ion-skeleton-text></ion-note>
+            <ion-note slot="helperText"><ion-skeleton-text style="width:300px"></ion-skeleton-text></ion-note>
           </ion-item>
         </ion-card-header>
         <ion-card-content>

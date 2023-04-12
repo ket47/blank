@@ -23,6 +23,7 @@
     "@ckeditor/ckeditor5-source-editing": "^34.2.0",
     "@ckeditor/ckeditor5-vue": "^4.0.0",
     "@ionic/core": "^7.0.0",
+    "@ionic/storage": "^3.0.6",
     "@ionic/vue": "^7.0.0",
     "@ionic/vue-router": "^7.0.0",
     "@vue/cli": "^5.0.8",

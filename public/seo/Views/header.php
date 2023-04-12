@@ -9,7 +9,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta property="og:title" content="<?=$title?>" />
     <meta property="og:description" content="<?=$description?>" />
-    <meta property="og:image" content="/img/icons/android-chrome-512x512.png" />
+    <meta property="og:image" content="<?=$image_hash??'/img/icons/android-chrome-512x512.png'?>" />
     
     <link rel="icon" type="image/png" sizes="32x32" href="/img/icons/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/img/icons/favicon-16x16.png">

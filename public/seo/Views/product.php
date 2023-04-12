@@ -1,5 +1,5 @@
         <div>
-            <div class="image" style="text-align: center"><img src="<?=$image_host?>/<?=$product->image_hash?>.350.350.webp" alt="<?=$product->product_name?>"/></div>
+            <div class="image" style="text-align: center"><img src="<?=$image_host?>/<?=$product->image_hash?>.600.600.webp" alt="<?=$product->product_name?>"/></div>
         </div>
     <div class="product-item">
         <div class="product-right">

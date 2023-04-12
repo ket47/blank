@@ -234,12 +234,20 @@ export default {
                 trans_id:this.transactionId
             };
             try{
-                this.transaction=await jquery.post(`${this.$heap.state.hostname}Transaction/itemGet`,request)
+                this.transaction=await Utils.prePost(`${this.$heap.state.hostname}Transaction/itemGet`,request)
+                if(this.transaction){
+                    this.transaction.trans_date=this.transaction.trans_date?.substring(0,10)
+                    this.transaction.is_disabled=this.transaction.is_disabled*1
+                    this.tagDictFill(this.transaction.tags)
+                }
+
+                this.transaction=await Utils.post(`${this.$heap.state.hostname}Transaction/itemGet`,request)
                 this.transaction.trans_date=this.transaction.trans_date?.substring(0,10)
                 this.transaction.is_disabled=this.transaction.is_disabled*1
                 this.tagDictFill(this.transaction.tags)
             }
             catch(err){
+                console.log(err)
                 const exception_code=err?.responseJSON?.messages?.error;
                 switch(exception_code){
                     case 'forbidden':
@@ -252,62 +260,6 @@ export default {
                 return false
             }
         },
-        // async holderLabelGet(){
-        //     try{
-        //         this.transaction.trans_holder_label=''
-        //         if( this.transaction.trans_holder=='order' ){
-        //             const request={
-        //                 name_query:this.transaction.trans_holder_id,
-        //                 name_query_fields:'order_id'
-        //             }
-        //             const result=await jquery.post(`${this.$heap.state.hostname}Order/listGet`,request)
-        //             const item=result[0]
-        //             this.transaction.trans_holder_label=`заказ#${item.order_id} ${item.store_name} > ${item.user_name}`
-        //         }
-        //         if( this.transaction.trans_holder=='store' ){
-        //             const request={
-        //                 name_query:this.transaction.trans_holder_id,
-        //                 name_query_fields:'store_id'
-        //             }
-        //             const result=await jquery.post(`${this.$heap.state.hostname}Store/listGet`,request)
-        //             const item=result[0]
-        //             this.transaction.trans_holder_label=`продавец ${item.store_name}`
-        //         }
-        //         if( this.transaction.trans_holder=='courier' ){
-        //             const request={
-        //                 name_query:this.transaction.trans_holder_id,
-        //                 name_query_fields:'courier_id'
-        //             }
-        //             const result=await jquery.post(`${this.$heap.state.hostname}Courier/listGet`,request)
-        //             const item=result[0]
-        //             this.transaction.trans_holder_label=`курьер ${item.user_name} ${item.user_phone}`
-        //         }
-        //     }catch{/** */}
-        // },
-        // async holderIdPick(){
-        //     if(!this.transaction.trans_holder){
-        //         return
-        //     }
-        //     const itemType=this.transaction.trans_holder
-        //     const modal = await modalController.create({
-        //         component: ItemPicker,
-        //         componentProps:{itemType},
-        //         initialBreakpoint: 0.75,
-        //         breakpoints: [0.75, 1],
-        //         canDissmiss:true,
-        //     });
-        //     modal.present()
-        //     this.$topic.on('dismissModal',()=>{
-        //         modal.dismiss()
-        //     });
-        //     const item=await modal.onDidDismiss();
-        //     if(!item.data){
-        //         return
-        //     }
-        //     this.transaction.trans_holder_id=item.data.id
-        //     this.transaction.trans_holder_label=item.data.name
-        //     this.itemRender()
-        // },
         validate(){
             if( this.tagMissingNames.length>0 ){
                 this.$flash("Не выбраны все родительские элементы")

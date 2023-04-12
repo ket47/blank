@@ -116,7 +116,7 @@ ion-card .store-title{
       <ion-col size="10">
         <h5 class="section-title">Магазины и рестораны</h5>
       </ion-col>
-      <ion-col  size="2" class="ion-align-self-end">
+      <ion-col  size="2" class="ion-align-self-end" @click="$router.push('/search')">
         <ion-icon style="font-size: 20px;" :icon="searchOutline"/>
       </ion-col>
     </ion-row>
@@ -271,22 +271,19 @@ export default {
   },
   methods: {
     async listNearGet(loc) {
-      if(loc?.location_latitude!=this.loadedLocation.location_latitude || loc?.location_longitude!=this.loadedLocation.location_longitude){
-        this.can_reload_at=0
-      }
-      const now=Date.now()
-      if( this.can_reload_at>now ){
-        return
-      }
-      this.can_reload_at=now+10000
       try{
         const location={
           location_id:loc.location_id,
           location_latitude:loc.location_latitude,
           location_longitude:loc.location_longitude,
         }
-        this.loadedLocation=location
-        const response=await jQuery.post(heap.state.hostname + "Store/listNearGet", location)
+        let response
+        response=await Utils.prePost(`${heap.state.hostname}Store/listNearGet`, location)
+        if(response){
+          this.hiddenCount=response.hidden_count
+          this.storeList=this.storeListCalculate(response.store_list)
+        }
+        response=await Utils.post(`${heap.state.hostname}Store/listNearGet`, location)
         this.hiddenCount=response.hidden_count
         this.storeList=this.storeListCalculate(response.store_list)
       }catch{/** */}

@@ -75,7 +75,7 @@
       </ion-item>
 
       <div @change="saveForm" v-if="optionData">
-          <ion-card @click="$router.replace(`product-edit-${optionData.parent.product_id}?refreshOptions=1`)" :color="(productId==optionData.parent.product_id)?'primary':'light'">
+          <ion-card @click="$router.replace(`product-edit-${optionData.parent.product_id}?refreshOptions=1`)" :color="(is_option_parent)?'primary':'light'">
             <ion-card-header>
               <ion-card-subtitle>
                 Родительский товар

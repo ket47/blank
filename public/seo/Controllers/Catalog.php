@@ -27,8 +27,9 @@ class Catalog{
         $store=$CatalogModel->storeItemGet($store_id);
 
         $context['image_host']='https://api.tezkel.com/image/get.php/';
-        $context['title']="{$store->store_name} на Тезкель";
-        $context['description']="{$store->store_description} Вы можете заказать через Тезкель.";
+        $context['image_hash']=$store->image_hash;
+        $context['title']="{$store->store_name} с доставкой Тезкель";
+        $context['description']="{$store->store_description} Вы можете заказать домой или в офис через Тезкель.";
         $context['store']=$store;
         $context['productList']=$CatalogModel->productListGet([
             'limit'=>150,
@@ -43,6 +44,7 @@ class Catalog{
         $CatalogModel=new \Models\CatalogModel();
         $product=$CatalogModel->productItemGet($product_id);
 
+        $context['image_hash']=$product->image_hash;
         $context['image_host']='https://api.tezkel.com/image/get.php/';
         $context['title']="{$product->product_name} из {$product->store_name} на Тезкель";
         $context['description']="{$product->product_description} из {$product->store_name} Вы можете заказать через Тезкель.";
