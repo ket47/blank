@@ -343,8 +343,8 @@ export default  {
             const link=location.href;
             if(navigator.share){
                 const shareData = {
-                    title: `${this.$heap.state.settings.app_title} ${this.productItem.product_name}`,
-                    text: this.productItem.product_description,
+                    title: `${this.$heap.state.settings.app_title}`,
+                    text: `${this.productItem.product_name}`,
                     url:link
                 }
                 await navigator.share(shareData);
