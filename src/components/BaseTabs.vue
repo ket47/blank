@@ -138,7 +138,9 @@ export default{
     return {
       isMobile,
       narrowScreen,
-      activeOrderCount:0
+      activeOrderCount:0,
+      tabRoutes:{},
+      tabSelected:''
     }
   },
   async created(){
@@ -152,24 +154,31 @@ export default{
     this.tabSelect(this.$route.href)
   },
   methods:{
-    tabClicked(route){
-      this.$router.push(route)
-    },
-    tabSelect(route){
-      if(!route){
+    tabClicked(newroute){
+      const currroute_tabname=newroute?.split('/')?.[1]//currently opened tabs name
+      if( this.tabSelected!==currroute_tabname && this.tabRoutes[currroute_tabname] ){//look if there is prev opened page
+        this.$router.push(this.tabRoutes[currroute_tabname])
         return
       }
-      const chunks=route?.split('/')
-      const tab=(chunks?.[1]||'catalog')+'tab'
-      document.querySelector('.tab-selected')?.classList?.remove('tab-selected')
-      if(this.$refs[tab]){
-        this.$refs[tab].className="tab-selected"
+      this.$router.push(newroute)
+    },
+    tabSelect(currroute){
+      if(!currroute){
+        return
       }
+      const route_tabname=currroute?.split('/')?.[1]
+      const tabbutton=(route_tabname||'catalog')+'tab'
+      document.querySelector('.tab-selected')?.classList?.remove('tab-selected')
+      if(this.$refs[tabbutton]){
+        this.$refs[tabbutton].className="tab-selected"
+      }
+      this.tabRoutes[route_tabname]=currroute//here we store last opened route in tab
+      this.tabSelected=route_tabname
     }
   },
   watch:{
     '$route.href'(to,from){
-      setTimeout(()=>this.tabSelect(this.$route.href),50)
+      setTimeout(()=>this.tabSelect(this.$route.href),0)
     }
   }
 }

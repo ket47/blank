@@ -202,7 +202,8 @@ import {
     chatboxEllipsesOutline,
 }                       from 'ionicons/icons';
 import CartAddButtons   from '@/components/CartAddButtons.vue';
-import jQuery from "jquery";
+import jQuery           from "jquery";
+import Order            from "@/scripts/Order.js"
 export default({
     props:['orderData'],
     components: {
@@ -329,15 +330,20 @@ export default({
                     return
                 }
             }
-            const request={
-                order_id:entry.order_id,
-                entry_id:entry.entry_id,
-                entry_comment:new_comment
+            if(this.orderData.order_id>0){
+                const request={
+                    order_id:entry.order_id,
+                    entry_id:entry.entry_id,
+                    entry_comment:new_comment
+                }
+                try{
+                    const result=await jQuery.post( `${this.$heap.state.hostname}Entry/itemUpdate`, JSON.stringify(request) );
+                    this.$emit('orderRefresh');
+                }catch{/** */}
+            } else {
+                entry.entry_comment=new_comment
+                Order.cart.entryUpdate(entry)
             }
-            try{
-                const result=await jQuery.post( `${this.$heap.state.hostname}Entry/itemUpdate`, JSON.stringify(request) );
-                this.$emit('orderRefresh');
-            }catch{/** */}
         },
         async itemDiscountEdit(entry, mode="edit"){
             let new_discount=0
