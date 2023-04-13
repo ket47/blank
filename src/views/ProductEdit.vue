@@ -55,23 +55,20 @@
     <ion-list v-if="productItem">
       <ion-item>
         <ion-icon :src="trashOutline" color="primary" slot="start"/>
-        Удалено
-        <ion-toggle slot="end" v-model="is_deleted" color="danger" @ionChange="itemDelete($event.target.checked?1:0)"></ion-toggle>
+        
+        <ion-toggle v-model="is_deleted" color="danger" @ionChange="itemDelete($event.target.checked?1:0)">Удалено</ion-toggle>
       </ion-item>
       <ion-item>
-        <ion-icon :src="pizzaOutline" color="primary" slot="start"/>
-        Вести учет остатков
-        <ion-toggle v-if="productItem" slot="end" v-model="is_counted" @ionChange="save('is_counted',$event.target.checked?1:0)"/>
+        <ion-icon :src="calculatorOutline" color="primary" slot="start"/>
+        <ion-toggle v-if="productItem" v-model="is_counted" @ionChange="save('is_counted',$event.target.checked?1:0)">Вести учет остатков</ion-toggle>
       </ion-item>
       <ion-item v-if="!is_option_child">
         <ion-icon :src="layersOutline" color="primary" slot="start"/>
-        Имеет варианты
-        <ion-toggle v-if="productItem" slot="end" v-model="is_option_parent" @ionChange="itemOptionSet($event.target.checked);"/>
+        <ion-toggle v-if="productItem" v-model="is_option_parent" @ionChange="itemOptionSet($event.target.checked);">Имеет варианты</ion-toggle>
       </ion-item>
       <ion-item>
         <ion-icon :src="ribbonOutline" color="primary" slot="start"/>
-        На модерации
-        <ion-toggle slot="end" v-model="is_disabled" @ionChange="itemDisable($event.target.checked?1:0)"></ion-toggle>
+        <ion-toggle v-model="is_disabled" @ionChange="itemDisable($event.target.checked?1:0)">На модерации</ion-toggle>
       </ion-item>
 
       <div @change="saveForm" v-if="optionData">
@@ -87,7 +84,7 @@
                 {{optionData.parent.product_name}}
               </ion-item>
               <ion-item v-if="productId==optionData.parent.product_id" color="light"> 
-                <ion-label position="stacked" >Вариант*</ion-label>
+                <label position="stacked" >Вариант*</label>
                 <ion-input name="product_option" v-model="productItem.product_option"/>
               </ion-item>
               <ion-item lines="none" v-else color="light">
@@ -119,15 +116,15 @@
 
       <div v-if="!is_option_child">
       <ion-item-divider></ion-item-divider>
-      <ion-item button @click="$go('/catalog/product-'+productItem.product_id)">
+      <ion-item button @click="$go('/catalog/product-'+productItem.product_id)" detail="false">
         <ion-icon :src="chevronBack" slot="start"/>
         Показать товар
       </ion-item>
-      <ion-item button @click="showProductInStore()">
+      <ion-item button @click="showProductInStore()" detail="false">
         <ion-icon :src="chevronBack" slot="start"/>
         Показать в магазине
       </ion-item>
-      <ion-item button @click="$go('/catalog/store-edit-'+productItem.store_id)">
+      <ion-item button @click="$go('/catalog/store-edit-'+productItem.store_id)" detail="false">
         <ion-icon :src="chevronBack" slot="start"/>
         Управление магазином
       </ion-item>
@@ -141,32 +138,25 @@
             <ion-label>Основные настройки</ion-label>
           </ion-item-divider>
           <ion-item v-if="!is_option_child">
-            <ion-label position="stacked" color="primary">Название*</ion-label>
-            <ion-input v-model="productItem.product_name" name="product_name" placeholder="полное название товара" clearInput="true"/>
+            <ion-input v-model="productItem.product_name" label="Название*" labelPlacement="stacked" name="product_name" placeholder="полное название товара" clearInput="true"/>
           </ion-item>
           <ion-item v-if="!is_option_child">
-            <ion-label position="stacked" color="primary">Описание*</ion-label>
-            <ion-textarea v-model="productItem.product_description" name="product_description" rows="6" placeholder="характеристики, свойства, состав товара"></ion-textarea>
+            <ion-textarea v-model="productItem.product_description" label="Описание*" labelPlacement="stacked" name="product_description" rows="6" placeholder="характеристики, свойства, состав товара"></ion-textarea>
           </ion-item>
           <ion-item>
-            <ion-label>Артикул</ion-label>
-            <ion-input v-model="productItem.product_code" name="product_code" slot="end" placeholder="код товара"/>
+            <ion-input v-model="productItem.product_code" label="Артикул" labelPlacement="stacked" name="product_code" placeholder="код товара"/>
           </ion-item>
           <ion-item>
-            <ion-label>Штрихкод</ion-label>
-            <ion-input v-model="productItem.product_barcode" name="product_barcode" slot="end" placeholder="штрихкод"/>
+            <ion-input v-model="productItem.product_barcode" label="Штрихкод" labelPlacement="stacked" name="product_barcode" placeholder="штрихкод"/>
           </ion-item>
           <ion-item v-if="is_counted">
-            <ion-label>Остаток <span v-if="productItem.product_unit">({{productItem.product_unit}})</span></ion-label>
-            <ion-input v-model="productItem.product_quantity" name="product_quantity" slot="end" placeholder="в наличии"/>
+            <ion-input v-model="productItem.product_quantity" :label="`Остаток ${productItem.product_unit}`" labelPlacement="stacked" name="product_quantity" placeholder="в наличии"/>
           </ion-item>
           <ion-item>
-            <ion-label>Мин. заказ*<span v-if="productItem.product_unit">({{productItem.product_unit}})</span></ion-label>
-            <ion-input v-model="productItem.product_quantity_min" name="product_quantity_min" type="number" inputmode="numeric" pattern="\d\." slot="end"/>
+            <ion-input v-model="productItem.product_quantity_min" :label="`Мин. заказ* ${productItem.product_unit}`" labelPlacement="stacked" name="product_quantity_min" type="number" inputmode="numeric" pattern="\d\."/>
           </ion-item>
           <ion-item v-if="!is_option_child">
-            <ion-label>Единица*</ion-label>
-            <ion-select v-model="productItem.product_unit" name="product_unit" slot="end"  @ionChange="saveForm">
+            <ion-select v-model="productItem.product_unit" label="Единица*" labelPlacement="stacked" name="product_unit"  @ionChange="saveForm">
               <ion-select-option value="шт">штука</ion-select-option>
               <ion-select-option value="порция">порция вес</ion-select-option>
               <ion-select-option value="порция мл">порция объем</ion-select-option>
@@ -176,9 +166,7 @@
             </ion-select>
           </ion-item>
           <ion-item v-if="productItem.product_unit!='кг'">
-            <ion-label v-if="productItem.product_unit=='порция мл'">Объем л*</ion-label>
-            <ion-label v-else>Вес 1{{productItem.product_unit}} (кг)*</ion-label>
-            <ion-input v-model="productItem.product_weight" name="product_weight" type="number" step="0.1" inputmode="numeric" pattern="\d\." slot="end"/>
+            <ion-input v-model="productItem.product_weight" :label=" (productItem.product_unit=='порция мл')?'Объем л*':`Вес 1${productItem.product_unit} в кг*`" labelPlacement="stacked" name="product_weight" type="number" step="0.1" inputmode="numeric" pattern="\d\."/>
           </ion-item>
         </ion-item-group>
       </ion-list>
@@ -191,24 +179,19 @@
           </ion-item-divider>
         </ion-item-group>
         <ion-item>
-          <ion-label>Цена*</ion-label>
-          <ion-input v-model="productItem.product_price" name="product_price" type="number" inputmode="numeric" slot="end"/>
+          <ion-input v-model="productItem.product_price" label="Цена*" labelPlacement="stacked" name="product_price" type="number" inputmode="numeric"/>
         </ion-item>
         <ion-item>
-          <ion-label>Цена в меню/на полке</ion-label>
-          <ion-input v-model="productItem.product_net_price" name="product_net_price" type="number" inputmode="numeric" slot="end"/>
+          <ion-input v-model="productItem.product_net_price" label="Цена в меню/на полке" labelPlacement="stacked" name="product_net_price" type="number" inputmode="numeric"/>
         </ion-item>
         <ion-item>
-          <ion-label color="success">Цена акционная</ion-label>
-          <ion-input v-model="productItem.product_promo_price" name="product_promo_price" type="number" inputmode="numeric" slot="end" color="success"/>
+          <ion-input v-model="productItem.product_promo_price" label="Цена акционная" labelPlacement="stacked" name="product_promo_price" type="number" inputmode="numeric" color="success"/>
         </ion-item>
         <ion-item>
-          <ion-label color="success">Начало акции</ion-label>
-          <ion-input type="date" v-model="productItem.product_promo_start" name="product_promo_start" slot="end"/>
+          <ion-input type="date" v-model="productItem.product_promo_start" label="Начало акции" labelPlacement="stacked" name="product_promo_start"/>
         </ion-item>
         <ion-item>
-          <ion-label color="success">Конец акции</ion-label>
-          <ion-input type="date" v-model="productItem.product_promo_finish" name="product_promo_finish" slot="end"/>
+          <ion-input type="date" v-model="productItem.product_promo_finish" label="Конец акции" labelPlacement="stacked" name="product_promo_finish"/>
         </ion-item>
       </ion-list>
     </form>
@@ -278,7 +261,7 @@ import {
   banOutline,
   personOutline,
   addOutline,
-  pizzaOutline,
+  calculatorOutline,
   compassOutline,
   chevronBack,
   layersOutline,
@@ -323,7 +306,7 @@ export default  {
       banOutline,
       personOutline,
       addOutline,
-      pizzaOutline,
+      calculatorOutline,
       compassOutline,
       chevronBack,
       layersOutline,

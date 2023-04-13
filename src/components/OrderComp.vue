@@ -37,7 +37,9 @@
                         {{ entry.entry_text }}
                     </div>
                     <div>
-                        <ion-label color="primary">{{ entry.entry_price }}{{$heap.state.currencySign}}</ion-label>
+                        <ion-label color="primary">
+                            {{ entry.entry_price }}{{$heap.state.currencySign}}
+                        </ion-label>
                     </div>
                     <div v-if="entry.product_id"  style="position:relative;min-height:40px;">
                         <cart-add-buttons v-if="isEditable" buttonLayout="horizontal" :entry="entry" :orderData="orderData"></cart-add-buttons>
@@ -48,9 +50,31 @@
                             <span v-else>{{entry.product_unit}}</span>
                         </ion-text>
                     </div>
-                    <div v-if="entry.entry_comment" style="grid-column: 1 / span 2">
-                        <ion-icon color="medium" :src="chatboxEllipsesOutline" @click="itemCommentEdit(entry)"/> <ion-note>{{ entry.entry_comment }}</ion-note>
+
+
+                    <div v-if="atCorrection" style="grid-column: 1 / span 2">
+                        <ion-chip v-if="entry.entry_discount>0" color="success">
+                            <ion-label @click="itemDiscountEdit(entry)">-{{entry.entry_discount}}{{$heap.state.currencySign}} скидка</ion-label>
+                            <ion-icon color="medium" :src="trash" @click="itemDiscountEdit(entry,'remove')"/>
+                        </ion-chip>
+                        <ion-chip v-else color="success" @click="itemDiscountEdit(entry)">+ Сделать скидку</ion-chip>
                     </div>
+                    <div v-else-if="entry.entry_discount>0" style="grid-column: 1 / span 2">
+                        <ion-label color="success">-{{entry.entry_discount}}{{$heap.state.currencySign}} скидка</ion-label>
+                    </div>
+
+                    <div v-if="isEditable" style="grid-column: 1 / span 2">
+                        <ion-chip v-if="entry.entry_comment" color="medium">
+                            <ion-icon color="medium" :src="chatboxEllipsesOutline"/> <ion-note @click="itemCommentEdit(entry)">{{ entry.entry_comment }}</ion-note>
+                            <ion-icon color="medium" :src="trash" @click="itemCommentEdit(entry,'remove')"/>
+                        </ion-chip>
+                        <ion-chip v-else color="medium"  @click="itemCommentEdit(entry)">+ Комментарий</ion-chip>
+                    </div>
+                    <div v-else-if="entry.entry_comment" style="grid-column: 1 / span 2">
+                        <ion-icon color="medium" :src="chatboxEllipsesOutline"/> <ion-note>{{ entry.entry_comment }}</ion-note>
+                    </div>
+
+                    
                 </div>
             </ion-item>
             <ion-item lines="none">
@@ -232,17 +256,14 @@ export default({
                 if( !entry || !entry.entry_quantity || !entry.entry_price ){
                     continue;
                 }
-                total+= (entry.entry_quantity) * (entry.entry_price);
+                total+= (entry.entry_quantity) * (entry.entry_price) - (entry.entry_discount||0);
             }
             return total;
         },
         isEditable(){
-            if(
-                (this.orderData.user_role=='customer' || this.orderData.user_role=='admin')
-                && ['customer_cart'].includes(this.orderData.stage_current) 
-                ){
-                return true
-            }
+            return this.atCorrection || this.atCart
+        },
+        atCorrection(){
             if( 
                 (this.orderData.user_role=='supplier' || this.orderData.user_role=='admin') 
                 && ['supplier_corrected'].includes(this.orderData.stage_current) 
@@ -250,6 +271,15 @@ export default({
                 return true
             }
             return false;
+        },
+        atCart(){
+            if(
+                (this.orderData.user_role=='customer' || this.orderData.user_role=='admin')
+                && ['customer_cart'].includes(this.orderData.stage_current) 
+                ){
+                return true
+            }
+            return false
         },
         nextStageButtons(){
             let buttons={};
@@ -291,8 +321,14 @@ export default({
             }
             this.$emit('stageCreate',order_id, order_stage_code);
         },
-        async itemCommentEdit(entry){
-            const new_comment=prompt("Комментарий к товару",entry.entry_comment??'')
+        async itemCommentEdit(entry, mode="edit"){
+            let new_comment=''
+            if(mode=="edit"){
+                new_comment=prompt("Комментарий к товару",entry.entry_comment??'')
+                if(new_comment===null){
+                    return
+                }
+            }
             const request={
                 order_id:entry.order_id,
                 entry_id:entry.entry_id,
@@ -302,6 +338,26 @@ export default({
                 const result=await jQuery.post( `${this.$heap.state.hostname}Entry/itemUpdate`, JSON.stringify(request) );
                 this.$emit('orderRefresh');
             }catch{/** */}
+        },
+        async itemDiscountEdit(entry, mode="edit"){
+            let new_discount=0
+            if(mode=="edit"){
+                new_discount=prompt(`Скидка на товар в ${this.$heap.state.currencySign}`,entry.entry_discount??'')??0
+            }
+            if(new_discount){
+                new_discount=new_discount.replace(',','.').replace(/[^\d.]/img,'')
+            }
+            const request={
+                order_id:entry.order_id,
+                entry_id:entry.entry_id,
+                entry_discount:new_discount
+            }
+            try{
+                const result=await jQuery.post( `${this.$heap.state.hostname}Entry/itemUpdate`, JSON.stringify(request) );
+                this.$emit('orderRefresh');
+            }catch{
+                this.$flash("Не удалось изменить скидку")
+            }
         }
     }
 })

@@ -12,10 +12,8 @@
           <div class="text" style="color: white">
             <h2 style="color: rgb(235, 192, 0); font-size: 42px; margin: 0; filter: drop-shadow(-2px 2px 2px #042c4f);">Зарегистрируйся</h2>
             <h4 style="font-size: 24px; margin-top: 5px;">и получай скидку до <b style="font-size: 20px;">1000</b> рублей</h4>
-              <ion-button expand="block" color="secondary" @click="$go('/user/sign-up')"><b>ХОЧУ СКИДКУ!</b></ion-button>
-            <router-link to="/catalog">
-              <ion-button expand="block" fill="clear" color="light"><b>ЧТО Я ПОЛУЧУ?</b></ion-button>
-            </router-link>
+              <ion-button expand="block" color="light" @click="$go('/user/sign-up')"><b>ХОЧУ СКИДКУ СЕЙЧАС!</b></ion-button>
+              <ion-button expand="block" fill="clear" color="light" @click="$go('/catalog')"><b>Нет, скидку получу позже</b></ion-button>
           </div>
         </div>
       </div>
