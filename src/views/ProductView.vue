@@ -193,6 +193,7 @@ import CartAddButtons   from '@/components/CartAddButtons'
 import CartHeader       from '@/components/CartHeader'
 
 import Order            from '@/scripts/Order.js'
+import Utils            from '@/scripts/Utils.js'
 
 import ReactionTargetPicker from '@/components/ReactionTargetPicker.vue'
 import ReactionCommentViewer from '@/components/ReactionCommentViewer.vue'
@@ -236,7 +237,6 @@ export default  {
     return { 
       productId: this.$route.params.id,
       productItem: null,
-      can_reload_at:0,
     };
   },
   mounted(){
@@ -303,23 +303,10 @@ export default  {
     }
   },
   methods: {
-    is_busy(){
-      const now=Date.now()
-      if(this.can_reload_at>now){
-        return
-      }
-      this.can_reload_at=now+2000
-    },
       async getProduct(){
-        if( this.is_busy() ){
-          return
-        }
         try{
-          this.is_loading=1
-          this.productItem=await jQuery.post( heap.state.hostname + "Product/itemGet", { product_id: this.productId })
-          this.productItem.reaction={
-            reaction_id:33
-          }
+          this.productItem=await Utils.prePost( heap.state.hostname + "Product/itemGet", { product_id: this.productId })
+          this.productItem=await Utils.post( heap.state.hostname + "Product/itemGet", { product_id: this.productId })
         }catch(err){
           const exception_code=err?.responseJSON?.messages?.error;
           switch(exception_code){

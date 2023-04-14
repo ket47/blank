@@ -764,14 +764,15 @@ export default{
       }
     },
   },
-  mounted(){
-    this.query = this.$route.query;
-    this.itemGet();
-    this.productListGet();
+  async mounted(){
+    this.query = this.$route.query
+    this.itemGet()
+    this.productListGet()
   },
-  ionViewDidEnter() {//unnecessary  loadings when return from productView???
+  async ionViewDidEnter() {//unnecessary  loadings when return from productView???
     this.query = this.$route.query;
-    this.itemGet();
+    this.itemGet()
+    this.productListGet()
   },
   watch: {
     $route(currentRoute) {

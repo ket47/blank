@@ -27,9 +27,7 @@
             <div style="display:grid;grid-template-columns:100px auto">
               <div>
                   <ion-label position="stacked">Код</ion-label>
-                  <ion-select :value="user_phone_prefix">
-                    <ion-select-option value="7" selected>+7 </ion-select-option>
-                  </ion-select>
+                  <ion-input readonly>+7</ion-input>
               </div>
               <div>
                   <ion-label position="stacked">Мобильный телефон*</ion-label>

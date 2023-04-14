@@ -46,6 +46,7 @@ ion-tabs ion-label{
 }
 .ios ion-tab-bar>div{
   margin-top: -10px;
+  background-color: white;
 }
 </style>
 
@@ -178,7 +179,8 @@ export default{
   },
   watch:{
     '$route.href'(to,from){
-      setTimeout(()=>this.tabSelect(this.$route.href),0)
+      this.tabSelect(this.$route.href)
+      setTimeout(()=>this.tabSelect(this.$route.href),100)
     }
   }
 }

@@ -7,7 +7,7 @@
 <template>
   <base-layout page-title="Поиск товаров" hideBackLink="true">
     <ion-searchbar class="search-container" v-model="query" @input="delayedListGet()" @ionClear="delayedListGet()" placeholder="начните искать"></ion-searchbar>
-    <div v-if="found">
+    <div v-if="found?.product_matches?.length>0">
       <ion-title>Найденные товары</ion-title>
       <ion-card v-for="store in found.product_matches" :key="store.store_id">
         <ion-card-header>
@@ -134,7 +134,7 @@ export default  {
         return
       }
       try{
-        const found=await jQuery.get(this.$heap.state.hostname+'Search/listGet',request)
+        const found=await Utils.post(this.$heap.state.hostname+'Search/listGet',request)
         this.found=this.storeListCalculate(found)
       }catch{
         this.found=null
@@ -142,7 +142,7 @@ export default  {
     },
     storeListCalculate(found){
       if( !found.product_matches?.length ){
-        return null
+        return []
       }
       for(let i in found.product_matches){
         found.product_matches[i].deliveryTime=Utils.deliveryTimeCalculate(found.product_matches[i].distance,found.product_matches[i].store_time_preparation)
