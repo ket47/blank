@@ -2,120 +2,80 @@
   ion-icon{
     font-size:2.5em !important;
   }
+ion-tab-bar>div{
+  width:100%;
+  padding: 10px;
+  padding-left: 30%;
+  text-align: left;
+  cursor: pointer;
+}
+ion-tabs ion-icon{
+  font-size:1.5em;
+}
+.desktop-tab-selected ion-label{
+  color: var(--ion-color-primary);
+}
+.desktop-tab-selected .active{
+  display:inline-block;
+}
+.desktop-tab-selected .passive{
+  display:none;
+}
+.active{
+  display:none;
+}
+.passive{
+  display:inline-block;
+}
 </style>
 
 <template>
   <ion-page>
     <ion-content :class="['desktop-main-container', pageClass]" :scrollEvents="contentOnScroll ? 'true' : 'false'" @ionScroll="contentOnScroll($event)">
-      <ion-grid class="desktop-template" :class="[pageClass]">
-        <ion-row>
-          <ion-col class="ion-left-column" size="3">
-            <router-link to="/">
-              <ion-icon class="toolbar_svg_logo ion-color ion-color-primary"  :icon="mainLogo"/>
-            </router-link>
-            <ion-tab-bar>
-              <ion-tab-button tab="catalog" href="/catalog" routerDirection="back">
-                <ion-row>
-                  <ion-icon :icon="storefrontOutline"/>
-                  <ion-label>Каталог</ion-label>
-                </ion-row>
-              </ion-tab-button>
-              <ion-tab-button tab="search" href="/search" routerDirection="back">
-                <ion-row>
-                  <ion-icon :icon="searchOutline"/>
-                  <ion-label>Поиск</ion-label>
-                </ion-row>
-              </ion-tab-button>
-              <ion-tab-button tab="order" href="/order/" routerDirection="back">
-                <ion-row>
-                  <ion-icon :icon="readerOutline"/>
-                  <ion-label>Заказы
-                  <sup><ion-badge color="warning" style="font-size:0.7em" v-if="activeOrderCount>0">{{activeOrderCount}}</ion-badge></sup>
-                  </ion-label>
-                </ion-row>
-              </ion-tab-button>
-              <ion-tab-button tab="user" href="/user" routerDirection="back">
-                <ion-row>
-                  <ion-icon :icon="personOutline"/>
-                  <ion-label>Профиль</ion-label>
-                </ion-row>
-              </ion-tab-button>
-            </ion-tab-bar>
-          </ion-col>
-          <ion-col class="ion-middle-column" :size="9">
-            <div class="page-content">
-              <ion-toolbar>
-                <ion-title><h1 style="margin:30px" v-if="pageTitle">{{ pageTitle }}</h1></ion-title>
-                <cart-header slot="end"></cart-header>
-              </ion-toolbar>
-              <slot/>
-                
-            </div>
-          </ion-col>
-        </ion-row>
-      </ion-grid>
+      <div class="main-grid">
+        <div></div>
+        <div style="background:white;max-width:1200px">
+          <div class="page-content" style="">
+            <ion-toolbar>
+              <ion-title><h1 style="margin:30px" v-if="pageTitle">{{ pageTitle }}</h1></ion-title>
+              <cart-header slot="end"></cart-header>
+            </ion-toolbar>
+            <slot/>
+          </div>
+        </div>
+        <div></div>
+      </div>
       <footer-desktop/>
-      <ion-fab v-if="isInteractingWithServer" vertical="center" horizontal="center" slot="fixed">
-        <tezkel-loader/>
-      </ion-fab>
     </ion-content>
   </ion-page>
 </template>
 
 <script>
 
-
+import {
+  cartOutline,
+}                     from "ionicons/icons";
 import {
   IonPage,
   IonContent,
-  IonIcon,
-  IonTabBar,
-  IonToolbar,
   IonTitle,
-  IonTabButton,
-  IonLabel,
-  IonRow,
-  IonCol,
-  IonGrid,
-  IonFab,
-  IonBadge,
-} from "@ionic/vue";
-import TezkelLoader   from "@/components/TezkelLoader.vue"
+  IonToolbar,
+}                     from "@ionic/vue";
 import FooterDesktop  from "@/components/FooterDesktop";
-//import CartBodyModal  from '@/components/CartBodyModal.vue';
 import CartHeader     from "@/components/CartHeader";
 import Order          from '@/scripts/Order.js'
-
-import {
-  storefrontOutline,
-  searchOutline,
-  personOutline,
-  readerOutline,
-}                   from 'ionicons/icons';
-import mainLogo       from "@/assets/icons/tezkel_logo.svg";
-
-import {
-  cartOutline,
-} from "ionicons/icons";
 
 export default {
   setup() {
     return {
-      storefrontOutline,
-      searchOutline,
-      personOutline,
-      readerOutline,
       cartOutline,
-      mainLogo
+
     }
   },
   computed:{
     cartListTotal(){
       return Order.cart.listTotalGet()
     },
-    isInteractingWithServer(){
-      return this.$heap.state.isInteractingWithServer
-    }
   },
   props: [
     "pageTitle",
@@ -128,33 +88,10 @@ export default {
   components: {
     IonPage,
     IonContent,
-    IonIcon,
-    IonTabBar,
-    IonToolbar,
-    IonTitle,
-    IonTabButton,
-    IonLabel,
-    IonRow,
-    IonCol,
-    IonGrid,
-    //CartBodyModal,
     CartHeader,
-    IonFab,
     FooterDesktop,
-    TezkelLoader,
-    IonBadge,
+    IonTitle,
+    IonToolbar,
   },
-  data(){
-    return {
-      activeOrderCount:0
-    }
-  },
-  async created(){
-    const self=this
-    this.$topic.on('pushStageChanged',data=>{
-      self.activeOrderCount=data?.orderActiveCount
-    })
-    this.activeOrderCount=await Order.api.listCount()
-  }
 };
 </script>

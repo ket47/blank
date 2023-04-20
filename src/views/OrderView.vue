@@ -62,9 +62,6 @@ import OrderEntryAdd        from '@/components/OrderEntryAdd.vue'
 import ImageTileComp        from '@/components/ImageTileComp.vue'
 import MsgSubscriptionComp  from '@/components/MsgSubscriptionComp.vue'
 
-import jQuery from 'jquery'
-
-
 export default({
     components: { 
     OrderComp,
@@ -134,11 +131,11 @@ export default({
             try{
                 const stateChangeResult=await Order.api.itemStageCreate(order_id, order_stage_code);
                 if(stateChangeResult=='ok'){
-                    if( order_stage_code=='customer_purged' ){
+                    if( order_stage_code=='customer_purged' || order_stage_code=='customer_deleted' ){
                         this.$flash("Заказ удален");
                         this.order=null;
                         this.$go('/order/order-list');
-                        Order.cart.itemDelete(order_id)//if copy of order there is in cart
+                        Order.cart.itemDelete(order_id)//if there is a copy of order in the cart
                         return;
                     }
                     await this.itemGet();
@@ -181,6 +178,9 @@ export default({
                         break;
                     case 'forbidden_bycustomer':
                         this.$flash("Запрещено покупателем")
+                        break;
+                    case 'already_payed':
+                        this.$flash("Заказ уже оплачен")
                         break;
                     default:
                         this.$flash("Не удалось изменить статус заказа")

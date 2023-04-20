@@ -98,6 +98,11 @@ export default {
             fileUploaderId:((this.image_holder??this.controller)+this.image_holder_id)
         }
     },
+    mounted(){//to force server load have to set images to null
+        if(this.images===null){
+            this.load()
+        }
+    },
     computed:{
         imageList(){
             let list = this.images_loaded || this.images;

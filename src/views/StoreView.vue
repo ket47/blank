@@ -237,8 +237,8 @@ ion-chip .active-chip {
 
 
 .desktop-main-container .group-fixed-block{
-  top: 10%;
-  width: calc(1366px*0.24);
+  top: 300px;
+  width: 250px;
   left: calc((100% - 1366px)/2);
 }
 .desktop-main-container .group-fixed-block ion-segment{
@@ -264,7 +264,7 @@ ion-chip .active-chip {
 @media only screen and (max-width: 1366px) {
   .desktop-main-container .group-fixed-block{
     left: 0;
-    width: 24%;
+    width: 250px;
   }
 }
 

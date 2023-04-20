@@ -109,7 +109,7 @@ export default{
     propsCalculate(){
       let order_store_id=0;
       let productData=(this.entry||this.productItem);
-      productData.product_quantity_min= productData.product_quantity_min || 1;
+      productData.product_quantity_min= parseFloat(productData.product_quantity_min) || 1;
 
       if( this.productItem ){
         productData.entry_quantity=0;
@@ -133,7 +133,7 @@ export default{
       }
     },
     addToOrder(step){
-      let newQuantity=this.currentQuantity*1+step*1;
+      let newQuantity=parseFloat(this.currentQuantity)+parseFloat(step);
       if( !this.productItem && !this.entry ){
         return;//haven't loaded yet or qty is negative
       }

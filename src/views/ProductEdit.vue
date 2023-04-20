@@ -71,6 +71,23 @@
         <ion-toggle v-model="is_disabled" @ionChange="itemDisable($event.target.checked?1:0)">На модерации</ion-toggle>
       </ion-item>
 
+
+      <!-- OPTIONS DATA 
+      <ion-popover :is-open="is_option_menu_open" @didDissmiss="is_option_menu_open=false">
+        <ion-content>
+          <ion-list>
+            <ion-item>
+              Вариант
+            </ion-item>
+            <ion-item :button="true" :detail="false" @click="itemOptionPhotoAdd()">
+              <ion-icon :src="cameraOutline" slot="start"/> Добавить фото
+            </ion-item>
+          </ion-list>
+        </ion-content>
+      </ion-popover>
+      -->
+
+
       <div @change="saveForm" v-if="optionData">
           <ion-card @click="$router.replace(`product-edit-${optionData.parent.product_id}?refreshOptions=1`)" :color="(is_option_parent)?'primary':'light'">
             <ion-card-header>
@@ -80,33 +97,36 @@
             </ion-card-header>
             <ion-card-content>
               <ion-item color="light" lines="none">
-                <ion-img slot="start" style="height:70px" :src="`${$heap.state.hostname}image/get.php/${optionData.parent.image_hash}.70.70.webp`"/>
-                {{optionData.parent.product_name}}
+                <img slot="start" style="height:70px;border-radius:10px;margin:3px" :src="`${$heap.state.hostname}image/get.php/${optionData.parent.image_hash}.70.70.webp`"/>
+                <ion-label>{{optionData.parent.product_name}}</ion-label>
               </ion-item>
-              <ion-item v-if="productId==optionData.parent.product_id" color="light"> 
-                <label position="stacked" >Вариант*</label>
-                <ion-input name="product_option" v-model="productItem.product_option"/>
+              <ion-item v-if="productId==optionData.parent.product_id" color="light">
+                <ion-input label="Вариант*" label-placement="stacked" placeholder="напишите вариант" name="product_option" v-model="productItem.product_option"/>
               </ion-item>
               <ion-item lines="none" v-else color="light">
-                <ion-chip>[{{optionData.parent.product_option}}]</ion-chip>
+                <ion-text>[{{optionData.parent.product_option}}]</ion-text>
               </ion-item>
             </ion-card-content>
           </ion-card>
         <div style="display:grid;grid-template-columns:1fr 1fr">
           <ion-card @click="$router.replace(`product-edit-${option.product_id}?refreshOptions=1`)" v-for="option in optionData.children" :key="option.product_id" :color="productItem.product_id==option.product_id?'primary':''">
             <ion-card-content>
-              <ion-item v-if="productItem.product_id==option.product_id" :color="productItem.deleted_at?'danger':''">
-                <ion-label position="stacked" >Вариант*</ion-label>
-                <ion-input name="product_option" v-model="productItem.product_option"/>
-              </ion-item>
+              <div v-if="productItem.product_id==option.product_id">
+                <ion-item :color="productItem.deleted_at?'danger':''">
+                  <ion-input label="Вариант*" label-placement="stacked" placeholder="напишите вариант" name="product_option" v-model="productItem.product_option"/>
+                </ion-item>
+                <ion-item v-if="productItem.image_hash">
+                  <ion-icon :src="cameraOutline"/>
+                </ion-item>
+              </div>
               <ion-item lines="none" v-else>
-                <ion-chip :color="option.deleted_at?'danger':''">[{{option.product_option}}]</ion-chip>
+                <ion-text :color="option.deleted_at?'danger':'medium'">[{{option.product_option}}]</ion-text>
               </ion-item>
             </ion-card-content>
           </ion-card>
           <ion-card>
             <ion-card-content>
-              <ion-button color="light" expand="block" @click="itemOptionCreate()">добавить</ion-button>
+              <ion-button color="light" expand="block" @click="itemOptionCreate()"><ion-icon :src="addOutline"/>добавить</ion-button>
             </ion-card-content>
           </ion-card>
         </div>
@@ -178,21 +198,28 @@
             <ion-label>Цена</ion-label>
           </ion-item-divider>
         </ion-item-group>
-        <ion-item>
-          <ion-input v-model="productItem.product_price" label="Цена*" labelPlacement="stacked" name="product_price" type="number" inputmode="numeric"/>
+        <!--
+        <ion-item v-if="is_option_child">
+          <ion-checkbox v-model="is_option_same_price" @ionChange="is_option_same_price?itemPriceReset():''">Цена как у родительского товара</ion-checkbox>
         </ion-item>
-        <ion-item>
-          <ion-input v-model="productItem.product_net_price" label="Цена в меню/на полке" labelPlacement="stacked" name="product_net_price" type="number" inputmode="numeric"/>
-        </ion-item>
-        <ion-item>
-          <ion-input v-model="productItem.product_promo_price" label="Цена акционная" labelPlacement="stacked" name="product_promo_price" type="number" inputmode="numeric" color="success"/>
-        </ion-item>
-        <ion-item>
-          <ion-input type="date" v-model="productItem.product_promo_start" label="Начало акции" labelPlacement="stacked" name="product_promo_start"/>
-        </ion-item>
-        <ion-item>
-          <ion-input type="date" v-model="productItem.product_promo_finish" label="Конец акции" labelPlacement="stacked" name="product_promo_finish"/>
-        </ion-item>
+        -->
+        <div v-if="!is_option_same_price">
+          <ion-item>
+            <ion-input v-model="productItem.product_price" label="Цена*" labelPlacement="stacked" name="product_price" type="number" inputmode="numeric"/>
+          </ion-item>
+          <ion-item>
+            <ion-input v-model="productItem.product_net_price" label="Цена в меню/на полке" labelPlacement="stacked" name="product_net_price" type="number" inputmode="numeric"/>
+          </ion-item>
+          <ion-item>
+            <ion-input v-model="productItem.product_promo_price" label="Цена акционная" labelPlacement="stacked" name="product_promo_price" type="number" inputmode="numeric" color="success"/>
+          </ion-item>
+          <ion-item>
+            <ion-input type="date" v-model="productItem.product_promo_start" label="Начало акции" labelPlacement="stacked" name="product_promo_start"/>
+          </ion-item>
+          <ion-item>
+            <ion-input type="date" v-model="productItem.product_promo_finish" label="Конец акции" labelPlacement="stacked" name="product_promo_finish"/>
+          </ion-item>
+        </div>
       </ion-list>
     </form>
 
@@ -207,7 +234,18 @@
         <ion-icon :src="cameraOutline" slot="start"/> Добавить фото на витрину
       </ion-button>
     </ion-list>
+    <!--
+    <ion-list v-if="productItem && is_option_child">
+      <ion-item-divider>
+        <ion-label>Изображение варианта</ion-label>
+      </ion-item-divider>
+      <image-tile-comp :images="null" :image_holder_id="productItem.product_id" title="Фото варианта" controller="Product" ref="productImgs"></image-tile-comp>
 
+      <ion-button @click="$refs.productImgs.take_photo()" color="light" expand="block">
+        <ion-icon :src="cameraOutline" slot="start"/> Добавить фото варианта
+      </ion-button>
+    </ion-list>
+    -->
     <ion-list v-if="productItem && categoryList && !is_option_child">
       <ion-item-divider>
           <ion-label>Категории товара*</ion-label>
@@ -234,6 +272,7 @@
 import {
   IonInput,
   IonTextarea,
+  IonContent,
   IonCard,
   IonCardContent,
   IonCardHeader,
@@ -253,7 +292,8 @@ import {
   IonCardTitle,
   IonCardSubtitle,
   IonChip,
-  modalController
+  IonCheckbox,
+  modalController,
   }                   from '@ionic/vue'
 import {
   cameraOutline,
@@ -269,8 +309,7 @@ import {
 }                     from 'ionicons/icons'
 import imageTileComp  from '@/components/ImageTileComp.vue'
 import GroupPicker    from '@/components/GroupPicker.vue'
-//import ProductPicker  from '@/components/ProductPicker.vue'
-import heap           from '@/heap';
+import heap           from '@/heap'
 import Topic          from '@/scripts/Topic.js'
 import jQuery         from "jquery";
 
@@ -278,6 +317,7 @@ export default  {
   components: { 
     IonInput,
     IonTextarea,
+    IonContent,
     IonCard,
     IonCardContent,
     IonCardHeader,
@@ -297,6 +337,7 @@ export default  {
     IonChip,
     IonCardTitle,
     IonCardSubtitle,
+    IonCheckbox,
     imageTileComp
     },
   setup(){
@@ -324,6 +365,8 @@ export default  {
       refreshOptions:this.$route.query.refreshOptions,
       is_option_parent:false,
       is_option_child:false,
+      is_option_menu_open:false,
+//      is_option_same_price:false,
       is_groups_marked:0,
       is_deleted:0,
       is_disabled:0,
@@ -386,6 +429,7 @@ export default  {
 
         this.is_option_child=(this.productItem.product_parent_id && this.productItem.product_parent_id!=this.productItem.product_id)
         this.is_option_parent=(this.productItem.product_parent_id && this.productItem.product_parent_id==this.productItem.product_id)
+        //this.is_option_same_price=!parseFloat(this.productItem.product_price)
         await this.itemOptionGet();
       }catch(err){
         //console.log(err);
@@ -504,6 +548,17 @@ export default  {
         this.itemOptionGet()
       }catch{/** */}
     },
+    // itemPriceReset(){//needed for options
+    //     const request = {
+    //       product_id:this.productId,
+    //       product_promo_price:0,
+    //       product_price:0
+    //     };
+    //     this.itemUpdate(request)
+    //     this.productItem.product_price=0
+    //     this.productItem.product_promo_price=0
+    // },
+
 
     checkPromoPrice(field_name){
       const promo=parseFloat(this.productItem.product_promo_price)

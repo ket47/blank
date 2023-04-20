@@ -93,32 +93,6 @@ ion-icon{
               <ion-label>Бухгалтерия</ion-label>
           </ion-item>
         </ion-item-group>
-        <!--
-        <ion-item lines="full" button detail>
-          <router-link class="section-button" to="/user-favourites">
-            <ion-icon :icon="heartOutline"></ion-icon>
-            <ion-label>Избранные товары</ion-label>
-          </router-link>
-        </ion-item>
-        <ion-item lines="full" button detail>
-          <router-link class="section-button" to="/user-payment-methods">
-            <ion-icon :icon="cardOutline"></ion-icon>
-            <ion-label>Методы оплаты</ion-label>
-          </router-link>
-        </ion-item>
-        <ion-item lines="full" button detail>
-          <router-link class="section-button" to="/user-notifications">
-            <ion-icon :icon="notifications"></ion-icon>
-            <ion-label>Настройка уведомлений</ion-label>
-          </router-link>
-        </ion-item>
-        <ion-item lines="full" button detail>
-          <router-link class="section-button" to="/help">
-            <ion-icon :icon="helpCircle"></ion-icon>
-            <ion-label>Помощь</ion-label>
-          </router-link>
-        </ion-item>
-        -->
       </ion-item-group>
 
       <ion-item-group v-if="isSignedIn">

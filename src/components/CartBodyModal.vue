@@ -87,7 +87,7 @@ export default{
       document.querySelectorAll('.incart').forEach(item=>item.classList.remove("incart"));
     },
     async onStageCreate(order_id, order_stage_code){
-        if(order_stage_code=='customer_purged'){
+        if(order_stage_code=='customer_purged' || order_stage_code=='customer_deleted' ){
           //this.$go('/order/order-list');
           return this.clearCart(order_id,'purge_on_server');
         }
@@ -104,7 +104,8 @@ export default{
             if(stateChangeResult=='ok' && order_stage_code=='customer_confirmed'){
               const confirmedOrder=await Order.api.itemGet(syncedOrder.order_id)
               this.$heap.commit('setCurrentOrder',confirmedOrder);
-              this.$go(`/order/order-checkout-${syncedOrder.order_id}`);
+              await this.$router.push(`/order/order-${syncedOrder.order_id}`)
+              await this.$router.push(`/order/order-checkout-${syncedOrder.order_id}`);
               return;
             }
             this.$go('/order/order-'+syncedOrder.order_id);

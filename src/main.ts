@@ -48,6 +48,9 @@ const FlashNotice={
   queue:([] as any),
   idle:true,
   push( message:string ){
+    if(this.queue[this.queue.length-1]==message){
+      return
+    }
     this.queue.push(message);
     this.next();
   },
@@ -55,7 +58,7 @@ const FlashNotice={
     if( !this.idle ){
       return;
     }
-    const message=this.queue.join("<br/><br/>")
+    const message=this.queue.join("\n")
     this.queue=[] 
     if( !message ){
       return;
@@ -70,7 +73,6 @@ const FlashNotice={
         message: message,
         duration: 2000,
         color:'dark',
-        translucent:true,
         position:'bottom'
       })
     toast.present();

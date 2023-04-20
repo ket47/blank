@@ -73,10 +73,15 @@
             </div>
         </ion-list>
         <div v-else-if="(!orderList || orderList?.length==0) && (!jobList || jobList?.length==0)" style="display:flex;align-items:center;justify-content:center;height:70vh">
-            <div style="width:max-content;text-align:center">
+            <div v-if="$heap.getters.userIsLogged" style="width:max-content;text-align:center">
                 <ion-icon :icon="sparklesOutline" size="large"></ion-icon>
                 <ion-label>Заказов нет</ion-label><br>
                 <ion-note @click="$router.replace('/')" style="cursor:pointer" color="primary">но вы можете создать новый</ion-note>
+            </div>
+            <div v-else style="width:max-content;text-align:center">
+                <ion-icon :icon="informationOutline" size="large"></ion-icon>
+                <ion-label>Необходимо войти в систему</ion-label><br>
+                <ion-note @click="$router.replace('/user/sign-in')" style="cursor:pointer" color="primary">вход в систему</ion-note>
             </div>
         </div>
         <ion-infinite-scroll @ionInfinite="listLoadMore($event)" id="moderation-infinite-scroll">
@@ -105,6 +110,7 @@ import {
 import {
     storefrontOutline,
     sparklesOutline,
+    informationOutline,
     timeOutline,
     rocketOutline,
     ribbonOutline,
@@ -134,7 +140,7 @@ export default {
     IonSkeletonText,
     },
     setup() {
-      return { sparklesOutline,storefrontOutline,timeOutline,ordersIcon,rocketOutline,ribbonOutline,checkmarkOutline, };
+      return { sparklesOutline,storefrontOutline,timeOutline,ordersIcon,rocketOutline,ribbonOutline,checkmarkOutline,informationOutline };
     },
     data(){
         return {

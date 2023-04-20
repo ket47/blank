@@ -1,5 +1,5 @@
-<style scoped>
-ion-tab-bar.bottom-bar  {
+<style>
+ion-tab-bar.main-tab-bar  {
   contain: inherit;
   overflow: visible;
   position: relative;
@@ -8,13 +8,80 @@ ion-tab-bar.bottom-bar  {
   justify-content: space-around;
   color:#999;
 }
-ion-tab-bar>div{
+ion-tab-bar.main-tab-bar>div{
   width:calc(100vw / 4);
 }
+.tabbar_svg_logo{
+  display: none;
+}
+@media screen and (max-width: 1000px) {
+  ion-footer{
+    display: none !important;
+  }
+}
+@media only screen and (min-width: 1000px) {
+    .main-tab-bar-adaptive .tabbar_svg_logo{
+      display: block;
+      margin-bottom: 30px;
+    }
+    .main-grid{
+      display:grid;
+      grid-template-columns:minmax(250px,15%) 70% 15%;
+      width:100%;
+      min-height: 100vh;
+    }
+    ion-tab-bar.main-tab-bar-adaptive  {
+      position: fixed;
+      width: 15%;
+      min-width: 250px;
+      height: 280px;
+      background-color: #ffffff;
+      background-color: rgba(255,255,255,.7);
+
+      display: flex;
+      flex-direction: column;
+      justify-content: start;
+      text-align: left;
+      box-shadow: none;
+    }
+    ion-tab-bar.main-tab-bar-adaptive>div{
+      width:200px;
+      padding:10px;
+      cursor: pointer;
+      border: 1px solid #fff;
+      border-radius: 10px;
+    }
+    ion-tab-bar.main-tab-bar-adaptive ion-label{
+      display:inline-block;
+      font-size:1.1em;
+      margin-left:10px;
+    }
+    ion-tab-bar.main-tab-bar-adaptive>div ion-icon{
+      font-size:1.2em;
+    }
+    .tabbar_svg_logo ion-icon{
+      width: 100%;
+      height: 60px;
+      display: block;
+    }
+
+    ion-tab-bar.main-tab-bar-adaptive .tab-selected{
+      border: 1px solid #ddd;
+      border-radius: 10px;
+    }
+}
+
+
+
+
+
+
+
+
 ion-tabs ion-icon{
   font-size:1.5em;
 }
-ion-tabs ion-label{
+ion-tab-bar ion-label{
   display: block;
   font-size:0.6em;
 }
@@ -53,9 +120,12 @@ ion-tabs ion-label{
 
 <template>
   <ion-page>
-    <ion-tabs>
+    <ion-tabs style="position:relative">
       <ion-router-outlet></ion-router-outlet>
-      <ion-tab-bar v-if="isMobile || narrowScreen" class="bottom-bar" slot="bottom">
+      <ion-tab-bar class="main-tab-bar" slot="bottom">
+        <div class="tabbar_svg_logo">
+          <ion-icon class=" ion-color ion-color-primary" :icon="mainLogo"/>
+        </div>
 
         <div @click="tabClicked('/catalog')" ref="catalogtab">
           <ion-icon class="active" color="primary" :icon="home"/>
@@ -79,7 +149,7 @@ ion-tabs ion-label{
         <div @click="tabClicked('/user')" ref="usertab">
           <ion-icon class="active" color="primary" :icon="person"/>
           <ion-icon class="passive" :icon="personOutline"/>
-          <ion-label><b>Профиль</b></ion-label>
+          <ion-label>Профиль</ion-label>
         </div>
       </ion-tab-bar>
     </ion-tabs>
@@ -110,6 +180,8 @@ import {
   reader,
 }                   from 'ionicons/icons';
 
+import mainLogo     from "@/assets/icons/tezkel_logo.svg";
+
 export default{
   components: {
   IonPage,
@@ -123,25 +195,23 @@ export default{
   },
   setup() {
     return {
-  homeOutline,
-  home,
-  searchOutline,
-  search,
-  personOutline,
-  person,
-  readerOutline,
-  reader,
+      mainLogo,
+      homeOutline,
+      home,
+      searchOutline,
+      search,
+      personOutline,
+      person,
+      readerOutline,
+      reader,
     };
   },
   data(){
-    const isMobile= /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(window.navigator.userAgent);
-    const narrowScreen=screen.width<740;
     return {
-      isMobile,
-      narrowScreen,
       activeOrderCount:0,
       tabRoutes:{},
-      tabSelected:''
+      tabSelected:'',
+      can_click:0
     }
   },
   async created(){
@@ -150,12 +220,20 @@ export default{
       self.activeOrderCount=data?.orderActiveCount
     })
     this.activeOrderCount=await Order.api.listCount()
-    addEventListener("resize", (event) => {this.narrowScreen=screen.width<740});
-
-    this.tabSelect(this.$route.href)
+    const isMobile= /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(window.navigator.userAgent);
+    if(!isMobile){
+      document.querySelector('.main-tab-bar').classList.add('main-tab-bar-adaptive');
+    }
+    this.tabSelect()
   },
   methods:{
     tabClicked(newroute){
+      const now=Date.now()
+      if(this.can_click>now){
+        return
+      }
+      this.can_click=now+300
+
       const currroute_tabname=newroute?.split('/')?.[1]//currently opened tabs name
       if( this.tabSelected!==currroute_tabname && this.tabRoutes[currroute_tabname] ){//look if there is prev opened page
         this.$router.push(this.tabRoutes[currroute_tabname])
@@ -163,7 +241,8 @@ export default{
       }
       this.$router.push(newroute)
     },
-    tabSelect(currroute){
+    tabSelect(){
+      const currroute=this.$route.href
       if(!currroute){
         return
       }
@@ -178,9 +257,8 @@ export default{
     }
   },
   watch:{
-    '$route.href'(to,from){
-      this.tabSelect(this.$route.href)
-      setTimeout(()=>this.tabSelect(this.$route.href),100)
+    '$route'(to,from){
+      this.tabSelect()
     }
   }
 }

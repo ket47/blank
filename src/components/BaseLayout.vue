@@ -143,7 +143,9 @@ export default defineComponent({
 </script>
 
 <style>
-
+ion-buttons ion-icon{
+  font-size: 1.7em;
+}
 .ion-page ion-header ion-toolbar:last-of-type {
   --min-height: 56px;
   --background: var(--ion-background);

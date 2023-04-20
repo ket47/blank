@@ -1,7 +1,4 @@
 <style scoped>
-    ion-list{
-        box-shadow: 0px -5px 5px #eee;
-    }
     .righttop_badge{
         margin-left:-10px;
         margin-top:-10px;
@@ -16,38 +13,38 @@
     }
 </style>
 <template>
-    <base-layout :pageTitle="`Оформление заказа`" pageDefaultBackLink="/order/order-list">
+<base-layout :pageTitle="`Оформление заказа`" pageDefaultBackLink="/order/order-list">
+    <div v-if="is_checkout_data_loaded">
         <order-checkout-address :deliveryTime="deliveryTime" deliveryAddressOnly="1" showComment="1" :nextRoute="`/order/order-checkout-${order_id}`"></order-checkout-address>
 
-        <ion-list v-if="order">
+        <ion-list lines="none">
             <ion-item-divider>Заказ #{{order?.order_id}} из "{{order?.store?.store_name}}"</ion-item-divider>
-            <ion-item>
-                <ion-textarea rows="2" placeholder="комментарий к заказу" @change="orderDescriptionChanged()" v-model="order.order_description"></ion-textarea>
-            </ion-item>
             
             <ion-item>
-                <label for="store_correction_allow" style="font-size:0.9em" color="medium">
-                Разрешить изменять заказ
-                </label>
-                <ion-checkbox slot="end" id="store_correction_allow" v-model="storeCorrectionAllow"/>
+                <ion-checkbox v-model="storeCorrectionAllow">
+                    Разрешить изменять заказ
+                </ion-checkbox>
             </ion-item>
 
+            <ion-item>
+                <ion-textarea label="" rows="2" placeholder="комментарий к заказу" @change="orderDescriptionChanged()" v-model="order.order_description"></ion-textarea>
+            </ion-item>
             <ion-item-divider v-if="storeIsReady">Способы доставки</ion-item-divider>
-            <ion-item button @click="tariffRuleSet(deliveryByCourierRule)" v-if="deliveryByCourierRule">
+            <ion-item button detail="false" @click="tariffRuleSet(deliveryByCourierRule)" v-if="deliveryByCourierRule">
                 <ion-icon :icon="rocketOutline" slot="start" color="primary"></ion-icon>
-                <label for="delivery_by_courier">Доставит <b>{{$heap.state.settings.app_title}}</b></label>
+                <label for="delivery_by_courier">Доставит <b>{{$heap.state.settings?.app_title}}</b></label>
                 <div slot="end">
                     <input type="radio" name="deliveryBy" id="delivery_by_courier" value="courier"  :checked="deliveryByCourierRuleChecked">
                 </div>
             </ion-item>
-            <ion-item button @click="tariffRuleSet(deliveryByStoreRule)" v-if="deliveryByStoreRule">
+            <ion-item button detail="false" @click="tariffRuleSet(deliveryByStoreRule)" v-if="deliveryByStoreRule">
                 <ion-icon :icon="rocketOutline" slot="start"></ion-icon>
                 <label for="delivery_by_store">Доставит <b>{{order?.store?.store_name}}</b></label>
                 <div slot="end">
                     <input type="radio" name="deliveryBy" id="delivery_by_store" value="store" :checked="deliveryByStoreRuleChecked">
                 </div>
             </ion-item>
-            <ion-item button @click="tariffRuleSet(pickupByCustomerRule)" v-if="pickupByCustomerRule">
+            <ion-item button detail="false" @click="tariffRuleSet(pickupByCustomerRule)" v-if="pickupByCustomerRule">
                 <ion-icon :icon="storefrontOutline" slot="start"></ion-icon>
                 <label for="pickup_by_customer">Самовывоз</label>
                 <div slot="end">
@@ -58,14 +55,14 @@
 
 
             <ion-item-divider v-if="storeIsReady">Способы оплаты</ion-item-divider>
-            <ion-item button @click="paymentType='use_cash'" v-if="tariffRule.paymentByCash==1">
+            <ion-item button detail="false" @click="paymentType='use_cash'" v-if="tariffRule.paymentByCash==1">
                 <ion-icon :icon="cashOutline" slot="start" color="primary"></ion-icon>
                 <label for="payment_cash">Оплата наличными</label>
                 <div slot="end">
                     <input type="radio" name="paymentType" id="payment_cash" value="cash" :checked="paymentType == 'use_cash'">
                 </div>
             </ion-item>
-            <ion-item button @click="paymentType='use_cash_store'" v-if="tariffRule.paymentByCashStore==1">
+            <ion-item button detail="false" @click="paymentType='use_cash_store'" v-if="tariffRule.paymentByCashStore==1">
                 <ion-icon :icon="cashOutline" slot="start" color="primary"></ion-icon>
                 <label for="payment_cash_store">Оплата наличными продавцу</label>
                 <div slot="end">
@@ -76,14 +73,14 @@
 
 
             <div v-if="tariffRule.paymentByCard==1">
-                <ion-item button @click="paymentType='use_card'">
+                <ion-item detail="false" button @click="paymentType='use_card'">
                     <ion-icon :icon="cardOutline" slot="start" color="primary"></ion-icon>
                     <label for="payment_card">Оплата картой без привязки</label>
                     <div slot="end">
                         <input type="radio" name="paymentType" id="payment_card" value="card"  :checked="paymentType == 'use_card'">
                     </div>
                 </ion-item>
-                <ion-item v-if="bankCard?.card_type" button @click="paymentType='use_card_recurrent'">
+                <ion-item v-if="bankCard?.card_type" button detail="false" @click="paymentType='use_card_recurrent'">
                     <ion-img v-if="bankCard.card_type=='mir'" class="card_type" :src="`/img/icons/card-${bankCard.card_type}.svg`" slot="start"/>
                     <ion-img v-else-if="bankCard.card_type=='visa'" class="card_type" :src="`/img/icons/card-${bankCard.card_type}.svg`" slot="start"/>
                     <ion-img v-else-if="bankCard.card_type=='mastercard'" class="card_type" :src="`/img/icons/card-${bankCard.card_type}.svg`" slot="start"/>
@@ -132,7 +129,7 @@
                         <ion-icon :icon="giftOutline" color="medium" style="font-size:1.5em"></ion-icon>
                     </div>
                     <ion-text color="medium">
-                    Скидка доступна при доставке <b>{{$heap.state.settings.app_title}}</b>
+                    Скидка доступна при доставке <b>{{$heap.state.settings?.app_title}}</b>
                     </ion-text>
                 </ion-item>
             </div>
@@ -151,11 +148,11 @@
             </ion-item>
 
 
-            <ion-item lines="none">
+            <ion-item>
                 <ion-text style="font-size:0.9em">
                     Я согласен(на) с <router-link to="/page/rules-customer">офертой об оказании услуг доставки</router-link>
                 </ion-text>
-                <ion-checkbox slot="end" v-model="termsAccepted"/>
+                <ion-checkbox slot="end" v-model="termsAccepted" aria-label=""></ion-checkbox>
             </ion-item>
 
         </ion-list>
@@ -166,8 +163,19 @@
 
         <ion-button v-if="paymentType=='use_card' || paymentType=='use_card_recurrent'" expand="block" @click="proceed()" :disabled="checkoutError">Оплатить картой</ion-button>
         <ion-button v-else expand="block" @click="proceed()" :disabled="checkoutError">Послать заказ</ion-button>
-
-    </base-layout>
+    </div>
+    <div v-else>
+        <ion-item lines="none">
+            <ion-skeleton-text animated style="width: 200px"></ion-skeleton-text>
+        </ion-item>
+        <ion-list>
+            <ion-item v-for="i in [1,2,3,4,5]" :key="i">
+                <ion-skeleton-text animated style="width: 100%"></ion-skeleton-text>
+            </ion-item>
+        </ion-list>
+        <ion-button color="light" expand="block"></ion-button>
+    </div>
+</base-layout>
 </template>
 
 <script>
@@ -205,6 +213,7 @@ import {
     IonBadge,
     IonImg,
     IonLabel,
+    IonSkeletonText,
 }                               from "@ionic/vue";
 import OrderCheckoutAddress     from '@/components/OrderCheckoutAddress.vue';
 import OrderPaymentCardModal    from '@/components/OrderPaymentCardModal.vue';
@@ -226,6 +235,7 @@ export default({
     IonBadge,
     IonImg,
     IonLabel,
+    IonSkeletonText,
     },
     setup(){
         return {
@@ -243,6 +253,9 @@ export default({
     },
     data(){
         return {
+            is_checkout_data_loaded:0,
+            can_load_at:0,
+
             order_id:this.$route.params.id,
             order:null,
             order_sum_delivery:0,
@@ -253,7 +266,7 @@ export default({
             promoCount:0,
             deliveryTime:{},
             termsAccepted:1,
-            storeIsReady:0,
+            storeIsReady:null,
             errNotfound:0,
             errTooFar:0,
 
@@ -343,7 +356,20 @@ export default({
                 this.$heap.commit('setCurrentOrder',this.order)
             }catch(err){/** */}
         },
+        debounce(){
+            const now=Date.now
+            let reject=false
+            if(this.can_load_at>now){
+                reject=true
+            }
+            this.can_load_at=now+300
+            return reject
+        },
         async checkoutDataGet(){
+            if(this.debounce()){
+                return
+            }
+
             this.order=this.$heap.state.currentOrder;
             if( !this.order ){
                 await this.itemLoad()
@@ -367,6 +393,7 @@ export default({
                 this.bankCard=bulkResponse?.bankCard;
                 this.tariffRuleList=bulkResponse.Store_deliveryOptions
                 this.tariffRuleSet(this.tariffRuleList[0]||{})
+                this.is_checkout_data_loaded=1
             }
             catch(err){
                 const exception_code=err?.responseJSON?.messages?.error;

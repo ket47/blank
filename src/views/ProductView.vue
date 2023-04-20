@@ -33,6 +33,15 @@ ion-accordion-group .accordion-expanding .product-description{
   border-bottom-left-radius: 10px;
   border-bottom-right-radius: 10px;
 }
+.nugget{
+  display: inline-block;
+  background-color: var(--ion-color-primary-tint);
+  color: var(--ion-color-primary);
+  padding: 5px;
+  margin-right: 5px;
+  margin-bottom: 5px;
+  border-radius: 5px;
+}
 </style>
 
 <template>
@@ -105,9 +114,14 @@ ion-accordion-group .accordion-expanding .product-description{
             <ion-label color="medium">Варианты</ion-label>
           </ion-item>
           <ion-item lines="none">
-            <ion-chip :outline="true" @click="$router.replace(`/catalog/product-${option.product_id}`)" color="primary" v-for="option in productItem.options" :key="option.product_id">
-              <ion-label>{{option.product_option}}</ion-label>&nbsp;<ion-label v-if="option.product_final_price>0">{{option.product_final_price}}{{$heap.state.currencySign}}</ion-label>
-            </ion-chip>
+            <div>
+              <ion-chip color="primary" outline v-for="option in productItem.options" :key="option.product_id" @click="$router.replace(`/catalog/product-${option.product_id}`)">
+                <!--<ion-avatar v-if="option.image_hash">
+                  <ion-img :src="`${$heap.state.hostname}image/get.php/${option.image_hash}.200.200.webp`"/>
+                </ion-avatar>-->
+                <ion-label>{{option.product_option}}</ion-label>&nbsp;<ion-label v-if="option.product_final_price>0">{{option.product_final_price}}{{$heap.state.currencySign}}</ion-label>
+              </ion-chip>
+            </div>
           </ion-item>
         </div>
 
@@ -146,7 +160,7 @@ ion-accordion-group .accordion-expanding .product-description{
 
         <ion-item lines="none" v-if="inCartComment!=null">
           <ion-icon slot="start" :src="chatboxEllipsesOutline" color="medium"/>
-          <ion-textarea :value="inCartComment" @change="cartCommentUpdate($event.target.value)" placeholder="заметка для продавца"></ion-textarea>
+          <ion-textarea label="" label-placement="" :value="inCartComment" @change="cartCommentUpdate($event.target.value)" placeholder="заметка для продавца"></ion-textarea>
         </ion-item>
       </ion-list>
   </base-layout>
