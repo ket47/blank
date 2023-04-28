@@ -396,6 +396,7 @@ export default({
                 this.is_checkout_data_loaded=1
             }
             catch(err){
+                this.is_checkout_data_loaded=1
                 const exception_code=err?.responseJSON?.messages?.error;
                 switch(exception_code){
                     case 'too_far':
@@ -535,27 +536,17 @@ export default({
                     router.replace('order-'+this.order.order_id)
                 }
             } catch(err){
-                /**
-                 * 
-                 * 
-                 * should add second try
-                 * 
-                 * 
-                 * 
-                 */
-
-
-
-
-
-
-
-
-
-
-                this.$flash("Данный заказ не может быть оплачен");
                 const message=err.responseJSON?.messages?.error;
                 if(message=='wrong_status'){
+                    this.$flash("Данный заказ не может быть оплачен");
+                    router.replace('order-'+this.order.order_id);
+                }
+                if(message=='not_authorized'){
+                    this.$flash("Оплата не удалась, возможно не достаточно средств");
+                    router.replace('order-'+this.order.order_id);
+                }
+                if(message=='waiting'){
+                    this.$flash("Ваш платеж на ожидании");
                     router.replace('order-'+this.order.order_id);
                 }
             }

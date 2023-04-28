@@ -237,9 +237,9 @@ ion-chip .active-chip {
 
 
 .desktop-main-container .group-fixed-block{
+  left: 0px;
   top: 300px;
   width: 250px;
-  left: calc((100% - 1366px)/2);
 }
 .desktop-main-container .group-fixed-block ion-segment{
   display: grid;
@@ -259,13 +259,6 @@ ion-chip .active-chip {
 }
 .desktop-main-container .group-fixed-block .sub-groups-container {
   display: none;
-}
-
-@media only screen and (max-width: 1366px) {
-  .desktop-main-container .group-fixed-block{
-    left: 0;
-    width: 250px;
-  }
 }
 
   ion-skeleton-text {
@@ -606,14 +599,17 @@ export default{
           store_id: this.storeId,
           distance_include:1,
           products_include:1,
-          }
-        let store
-        store=await Utils.prePost(`${heap.state.hostname}Store/itemGet`,request )
+        }
+        let secondRenderTimeout=0
+        let store=await Utils.prePost(`${heap.state.hostname}Store/itemGet`,request )
         if(store){
           this.storeItem = this.itemPrepare(store);
+          secondRenderTimeout=300
         }
         store=await Utils.post(`${heap.state.hostname}Store/itemGet`,request )
-        this.storeItem = this.itemPrepare(store);
+        setTimeout(()=>{
+          this.storeItem = this.itemPrepare(store);
+        },secondRenderTimeout)
         heap.commit('setCurrentStore',this.storeItem);
       } catch(err){
         const exception_code=err?.responseJSON?.messages?.error;
@@ -665,15 +661,19 @@ export default{
         grouptree_include:1
       }
       try{
+        let secondRenderTimeout=0
         let response=await Utils.prePost(`${heap.state.hostname}Product/listGet`, request)
         if(response){
           this.productList=response.product_list
           this.groupTreePrepare(response.group_tree)
+          secondRenderTimeout=300
         }
 
         response=await Utils.post(`${heap.state.hostname}Product/listGet`, request)
-        this.productList=response.product_list
-        this.groupTreePrepare(response.group_tree)
+        setTimeout(()=>{//
+          this.productList=response.product_list
+          this.groupTreePrepare(response.group_tree)
+        },secondRenderTimeout)
       }catch(err){/** */}
     },
     async groupTreePrepare(storeGroupsUnordered) {
@@ -708,6 +708,9 @@ export default{
       }
     },
     groupSelect(){//if there is parameter in route then scrollto category
+      if(this.groupSelectedParentId>-1){
+        return//group was set previously
+      }
       let parent_group_id=this.query.parent_group_id
       let sub_group_id=this.query.sub_group_id
       if( sub_group_id ){
@@ -731,6 +734,9 @@ export default{
         return
       }
       this.groupSelectedParentId = parent_group_id;
+      if(this.$refs.productListSlider==undefined){//no products prevent error
+        return
+      }
       const swiper = this.$refs.productListSlider.$el.swiper
       const slide_index =this.storeGroups.findIndex(group=>group.group_id==parent_group_id)
       if(slide_index>=0){
@@ -769,7 +775,7 @@ export default{
     this.itemGet()
     this.productListGet()
   },
-  async ionViewDidEnter() {//unnecessary  loadings when return from productView???
+  async ionViewDidEnter() {
     this.query = this.$route.query;
     this.itemGet()
     this.productListGet()

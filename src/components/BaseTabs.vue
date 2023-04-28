@@ -110,6 +110,7 @@ ion-tab-bar ion-label{
   font-size:0.7em;
   font-weight:bold;
   color:#000;
+  text-align: center;
 }
 .ios ion-tab-bar>div{
   margin-top: -10px;

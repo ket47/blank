@@ -1,10 +1,13 @@
 
 <template>
   <ion-header>
-      <ion-toolbar color="secondary">
+      <ion-toolbar>
+        <ion-item lines="none">
+          <ion-icon :icon="cardOutline" slot="start"></ion-icon>
           <ion-title v-if="this.order_data=='card_registering'">Привязка новой карты</ion-title>
           <ion-title v-else>Оплата картой</ion-title>
           <ion-icon :icon="closeOutline" @click="closeModal();" slot="end" size="large"></ion-icon>
+        </ion-item>
       </ion-toolbar>
   </ion-header>
   <ion-content>
@@ -23,6 +26,7 @@ import {
   IonToolbar,
   IonHeader,
   IonContent,
+  IonItem,
 }                           from "@ionic/vue";
 import {closeOutline,cardOutline}       from 'ionicons/icons';
 import loading              from '@/assets/icons/loading.svg';
@@ -35,6 +39,7 @@ export default{
   IonToolbar,
   IonHeader,
   IonContent,
+  IonItem,
   },
   props:['order_data'],
   setup() {
