@@ -233,34 +233,38 @@ ion-chip .active-chip {
   color: white;
   border: none;
 }
-
-
-
-.desktop-main-container .group-fixed-block{
-  left: 0px;
-  top: 300px;
-  width: 250px;
-}
-.desktop-main-container .group-fixed-block ion-segment{
-  display: grid;
-  grid-template-columns: 100%;
-  --background: white;
-}
-.desktop-main-container .group-fixed-block ion-segment span{
-  width: 100%;
-  display: block;
-  text-align: left;
-  border-bottom: 1px solid lightgray;
-}
-.desktop-main-container .group-fixed-block ion-segment ion-label {
-  color: var(--ion-text-main);
-  text-transform: capitalize;
-  align-self: baseline;
-}
-.desktop-main-container .group-fixed-block .sub-groups-container {
-  display: none;
+@media only screen and (max-width: 1000px) {
+  .group-fixed-block{
+    top:0px;
+  }
 }
 
+@media only screen and (min-width: 1000px) {
+  .desktop-main-container .group-fixed-block{
+    left: 0px;
+    top: 300px;
+    width: 250px;
+  }
+  .desktop-main-container .group-fixed-block ion-segment{
+    display: grid;
+    grid-template-columns: 100%;
+    --background: white;
+  }
+  .desktop-main-container .group-fixed-block ion-segment span{
+    width: 100%;
+    display: block;
+    text-align: left;
+    border-bottom: 1px solid lightgray;
+  }
+  .desktop-main-container .group-fixed-block ion-segment ion-label {
+    color: var(--ion-text-main);
+    text-transform: capitalize;
+    align-self: baseline;
+  }
+  .desktop-main-container .group-fixed-block .sub-groups-container {
+    display: none;
+  }
+}
   ion-skeleton-text {
     --border-radius: 10px;
     --background: #ddd

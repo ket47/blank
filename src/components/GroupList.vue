@@ -15,9 +15,9 @@
     overflow: hidden; 
     width: 100%; 
     font-size: 11px; 
-    padding: 8px 0px; 
-    text-overflow: ellipsis; 
-    white-space: nowrap;
+    margin: 8px 0px; 
+    text-overflow: ellipsis;
+    height: 2.2em;
 }
 </style>
 <template>
