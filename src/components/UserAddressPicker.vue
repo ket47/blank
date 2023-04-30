@@ -33,8 +33,6 @@ import {
     IonSearchbar,
     IonHeader,
     IonIcon,
-    IonTitle,
-    IonItem,
     modalController
 }                           from "@ionic/vue";
 import { yandexMap,ymapMarker,loadYmap }         from "vue-yandex-maps";
@@ -49,8 +47,6 @@ export default({
     IonSearchbar,
     IonHeader,
     IonIcon,
-    IonTitle,
-    IonItem,
     yandexMap,
     ymapMarker,
     },

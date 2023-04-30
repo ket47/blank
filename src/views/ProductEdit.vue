@@ -272,7 +272,6 @@
 import {
   IonInput,
   IonTextarea,
-  IonContent,
   IonCard,
   IonCardContent,
   IonCardHeader,
@@ -288,11 +287,8 @@ import {
   IonText,
   IonSelect,
   IonSelectOption,
-  IonImg,
   IonCardTitle,
   IonCardSubtitle,
-  IonChip,
-  IonCheckbox,
   modalController,
   }                   from '@ionic/vue'
 import {
@@ -317,7 +313,6 @@ export default  {
   components: { 
     IonInput,
     IonTextarea,
-    IonContent,
     IonCard,
     IonCardContent,
     IonCardHeader,
@@ -333,11 +328,8 @@ export default  {
     IonText,
     IonSelect,
     IonSelectOption,
-    IonImg,
-    IonChip,
     IonCardTitle,
     IonCardSubtitle,
-    IonCheckbox,
     imageTileComp
     },
   setup(){

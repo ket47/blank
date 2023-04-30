@@ -83,9 +83,9 @@ ion-accordion-group .accordion-expanding .product-description{
         </ion-item>
 
         <ion-item lines="none">
-          <ion-chip color="medium" @click="reactionTargetPick()" v-if="0">
+          <ion-chip color="medium" @click="reactionTargetPick()">
             <ion-icon :src="thumbsUpSharp" :color="productItem.reactionSummary.reaction_is_like==1?'dark':'medium'"/>
-            <ion-label>{{productItem.reactionSummary.sum_is_like??''}}</ion-label>
+            <ion-label v-if="productItem.reactionSummary.sum_is_like>0">{{productItem.reactionSummary.sum_is_like??''}}</ion-label>
             <ion-label color="medium">&nbsp;|&nbsp;</ion-label> 
             <ion-icon :src="thumbsDownSharp" :color="productItem.reactionSummary.reaction_is_dislike==1?'dark':'medium'"/>
           </ion-chip>
@@ -96,14 +96,22 @@ ion-accordion-group .accordion-expanding .product-description{
           </ion-chip>
         </ion-item>
 
-        <ion-item v-if="0" color="light" lines="none" style="border-radius:10px;margin:10px;" @click="reactionCommentView()">
+        <ion-item v-if="itemCommentCount>0" color="light" lines="none" style="border-radius:10px;margin:10px;" @click="reactionCommentView()">
           <ion-label position="stacked">
-            <b>Комментарии {{itemCommentCount}}</b>
+            <b>Отзывы {{itemCommentCount}}</b>
           </ion-label>
           <ion-text style="margin-top:15px;margin-bottom:10px;" color="dark">
             {{productItem.reactionSummary.last_comment}}
           </ion-text>
           <ion-icon :src="chevronDownOutline" slot="end" size="small"/>
+        </ion-item>
+        <ion-item v-else color="light" lines="none" style="border-radius:10px;margin:10px;" @click="reactionTargetPick()">
+          <ion-label position="stacked">
+            <b>Отзывы</b>
+          </ion-label>
+          <ion-chip color="dark" style="border-radius:10px;width:99%">
+              <ion-icon :src="addOutline" color="medium" size="small"/> добавить отзыв
+          </ion-chip>
         </ion-item>
 
 
@@ -183,6 +191,7 @@ import {
   thumbsUpSharp,
   thumbsDownSharp,
   chevronDownOutline,
+  addOutline,
 }                       from 'ionicons/icons'
 
 import {
@@ -245,6 +254,7 @@ export default  {
       thumbsUpSharp,
       thumbsDownSharp,
       chevronDownOutline,
+      addOutline,
       }
   },
   data() {

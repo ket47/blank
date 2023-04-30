@@ -653,6 +653,10 @@ export default  {
       this.validity_perc=Math.round(this.validity*100)
     },
     async itemDelete( is_deleted ){
+      if(is_deleted && !confirm("Внимание магазин будет удален! Товары, настройки, отзывы будут потеряны. Продолжить?")){
+        setTimeout(()=>{this.is_deleted=0;},100)
+        return
+      }
       const remoteFunction=is_deleted?'itemDelete':'itemUnDelete'
       try{
         await jQuery.post( heap.state.hostname + "Store/"+remoteFunction, { store_id: this.storeId })

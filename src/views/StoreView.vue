@@ -234,7 +234,7 @@ ion-chip .active-chip {
   border: none;
 }
 @media only screen and (max-width: 1000px) {
-  .group-fixed-block{
+  .desktop-main-container .group-fixed-block{
     top:0px;
   }
 }

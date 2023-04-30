@@ -40,7 +40,7 @@ ion-tab-bar.main-tab-bar>div{
 
       display: flex;
       flex-direction: column;
-      justify-content: start;
+      justify-content: flex-start;
       text-align: left;
       box-shadow: none;
     }
@@ -161,12 +161,10 @@ ion-tab-bar ion-label{
 import {
   IonPage,
   IonTabBar,
-  IonButton,
   IonTabs,
   IonIcon,
   IonLabel,
   IonRouterOutlet,
-  IonBadge,
 }                   from "@ionic/vue";
 import Order        from '@/scripts/Order'
 
@@ -187,12 +185,10 @@ export default{
   components: {
   IonPage,
   IonTabBar,
-  IonButton,
   IonTabs,
   IonIcon,
   IonLabel,
   IonRouterOutlet,
-  IonBadge,
   },
   setup() {
     return {

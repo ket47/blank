@@ -123,8 +123,6 @@
 
 <script>
 import { 
-  IonSelect, 
-  IonSelectOption,
   IonLabel,
   IonInput,
   IonItem,
@@ -144,8 +142,6 @@ import jQuery                   from "jquery";
 
 export default  {
   components: {
-  IonSelect, 
-  IonSelectOption,
   IonLabel,
   IonInput,
   IonItem,

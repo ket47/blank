@@ -18,9 +18,11 @@
             <ion-icon :icon="closeOutline" @click="closeModal();" slot="end" size="large"></ion-icon>
         </ion-item>
       </ion-toolbar>
-      <ion-item lines="none" button detail="true" @click="commentAdd()">
-        <ion-icon :src="addOutline" slot="start" color="medium" size="small"/>
-        <ion-text color="medium">добавить отзыв</ion-text>
+      <ion-item button detail="false" @click="commentAdd()">
+        <ion-chip>
+            <ion-icon :src="addOutline" color="medium" size="small"/>
+            <ion-label>добавить отзыв</ion-label>
+        </ion-chip>
       </ion-item>
   </ion-header>
   <ion-content>
@@ -42,11 +44,10 @@
                     <ion-avatar slot="start">
                         <ion-img v-if="item.image_hash" :src="`${$heap.state.hostname}image/get.php/${item.image_hash}.50.50.webp`"/>
                     </ion-avatar>
-                    <ion-text color="medium">{{item.user_name}}</ion-text>
-                    <ion-icon :src="ellipsisVertical" slot="end" size="small" v-if="0"/>
-                </ion-item>
-                <ion-item lines="none">
-                    <ion-text>{{item.reaction_comment}}</ion-text>
+                    <ion-label>
+                        <div style="color:#999">{{item.user_name}} • <i v-if="item.reaction_is_like"><ion-icon :src="thumbsUpSharp" color="primary"/></i></div>
+                        <div>{{item.reaction_comment}}</div>
+                    </ion-label>
                 </ion-item>
             </div>
         </div>
@@ -81,14 +82,10 @@ import {
     IonImg,
     IonList,
     IonItem,
-    IonSearchbar,
     IonSkeletonText,
     IonAvatar,
     IonChip,
     IonLabel,
-    IonNote,
-    IonTextarea,
-    IonText,
 }                         from "@ionic/vue";
 import jQuery             from 'jquery'
 
@@ -103,14 +100,10 @@ export default {
         IonImg,
         IonList,
         IonItem,
-        IonSearchbar,
         IonSkeletonText,
         IonAvatar,
         IonChip,
         IonLabel,
-        IonNote,
-        IonTextarea,
-        IonText,
     },
     setup(){
         return {

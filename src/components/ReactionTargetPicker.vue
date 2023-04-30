@@ -27,14 +27,15 @@
   <ion-content>
 
     <!-- <ion-backdrop :visible="commentCurrent"></ion-backdrop> -->
-    <div class="commentEdit" v-if="commentCurrent?true:false">
+    <div class="commentEdit" v-if="commentCurrentShow&&0">
         <ion-item lines="none">
             <ion-textarea
             rows="1"
             auto-grow="true"
             v-model="commentCurrent"
             placeholder="добавьте отзыв"
-            style="border:1px solid #ccc"
+            label=""
+            style="border:1px solid #eeeeee"
             ></ion-textarea>
             <ion-icon :icon="send" slot="end" color="medium"></ion-icon>
         </ion-item>
@@ -66,9 +67,28 @@
                         <ion-icon :src="thumbsDownSharp" :color="item.reaction_is_dislike==1?`dark`:`medium`" @click="itemReactionDislike(item);item.reaction_is_dislike=1;item.reaction_is_like=0;"/>
                     </ion-chip>
                 </ion-item>
-                <ion-item lines="full" @click="itemCommentEdit(item)">
+                <ion-item v-if="item.is_comment_editing_mode==1">
+                    <ion-textarea
+                    rows="1"
+                    auto-grow="true"
+                    v-model="item.reaction_comment"
+                    placeholder="напишите отзыв"
+                    label=""
+                    style="background:var(--ion-color-primary-tint);border-radius:10px;margin-bottom:3px;"
+                    ></ion-textarea>
+                    <ion-buttons>
+                        <ion-button @click="itemReactionComment(item);">
+                            <ion-icon :icon="send" slot="end" color="primary"></ion-icon>
+                        </ion-button>
+                    </ion-buttons>
+                </ion-item>
+                <ion-item v-else lines="full" @click="item.is_comment_editing_mode=1">
                     <ion-text v-if="item.reaction_comment">
-                    {{item.reaction_comment}}
+                        {{item.reaction_comment}} 
+                        <ion-chip color="medium">
+                            <ion-icon :src="pencil"/>
+                            <ion-label>изменить</ion-label>
+                        </ion-chip>
                     </ion-text>
                     <ion-chip v-else color="medium">
                         <ion-icon :src="chatboxOutline"/>
@@ -111,6 +131,7 @@ import
   thumbsDownSharp,
   trashOutline,
   send,
+  pencil,
 }                         from 'ionicons/icons';
 import {
     modalController,
@@ -131,7 +152,9 @@ import {
     IonNote,
     IonTextarea,
     IonText,
-    IonBackdrop,
+    IonButtons,
+    IonButton,
+
 }                         from "@ionic/vue";
 import jQuery             from 'jquery'
 
@@ -154,7 +177,8 @@ export default {
         IonNote,
         IonTextarea,
         IonText,
-        IonBackdrop,
+        IonButtons,
+        IonButton,
     },
     setup(){
         return {
@@ -164,6 +188,7 @@ export default {
             thumbsDownSharp,
             trashOutline,
             send,
+            pencil,
         }
     },
     data(){
@@ -174,6 +199,7 @@ export default {
             targetTypeLabel,
             targetTypeName:'',
             commentCurrent:null,
+            commentCurrentShow:false,
         }
     },
     mounted(){
@@ -208,7 +234,6 @@ export default {
                 } else {
                     await jQuery.post(`${this.$heap.state.hostname}Reaction/itemCreate`,request)
                 }
-                this.$flash("Сохранено")
                 //this.listGet()
             }catch(err){
                 const exception_code=err?.responseJSON?.messages?.error;
@@ -231,6 +256,7 @@ export default {
                 request.tagQuery=`entry:${item.entry_id}`;
             }
             await this.itemReact(request)
+            this.$flash("Благодарим за оценку")
         },
         async itemReactionDislike(item){
             let request={
@@ -243,10 +269,12 @@ export default {
                 request.tagQuery=`entry:${item.entry_id}`;
             }
             await this.itemReact(request)
+            this.$flash("Ваша реакция будет сообщена продавцу")
         },
         async itemReactionComment(item,comment){
+            item.is_comment_editing_mode=0
             let request={
-                comment
+                comment:item.reaction_comment
             }
             if(item.reaction_id??0){
                 request.reaction_id=item.reaction_id;
@@ -255,6 +283,7 @@ export default {
                 request.tagQuery=`entry:${item.entry_id}`;
             }
             await this.itemReact(request)
+            this.$flash("Коментарий сохранен")
         },
         async itemReactionDelete(item){
             if(!confirm("Удалить отзыв?")){
@@ -276,11 +305,8 @@ export default {
                 return false
             }
         },
-        async itemCommentEdit( item ){
-            this.commentCurrent=item.reaction_comment+'-'
-        },
-        async itemCommentSave(){
-            this.commentCurrent=null
+        async itemCommentSave( item ){
+            this.commentCurrentShow=false
         },
         closeModal(){
             modalController.dismiss();
