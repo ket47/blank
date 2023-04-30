@@ -411,7 +411,7 @@ ion-chip .active-chip {
         </swiper-slide>
       </swiper>
     </div>
-    <ion-label v-else-if="searchQuery">
+    <ion-label v-else-if="searchQuery" style="padding:15px">
       К сожалению, в <b>{{storeItem.store_name}}</b> по запросу <b>"{{searchQuery}}"</b> ничего не найдено. <ion-chip @click="this.searchQuery=null">Сбросить фильтр</ion-chip>
     </ion-label>
     <div v-else-if="!productList">
@@ -437,7 +437,7 @@ ion-chip .active-chip {
         </ion-row>
       </ion-grid>
     </div>
-    <ion-label v-else-if="productListIsEmpty">
+    <ion-label v-else-if="productListIsEmpty" style="padding:15px">
       К сожалению, в <b>{{storeItem.store_name}}</b> пока нет доступных товаров.
     </ion-label>    
     </div>

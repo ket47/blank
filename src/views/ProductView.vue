@@ -89,13 +89,11 @@ ion-accordion-group .accordion-expanding .product-description{
             <ion-label color="medium">&nbsp;|&nbsp;</ion-label> 
             <ion-icon :src="thumbsDownSharp" :color="productItem.reactionSummary.reaction_is_dislike==1?'dark':'medium'"/>
           </ion-chip>
-
           <ion-chip @click="itemShare()" color="medium">
             <ion-icon :src="arrowRedoOutline"/>
             <ion-label>Поделиться</ion-label>
           </ion-chip>
         </ion-item>
-
         <ion-item v-if="itemCommentCount>0" color="light" lines="none" style="border-radius:10px;margin:10px;" @click="reactionCommentView()">
           <ion-label position="stacked">
             <b>Отзывы {{itemCommentCount}}</b>
@@ -375,8 +373,8 @@ export default  {
         const modal = await modalController.create({
             component: ReactionTargetPicker,
             componentProps:{targetType,targetId},
-            initialBreakpoint: 0.6,
-            breakpoints: [0.6,0.75, 1],
+            initialBreakpoint: 0.8,
+            breakpoints: [0.8, 1],
             handleBehavior:"cycle",
             canDissmiss:true,
         });

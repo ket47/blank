@@ -19,27 +19,12 @@
   <ion-header>
       <ion-toolbar>
         <ion-item lines="none">
-            <ion-title>Ваши отзывы и реакции</ion-title>
+            <ion-title>Реакции на ваши покупки</ion-title>
             <ion-icon :icon="closeOutline" @click="closeModal();" slot="end" size="large"></ion-icon>
         </ion-item>
       </ion-toolbar>
   </ion-header>
   <ion-content>
-
-    <!-- <ion-backdrop :visible="commentCurrent"></ion-backdrop> -->
-    <div class="commentEdit" v-if="commentCurrentShow&&0">
-        <ion-item lines="none">
-            <ion-textarea
-            rows="1"
-            auto-grow="true"
-            v-model="commentCurrent"
-            placeholder="добавьте отзыв"
-            label=""
-            style="border:1px solid #eeeeee"
-            ></ion-textarea>
-            <ion-icon :icon="send" slot="end" color="medium"></ion-icon>
-        </ion-item>
-    </div>
 
     <ion-searchbar v-model="query" placeholder="поиск" :debounce="200" @ionChange="listGet()" />
     <ion-list v-if="!itemList">
@@ -69,12 +54,15 @@
                 </ion-item>
                 <ion-item v-if="item.is_comment_editing_mode==1">
                     <ion-textarea
-                    rows="1"
-                    auto-grow="true"
-                    v-model="item.reaction_comment"
-                    placeholder="напишите отзыв"
-                    label=""
-                    style="background:var(--ion-color-primary-tint);border-radius:10px;margin-bottom:3px;"
+                        :ref="`comment_ta${item.id}`"
+                        :id="`comment_ta${item.id}`"
+                        rows="1"
+                        auto-grow="true"
+                        v-model="item.reaction_comment"
+                        placeholder="напишите отзыв"
+                        label=""
+                        style="background:var(--ion-color-primary-tint);border-radius:10px;margin-bottom:3px;"
+                        @ionBlur="itemReactionComment(item)"
                     ></ion-textarea>
                     <ion-buttons>
                         <ion-button @click="itemReactionComment(item);">
@@ -82,7 +70,7 @@
                         </ion-button>
                     </ion-buttons>
                 </ion-item>
-                <ion-item v-else lines="full" @click="item.is_comment_editing_mode=1">
+                <ion-item v-if="!item.is_comment_editing_mode" lines="full" @click="itemCommentEdit(item)">
                     <ion-text v-if="item.reaction_comment">
                         {{item.reaction_comment}} 
                         <ion-chip color="medium">
@@ -114,9 +102,14 @@
             </div>
         </div>
     </ion-list>
-    <ion-list v-else>
+    <ion-list v-else-if="query">
         <ion-item>
             Ничего не найдено
+        </ion-item>
+    </ion-list>
+    <ion-list v-else>
+        <ion-item>
+            Купите у этого продавца, чтобы оставлять реакции
         </ion-item>
     </ion-list>
   </ion-content>
@@ -198,8 +191,7 @@ export default {
             itemList:null,
             targetTypeLabel,
             targetTypeName:'',
-            commentCurrent:null,
-            commentCurrentShow:false,
+            commentCurrentItem:null,
         }
     },
     mounted(){
@@ -305,8 +297,16 @@ export default {
                 return false
             }
         },
-        async itemCommentSave( item ){
-            this.commentCurrentShow=false
+        async itemCommentEdit( item ){
+            if(this.commentCurrentItem){//trying to close previous comment
+                this.commentCurrentItem.is_comment_editing_mode=0
+            }
+            this.commentCurrentItem=item
+
+            item.is_comment_editing_mode=1
+            try{
+                setTimeout(()=>document.querySelector(`#comment_ta${item.id}`).setFocus(),100)
+            } catch{/** */}
         },
         closeModal(){
             modalController.dismiss();
