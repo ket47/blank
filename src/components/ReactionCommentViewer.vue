@@ -19,7 +19,7 @@
         </ion-item>
       </ion-toolbar>
       <ion-item button detail="false" @click="commentAdd()">
-        <ion-chip>
+        <ion-chip color="medium">
             <ion-icon :src="addOutline" color="medium" size="small"/>
             <ion-label>добавить отзыв</ion-label>
         </ion-chip>
@@ -41,9 +41,9 @@
         <div v-for="item in itemList" :key="item.id">
             <div>
                 <ion-item lines="none">
-                    <ion-avatar slot="start">
-                        <ion-img v-if="item.image_hash" :src="`${$heap.state.hostname}image/get.php/${item.image_hash}.50.50.webp`"/>
-                    </ion-avatar>
+                    <ion-thumbnail slot="start">
+                        <ion-img v-if="item.image_hash" :src="`${$heap.state.hostname}image/get.php/${item.image_hash}.150.150.webp`" style="border-radius:10px;"/>
+                    </ion-thumbnail>
                     <ion-label>
                         <div style="color:#999">{{item.user_name}} • <i v-if="item.reaction_is_like"><ion-icon :src="thumbsUpSharp" color="primary"/></i></div>
                         <div>{{item.reaction_comment}}</div>
@@ -83,7 +83,7 @@ import {
     IonList,
     IonItem,
     IonSkeletonText,
-    IonAvatar,
+    IonThumbnail,
     IonChip,
     IonLabel,
 }                         from "@ionic/vue";
@@ -101,7 +101,7 @@ export default {
         IonList,
         IonItem,
         IonSkeletonText,
-        IonAvatar,
+        IonThumbnail,
         IonChip,
         IonLabel,
     },

@@ -4,7 +4,7 @@
     align-items: center;
     padding: 3px 16px;
     justify-content: left;
-    font-size: 14px;
+    font-size: 12px;
   }
   .center ion-icon{
     margin: 0 3px;

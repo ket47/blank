@@ -92,38 +92,6 @@ ion-accordion-group .accordion-expanding .store-description{
 
 
 
-/* .delivery-variant-slider .swiper-slide{
-  width: 300px;
-} 
-.delivery-variant{
-  background: var(--ion-color-success-shade);
-  padding: 0;
-  border-radius: 10px;
-  margin: 8px 16px;
-  font-size: 14px;
-}
-.delivery-variant ion-row{
-  display: grid;
-  grid-template-columns: 65% 35%;
-  min-height: 50px;
-}
-.delivery-variant .delivery-variant-description{
-  background: var(--ion-color-success);
-  padding: 10px;
-  border-radius: 10px 0 0 10px;
-  color: white;
-  height: 100%;
-}
-.delivery-variant .delivery-variant-description label{ 
-  display: block; 
-  margin-bottom: 5px;
-}
-.delivery-variant .delivery-variant-cost{
-  padding: 10px;
-  color: white;
-  font-size: 18px;
-} */
-
 
 
 
@@ -310,19 +278,18 @@ ion-chip .active-chip {
             </ion-list>
           </ion-accordion>
         </ion-accordion-group>
-        <ion-grid>
-          <ion-row class="ion-justify-content-between">
-            <ion-col size="auto">
-              <store-opened-indicator :storeItem="storeItem"/>
-            </ion-col>
-            <ion-col size="auto">
-              <ion-chip v-if="storeItem.store_group_names" color="medium"  background="transparent">
-                <label>{{ storeItem.store_group_names }}</label>
-              </ion-chip>
-            </ion-col>
-          </ion-row>
-        </ion-grid> 
+        <ion-item v-if="storeItem.store_group_names" lines="none">
+          <ion-text v-for="cat in storeItem.store_group_names.split(',')" :key="cat" color="medium" style="font-size:0.9em">#{{cat}}&nbsp;</ion-text>
+        </ion-item>
       </ion-list>
+
+        <div style="scrollbar-width: none; overflow-x: auto;white-space: nowrap;">
+          <reaction-thumbs @react="itemGet()" :reactionSummary="storeItem?.reactionSummary" :targetType="'store'" :targetId="storeId"/>
+          <ion-chip @click="itemShare()" color="medium"><ion-icon :src="arrowRedoOutline"/><ion-label>Поделиться</ion-label></ion-chip>
+          <store-opened-indicator :storeItem="storeItem"/>
+        </div>
+        <reaction-comment  @react="itemGet()" :reactionSummary="storeItem?.reactionSummary" :targetType="'store'" :targetId="storeId"/>
+
 
         <div style="scrollbar-width: none; overflow-x: scroll;display: flex;">
           <div class="delivery-variant" v-if="storeItem.delivery_cost > 0">
@@ -476,6 +443,7 @@ import {
   rocketOutline,
   compassOutline,
   addOutline,
+  arrowRedoOutline,
 }                         from "ionicons/icons";
 import ImageSliderComp    from "@/components/ImageSliderComp";
 import GroupList          from "@/components/GroupList.vue";
@@ -485,7 +453,8 @@ import jQuery             from "jquery";
 import heap               from "@/heap";
 import Utils              from "@/scripts/Utils.js";
 
-
+import ReactionThumbs from '@/components/ReactionThumbs.vue'
+import ReactionComment from '@/components/ReactionComment.vue'
 export default{
   components: {
     IonText,
@@ -509,6 +478,8 @@ export default{
     GroupList,
     ProductList,
     IonSkeletonText,
+    ReactionThumbs,
+    ReactionComment,
   },
   setup() {
     return {
@@ -517,6 +488,7 @@ export default{
       rocketOutline,
       compassOutline,
       addOutline,
+      arrowRedoOutline,
       slideModules:[Autoplay]
     };
   },
@@ -771,6 +743,24 @@ export default{
         this.$refs.groupFixedBlock.classList.remove("hidden-block");
       } else {
         this.$refs.groupFixedBlock.classList.add("hidden-block");
+      }
+    },
+    async itemShare(){
+      try{
+          const link=location.href;
+          if(navigator.share){
+              const shareData = {
+                  title: `${this.$heap.state.settings.app_title}`,
+                  text: `${this.storeItem.store_name}`,
+                  url:link
+              }
+              await navigator.share(shareData);
+          } else {
+              await navigator.clipboard.writeText(link);
+              this.$alert("Теперь вы можете поделиться ей с друзьями в социальных сетях или мессенджерах.","Ссылка на страницу скопирована");
+          }
+      }catch(err){
+          //console.log(err)
       }
     },
   },

@@ -83,34 +83,14 @@ ion-accordion-group .accordion-expanding .product-description{
         </ion-item>
 
         <ion-item lines="none">
-          <ion-chip color="medium" @click="reactionTargetPick()">
-            <ion-icon :src="thumbsUpSharp" :color="productItem.reactionSummary.reaction_is_like==1?'dark':'medium'"/>
-            <ion-label v-if="productItem.reactionSummary.sum_is_like>0">{{productItem.reactionSummary.sum_is_like??''}}</ion-label>
-            <ion-label color="medium">&nbsp;|&nbsp;</ion-label> 
-            <ion-icon :src="thumbsDownSharp" :color="productItem.reactionSummary.reaction_is_dislike==1?'dark':'medium'"/>
-          </ion-chip>
-          <ion-chip @click="itemShare()" color="medium">
-            <ion-icon :src="arrowRedoOutline"/>
-            <ion-label>Поделиться</ion-label>
-          </ion-chip>
+          <reaction-thumbs @react="getProduct()" :reactionSummary="productItem?.reactionSummary" :targetType="'product'" :targetId="productId"/>
+          <ion-chip @click="itemShare()" color="medium"><ion-icon :src="arrowRedoOutline"/><ion-label>Поделиться</ion-label></ion-chip>
         </ion-item>
-        <ion-item v-if="itemCommentCount>0" color="light" lines="none" style="border-radius:10px;margin:10px;" @click="reactionCommentView()">
-          <ion-label position="stacked">
-            <b>Отзывы {{itemCommentCount}}</b>
-          </ion-label>
-          <ion-text style="margin-top:15px;margin-bottom:10px;" color="dark">
-            {{productItem.reactionSummary.last_comment}}
-          </ion-text>
-          <ion-icon :src="chevronDownOutline" slot="end" size="small"/>
-        </ion-item>
-        <ion-item v-else color="light" lines="none" style="border-radius:10px;margin:10px;" @click="reactionTargetPick()">
-          <ion-label position="stacked">
-            <b>Отзывы</b>
-          </ion-label>
-          <ion-chip color="dark" style="border-radius:10px;width:99%">
-              <ion-icon :src="addOutline" color="medium" size="small"/> добавить отзыв
-          </ion-chip>
-        </ion-item>
+
+
+
+
+        <reaction-comment  @react="getProduct()" :reactionSummary="productItem?.reactionSummary" :targetType="'product'" :targetId="productId"/>
 
 
         <ion-item lines="none"></ion-item>
@@ -173,7 +153,6 @@ ion-accordion-group .accordion-expanding .product-description{
 </template>
 
 <script>
-import jQuery           from "jquery";
 import heap             from '@/heap';
 
 import {
@@ -193,7 +172,6 @@ import {
 }                       from 'ionicons/icons'
 
 import {
-  modalController,
   IonTextarea,
   IonListHeader,
   IonText,
@@ -216,13 +194,15 @@ import CartHeader       from '@/components/CartHeader'
 import Order            from '@/scripts/Order.js'
 import Utils            from '@/scripts/Utils.js'
 
-import ReactionTargetPicker from '@/components/ReactionTargetPicker.vue'
-import ReactionCommentViewer from '@/components/ReactionCommentViewer.vue'
+import ReactionThumbs from '@/components/ReactionThumbs.vue'
+import ReactionComment from '@/components/ReactionComment.vue'
 
 export default  {
   components: { 
     ImageSliderComp,
     CartAddButtons,
+    ReactionThumbs,
+    ReactionComment,
   IonTextarea,
   IonListHeader,
   IonText,
@@ -314,15 +294,6 @@ export default  {
     itemDescription(){
       return this.productItem?.product_description?.replace(/<\/?[^>]+(>|$)/g, "").replace(/[\n\r]/g,'<br>')
     },
-    itemCommentCount(){
-      if(! this.productItem.reactionSummary.sum_comment??0 ){
-        return ''
-      }
-      if(this.productItem.reactionSummary.sum_comment>1000){
-        return Math.round(this.productItem.reactionSummary.sum_comment/100)/10+'k'
-      }
-      return this.productItem.reactionSummary.sum_comment
-    }
   },
   methods: {
       async getProduct(){
@@ -367,44 +338,8 @@ export default  {
       },
 
 
-      async reactionTargetPick(){
-        const targetId=this.productId
-        const targetType='product'
-        const modal = await modalController.create({
-            component: ReactionTargetPicker,
-            componentProps:{targetType,targetId},
-            initialBreakpoint: 0.8,
-            breakpoints: [0.8, 1],
-            handleBehavior:"cycle",
-            canDissmiss:true,
-        });
-        modal.present()
-        this.$topic.on('dismissModal',()=>modal.dismiss())
-        const target=await modal.onDidDismiss();
-        this.getProduct()
-        if(!target.data){
-            return
-        }
-      },
-      async reactionCommentView(){
-        const targetId=this.productId
-        const targetType='product'
-        const targetTitle=this.productItem.product_name
-        const modal = await modalController.create({
-            component: ReactionCommentViewer,
-            componentProps:{targetType,targetId,targetTitle},
-            initialBreakpoint: 0.6,
-            breakpoints: [0.6,0.75, 1],
-            handleBehavior:"cycle",
-            canDissmiss:true,
-        });
-        modal.present()
-        this.$topic.on('dismissModal',()=>modal.dismiss())
-        const target=await modal.onDidDismiss();
-        if(target?.data=='commentAdd'){
-          this.reactionTargetPick()
-        }
-      },
+
+
 
 
   },

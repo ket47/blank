@@ -4,14 +4,15 @@
     font-display: swap;
 }
 
-.ios{
+* {
     font-size: 12px;
-}
-ion-text{
-    font-size: 12px;
-}
+ }
+ ion-icon{
+    font-size: 18px;
+ }
+
 ion-label{
-    font-size: 14px;
+    font-size: 13px;
 }
 
 ion-item-divider.md{
