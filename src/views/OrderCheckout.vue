@@ -327,7 +327,7 @@ export default({
         },
 
         deliveryByStoreRule(){
-            return this.tariffRuleList?.filter(rule=>rule.deliveryByStore==1).shift()
+            return this.tariffMerge(this.tariffRuleList?.filter(rule=>rule.deliveryByStore==1))
         },
         deliveryByStoreRuleChecked(){
             return this.tariffRule.deliveryByStore==1
@@ -429,7 +429,45 @@ export default({
                 this.promoLink({order_id:this.order_id})//unlinking promo if exists
                 this.promo=null
             }
-            
+        },
+        tariffMerge( tariffArray ){//merge payment options for same delivery option
+            if( !tariffArray?.length ){
+                return null
+            }
+            let mergedTariff
+            for(let tariff of tariffArray ){
+                if(!mergedTariff){
+                    mergedTariff=tariff
+                    continue
+                }
+                mergedTariff.tariff_id+=`,${tariff.tariff_id}`
+                mergedTariff.paymentByCard||=tariff.paymentByCard
+                mergedTariff.paymentByCash||=tariff.paymentByCash
+                mergedTariff.paymentByCashStore||=tariff.paymentByCashStore
+            }
+            return mergedTariff
+        },
+        tariffSplit(){//pick tariff for selected payment option from merged earlier tariff
+            if( !this.tariffRule.tariff_id.includes(',') ){
+                return this.tariffRule.tariff_id
+            }
+            const mergedTariffIds=this.tariffRule.tariff_id.split(',')
+            for(let tariff_id of mergedTariffIds){
+                let tariff=this.tariffRuleList.find(tarifCandidate=>tarifCandidate.tariff_id==tariff_id)
+                if( !tariff ){
+                    continue
+                }
+                if( (this.paymentType=='use_card' || this.paymentType=='use_card_recurrent')  && tariff.paymentByCard!=1 ){
+                    continue
+                }
+                if( this.paymentType=='use_cash' && tariff.paymentByCash!=1 ){
+                    continue
+                }
+                if( this.paymentType=='use_cash_store' && tariff.paymentByCashStore!=1 ){
+                    continue
+                }
+                this.tariffRule=tariff
+            }
         },
         async orderDescriptionChanged(){
             const request={
@@ -442,6 +480,7 @@ export default({
             if( !await this.deliveryAddressConfirm() ){
                 return
             }
+            this.tariffSplit()
             const orderData={
                 order_id:this.order.order_id,
                 tariff_id:this.tariffRule.tariff_id,

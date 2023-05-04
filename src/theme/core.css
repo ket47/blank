@@ -4,14 +4,7 @@
     font-display: swap;
 }
 
-* {
-    font-size: 12px;
- }
- ion-icon{
-    font-size: 18px;
- }
-
-ion-label{
+ion-label,ion-item{
     font-size: 13px;
 }
 
@@ -22,6 +15,14 @@ ion-item-divider.md{
 }
 ion-item-divider.ios{
     background-color: #e6e6e6;
+}
+.horizontalScroller{
+    scrollbar-width: none;
+    overflow-x: auto;
+    white-space: nowrap;
+}
+.horizontalScroller::-webkit-scrollbar {
+    display: none;
 }
 
 main {

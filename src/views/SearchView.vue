@@ -6,7 +6,7 @@
 </style>
 <template>
   <base-layout page-title="Поиск товаров" hideBackLink="true">
-    <ion-searchbar class="search-container" v-model="query" @input="delayedListGet()" @ionClear="delayedListGet()" placeholder="начните искать"></ion-searchbar>
+    <ion-searchbar class="search-container" v-model="query" debounce="400" @ionInput="listGet()" @ionClear="listGet()" placeholder="начните искать"></ion-searchbar>
     <div v-if="found?.product_matches?.length>0">
       <ion-title>Найденные товары</ion-title>
       <ion-card v-for="store in found.product_matches" :key="store.store_id">
@@ -155,7 +155,7 @@ export default  {
     delayedListGet(){
       clearTimeout(this.clock)
       const self=this;
-      this.clock=setTimeout(()=>{self.listGet()},200)
+      this.clock=setTimeout(()=>{self.listGet()},400)
     },
   }
 }

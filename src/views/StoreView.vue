@@ -68,7 +68,7 @@ ion-accordion-group .accordion-expanding .store-description{
   background: var(--ion-color-success);
   padding: 0;
   border-radius: 10px;
-  margin: 8px 16px;
+  margin: 10px;
   font-size: 14px;
   display: grid;
   grid-template-columns: auto 50px;
@@ -283,7 +283,7 @@ ion-chip .active-chip {
         </ion-item>
       </ion-list>
 
-        <div style="scrollbar-width: none; overflow-x: auto;white-space: nowrap;">
+        <div class="horizontalScroller" style="padding:6px">
           <reaction-thumbs @react="itemGet()" :reactionSummary="storeItem?.reactionSummary" :targetType="'store'" :targetId="storeId"/>
           <ion-chip @click="itemShare()" color="medium"><ion-icon :src="arrowRedoOutline"/><ion-label>Поделиться</ion-label></ion-chip>
           <store-opened-indicator :storeItem="storeItem"/>
@@ -291,7 +291,7 @@ ion-chip .active-chip {
         <reaction-comment  @react="itemGet()" :reactionSummary="storeItem?.reactionSummary" :targetType="'store'" :targetId="storeId"/>
 
 
-        <div style="scrollbar-width: none; overflow-x: scroll;display: flex;">
+        <div class="horizontalScroller" style="display:flex">
           <div class="delivery-variant" v-if="storeItem.delivery_cost > 0">
             <div>
                 <ion-label>Доставит {{$heap.getters.settings.app_title}}</ion-label><br/>
@@ -299,14 +299,16 @@ ion-chip .active-chip {
             </div>
             <div>
               <ion-text v-if="storeItem.delivery_cost > 0"><b>{{storeItem.delivery_cost}}₽</b></ion-text>
+              <ion-text v-else><b>0₽</b></ion-text>
             </div>
           </div>
           <div class="delivery-variant" v-if="storeItem.store_delivery_allow==1">
             <div>
-              <ion-label>Доставит {{storeItem.member_of_groups.group_names}}</ion-label><br/>
+              <ion-label>Доставит {{storeItem.store_name}}</ion-label><br/>
             </div>
             <div>
-              <ion-text v-if="storeItem.delivery_cost > 0"><b>{{storeItem.store_delivery_cost}}₽</b></ion-text>
+              <ion-text v-if="storeItem.store_delivery_cost > 0"><b>{{storeItem.store_delivery_cost}}₽</b></ion-text>
+              <ion-text v-else><b>0₽</b></ion-text>
             </div>
           </div>
           <div class="delivery-variant" v-if="storeItem.store_pickup_allow==1">
@@ -610,6 +612,8 @@ export default{
       if (storeItem.avatar.length > 0) {
         storeItem.avatarImage = storeItem.avatar[0].image_hash;
       }
+      document.querySelector('meta[property="og:image"]').setAttribute("content", `${this.$heap.state.hostname}image/get.php/${storeItem.images[0].image_hash}.600.600.jpg`);
+      //document.title=storeItem.store_name;
       return storeItem;
     },
     async productItemCreate( group_id ){

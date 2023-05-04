@@ -10,7 +10,7 @@
     <meta property="og:title" content="<?=$title?>" />
     <meta property="og:description" content="<?=$description?>" />
 <?php if($image_hash): ?>
-    <meta property="og:image" content="<?=$image_host?><?=$image_hash?>.600.600.webp" />
+    <meta property="og:image" content="<?=$image_host?><?=$image_hash?>.600.600.jpg" />
 <?php else: ?>
     <meta property="og:image" content="'/img/icons/android-chrome-512x512.png'" />
 <?php endif;?>
