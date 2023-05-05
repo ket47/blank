@@ -5,7 +5,7 @@
 }
 </style>
 <template>
-  <base-layout page-title="Поиск товаров" hideBackLink="true">
+  <base-layout page-title="Поиск" hideBackLink="true">
     <ion-searchbar class="search-container" v-model="query" debounce="400" @ionInput="listGet()" @ionClear="listGet()" placeholder="начните искать"></ion-searchbar>
     <div v-if="found?.product_matches?.length>0">
       <ion-title>Найденные товары</ion-title>

@@ -34,9 +34,9 @@
   </ion-header>
   <ion-content>
 
-    <ion-searchbar v-model="query" placeholder="поиск" :debounce="200" @ionChange="listReload()" />
+    <ion-searchbar v-model="query" placeholder="поиск" :debounce="600" @ionInput="listReload()" />
     <ion-list v-if="!items">
-        <div v-for="i in [0,1,2,3,4,5]" :key="i">
+        <div v-for="i in [0,1,2,3]" :key="i">
             <ion-item lines="none">
                 <ion-skeleton-text style="height:35px;width:40px;border-radius:20px" animated/>
                 <ion-skeleton-text style="width:100%;margin:5px" animated/>
@@ -116,7 +116,7 @@
     </ion-list>
     <ion-list v-else>
         <ion-item>
-            Купите у этого продавца, чтобы оставлять реакции
+            Купите у этого продавца, чтобы оставлять отзывы
         </ion-item>
     </ion-list>
     <ion-infinite-scroll @ionInfinite="listLoadMore($event)" id="moderation-infinite-scroll">
@@ -216,17 +216,14 @@ export default {
             ev.target.complete();
         },
         async listReload(){
-
-
-            console.log(this.query)
-            this.items=[]
+            this.items=null
             this.listLoad()
         },
         async listLoad(){
             let request={
                 target_type:this.targetTypeLabel,
                 target_id:this.targetId,
-                search_query:this.query,
+                name_query:this.query,
                 offset:this.items?.length,
                 limit:15,
             }

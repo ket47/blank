@@ -71,13 +71,14 @@ ion-accordion-group .accordion-expanding .store-description{
   margin: 10px;
   font-size: 14px;
   display: grid;
-  grid-template-columns: auto 50px;
-  min-width:250px;
+  grid-template-columns: minmax(auto,200px) 60px;
+  min-width:260px;
   height: 55px;
   color:white;
 }
 .delivery-variant div{
   padding: 10px;
+  white-space: break-spaces;
 }
 .delivery-variant div:last-of-type{
   background: var(--ion-color-success-shade);
@@ -294,29 +295,29 @@ ion-chip .active-chip {
         <div class="horizontalScroller" style="display:flex">
           <div class="delivery-variant" v-if="storeItem.delivery_cost > 0">
             <div>
-                <ion-label>Доставит {{$heap.getters.settings.app_title}}</ion-label><br/>
+                <ion-text>Доставит {{$heap.getters.settings.app_title}}</ion-text><br/>
                 <ion-text v-if="storeItem?.deliveryTime?.timeMin">{{storeItem.deliveryTime.timeMin}}-{{storeItem.deliveryTime.timeMax}}мин</ion-text>
             </div>
             <div>
-              <ion-text v-if="storeItem.delivery_cost > 0"><b>{{storeItem.delivery_cost}}₽</b></ion-text>
-              <ion-text v-else><b>0₽</b></ion-text>
+              <ion-text v-if="storeItem.delivery_cost > 0">{{storeItem.delivery_cost}}₽</ion-text>
+              <ion-text v-else>0₽</ion-text>
             </div>
           </div>
           <div class="delivery-variant" v-if="storeItem.store_delivery_allow==1">
             <div>
-              <ion-label>Доставит {{storeItem.store_name}}</ion-label><br/>
+              <ion-text>Доставит {{storeItem.store_name}}</ion-text><br/>
             </div>
             <div>
-              <ion-text v-if="storeItem.store_delivery_cost > 0"><b>{{storeItem.store_delivery_cost}}₽</b></ion-text>
-              <ion-text v-else><b>0₽</b></ion-text>
+              <ion-text v-if="storeItem.store_delivery_cost > 0">{{storeItem.store_delivery_cost}}₽</ion-text>
+              <ion-text v-else>0₽</ion-text>
             </div>
           </div>
           <div class="delivery-variant" v-if="storeItem.store_pickup_allow==1">
             <div>
-              <ion-label>Самовывоз</ion-label><br/>
+              <ion-text>Самовывоз</ion-text><br/>
             </div>
             <div>
-              <ion-text><b>0₽</b></ion-text>
+              <ion-text>0₽</ion-text>
             </div>
           </div>
         </div>

@@ -82,10 +82,10 @@ ion-accordion-group .accordion-expanding .product-description{
           <ion-text v-if="categories && categories[0]" slot="end" color="medium">#{{categories[0].group_name}}</ion-text>
         </ion-item>
 
-        <ion-item lines="none">
+        <div class="horizontalScroller" style="padding:6px">
           <reaction-thumbs @react="getProduct()" :reactionSummary="productItem?.reactionSummary" :targetType="'product'" :targetId="productId"/>
           <ion-chip @click="itemShare()" color="medium"><ion-icon :src="arrowRedoOutline"/><ion-label>Поделиться</ion-label></ion-chip>
-        </ion-item>
+        </div>
 
 
 
