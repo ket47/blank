@@ -19,7 +19,7 @@
     <form novalidate>
         <ion-list>
           <ion-item lines="full">
-            <div style="display:grid;grid-template-columns:100px auto">
+            <div style="display:grid;grid-template-columns:100px auto;width:100%;">
               <div>
                   <ion-label position="stacked">Код</ion-label>
                   <ion-input readonly>+7</ion-input>
@@ -98,7 +98,7 @@ import {
   IonList,
   modalController
 }                               from '@ionic/vue';
-import UserPasswordReset     from '@/components/UserPasswordReset.vue'
+import UserPasswordReset        from '@/components/UserPasswordReset.vue'
 import User                     from '@/scripts/User.js'
 import router                   from '@/router';
 

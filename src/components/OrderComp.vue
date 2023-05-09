@@ -104,9 +104,9 @@
             </ion-item>
         </ion-list>
 
-        <ion-card v-if="orderData?.stage_current=='supplier_start' && orderData?.user_role=='supplier'">
+        <ion-card v-if="orderData?.stage_current=='supplier_start' && ['supplier','admin'].includes(orderData?.user_role)" color="medium">
             <ion-card-header>
-                <ion-card-title>Фото товара</ion-card-title>
+                <ion-card-title>Фото заказа</ion-card-title>
             </ion-card-header>
             <ion-card-content>Рекомендуем делать фотографии товара до упаковки, чтобы избежать претензий со стороны покупателя к качеству и комплектности.</ion-card-content>
         </ion-card>

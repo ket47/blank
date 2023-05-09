@@ -74,88 +74,33 @@ const Utils={
         await this.storageCreate()
         await this.storage.set(requestId, cache)
 
+        if( Math.random()<0.01 ){//1% chance to get here
+            setTimeout(()=>this.clearPost(),5000)
+        }
         return response
     },
     async prePost( url, request ){
         const requestId=Utils.requestIdGet(url,request)
         await this.storageCreate()
         const cache=await this.storage.get(requestId)
+        await this.storage.remove(requestId)//some time stuck on old cache
         return cache?.response||null
     },
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    // async fetch(url,request={},options={}){
-    //     if(window.caches){
-	// 		if( typeof request === 'string' ){
-	// 			options.body=request
-	// 		} else if( options.is_json??null ){
-	// 			options.body=JSON.stringify(request)
-	// 		} else {
-	// 			options.body=new URLSearchParams(request)
-	// 		}            
-	// 		return Utils.fetchAndCache(url,options)
-    //     }
-    //     return await jquery.post(url,request)
-    // },
-    // async preFetch(url){
-    //     if(window.caches){
-	// 		const cacheStorage = await caches.open(Utils.cacheName);
-    //         const cachedResponse= await cacheStorage.match(url)
-    //         return cachedResponse||null
-    //     }
-    //     return null
-    // },
-    // cacheName:`appcache`,
-    // async fetchAndCache(url,options){
-    //     options.method= 'POST'
-    //     options.headers= {
-    //         'Content-Type': 'application/x-www-form-urlencoded',
-    //         'Access-Control-Allow-Origin':'*'
-    //     }
-    //     options.mode='cors'
-    //     try{
-    //         const cacheStorage = await caches.open(Utils.cacheName);
-    //         return await cacheStorage.add(url,options)
-    //     } catch(err){
-    //         console.log("fetchAndCache: no internet connection",err)
-    //     }
-    //     return null
-
-
-    //     // try{
-    //     //     const response=await fetch(url,options)
-    //     // } catch(err){
-    //     //     console.log("fetchAndCache: no internet connection",err)
-    //     // }
-        
-
-    //     // const requestId=url+Utils.stringToHash(JSON.stringify(options))
-    //     // const cacheStorage = await caches.open(requestId);
-    //     // cacheStorage.put(url, response);
-
-
-
-    //     // const cacheName = 55;
-
-    // }
+    async clearPost(){
+        const storedLastClearance=await this.storage.get('lastClearance')
+        const lastClearance=storedLastClearance||0
+        const cacheLifetime=24*60*60*1000*14//14 days
+        const now=Date.now()
+        if( now-lastClearance<cacheLifetime ){
+            return
+        }
+        let i=0
+        this.storage.forEach((value, key, index) => {
+            if( value && value.responseStamp && now-value.responseStamp>cacheLifetime ){
+                this.storage.remove(key)
+            }
+        })
+        await this.storage.set('lastClearance',now)
+    }
   };
   export default Utils;
