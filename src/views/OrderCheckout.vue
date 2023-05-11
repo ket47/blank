@@ -327,7 +327,7 @@ export default({
         },
 
         deliveryByStoreRule(){
-            return this.tariffMerge(this.tariffRuleList?.filter(rule=>rule.deliveryByStore==1))
+            return this.tariffRuleList?.filter(rule=>rule.deliveryByStore==1).shift()
         },
         deliveryByStoreRuleChecked(){
             return this.tariffRule.deliveryByStore==1
@@ -413,7 +413,30 @@ export default({
             }
         },
         tariffRuleSet( tariffRule ){
-            this.tariffRule=tariffRule
+            if(tariffRule.deliveryByCourier==1){
+                /**
+                 * If selected tariff includes delivery by courier merge in it all payment options
+                 */
+                this.tariffRule=this.tariffMerge(this.tariffRuleList?.filter(rule=>rule.deliveryByCourier==1))
+            } else
+            if(tariffRule.deliveryByStore==1){
+                /**
+                 * If selected tariff includes delivery by store merge in it all payment options
+                 */
+                 this.tariffRule=this.tariffMerge(this.tariffRuleList?.filter(rule=>rule.deliveryByStore==1))
+            } else 
+            if(tariffRule.pickupByCustomer==1){
+                /**
+                 * If selected tariff includes pickup by customer merge in it all payment options
+                 */
+                 this.tariffRule=this.tariffMerge(this.tariffRuleList?.filter(rule=>rule.pickupByCustomer==1))
+            } else {
+                /**
+                 * There is no any delivery option
+                 */
+                return ;
+            }
+
             this.order_sum_delivery=tariffRule.order_sum_delivery
             this.paymentType='use_card'
             if(this.bankCard?.card_type){
@@ -437,7 +460,8 @@ export default({
             let mergedTariff
             for(let tariff of tariffArray ){
                 if(!mergedTariff){
-                    mergedTariff=tariff
+                    //should avoid reference copying because original tariff will be updated. Using cloning
+                    mergedTariff=Object.assign({}, tariff)
                     continue
                 }
                 mergedTariff.tariff_id+=`,${tariff.tariff_id}`

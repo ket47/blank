@@ -411,14 +411,6 @@ ion-chip .active-chip {
       К сожалению, в <b>{{storeItem.store_name}}</b> пока нет доступных товаров.
     </ion-label>    
     </div>
-
-
-
-
-
-
-
-    <button @click="TEST()">TEST</button>
   </base-layout>
 </template>
 

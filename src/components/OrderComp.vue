@@ -97,10 +97,10 @@
                 <ion-text color="medium">Итого: </ion-text>
                 <ion-label slot="end" color="primary"><b>{{ orderData.order_sum_total }}{{$heap.state.currencySign}}</b></ion-label>
             </ion-item>
-            <ion-item lines="none" v-if="orderData?.info?.payment_card_fixate_sum>0 && orderData.stage_current=='supplier_corrected'">
+            <ion-item lines="none" v-if="orderData?.info?.payment_card_fixate_sum>0">
                 <ion-icon :icon="cardOutline" slot="start" color="medium"></ion-icon>
                 <ion-text color="medium">Предоплата: </ion-text>
-                <ion-label slot="end" color="primary"><b>{{ orderData?.info?.payment_card_fixate_sum }}{{$heap.state.currencySign}}</b></ion-label>
+                <ion-label slot="end" color="medium"><b>{{ orderData?.info?.payment_card_fixate_sum }}{{$heap.state.currencySign}}</b></ion-label>
             </ion-item>
         </ion-list>
 

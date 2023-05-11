@@ -1,7 +1,7 @@
 <template>
   <base-layout pageTitle="Страницы">
     <ion-list>
-      <ion-item v-for="page in pageList" :key="page.page_id" detail button @click="$go('text-edit-' + page.page_id)">
+      <ion-item v-for="page in pageList" :key="page.page_id" detail button @click="$go('/user/text-edit-' + page.page_id)">
         <ion-icon slot="start" :icon="documentTextOutline"/>
         <ion-label>{{ page.page_title }}</ion-label>
         <ion-note slot="end" style="width: 80px">{{

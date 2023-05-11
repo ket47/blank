@@ -1,7 +1,7 @@
 <template>
   <ion-header>
-      <ion-toolbar color="secondary">
-        <ion-title>Напоминание пароля</ion-title>
+      <ion-toolbar>
+        <ion-title>Восстановление пароля</ion-title>
         <ion-icon slot="end" @click="closeModal();" :icon="closeOutline" size="large"></ion-icon>
       </ion-toolbar>
   </ion-header>
@@ -9,16 +9,22 @@
       <form novalidate>
         <ion-list>
           <ion-item>
-            <ion-label position="stacked" color="primary">Номер телефона</ion-label>
-            <ion-input v-model="userphone" placeholder="Ваш телефон"/>
+            <ion-input label="Ваш номер телефона" label-placement="stacked" v-model="userphone" placeholder="Ваш телефон"/>
           </ion-item>
           <ion-item>
-            <ion-label position="stacked" color="primary">Имя пользователя</ion-label>
-            <ion-input v-model="username" placeholder="Введите имя пользователя..."/>
+            <ion-input label="Ваш ник" label-placement="stacked" v-model="username" placeholder="Имя, указанное вами при регистрации"/>
           </ion-item>
         </ion-list>
-        <ion-button @click="passwordReset()" expand="full">Выслать пароль</ion-button>
+        <ion-button @click="passwordReset()" expand="full">Создать новый пароль</ion-button>
       </form>
+      <div style="padding: 15px;font-size:0.8em;color:#999">
+        Рекомендуем сначала проверить СМС сообщение с паролем, которое было выслано вам при регистрации в сервисе.
+      </div>
+
+      <div style="padding: 15px;font-size:0.8em" @click="$router.push('page/contacts')">
+        Если у вас возникли сложности с восстановлением пароля, обращайтесь в <a href="#">службу поддержки</a>
+      </div>
+      
   </ion-content>
 </template>
 

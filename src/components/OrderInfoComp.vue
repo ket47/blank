@@ -39,7 +39,11 @@
                     <ion-note v-if="orderData.info.customer_location_comment">
                         Комментарий к адресу: {{orderData.info.customer_location_comment}} 
                     </ion-note>
+                    <ion-text v-if="orderData.info.customer_pickup">
+                        Покупатель выбрал самовывоз, как способ получения заказа.
+                    </ion-text>
                 </ion-label>
+                    
             </ion-item>
         </ion-accordion>
         <ion-accordion v-if="orderData?.info?.supplier_name">

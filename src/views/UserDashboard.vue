@@ -62,10 +62,10 @@ ion-icon{
               <ion-icon :icon="receiptOutline" slot="start" color="primary"></ion-icon>
               <ion-label>Мои чеки</ion-label>
           </ion-item>
-          <ion-item @click="$go('/user/user-cards')" lines="full" button detail>
+          <!-- <ion-item @click="$go('/user/user-cards')" lines="full" button detail>
               <ion-icon :icon="cardOutline" slot="start" color="primary"></ion-icon>
               <ion-label>Мои карты</ion-label>
-          </ion-item>
+          </ion-item> -->
           <ion-item lines="full" button detail href="https://t.me/tezkelbot" target="_new">
               <ion-icon :icon="chatboxEllipsesOutline" slot="start" color="primary"></ion-icon>
               <ion-label>Телеграм бот <a href="https://t.me/tezkelbot" target="_new">@tezkelbot</a></ion-label>

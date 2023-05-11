@@ -58,7 +58,7 @@ const Utils={
         return url+'~'+Utils.stringToHash(JSON.stringify(request))
     },
     debounceDictionary:{},
-    debounceControl(requestId,debounce=3000){//rejects subsequent requests if interval is smaller than debounce
+    debounceControl(requestId,debounce=1000){//rejects subsequent requests if interval is smaller than debounce
         const now=Date.now()
         if( this.debounceDictionary[requestId] && this.debounceDictionary[requestId]+debounce>now ){
             throw new Error('Too many requests')
