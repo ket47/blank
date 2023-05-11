@@ -44,10 +44,10 @@
                     <ion-thumbnail slot="start">
                         <ion-img v-if="item.image_hash" :src="`${$heap.state.hostname}image/get.php/${item.image_hash}.150.150.webp`" style="border-radius:10px;"/>
                     </ion-thumbnail>
-                    <ion-label>
+                    <div>
                         <div style="color:#999">{{item.user_name}} • <i v-if="item.reaction_is_like"><ion-icon :src="thumbsUpSharp" color="primary"/></i></div>
                         <div>{{item.reaction_comment}}</div>
-                    </ion-label>
+                    </div>
                 </ion-item>
             </div>
         </div>

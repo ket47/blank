@@ -58,7 +58,7 @@ const Utils={
         return url+'~'+Utils.stringToHash(JSON.stringify(request))
     },
     debounceDictionary:{},
-    debounceControl(requestId,debounce=1000){//rejects subsequent requests if interval is smaller than debounce
+    debounceControl(requestId,debounce=2000){//rejects subsequent requests if interval is smaller than debounce
         const now=Date.now()
         if( this.debounceDictionary[requestId] && this.debounceDictionary[requestId]+debounce>now ){
             throw new Error('Too many requests')
@@ -83,7 +83,7 @@ const Utils={
         const requestId=Utils.requestIdGet(url,request)
         await this.storageCreate()
         const cache=await this.storage.get(requestId)
-        await this.storage.remove(requestId)//some time stuck on old cache
+        //await this.storage.remove(requestId)//some time stuck on old cache
         return cache?.response||null
     },
     async clearPost(){
