@@ -50,7 +50,7 @@
 </style>
 
 <template>
-  <swiper :modules="modules" :autoplay='{delay: 3000, disableOnInteraction: false}' :loop="true" effect="fade" :fadeEffect="{ crossFade: true }"  :style="`height: ${imgHeight||'100%'};`" >
+  <swiper :modules="modules" :autoplay="{delay: 3000, disableOnInteraction: false}" :loop="imageList?.length>1?true:false" effect="fade" :fadeEffect="{ crossFade: true }"  :style="`height: ${imgHeight||'100%'};`" >
     <swiper-slide v-for="image in imageList" :key="image.image_hash">
       <div :class="`${(mode) ? mode: ''} cropper`" :style="`height: ${imgHeight+'px'||'100%'}`">
         <div class="blur-image">

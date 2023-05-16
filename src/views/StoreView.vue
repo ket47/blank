@@ -611,11 +611,12 @@ export default{
         storeItem.deliveryTime=Utils.deliveryTimeCalculate(storeItem.locations[0].distance,storeItem.store_time_preparation)
       }
       storeItem.avatarImage = '';
-      if (storeItem.avatar.length > 0) {
+      if(storeItem.avatar.length > 0) {
         storeItem.avatarImage = storeItem.avatar[0].image_hash;
       }
-      document.querySelector('meta[property="og:image"]').setAttribute("content", `${this.$heap.state.hostname}image/get.php/${storeItem.images[0].image_hash}.600.600.jpg`);
-      //document.title=storeItem.store_name;
+      if(storeItem.images.length > 0){
+        document.querySelector('meta[property="og:image"]').setAttribute("content", `${this.$heap.state.hostname}image/get.php/${storeItem.images[0].image_hash}.600.600.jpg`)
+      }
       return storeItem;
     },
     async productItemCreate( group_id ){

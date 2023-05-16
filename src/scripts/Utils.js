@@ -65,7 +65,13 @@ const Utils={
         }
         this.debounceDictionary[requestId]=now
     },
-    async post( url, request, options={} ){
+    /**
+     * Makes post request and caches response
+     * @param {*} url 
+     * @param {*} request 
+     * @returns 
+     */
+    async post( url, request ){
         const requestId=Utils.requestIdGet(url,request)
         this.debounceControl(requestId)
         const response=await jquery.post(url,request)
@@ -79,14 +85,31 @@ const Utils={
         }
         return response
     },
+    /**
+     * Looks for cached requests in storage. Cache max uses 2 times
+     * @param {*} url of request to look for cache
+     * @param {*} request to calculate hash
+     * @returns cache
+     */
     async prePost( url, request ){
         const requestId=Utils.requestIdGet(url,request)
         await this.storageCreate()
         const cache=await this.storage.get(requestId)
-        const now=Date.now()
-        //await this.storage.remove(requestId)//some time stuck on old cache
-        return cache?.response||null
+        if( !cache ){
+            return null
+        }
+        if(cache?.is_used){
+            await this.storage.remove(requestId)//some time stuck on old cache
+        } else {
+            cache.is_used=true
+            await this.storage.set(requestId, cache)
+        }
+        return cache?.response
     },
+    /**
+     * Clears stalled cache records
+     * @returns promise
+     */
     async clearPost(){
         const storedLastClearance=await this.storage.get('lastClearance')
         const lastClearance=storedLastClearance||0
@@ -95,7 +118,6 @@ const Utils={
         if( now-lastClearance<cacheLifetime ){
             return
         }
-        let i=0
         this.storage.forEach((value, key, index) => {
             if( value && value.responseStamp && now-value.responseStamp>cacheLifetime ){
                 this.storage.remove(key)
