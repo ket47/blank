@@ -16,6 +16,10 @@
             <order-history-comp :orderData="order"/>
             <msg-subscription-comp/>
             <order-meta-comp :orderId="order_id" v-if="order?.stage_current=='system_finish'"/>
+            <ion-item detail button lines="none" @click="$router.push('/user/reactions')" v-if="order?.stage_current=='system_finish'">
+                <ion-icon :src="chatboxOutline" slot="start" color="primary"/>
+                Нам важно ваше мнение. Оставьте отзыв о покупке
+            </ion-item>
 
             <ion-popover :is-open="isOpenDeliveryRejectionPopover" @didDismiss="isOpenDeliveryRejectionPopover=false">
                 <ion-content>
@@ -40,7 +44,8 @@
 
 <script>
 import {
-    sparklesOutline
+    sparklesOutline,
+    chatboxOutline,
 }                           from 'ionicons/icons';
 import {
     modalController,
@@ -79,7 +84,7 @@ export default({
     IonPopover
     },
     setup(){
-        return {sparklesOutline};
+        return {sparklesOutline,  chatboxOutline,};
     },
     data(){
         return {

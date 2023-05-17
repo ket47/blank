@@ -151,6 +151,10 @@ const routes = [
         path: '/user/user-cards',
         component: () => import('@/views/user/UserCards.vue')
       },
+      {
+        path: '/user/reactions',
+        component: () => import('@/views/ReactionsView.vue')
+      },
       
 
       {

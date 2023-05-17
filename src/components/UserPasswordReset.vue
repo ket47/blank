@@ -39,7 +39,6 @@ import {
   IonInput,
   IonButton,
   IonIcon,
-  IonLabel,
 
   modalController 
 }                   from '@ionic/vue';
@@ -59,7 +58,6 @@ export default {
   IonInput,
   IonButton,
   IonIcon,
-  IonLabel,
   },
   props: [ 'phone' ],
   setup(){

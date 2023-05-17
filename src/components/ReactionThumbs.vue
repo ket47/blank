@@ -14,7 +14,6 @@ import {
 import {
   modalController,
   IonIcon,
-  IonItem,
   IonChip,
   IonLabel,
 }                           from '@ionic/vue'
@@ -27,7 +26,6 @@ export default {
         IonChip,
         IonIcon,
         IonLabel,
-        IonItem,
     },
     props:['reactionSummary','targetType','targetId'],
     setup(){
