@@ -125,10 +125,6 @@ import
 }                         from 'ionicons/icons';
 import {
     modalController,
-    IonContent,
-    IonHeader,
-    IonToolbar,
-    IonTitle,
     IonIcon,
     IonImg,
     IonList,
@@ -152,10 +148,6 @@ import jQuery             from 'jquery'
 export default {
     props:['targetType','targetId'],
     components:{
-        IonContent,
-        IonHeader,
-        IonToolbar,
-        IonTitle,
         IonIcon,
         IonImg,
         IonList,
