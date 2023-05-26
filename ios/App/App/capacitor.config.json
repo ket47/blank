@@ -2,5 +2,17 @@
 	"appId": "com.tezkel.app",
 	"appName": " Тезкель экспресс доставка",
 	"webDir": "public",
-	"bundledWebRuntime": false
+	"bundledWebRuntime": false,
+	"plugins": {
+		"PushNotifications": {
+			"presentationOptions": [
+				"badge",
+				"sound",
+				"alert"
+			]
+		}
+	},
+	"server": {
+		"url": "http://192.168.0.155:8100"
+	}
 }

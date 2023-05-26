@@ -276,7 +276,9 @@ const User = {
         },
         trackingStop(){
             try{
-                Geolocation.clearWatch({id:User.geo.clock});
+                if(User.geo.clock){
+                    Geolocation.clearWatch({id:User.geo.clock});
+                }
                 User.geo.trackingActive=false
             }catch(err){
                 console.log('trackingStop',err)
@@ -322,7 +324,10 @@ const User = {
             })
         },
         async saveNotificationToken(){
-            if(Notification.permission!='granted'){
+            /**
+             * for web notifications
+             */
+            if(!window.Notification || Notification.permission!='granted'){
                 return
             }
             try{
@@ -331,6 +336,22 @@ const User = {
                 const token=await getToken(messaging, {vapidKey});
                 const request={
                     type:'webpush',
+                    registration_id:token,
+                    user_agent:navigator.userAgent
+                }
+                await jQuery.post(`${heap.state.hostname}MessageSub/itemCreate`,request)
+                User.firebase.tokenSaved=true;
+            }catch(err){
+                console.log(err)
+            }
+        },
+        async savePushToken(token){
+            /**
+             * for ios notifications
+             */
+            try{
+                const request={
+                    type:'push',
                     registration_id:token,
                     user_agent:navigator.userAgent
                 }

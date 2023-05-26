@@ -1,6 +1,6 @@
 <template>
   <ion-app>
-    <ion-router-outlet />
+    <ion-router-outlet ref="mainAppOutlet" />
   </ion-app>
 </template>
 

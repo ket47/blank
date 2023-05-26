@@ -1,5 +1,4 @@
 <style>
-
 ion-accordion-group .accordion-collapsed .product-description,
 ion-accordion-group .accordion-collapsing .product-description{
   text-overflow: ellipsis;
@@ -84,7 +83,7 @@ ion-accordion-group .accordion-expanding .product-description{
 
         <div class="horizontalScroller" style="padding:6px">
           <reaction-thumbs @react="getProduct()" :reactionSummary="productItem?.reactionSummary" :targetType="'product'" :targetId="productId"/>
-          <ion-chip @click="itemShare()" color="medium"><ion-icon :src="arrowRedoOutline"/><ion-label>Поделиться</ion-label></ion-chip>
+          <reaction-share :targetUrl="`catalog/product-${productId}`" :targetTitle="productItem.product_name" :targetText="productItem.product_description"/>
         </div>
 
 
@@ -194,8 +193,9 @@ import CartHeader       from '@/components/CartHeader'
 import Order            from '@/scripts/Order.js'
 import Utils            from '@/scripts/Utils.js'
 
-import ReactionThumbs from '@/components/ReactionThumbs.vue'
-import ReactionComment from '@/components/ReactionComment.vue'
+import ReactionThumbs   from '@/components/ReactionThumbs.vue'
+import ReactionComment  from '@/components/ReactionComment.vue'
+import ReactionShare    from '@/components/ReactionShare.vue'
 
 export default  {
   components: { 
@@ -203,19 +203,20 @@ export default  {
     CartAddButtons,
     ReactionThumbs,
     ReactionComment,
-  IonTextarea,
-  IonListHeader,
-  IonText,
-  IonIcon,
-  IonItem,
-  IonChip,
-  IonLabel,
-  IonList,
-  IonAccordion,
-  IonAccordionGroup,
-  IonButton,
-  IonAvatar,
-  IonImg,
+    ReactionShare,
+    IonTextarea,
+    IonListHeader,
+    IonText,
+    IonIcon,
+    IonItem,
+    IonChip,
+    IonLabel,
+    IonList,
+    IonAccordion,
+    IonAccordionGroup,
+    IonButton,
+    IonAvatar,
+    IonImg,
   },
   setup(){
     return {
@@ -318,30 +319,6 @@ export default  {
         };
         Order.cart.entryUpdate(entry)
       },
-      async itemShare(){
-        try{
-            const link=location.href;
-            if(navigator.share){
-                const shareData = {
-                    title: `${this.$heap.state.settings.app_title}`,
-                    text: `${this.productItem.product_name}`,
-                    url:link
-                }
-                await navigator.share(shareData);
-            } else {
-                await navigator.clipboard.writeText(link);
-                this.$alert("Теперь вы можете поделиться ей с друзьями в социальных сетях или мессенджерах.","Ссылка на страницу скопирована");
-            }
-        }catch(err){
-            //console.log(err)
-        }
-      },
-
-
-
-
-
-
   },
 }
 </script>

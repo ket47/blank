@@ -41,6 +41,8 @@ import User                 from '@/scripts/User.js'
 import Order                from '@/scripts/Order.js'
 import Metrics              from '@/scripts/Metrics.js'
 
+
+import  '@/scripts/Push'
 import './registerServiceWorker';
 
 
@@ -102,29 +104,8 @@ const alert = async (message:string,title:string)=>{
     return globalAlertPrompt.present();
 }
 
-//const tabRoutesUninited={user:1,catalog:1,search:1,order:1};
 const go = async (route:any)=>{
-  // const route_path=route.path??route
-  // if(route_path && typeof route_path === 'string' ){
-  //   const chunks=route_path?.split('/')
-  //   const tabRoute=chunks?.[1]
-  //   const subRoute=chunks?.[2]
-  //   if(tabRoute && tabRoutesUninited[tabRoute]){
-  //     /**
-  //      * We have uninited tabRoute so need to push tabRoute first
-  //      */
-  //     if( history.state.current==`/${tabRoute}` || history.state.back==`/${tabRoute}` ){
-  //       /**
-  //        * We was visited tabRoute so skip initing
-  //        */
-  //       delete tabRoutesUninited[tabRoute]
-  //     } else 
-  //     if( subRoute ){
-  //       await router.push(`/${tabRoute}`)
-  //       delete tabRoutesUninited[tabRoute]
-  //     }
-  //   }
-  // }
+  //Topic.publish('dismissModal')
   router.push(route)
 }
 
@@ -183,6 +164,11 @@ if( 'serviceWorker' in navigator ){
     }
   };
 }
+
+
+
+
+
 
 const app = createApp(App)
   .use(IonicVue)

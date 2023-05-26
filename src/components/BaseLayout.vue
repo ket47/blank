@@ -3,8 +3,8 @@
     <ion-header :class="[pageClass]">
       <ion-toolbar>
         <ion-buttons v-if="canGoBack" slot="start">
-          <ion-button v-if="isIos" @click="goback()"><ion-icon :src="chevronBackOutline"/></ion-button>
-          <ion-button v-else @click="goback()"><ion-icon :src="arrowBackOutline"/></ion-button>
+          <ion-button v-if="isIos" @click="goback()">&nbsp;<ion-icon :src="chevronBackOutline"/>&nbsp;&nbsp;&nbsp;</ion-button>
+          <ion-button v-else @click="goback()">&nbsp;<ion-icon :src="arrowBackOutline"/>&nbsp;&nbsp;&nbsp;</ion-button>
         </ion-buttons>
         <ion-title v-if="pageTitle" size="small"><div style="line-height: 1.5;max-height:3em;text-overflow: ellipsis;overflow: hidden;font-weight: bold;">{{ pageTitle }}</div></ion-title>
         <ion-icon  v-if="pageLogo" class="toolbar_svg_logo" style="color: var(--ion-color-primary)"  :icon="pageLogo"/>
@@ -125,7 +125,7 @@ export default defineComponent({
       return isPlatform('ios')
     },
     iosInstallPromptShow(){
-      return isPlatform('ios') && !this.isIosPromptDisssmissed
+      return isPlatform('ios') && !isPlatform('capacitor') && !this.isIosPromptDisssmissed
     }
   },
   methods:{

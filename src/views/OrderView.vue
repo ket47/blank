@@ -102,6 +102,10 @@ export default({
             }
             try{
                 this.orderIsLoading=true
+                const orderCache=await Order.api.itemPreGet(this.order_id);
+                if(orderCache){
+                    this.order=orderCache
+                }
                 this.order=await Order.api.itemGet(this.order_id);
                 this.itemAutoReload()
             } catch(err) {

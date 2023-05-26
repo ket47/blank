@@ -4,7 +4,12 @@ const config: CapacitorConfig = {
   appId: 'com.tezkel.app',
   appName: ' Тезкель экспресс доставка',
   webDir: 'public',
-  bundledWebRuntime: false
+  bundledWebRuntime: false,
+  plugins: {
+    PushNotifications: {
+      presentationOptions: ["badge", "sound", "alert"],
+    },
+  },
 };
 
 export default config;

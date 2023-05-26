@@ -39,7 +39,14 @@ export default{
       router.push({path: '/cart-list'});
     },
     async openCartList() {
-      const modal = await modalController.create({component: CartBodyModal});
+      const presEl=document.querySelector('ion-router-outlet');
+      const modal = await modalController.create({
+        component: CartBodyModal,
+        canDismiss:true,
+        backdropDismiss:true,
+        keyboardClose:true,
+        presentingElement:presEl
+      });
       const dismissFn=function(){
         modal.dismiss();
       };

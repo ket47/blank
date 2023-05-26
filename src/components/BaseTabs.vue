@@ -116,10 +116,6 @@ ion-tab-bar ion-label{
   color:#000;
   text-align: center;
 }
-.ios ion-tab-bar>div{
-  margin-top: -10px;
-  background-color: white;
-}
 </style>
 
 

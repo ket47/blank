@@ -168,9 +168,8 @@ export default {
     }
   },
   data() {
-    console.log(this.query)
     const today = new Date();
-    const firstDay = new Date(Date.parse(`${today.getFullYear()}-${today.getMonth()+1}-1`));
+    const firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
     return {
       balance: '-',
       start_at: firstDay.toISOString().slice(0, 10),

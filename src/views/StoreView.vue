@@ -99,10 +99,11 @@ ion-accordion-group .accordion-expanding .store-description{
 
 
 .groups-container{
-  display: block ruby;
+  display: grid;/** for webview */
+  grid-template-columns: repeat(30,min-content);
 }
-.groups-container ion-segment-button {
-  min-height: 45px;
+.groups-container ion-segment-button ion-label{
+  padding:10px;
 }
 
 
@@ -187,8 +188,13 @@ ion-accordion-group .accordion-expanding .store-description{
   position: fixed;
   top: 56px;
   z-index: 10000;
-  width: 100vw;
+  width: 100%;
   background-color: white;
+}
+.ios .group-fixed-block {
+  position: fixed;
+  position: -webkit-sticky;
+  top: 0px;
 }
 .md .group-fixed-block{
   border-bottom: 1px solid lightgray;
@@ -286,7 +292,7 @@ ion-chip .active-chip {
 
         <div class="horizontalScroller" style="padding:6px">
           <reaction-thumbs @react="itemGet()" :reactionSummary="storeItem?.reactionSummary" :targetType="'store'" :targetId="storeId"/>
-          <ion-chip @click="itemShare()" color="medium"><ion-icon :src="arrowRedoOutline"/><ion-label>Поделиться</ion-label></ion-chip>
+          <reaction-share :targetUrl="`catalog/store-${storeId}`" :targetTitle="storeItem.store_name" :targetText="storeItem.store_description"/>
           <store-opened-indicator :storeItem="storeItem"/>
         </div>
         <reaction-comment  @react="itemGet()" :reactionSummary="storeItem?.reactionSummary" :targetType="'store'" :targetId="storeId"/>
@@ -456,8 +462,10 @@ import jQuery             from "jquery";
 import heap               from "@/heap";
 import Utils              from "@/scripts/Utils.js";
 
-import ReactionThumbs from '@/components/ReactionThumbs.vue'
-import ReactionComment from '@/components/ReactionComment.vue'
+import ReactionThumbs     from '@/components/ReactionThumbs.vue'
+import ReactionComment    from '@/components/ReactionComment.vue'
+import ReactionShare      from '@/components/ReactionShare.vue'
+
 export default{
   components: {
     IonText,
@@ -483,6 +491,7 @@ export default{
     IonSkeletonText,
     ReactionThumbs,
     ReactionComment,
+    ReactionShare,
   },
   setup() {
     return {
@@ -750,24 +759,6 @@ export default{
         this.$refs.groupFixedBlock.classList.remove("hidden-block");
       } else {
         this.$refs.groupFixedBlock.classList.add("hidden-block");
-      }
-    },
-    async itemShare(){
-      try{
-          const link=location.href;
-          if(navigator.share){
-              const shareData = {
-                  title: `${this.$heap.state.settings.app_title}`,
-                  text: `${this.storeItem.store_name}`,
-                  url:link
-              }
-              await navigator.share(shareData);
-          } else {
-              await navigator.clipboard.writeText(link);
-              this.$alert("Теперь вы можете поделиться ей с друзьями в социальных сетях или мессенджерах.","Ссылка на страницу скопирована");
-          }
-      }catch(err){
-          //console.log(err)
       }
     },
   },

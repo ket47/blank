@@ -110,17 +110,9 @@ export default  {
       found:null
     }
   },
-  ionViewDidEnter(){
-    this.delayedListGet()
-  },
   created(){
-    this.delayedListGet()
-    let self=this;
-    this.$topic.on('userGet',user=>{
-      if(!this.found){
-        self.listGet()//repeated loadings
-      }
-    })
+    this.listGet()
+    this.$topic.on('userMainLocationSet',user=>this.listGet())
   },
   methods:{
     async listGet(){
@@ -134,9 +126,14 @@ export default  {
         return
       }
       try{
-        const found=await Utils.post(this.$heap.state.hostname+'Search/listGet',request)
+        let found=await Utils.prePost(`${this.$heap.state.hostname}Search/listGet`,request)
+        if( found ){
+          this.found=this.storeListCalculate(found)
+        }
+        found=await Utils.post(`${this.$heap.state.hostname}Search/listGet`,request)
         this.found=this.storeListCalculate(found)
-      }catch{
+      }catch(err){
+        console.log(err)
         this.found=null
       }
     },

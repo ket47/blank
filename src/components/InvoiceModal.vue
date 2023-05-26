@@ -2,10 +2,12 @@
 <template>
   <ion-header>
         <ion-header>
-          <ion-toolbar color="secondary">
+          <ion-toolbar>
+            <ion-item lines="none">
               <ion-icon :icon="receiptOutline" slot="start"/>
-              <ion-title slot="start">Фискальный чек</ion-title>
-              <ion-icon :icon="closeOutline" @click="closeModal();" slot="end" size="large"></ion-icon>
+              <ion-title>Фискальный чек</ion-title>
+              <ion-icon :icon="closeOutline" @click="closeModal();" slot="end" size="large"></ion-icon>              
+            </ion-item>
           </ion-toolbar>
       </ion-header>
   </ion-header>

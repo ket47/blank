@@ -28,7 +28,7 @@
     height: 100%;
     position: absolute;
     z-index: -1;
-    filter: blur(30px);
+    filter: blur(5px);
 }
 .deleted .product_list_item_img{
     border: 4px solid red;

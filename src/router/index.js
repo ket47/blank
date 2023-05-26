@@ -9,10 +9,11 @@ import ProductView    from '@/views/ProductView.vue'
 import OrderCheckout  from '@/views/OrderCheckout.vue'
 import OrderView      from '@/views/OrderView.vue'
 
-const already_visited_app=localStorage?.already_visited_app?true:false;
-const homePath=already_visited_app?"/catalog":'/page/about-us';
-localStorage.already_visited_app=1;
+// const already_visited_app=localStorage?.already_visited_app?true:false;
+// const homePath=already_visited_app?"/catalog":'/page/about-us';
+// localStorage.already_visited_app=1;
 
+const homePath="/catalog"
 const routes = [
   {
     path: '/home',

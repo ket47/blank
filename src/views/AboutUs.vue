@@ -1,14 +1,9 @@
 <template>
   <ion-page>
     <ion-content :class="'about-us-page'">
-      <ion-toolbar>
-        <ion-buttons slot="start">
-          <ion-button @click="$go('/catalog')"><ion-icon :src="arrowBackOutline"/></ion-button>
-        </ion-buttons>
-        <ion-icon  v-if="mainLogo" class="toolbar_svg_logo" style="color: white"  :icon="mainLogo"/>
-      </ion-toolbar>  
       <div class="header-image-container main-block">
-        <div class="main-block-content" style="transform: rotate(-7deg);">
+        <ion-icon class="toolbar_svg_logo" style="color: white"  :icon="mainLogo"/>
+        <div class="main-block-content" style="display:none;transform: rotate(-7deg);">
           <div class="text" style="color: white">
             <h2 style="color: rgb(235, 192, 0); font-size: 42px; margin: 0; filter: drop-shadow(-2px 2px 2px #042c4f);">Зарегистрируйся</h2>
             <h4 style="font-size: 24px; margin-top: 5px;">и получай скидку до <b style="font-size: 20px;">1000</b> рублей</h4>

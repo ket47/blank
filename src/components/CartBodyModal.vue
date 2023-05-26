@@ -10,9 +10,12 @@
 
 <template>
   <ion-header>
-      <ion-toolbar color="secondary">
-        <ion-title>Корзина</ion-title>
-        <ion-icon slot="end" @click="clearCart();" :icon="closeOutline" size="large"></ion-icon>
+      <ion-toolbar color="primary">
+        <ion-item lines="none" color="primary">
+          <ion-icon :icon="cartOutline" slot="start"/>
+          <ion-title>Корзина</ion-title>
+          <ion-icon slot="end" @click="clearCart();" :icon="closeOutline" size="large"></ion-icon>            
+        </ion-item>
       </ion-toolbar>
   </ion-header>
   <ion-content>
@@ -39,7 +42,8 @@ import {
   IonHeader,
   IonToolbar,
   IonIcon,
-  IonTitle
+  IonTitle,
+  IonItem,
 }                         from "@ionic/vue";
 import 
 {
@@ -59,7 +63,8 @@ export default{
   IonHeader,
   IonToolbar,
   IonIcon,
-  IonTitle
+  IonTitle,
+  IonItem,
   },
   setup() {
       const closeModal = function(){
@@ -74,7 +79,9 @@ export default{
   },
   created(){
     this.$topic.on('dismissModal',()=>{
-      modalController.dismiss();
+      if( modalController && modalController.isOpen ){
+        modalController.dismiss()
+      }
     })
   },
   methods: {

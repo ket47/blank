@@ -1,11 +1,15 @@
 import jQuery from "jquery";
 import heap from '@/heap';
 import Topic from '@/scripts/Topic.js'
+import Utils from '@/scripts/Utils.js'
 
 const Order = {
     api:{
+        async itemPreGet(order_id){
+            return Utils.prePost( heap.state.hostname + "Order/itemGet",{order_id} );
+        },
         async itemGet(order_id){
-            return jQuery.post( heap.state.hostname + "Order/itemGet",{order_id} );
+            return Utils.post( heap.state.hostname + "Order/itemGet",{order_id} );
         },
         async itemUpdate(order){
             return jQuery.post( heap.state.hostname + "Order/itemUpdate", JSON.stringify(order) );
