@@ -140,8 +140,6 @@ import {
   IonPage, 
   IonContent, 
   IonButton,
-  IonButtons,
-  IonToolbar,
   IonIcon,
 } from "@ionic/vue"
 
@@ -161,8 +159,6 @@ export default {
   IonContent, 
   IonButton,
   IonIcon,
-  IonButtons,
-  IonToolbar,
   FooterDesktop
   }
 }
