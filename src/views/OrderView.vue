@@ -90,21 +90,18 @@ export default({
         return {
             order_id:this.$route.params.id,
             order:null,
-            orderIsLoading:false,
             orderAutoloadClock:null,
             isOpenDeliveryRejectionPopover:false
         }
     },
     methods:{
-        async itemGet(){
-            if(this.orderIsLoading){
-                return
-            }
+        async itemGet( mode ){
             try{
-                this.orderIsLoading=true
-                const orderCache=await Order.api.itemPreGet(this.order_id);
-                if(orderCache){
-                    this.order=orderCache
+                if(mode!=='skipCaching'){//dont use caching on edit mode
+                    const orderCache=await Order.api.itemPreGet(this.order_id);
+                    if(orderCache){
+                        this.order=orderCache
+                    }
                 }
                 this.order=await Order.api.itemGet(this.order_id);
                 this.itemAutoReload()
@@ -117,7 +114,6 @@ export default({
                         break;
                 }
             }
-            this.orderIsLoading=false;
         },
         itemAutoReload(){
             clearTimeout(this.orderAutoloadClock)
@@ -263,7 +259,6 @@ export default({
     ionViewDidEnter() {
         if(this.order==null){
             this.itemGet();
-            console.log('viewenter')
         }
     },
     ionViewDidLeave(){
@@ -271,11 +266,8 @@ export default({
         clearTimeout(this.orderAutoloadClock)
     },
     created(){
-        const self=this
-        self.itemGet();
-        this.$topic.on('orderSumChanged',()=>{
-            self.itemGet();
-        })
+        this.itemGet();
+        this.$topic.on('orderSumChanged',()=>this.itemGet('skipCaching'))
         
         this.$topic.on('pushStageChanged',data=>{
             if( self.order?.order_id==data?.order_id && self.order.stage_current!=data.stage ){

@@ -152,15 +152,26 @@ export default{
       }
       return this.updateOrder(newQuantity);
     },
-    async updateOrder(newQuantity){
+    newQuantityCalculate(newQuantity){
       if( newQuantity<0 || !newQuantity ){
         newQuantity=0;
       }
       newQuantity=this.productData.product_quantity_min*Math.round(newQuantity/this.productData.product_quantity_min);
-      if( this.productData.is_counted==1 && newQuantity>(this.productData.product_quantity-this.productData.product_quantity_reserved) ){
-        this.$flash(`В наличии есть только ${this.productData.product_quantity-this.productData.product_quantity_reserved}${this.productData.product_unit}`);
-        newQuantity=this.productData.product_quantity;
+      if( this.productData.is_counted==1 ){
+        let freeProductQuantity=this.productData.product_quantity-this.productData.product_quantity_reserved
+
+        if(this.orderData?.order_stock_status=='reserved'){//if order at correction stage
+          freeProductQuantity+=parseFloat(this.productData.entry_quantity)
+        }
+        if(newQuantity>freeProductQuantity){
+          this.$flash(`В наличии есть только ${freeProductQuantity}${this.productData.product_unit}`);
+          newQuantity=this.productData.product_quantity;
+        }
       }
+      return newQuantity
+    },
+    async updateOrder(newQuantity){
+      newQuantity=this.newQuantityCalculate(newQuantity)
       let stock_product_quantity=this.productItem?this.productItem.product_quantity:this.productData.product_quantity;
       let entry_text=this.productData.entry_text
       if(this.productData.product_name){
