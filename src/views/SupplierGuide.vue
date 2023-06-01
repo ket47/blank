@@ -5,13 +5,12 @@
         <ion-buttons slot="start">
           <ion-back-button color="light" style="padding:0px 10px"></ion-back-button>
         </ion-buttons>
-        <ion-icon  v-if="mainLogo" class="toolbar_svg_logo" style="color: white"  :icon="mainLogo"/>
       </ion-toolbar>  
       <div class="header-image-container main-block">
         <div class="main-block-content">
           <div class="text" style="color: white">
-            <h2>Супер быстрая доставка</h2>
-            <h4>Роскошь, ставшая для продавцов реальностью</h4>
+            <h2>Настройте витрину и расширяйте свой бизнес</h2>
+            <h4>Воспользуйтесь специальным предложением по доставке от нас и набирайте обороты!</h4>
             <router-link to="/user/supplier-dashboard">
               <ion-button color="secondary"><span class="button-text">Присоединиться</span></ion-button>
             </router-link>
@@ -25,28 +24,49 @@
           <h2>Что Вы получите, работая именно с Tezkel?</h2>
           <div class="winnings-grid">
             <div class="winning-item">
-              <h4>Увеличение продаж</h4>
-              <p>Вы получаете не просто целый ряд дополнительных возможностей, но также эффективный канал продаж.</p>
+              <div class="winning-item-img">
+                <img src="/img/supplier_guide/supp_benef1.png" width="400"/>
+              </div>
+              <div class="winning-item-descr">
+                <h2>Увеличение торговых оборотов</h2>
+                <h4>Вы получаете не просто ряд дополнительных возможностей, но также эффективный канал для реализации Вашей продукции.</h4>
+              </div>
             </div>
             <div class="winning-item">
-              <h4>Реклама</h4>
-              <p>Ваш магазин постоянно светится перед тысячами покупателей, значительная часть которых станут Вашими клиентами.</p>
+              <div class="winning-item-img">
+                <img src="/img/supplier_guide/supp_benef2.png" width="400"/>
+              </div>
+              <div class="winning-item-descr">
+                <h2>Перманентная реклама</h2>
+                <h4>Ваш магазин постоянно виден тысячам покупателей, значительная часть которых может стать Вашими клиентами. Кроме того, мы постоянно проводим маркетинговые кампании для поддержки наших клиентов и привлечения новых покупателей.</h4>
+              </div>
             </div>
             <div class="winning-item">
-              <h4>Упрощение работы</h4>
-              <p>Больше нет нужды заморачиваться по поводу организации эффективной доставки. Весь нужный функционал мы уже вложили в наше приложение.</p>
+              <div class="winning-item-img">
+                <img src="/img/supplier_guide/supp_benef3.png" width="400"/>
+              </div>
+              <div class="winning-item-descr">
+                <h2>Упрощение рабочих процессов</h2>
+                <h4>Наша компания избавляет Вас от необходимости организации эффективной доставки. Весь нужный функционал по доставке м вложили в наше приложение.</h4>
+              </div>
             </div>
             <div class="winning-item">
-              <h4>Гарантии</h4>
-              <p>Мы гарантируем полную оплату, если на стороне пользователя или курьера случаются неприятности.</p>
+              <div class="winning-item-img">
+                <img src="/img/supplier_guide/supp_benef4.png" width="400"/>
+              </div>
+              <div class="winning-item-descr">
+                <h2>Поддержка высокого уровня репутации</h2>
+                <h4>Мы предоставляем высокий уровень обслуживания так, что репутация Вашего предприятия выйдет на новый уровень.</h4>
+              </div>
             </div>
             <div class="winning-item">
-              <h4>Маркетинг</h4>
-              <p>Вы имеете полную свободу проводить необходимые Вам маркетинговые акции, добавлять скидки, чтобы увеличить свои продажи.</p>
-            </div>
-            <div class="winning-item">
-              <h4>Точность и скорость</h4>
-              <p>Философия нашей системы всячески подразумевает, что мы мгновенно и наверняка решаем вопросы, которые возникают в процессе доставки. </p>
+              <div class="winning-item-img">
+                <img src="/img/supplier_guide/supp_benef5.png" width="400"/>
+              </div>
+              <div class="winning-item-descr">
+                <h2>Онлайн-доступность с любого устройства</h2>
+                <h4>Наша площадка даёт возможность Вашему бизнесу быть простым и доступным для пользователей любых устройств. Будь-то наше мобильное приложение для iPhone, iPad, Android, или же формат веб-сайта для пользователей ПК.</h4>
+              </div>
             </div>
           </div>
         </div>
@@ -55,9 +75,12 @@
 
       <div class="benefits-container main-block">
         <div class="main-block-content">
-          <h2>Сделайте всего 3 шага и начните зарабатывать!</h2>
+          <h2>Сделайте всего 3 шага и присоединяйтесь к Tezkel!</h2>
           <div class="benefits-list">
             <div class="benefit-item">
+              <div class="benefit-img">
+                <img src="/img/supplier_guide/tezkel_supplier_progress1.png"/>
+              </div>
               <div class="heading">
                 <h2>1</h2>
                 <h4>Создайте магазин и примите оферту</h4>
@@ -65,6 +88,9 @@
               <p>Мы соблюдаем все необходимые законные требования сотрудничества.</p>
             </div>
             <div class="benefit-item">
+              <div class="benefit-img">
+                <img src="/img/supplier_guide/tezkel_supplier_progress2.png"/>
+              </div>
               <div class="heading">
                 <h2>2</h2>
                 <h4>Заполните каталог Вашими товарами</h4>
@@ -72,39 +98,14 @@
               <p>Добавьте и оформите товары, которые Вы собираетесь продавать.</p>
             </div>
             <div class="benefit-item">
+              <div class="benefit-img">
+                <img src="/img/supplier_guide/tezkel_supplier_progress3.png"/>
+              </div>
               <div class="heading">
                 <h2>3</h2>
                 <h4>Дождитесь проверки и подтверждения</h4>
               </div>
               <p>Администраторы в самые короткие сроки проверят и подтвердят Ваши данные.</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="intro-container main-block">
-        <div class="main-block-content">
-          <div class="landing-desc-col landing-desc-feature-col image-col" style="text-align: center;">
-              <img src="/img/supplier_guide/tezkel_supplier_flyer_phone.png" width="300"/>
-          </div>
-          <div class="landing-desc-col landing-desc-feature-col">
-            <h2>Рабочий процесс невероятно прост</h2>
-            <div class="intro-list">
-              <div class="intro-item">
-                <img src="/img/supplier_guide/tezkel_supplier_flyer_img1.png" width="100"/>
-                <p>Клиент создаёт заказ в приложении</p>
-                <div></div>
-              </div>
-              <div class="intro-item">
-                <div></div>
-                <p>Заказ поступает к Вам на сборку</p>
-                <img src="/img/supplier_guide/tezkel_supplier_flyer_img2.png" width="100"/>
-              </div>
-              <div class="intro-item">
-                <img src="/img/supplier_guide/tezkel_supplier_flyer_img3.png" width="100"/>
-                <p>Курьер привозит заказ Клиенту</p>
-                <div></div>
-              </div>
             </div>
           </div>
         </div>
@@ -121,59 +122,67 @@
                 <h4>Тариф "Свобода"</h4>
                 <p>Почувствуйте вкус свободы с нашим максимальным тарифом</p>
                 <ul class="tarif-conditions">
-                  <li>Доступ к безналичному рассчёту для покупателей.</li>
-                  <li>Услуги доставки с помощью наших курьеров.</li>
-                  <li>Услуги доставки с помощью наших курьеров.</li>
-                  <li>Услуги доставки с помощью наших курьеров.</li>
+                  <li><b class="icon green-icon">✔</b>Размещение на <a href="#qst_1">площадке</a>.</li>
+                  <li><b class="icon green-icon">✔</b><a href="#qst_5">Система</a> управления заказами.</li>
+                  <li><b class="icon green-icon">✔</b>Синхронизация с <a href="#qst_10">системами торгового учёта</a>.</li>
+                  <li><b class="icon green-icon">✔</b>Функция "Электронное меню" (доступно для кафе и ресторанов).</li>
+                  <li><b class="icon green-icon">✔</b>Маркетинговая поддержка для проветения рекламных акций.</li>
+                  <li><b class="icon green-icon">✔</b>Приём <a href="#qst_6">онлайн-оплат</a>.</li>
+                  <li><b class="icon green-icon">✔</b>Ускоренные <a href="#qst_9">взаиморасчёты</a>.</li>
+                  <li><b class="icon green-icon">✔</b>Услуги <a href="#qst_11">доставки</a> с помощью наших курьеров.</li>
                 </ul>
               </div>
               <div class="tarif-right">
                 <h1>25%</h1>
-                <h6>Стоимость</h6>
+                <h6>Ставка</h6>
                 <router-link to="/user/sign-up">
-                  <ion-button button-secondary color="secondary"><span class="button-text">НАЧАТЬ</span></ion-button>
-                </router-link>
-              </div>
-            </div>
-          </div>
-          <h2>Есть несколько способов работы с нами.</h2>
-          <h4>Выбирайте самый удобный!</h4>
-          <div class="tarif-list">
-            <div class="tarif-item">
-              <div class="tarif-left">
-                <h4>Тариф "Маркетплейс"</h4>
-                <p>Почувствуйте вкус свободы с нашим максимальным тарифом</p>
-                <ul class="tarif-conditions">
-                  <li>Доступ к безналичному рассчёту для покупателей.</li>
-                  <li>Услуги доставки с помощью наших курьеров.</li>
-                  <li>Услуги доставки с помощью наших курьеров.</li>
-                  <li>Услуги доставки с помощью наших курьеров.</li>
-                </ul>
-              </div>
-              <div class="tarif-right">
-                <h1>7%</h1>
-                <h6>Стоимость</h6>
-                <router-link to="/user/sign-up">
-                  <ion-button button-secondary color="secondary"><span class="button-text">НАЧАТЬ</span></ion-button>
+                  <ion-button button-secondary color="secondary"><span class="button-text">ПОДРОБНЕЕ</span></ion-button>
                 </router-link>
               </div>
             </div>
             <div class="tarif-item">
               <div class="tarif-left">
                 <h4>Тариф "Маркетплейс + Оплата"</h4>
-                <p>Почувствуйте вкус свободы с нашим максимальным тарифом</p>
+                <p>Если Вам не нужны услуги доставки, но Вы по-прежнему хотите расширить свою аудиторию, то у нас есть для Вас решение.</p>
                 <ul class="tarif-conditions">
-                  <li>Доступ к безналичному рассчёту для покупателей.</li>
-                  <li>Услуги доставки с помощью наших курьеров.</li>
-                  <li>Услуги доставки с помощью наших курьеров.</li>
-                  <li>Услуги доставки с помощью наших курьеров.</li>
+                  <li><b class="icon green-icon">✔</b>Размещение на <a href="#qst_1">площадке</a>.</li>
+                  <li><b class="icon green-icon">✔</b><a href="#qst_5">Система</a> управления заказами.</li>
+                  <li><b class="icon green-icon">✔</b>Синхронизация с <a href="#qst_10">системами торгового учёта</a>.</li>
+                  <li><b class="icon green-icon">✔</b>Функция "Электронное меню" (доступно для кафе и ресторанов).</li>
+                  <li><b class="icon green-icon">✔</b>Маркетинговая поддержка для проветения рекламных акций.</li>
+                  <li><b class="icon green-icon">✔</b>Приём <a href="#qst_6">онлайн-оплат</a>.</li>
+                  <li><b class="icon green-icon">✔</b>Ускоренные <a href="#qst_9">взаиморасчёты</a>.</li>
+                  <li><b class="icon red-icon">✖</b>Услуги <a href="#qst_11">доставки</a> с помощью наших курьеров.</li>
                 </ul>
               </div>
               <div class="tarif-right">
                 <h1>10%</h1>
-                <h6>Стоимость</h6>
+                <h6>Ставка</h6>
                 <router-link to="/user/sign-up">
-                  <ion-button button-secondary color="secondary"><span class="button-text">НАЧАТЬ</span></ion-button>
+                  <ion-button button-secondary color="secondary"><span class="button-text">ПОДРОБНЕЕ</span></ion-button>
+                </router-link>
+              </div>
+            </div>
+            <div class="tarif-item">
+              <div class="tarif-left">
+                <h4>Тариф "Маркетплейс"</h4>
+                <p>В случае, когда Вам не нужны ни услуги доставки, ни приём электронных платежей, Вы всё ещё имеете возможность увеличить охваты воспользовавшись нашим сервисом.</p>
+                <ul class="tarif-conditions">
+                  <li><b class="icon green-icon">✔</b>Размещение на <a href="#qst_1">площадке</a>.</li>
+                  <li><b class="icon green-icon">✔</b><a href="#qst_5">Система</a> управления заказами.</li>
+                  <li><b class="icon green-icon">✔</b>Синхронизация с <a href="#qst_10">системами торгового учёта</a>.</li>
+                  <li><b class="icon green-icon">✔</b>Функция "Электронное меню" (доступно для кафе и ресторанов).</li>
+                  <li><b class="icon green-icon">✔</b>Маркетинговая поддержка для проветения рекламных акций.</li>
+                  <li><b class="icon red-icon">✖</b>Приём <a href="#qst_6">онлайн-оплат</a>.</li>
+                  <li><b class="icon red-icon">✖</b>Ускоренные <a href="#qst_9">взаиморасчёты</a>.</li>
+                  <li><b class="icon red-icon">✖</b>Услуги <a href="#qst_11">доставки</a> с помощью наших курьеров.</li>
+                </ul>
+              </div>
+              <div class="tarif-right">
+                <h1>7%</h1>
+                <h6>Ставка</h6>
+                <router-link to="/user/sign-up">
+                  <ion-button button-secondary color="secondary"><span class="button-text">ПОДРОБНЕЕ</span></ion-button>
                 </router-link>
               </div>
             </div>
@@ -181,12 +190,100 @@
         </div>
       </div>
 
+      <div class="questions-block main-block">
+        <div class="main-block-content">
+          <h2>Частые вопросы</h2>
+          <h4>Мы собрали самые часто задаваемые вопросы в одном месте и дали лаконичные ответы на них</h4>
+          <ion-accordion-group  expand="inset">
+            <ion-accordion value="qst_1">
+              <ion-item slot="header" color="light">
+                <ion-label><a name="qst_1">Что такое "платформа"?</a></ion-label>
+              </ion-item>
+              <div class="ion-padding" slot="content">Платформа - это онлайн-ресурс, одним из главных преимуществ которого является постоянное сканирование и индексирование популярными поисковыми системами, такими как Google, Yandex, Bing и прочее.</div>
+            </ion-accordion>
+            <ion-accordion value="qst_2">
+              <ion-item slot="header" color="light">
+                <ion-label><a name="qst_2">Платформа - это сайт?</a></ion-label>
+              </ion-item>
+              <div class="ion-padding" slot="content">Да и не только. Наша платформа примечательна тем, что она представляет собой и сайт, и приложение одновременно. Это означает, что одну и ту же версию площадки Вы можете одинаково удобно использовать на любом устройстве.</div>
+            </ion-accordion>
+            <ion-accordion value="qst_3">
+              <ion-item slot="header" color="light">
+                <ion-label><a name="qst_3">Зачем мне платформа для работы?</a></ion-label>
+              </ion-item>
+              <div class="ion-padding" slot="content">Главная задача нашей платформы заключается в максимальной автоматизации Вашего рабочего процесса.</div>
+            </ion-accordion>
+            <ion-accordion value="qst_4">
+              <ion-item slot="header" color="light">
+                <ion-label><a name="qst_4">В чём заключается автоматизация, предоставляема платформой?</a></ion-label>
+              </ion-item>
+              <div class="ion-padding" slot="content">Автоматизация представляет автоматически настроенную работу с получением заказов от клиентов, работу с эквайрингом, исключительный контроль над заказом.</div>
+            </ion-accordion>
+            <ion-accordion value="qst_5">
+              <ion-item slot="header" color="light">
+                <ion-label><a name="qst_5">Как я могу контролировать свои заказы?</a></ion-label>
+              </ion-item>
+              <div class="ion-padding" slot="content">Наша платформа предоставляем возможность отслеживания каждого этапа заказа: с момента пользовательской корзины и до момента приёма заказа покупателем. Этапы, требующие Вашего участия, такие как поступление, сборка и т.п. сопровождаются уведомлениями в приложении и Telegram-боте, оповещениями по электронной почте и даже смс-сообщениями. Кроме того, Вы можете прикреплять фотографии, которые помогут покупателю убедиться в качестве Вашего заказа, что, в свою очередь, вызывает доверие у Ваших клиентов.</div>
+            </ion-accordion>
+            <ion-accordion value="qst_6">
+              <ion-item slot="header" color="light">
+                <ion-label><a name="qst_6">В чём суть онлайн-оплаты?</a></ion-label>
+              </ion-item>
+              <div class="ion-padding" slot="content">Функция онлайн-оплаты заключается в подключении услуг эквайринга. Это обусловливает безопасность денежных переводов, так как весь процесс состоит из трёх этапов: предварительная блокировка средств на счёте покупателя, возврат части средств (в случае необходимости) и непосредственно подтверждающий перевод средств.</div>
+            </ion-accordion>
+            <ion-accordion value="qst_7">
+              <ion-item slot="header" color="light">
+                <ion-label><a name="qst_7">Что такое эквайринг и как с ним работать?</a></ion-label>
+              </ion-item>
+              <div class="ion-padding" slot="content">Эквайринг — это технология безналичного приема платежей с использованием банковских карт. Она позволяет принимать и контролировать безналичные платежи. Работа с ним  заранее автоматизирована и настроена на нашей платформе, что означает, что такие аспекты, как собственно прием средств, корректировка сдачи и предоставление чека покупателю не требует Вашего вмешательства.</div>
+            </ion-accordion>
+            <ion-accordion value="qst_8">
+              <ion-item slot="header" color="light">
+                <ion-label><a name="qst_8">Как работать с чеками?</a></ion-label>
+              </ion-item>
+              <div class="ion-padding" slot="content">Для осуществления работы с чеками мы, будучи посредником в передаче оплаты от покупателя продавцу, со своей стороны выписываем агентский чек (чек посредника) покупателю. То есть Вам больше не нужно формировать чек, что, в свою очередь, избавляет Вас от необходимости сталкиваться со всеми затратами на создание чеков. Вместо этого достаточно только выписать расходный документ в Вашей учётной системе, а чек мы выпишем сами.</div>
+            </ion-accordion>
+            <ion-accordion value="qst_9">
+              <ion-item slot="header" color="light">
+                <ion-label><a name="qst_9">Каков порядок взаиморасчётов?</a></ion-label>
+              </ion-item>
+              <div class="ion-padding" slot="content">Мы выполняем регулярные взаиморасчёты с Вами ориентировочно около двух раз в неделю. Такая частота позволяет избегать ошибок и нестыковок в отчётах и актах.</div>
+            </ion-accordion>
+            <ion-accordion value="qst_10">
+              <ion-item slot="header" color="light">
+                <ion-label><a name="qst_10">Что такое синхронизация?</a></ion-label>
+              </ion-item>
+              <div class="ion-padding" slot="content">Мы предоставляем возможность синхронизации Вашей витрины на нашей платформе с системами торгового учёта, что позволяет Вам автоматизировать обновления цен и остатков товаров.</div>
+            </ion-accordion>
+            <ion-accordion value="qst_11" >
+              <ion-item slot="header"  color="light">
+                <ion-label><a name="qst_11">Могу ли я подключить доставку?</a></ion-label>
+              </ion-item>
+              <div class="ion-padding" slot="content">В случае, если Вас заинтересовала опция, включающая доставку силами наших курьеров, то мы рекомендуем Вам уточнить возможность подключения данной опции конкретно для Вас в зависимости от Вашего города.</div>
+            </ion-accordion>
+            <ion-accordion value="qst_12">
+              <ion-item slot="header" color="light">
+                <ion-label><a name="qst_12">Какова Ваша роль в рабочем процессе?</a></ion-label>
+              </ion-item>
+              <div class="ion-padding" slot="content">Помимо того, что мы предоставляем инструмент, позволяющий Вам получить новых покупаетелей, мы также принимаем участие в рабочем процессе и упрощаем его для Вас. После того, как наш курьер начинает доставку, котроль и рабочая нагрузка по активному заказу полностью переходит к нам. Таким образом Вам необходимо только подготовить заказ к доставке.</div>
+            </ion-accordion>
+            <ion-accordion value="qst_9">
+              <ion-item slot="header" color="light">
+                <ion-label><a name="qst_9">Есть ли возможность отследить заказ?</a></ion-label>
+              </ion-item>
+              <div class="ion-padding" slot="content">На нашей площадке есть функция активного отслеживания местоположения курьеров, что означает, что текущий географический статус заказа может быть отслежен в реальном времени с точностью до 10 метров.</div>
+            </ion-accordion>
+          </ion-accordion-group>
+        </div>
+      </div>
+
       <div class="sign-up-suggest main-block">
         <div class="main-block-content">
-          <h2>Нужна экспресс-доставка?</h2>
+          <h2>Решили ускорить рост Вашего бизнеса?</h2>
+          <h4>Подайте заявку, а мы займёмся оформлением</h4>
           <div class="actions">
             <router-link to="/user/sign-up">
-              <ion-button button-secondary color="secondary"><span class="button-text">Дайте две!</span></ion-button>
+              <ion-button button-secondary color="secondary"><span class="button-text">Подать заявку</span></ion-button>
             </router-link>
           </div>
         </div>
@@ -199,7 +296,6 @@
 
 import FooterDesktop  from "@/components/FooterDesktop";
 import mainLogo       from "@/assets/icons/tezkel_logo.svg";
-
 import {
   IonPage, 
   IonContent, 
@@ -208,6 +304,10 @@ import {
   IonToolbar,
   IonBackButton,
   IonIcon,
+  IonAccordion, 
+  IonAccordionGroup, 
+  IonItem, 
+  IonLabel
 } from "@ionic/vue"
 
 export default {
@@ -227,7 +327,11 @@ export default {
   IonIcon,
   IonButtons,
   IonToolbar,
-  FooterDesktop
+  FooterDesktop,
+  IonAccordion,
+  IonAccordionGroup,
+  IonItem,
+  IonLabel,
   }
 }
 </script>
@@ -278,13 +382,16 @@ export default {
   text-align: left;
   background-image: url("/public/img/supplier_guide/tezkel_supplier_flyer_header1.jpg");
   background-size: cover;
-  background-position: center center;
+  background-position: left center;
 }
 
 .header-image-container {
   display: grid;
   grid-template-columns: 1fr 1fr;
   padding: 1em;
+}
+.header-image-container .main-block-content{
+  max-width: 500px !important;
 }
 .header-image-container h2,
 .header-image-container h4{
@@ -341,8 +448,6 @@ export default {
   text-align: center;
 }
 .winnings-grid{
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
   align-items: baseline;
   padding: 1em;
   text-align: center;
@@ -352,15 +457,35 @@ export default {
 .winnings-grid .winning-item{
   padding: 1em 2em;
   text-align: left;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
   border-radius: 15px;
+  display: grid;
+  grid-template-columns: 50% 50%;
+  align-items: center;
   height: 100%;
+  margin-top: -2em;
 }
-.winnings-grid .winning-item p{
+.winnings-grid .winning-item .winning-item-img{
+  margin: 0 2em;
+}
+.winnings-grid .winning-item:nth-child(odd) .winning-item-img{
+  text-align: right;
+}
+.winnings-grid .winning-item:nth-child(odd) .winning-item-descr{
+  text-align: left;
+}
+.winnings-grid .winning-item:nth-child(even) .winning-item-img{
+  text-align: left;
+}
+.winnings-grid .winning-item:nth-child(even) .winning-item-descr{
+  text-align: right;
+  grid-column: 1;
+  grid-row: 1;
+}
+.winnings-grid .winning-item h2{
+  color: black;
+}
+.winnings-grid .winning-item h4{
   color: gray;
-}
-.winnings-grid .winning-item img{
-  width: 120px;
 }
 
 .sign-up-suggest{
@@ -373,7 +498,8 @@ export default {
 .sign-up-suggest .main-block-content{
   color: white;
 }
-.sign-up-suggest .main-block-content h2{
+.sign-up-suggest .main-block-content h2,
+.sign-up-suggest .main-block-content h4{
   color: white;
 }
 .sign-up-suggest .main-block-content a{
@@ -389,11 +515,14 @@ export default {
 .benefits-list{
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
-  align-items: baseline;
   padding: 1em;
 }
 .benefits-list .benefit-item{
   padding: 2em;
+}
+.benefit-item .benefit-img{
+  width: 70%;
+  margin: 0 auto;
 }
 .benefits-list .benefit-item .heading{
   display: flex;
@@ -436,7 +565,8 @@ export default {
   margin: 15px 0;
 }
 .tarif-container .tarif-item .tarif-left ul{
-
+  list-style: none;
+  padding: 0;
 }
 .tarif-container .tarif-item .tarif-left ul li{
   color: #606060;
@@ -453,7 +583,39 @@ export default {
 .tarif-container .tarif-right > h6{
   margin-top: 0;
 }
+.tarif-container .icon{
+  margin: 0 10px;
+}
+.tarif-container .icon.green-icon{
+  color: var(--ion-color-success,#2dd36f);
+}
+.tarif-container .icon.red-icon{
+  color: var(--ion-color-danger,#eb445a);
+}
 
+.questions-block .main-block-content > h2,
+.questions-block .main-block-content > h4{
+  text-align: center;
+}
+.questions-block .main-block-content > h4{
+  margin-bottom: 2em;
+}
+
+.questions-block ion-accordion.accordion-collapsing ion-item[slot='header'],
+.questions-block ion-accordion.accordion-collapsed ion-item[slot='header'] {
+  --background: var(--ion-color-light);
+  --color: var(--ion-color-light-contrast);
+}
+
+.questions-block ion-accordion.accordion-expanding ion-item[slot='header'],
+.questions-block ion-accordion.accordion-expanded ion-item[slot='header'] {
+  --background: var(--ion-color-primary);
+  --color: var(--ion-color-primary-contrast);
+}
+.questions-block ion-accordion div[slot="content"]{
+  font-size: 14px;
+  line-height: 1.4;
+}
 
   /*=========================*/
   /*==========FOOTER=========*/
@@ -519,9 +681,14 @@ export default {
   .supplier-guide-page .main-block{
     padding: 1em;
     grid-template-columns: 1fr;
-    background-position-x: left;
+    background-position-x: right;
     min-height: 400px;
     text-align: center;
+  }
+  .supplier-guide-page .header-image-container h2,
+  .supplier-guide-page .header-image-container h4{
+    color: white;
+    text-shadow: 1px 1px 5px black;
   }
   .supplier-guide-page .main-block .toolbar_svg_logo{
     left: 0;
@@ -539,10 +706,15 @@ export default {
   ion-footer.desktop-footer{
     display: none;
   }
-  
-.winnings-grid .winning-item{
-  text-align: center;
-}
+  .winnings-grid .winning-item{
+    display: block;
+    text-align: center;
+  }
+  .winnings-grid .winning-item-img,
+  .winnings-grid .winning-item-descr{
+    text-align: center !important;
+  }
+
 }
 
 </style>
