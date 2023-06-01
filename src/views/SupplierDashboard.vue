@@ -21,37 +21,91 @@ ion-text{
   border: 4px solid #999;
   filter: grayscale(0.5);
 }
+
+.header-image-container{
+  padding: 2em 4em;
+  display: grid;
+  min-height: 350px;
+  align-items: center;
+  text-align: center;
+  background-image: url("/public/img/about_us/tezkel_header.jpg");
+  background-position: center center;
+}
+.header-image-container h2,
+.header-image-container h4{
+  font-size: 20px;
+  color: white;
+}
+@media screen and (max-width: 740px) {
+  .header-image-container h2{
+    font-size: 28px !important;
+  }
+  .header-image-container h4{
+    font-size: 15px !important;
+  }
+}
+.header-image-container .main-block-content{
+  animation: scale 2s ease-out infinite;
+}
+@keyframes scale {
+  0%   {scale: 1}
+  50%  {scale: 1.04}
+  100% {scale: 1}
+}
+
+
+
+
+
+
+
+
+
+
 </style>
 <template>
   <base-layout page-title="Панель управления продавца">
-      <ion-card color="light" v-if="$heap.state.user.user_id>1">
-        <ion-card-header>
-          <ion-card-title>Регистрация нового магазина</ion-card-title>
-        </ion-card-header>
-        <ion-card-content>
-          <ion-item lines="full">
-            <ion-label position="stacked" color="primary">Название магазина или ресторана*</ion-label>
-            <ion-input v-model="store_name" placeholder="Название*"></ion-input>
-          </ion-item>
-          <ion-item lines="none">
-            <ion-text>
-              Подавая заявку вы даете согласие на условия 
-              <router-link to="/page/rules-supplier">Договор поставки товаров и услуг</router-link>
-            </ion-text>
-            <ion-checkbox slot="end" v-model="contractAccepted"/>
-          </ion-item>
-        <ion-button expand="block" @click="itemCreate()" :disabled="!contractAccepted || !store_name">Стать продавцом</ion-button>
-        </ion-card-content>
-      </ion-card>
-      <ion-card color="light" v-else>
-        <ion-card-header>
-          <ion-card-title>Необходимо зарегистрироваться</ion-card-title>
-        </ion-card-header>
-        <ion-card-content>
-          Чтобы стать продавцом, нужно быть зарегистрированным пользователем. Вы можете зарегистрироваться за 2 минуты.
-        <ion-button expand="block" @click="$go('/user/sign-up')">Зарегистрироваться</ion-button>
-        </ion-card-content>
-      </ion-card>
+
+
+
+      <div class="header-image-container main-block">
+        <ion-icon class="toolbar_svg_logo" style="color: white"  :icon="mainLogo"/>
+        <div class="main-block-content" style="transform: rotate(-7deg);">
+          <div class="text" style="color: white">
+            <h2 style="color: rgb(235, 192, 0); font-size: 42px; margin: 0; filter: drop-shadow(-2px 2px 2px #042c4f);">Узнайте преимущества</h2>
+            <h4 style="font-size: 24px; margin-top: 5px;">работы с нашей платформой</h4>
+              <ion-button expand="block" color="light" @click="$go('/user/sign-up')"><b>Презентация</b></ion-button>
+          </div>
+        </div>
+      </div>
+
+
+
+
+    <div v-if="$heap.state.user.user_id>1">
+      <ion-item lines="none">
+        <h4 style="color:var(--ion-color-primary)">Регистрация нового продавца</h4>
+      </ion-item>
+      <ion-item>
+        <ion-input v-model="store_name" label="Название магазина или ресторана*" labelPlacement="stacked" placeholder="Название*"></ion-input>
+      </ion-item>
+      <ion-item lines="none">
+        <ion-text style="font-size:0.9em">
+          Я согласен(на) на условия <router-link to="/page/rules-supplier">Договора оказания услуг</router-link>
+        </ion-text>
+        <ion-checkbox slot="end" v-model="contractAccepted" aria-label=""></ion-checkbox>
+      </ion-item>
+      <ion-button expand="block" @click="itemCreate()" :disabled="!contractAccepted || !store_name">Стать продавцом</ion-button>
+    </div>
+    <ion-card color="light" v-else>
+      <ion-card-header>
+        <ion-card-title>Необходимо зарегистрироваться</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        Чтобы стать продавцом, нужно быть зарегистрированным пользователем. Вы можете зарегистрироваться за 2 минуты.
+      <ion-button expand="block" @click="$go('/user/sign-up')">Зарегистрироваться</ion-button>
+      </ion-card-content>
+    </ion-card>
 
 
 
