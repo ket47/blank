@@ -77,8 +77,8 @@
           <h2>Хотите продавать на Tezkel?</h2>
           <h4>Зарегистрируйтесь и создайте собственный магазин!</h4>
           <div class="actions">
-            <router-link to="/user/sign-up">
-              <ion-button color="secondary">Зарегистрироваться</ion-button>
+            <router-link to="/user/supplier-dashboard">
+              <ion-button button-secondary color="secondary"><span class="button-text">Подать заявку</span></ion-button>
             </router-link>
           </div>
         </div>

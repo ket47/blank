@@ -1,11 +1,6 @@
 <template>
   <ion-page>
     <ion-content :class="'supplier-guide-page'">
-      <ion-toolbar>
-        <ion-buttons slot="start">
-          <ion-back-button color="light" style="padding:0px 10px"></ion-back-button>
-        </ion-buttons>
-      </ion-toolbar>  
       <div class="header-image-container main-block">
         <div class="main-block-content">
           <div class="text" style="color: white">
@@ -122,7 +117,7 @@
                 <h4>Тариф "Свобода"</h4>
                 <p>Почувствуйте вкус свободы с нашим максимальным тарифом</p>
                 <ul class="tarif-conditions">
-                  <li><b class="icon green-icon">✔</b>Размещение на <a href="#qst_1">площадке</a>.</li>
+                  <li><b class="icon green-icon">✔</b>Размещение на <a href="#qst_1">платформе</a>.</li>
                   <li><b class="icon green-icon">✔</b><a href="#qst_5">Система</a> управления заказами.</li>
                   <li><b class="icon green-icon">✔</b>Синхронизация с <a href="#qst_10">системами торгового учёта</a>.</li>
                   <li><b class="icon green-icon">✔</b>Функция "Электронное меню" (доступно для кафе и ресторанов).</li>
@@ -135,9 +130,6 @@
               <div class="tarif-right">
                 <h1>25%</h1>
                 <h6>Ставка</h6>
-                <router-link to="/user/sign-up">
-                  <ion-button button-secondary color="secondary"><span class="button-text">ПОДРОБНЕЕ</span></ion-button>
-                </router-link>
               </div>
             </div>
             <div class="tarif-item">
@@ -145,7 +137,7 @@
                 <h4>Тариф "Маркетплейс + Оплата"</h4>
                 <p>Если Вам не нужны услуги доставки, но Вы по-прежнему хотите расширить свою аудиторию, то у нас есть для Вас решение.</p>
                 <ul class="tarif-conditions">
-                  <li><b class="icon green-icon">✔</b>Размещение на <a href="#qst_1">площадке</a>.</li>
+                  <li><b class="icon green-icon">✔</b>Размещение на <a href="#qst_1">платформе</a>.</li>
                   <li><b class="icon green-icon">✔</b><a href="#qst_5">Система</a> управления заказами.</li>
                   <li><b class="icon green-icon">✔</b>Синхронизация с <a href="#qst_10">системами торгового учёта</a>.</li>
                   <li><b class="icon green-icon">✔</b>Функция "Электронное меню" (доступно для кафе и ресторанов).</li>
@@ -158,9 +150,6 @@
               <div class="tarif-right">
                 <h1>10%</h1>
                 <h6>Ставка</h6>
-                <router-link to="/user/sign-up">
-                  <ion-button button-secondary color="secondary"><span class="button-text">ПОДРОБНЕЕ</span></ion-button>
-                </router-link>
               </div>
             </div>
             <div class="tarif-item">
@@ -168,7 +157,7 @@
                 <h4>Тариф "Маркетплейс"</h4>
                 <p>В случае, когда Вам не нужны ни услуги доставки, ни приём электронных платежей, Вы всё ещё имеете возможность увеличить охваты воспользовавшись нашим сервисом.</p>
                 <ul class="tarif-conditions">
-                  <li><b class="icon green-icon">✔</b>Размещение на <a href="#qst_1">площадке</a>.</li>
+                  <li><b class="icon green-icon">✔</b>Размещение на <a href="#qst_1">платформе</a>.</li>
                   <li><b class="icon green-icon">✔</b><a href="#qst_5">Система</a> управления заказами.</li>
                   <li><b class="icon green-icon">✔</b>Синхронизация с <a href="#qst_10">системами торгового учёта</a>.</li>
                   <li><b class="icon green-icon">✔</b>Функция "Электронное меню" (доступно для кафе и ресторанов).</li>
@@ -181,9 +170,6 @@
               <div class="tarif-right">
                 <h1>7%</h1>
                 <h6>Ставка</h6>
-                <router-link to="/user/sign-up">
-                  <ion-button button-secondary color="secondary"><span class="button-text">ПОДРОБНЕЕ</span></ion-button>
-                </router-link>
               </div>
             </div>
           </div>
@@ -267,11 +253,11 @@
               </ion-item>
               <div class="ion-padding" slot="content">Помимо того, что мы предоставляем инструмент, позволяющий Вам получить новых покупаетелей, мы также принимаем участие в рабочем процессе и упрощаем его для Вас. После того, как наш курьер начинает доставку, котроль и рабочая нагрузка по активному заказу полностью переходит к нам. Таким образом Вам необходимо только подготовить заказ к доставке.</div>
             </ion-accordion>
-            <ion-accordion value="qst_9">
+            <ion-accordion value="qst_13">
               <ion-item slot="header" color="light">
-                <ion-label><a name="qst_9">Есть ли возможность отследить заказ?</a></ion-label>
+                <ion-label><a name="qst_13">Есть ли возможность отследить заказ?</a></ion-label>
               </ion-item>
-              <div class="ion-padding" slot="content">На нашей площадке есть функция активного отслеживания местоположения курьеров, что означает, что текущий географический статус заказа может быть отслежен в реальном времени с точностью до 10 метров.</div>
+              <div class="ion-padding" slot="content">На нашей платформе есть функция активного отслеживания местоположения курьеров, что означает, что текущий географический статус заказа может быть отслежен в реальном времени с точностью до 10 метров.</div>
             </ion-accordion>
           </ion-accordion-group>
         </div>
@@ -282,7 +268,7 @@
           <h2>Решили ускорить рост Вашего бизнеса?</h2>
           <h4>Подайте заявку, а мы займёмся оформлением</h4>
           <div class="actions">
-            <router-link to="/user/sign-up">
+            <router-link to="/user/supplier-dashboard">
               <ion-button button-secondary color="secondary"><span class="button-text">Подать заявку</span></ion-button>
             </router-link>
           </div>
@@ -336,8 +322,10 @@ export default {
 }
 </script>
 
-<style>
-
+<style scoped>
+ion-accordion div{
+  text-align: left;
+}
 
 .supplier-guide-page ion-button.ion-color-secondary{
   --ion-color-contrast: white !important;
@@ -675,6 +663,10 @@ export default {
   .supplier-guide-page .guide-list{
     grid-template-columns: 1fr !important;
   }
+
+  .tarif-container .tarif-item{
+    grid-template-columns: 1fr !important;
+}
   .intro-container .main-block-content .image-col img{
     margin-bottom: 0em !important;
   }
