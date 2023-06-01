@@ -3,7 +3,7 @@
     <ion-header :class="[pageClass]">
       <ion-toolbar>
         <ion-buttons v-if="canGoBack" slot="start">
-          <ion-button v-if="isIos" @click="goback()">&nbsp;<ion-icon :src="chevronBackOutline"/>&nbsp;&nbsp;&nbsp;</ion-button>
+          <ion-button v-if="isIos" @click="goback()" style="font-family:SF, Arial, Helvetica, sans-serif">&nbsp;<ion-icon :src="chevronBackOutline"/>Назад</ion-button>
           <ion-button v-else @click="goback()">&nbsp;<ion-icon :src="arrowBackOutline"/>&nbsp;&nbsp;&nbsp;</ion-button>
         </ion-buttons>
         <ion-title v-if="pageTitle" size="small"><div style="line-height: 1.5;max-height:3em;text-overflow: ellipsis;overflow: hidden;font-weight: bold;">{{ pageTitle }}</div></ion-title>

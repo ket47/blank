@@ -1,17 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "android-chrome-maskable-512x512.png",
+      "filename" : "iphone5_splash.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "android-chrome-maskable-512x512 1.png",
+      "filename" : "iphoneplus_splash.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "android-chrome-maskable-512x512 2.png",
+      "filename" : "iphonexsmax_splash.png",
       "idiom" : "universal",
       "scale" : "3x"
     }
