@@ -69,12 +69,11 @@ ion-text{
 
 
       <div class="header-image-container main-block">
-        <ion-icon class="toolbar_svg_logo" style="color: white"  :icon="mainLogo"/>
         <div class="main-block-content" style="transform: rotate(-7deg);">
           <div class="text" style="color: white">
             <h2 style="color: rgb(235, 192, 0); font-size: 42px; margin: 0; filter: drop-shadow(-2px 2px 2px #042c4f);">Узнайте преимущества</h2>
             <h4 style="font-size: 24px; margin-top: 5px;">работы с нашей платформой</h4>
-              <ion-button expand="block" color="light" @click="$go('/user/sign-up')"><b>Презентация</b></ion-button>
+              <ion-button color="light" @click="$go('/page/supplier-guide')"><b>Презентация</b></ion-button>
           </div>
         </div>
       </div>
