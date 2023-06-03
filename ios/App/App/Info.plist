@@ -3,9 +3,11 @@
 <plist version="1.0">
 <dict>
 	<key>CFBundleDevelopmentRegion</key>
-	<string>en</string>
+	<string>ru</string>
 	<key>CFBundleDisplayName</key>
 	<string>Тезкель экспресс доставка</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Ваше местоположение позволяет видеть продавцов в радиусе доставки</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
