@@ -102,14 +102,43 @@ ion-card .store-title{
     </ion-card>
   </ion-list>
 
-  <ion-card v-else-if="storeList.length==0" color="warning">
-    <ion-card-header>
-      <ion-card-title>Вне зоны обслуживания</ion-card-title>
-    </ion-card-header>
-    <ion-card-content>
-      Поблизости к адресу <b>{{ $heap.state.user.location_main.location_address??'доставки заказа' }}</b>, который вы выбрали, пока нет нет подходящих ресторанов и магазинов. Попробуйте другой адрес.
-    </ion-card-content>
-  </ion-card>
+  <div v-else-if="storeList.length==0">
+    <ion-card color1="warning">
+      <ion-card-header>
+        <ion-card-title>Вне зоны обслуживания</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        Поблизости к адресу <b style="color:var(--ion-color-primary)">{{ outofrange_address??'доставки заказа' }}</b>, который вы выбрали, пока нет подходящих ресторанов и магазинов.
+        <br/><br/>
+
+        Мы постоянно работаем над увеличением количества продавцов в нашем маркетплейсе.
+      </ion-card-content>
+    </ion-card>
+
+    <ion-card v-if="!outofrangeFormHidden">
+      <ion-card-header>
+        <ion-card-subtitle> Заполните форму и мы уведомим вас, когда появится ресторан или магазин поблизости.</ion-card-subtitle>
+      </ion-card-header>
+      <ion-card-content>
+
+        <ion-input v-model="out.phone" label="Номер телефона" label-placement="floating" fill="outline" :value="$heap.state.user?.user_phone"/>
+        <br/>
+        <ion-input v-model="out.address" label="Желаемый адрес"  label-placement="floating" fill="outline"  :value="outofrange_address"/>
+        <br/>
+        <ion-input v-model="out.comment" label="Ваш комментарий"  label-placement="floating" fill="outline"/>
+
+        <ion-button expand="block" @click="outFormSend()">отправить заявку</ion-button>
+      </ion-card-content>
+    </ion-card>
+
+    <ion-item button @click="$go('/page/supplier-guide')">
+      Хотите стать продавцом? Узнайте о преимуществах.
+    </ion-item>
+    
+
+
+  </div>
+
   
   <ion-grid  v-if="storeList && storeList.length>0" class="ion-justify-content-between ion-align-items-center" style="padding: 0 16px;">
     <ion-row>
@@ -197,11 +226,14 @@ import {
   IonCard,
   IonIcon,
   IonCardHeader,
+  IonCardSubtitle,
   IonCardTitle,
   IonCardContent,
   IonSkeletonText,
   IonThumbnail,
   IonText,
+  IonInput,
+  IonButton,
 }                   from "@ionic/vue";
 import {  
   timeOutline, 
@@ -223,24 +255,27 @@ import StoreOpenedIndicator from '@/components/StoreOpenedIndicator.vue';
 
 export default {
   components: {
-    IonList,
-    IonImg,
-    IonChip,
-    IonGrid,
-    IonRow,
-    IonCol,
-    IonItem,
-    IonCard,
-    IonIcon,
-    IonCardHeader,
-    IonCardTitle,
-    IonCardContent,
-    IonSkeletonText,
     Swiper,
     SwiperSlide,
     StoreOpenedIndicator,
-    IonThumbnail,
-    IonText,
+    IonList,
+  IonImg,
+  IonChip,
+  IonItem,
+  IonGrid,
+  IonRow,
+  IonCol,
+  IonCard,
+  IonIcon,
+  IonCardHeader,
+  IonCardSubtitle,
+  IonCardTitle,
+  IonCardContent,
+  IonSkeletonText,
+  IonThumbnail,
+  IonText,
+  IonInput,
+  IonButton,
   },
   setup(){
       return {
@@ -254,7 +289,10 @@ export default {
       storeList: null,
       can_reload_at:0,
       loadedLocation:{},
-      hiddenCount:null
+      hiddenCount:null,
+      outofrangeFormHidden:0,
+      out:{
+      },
     };
   },
   computed: {
@@ -267,6 +305,12 @@ export default {
       return this.storeList.map(function(store) {
         return store.perks.filter(perk => perk.slot == 'slider')
       });
+    },
+    outofrange_address(){
+      if( this.$heap.state.user.location_main.is_default!=1 ){
+        return this.$heap.state.user.location_main.location_address
+      }
+      return this.$heap.state.user.location_current.location_address
     }
   },
   methods: {
@@ -294,16 +338,27 @@ export default {
       }
       return found
     },
+    async outFormSend(){
+      this.out.phone??=this.$heap.state.user?.user_phone
+      this.out.address??=this.outofrange_address
+      try{
+        const request={
+          type:'outofrange',
+          user_id:this.$heap.state.user?.user_id,
+          from:this.out.phone,
+          subject:this.out.address,
+          body:this.out.comment
+        }
+        await Utils.post(`${heap.state.hostname}Talk/inquiryCreate`, request)
+        this.$flash("Заявка отправлена")
+      }catch{/** */}
+      this.outofrangeFormHidden=1
+    }
   },
   mounted(){
-    const self=this
-    this.$topic.on('userMainLocationSet',function(loc){
-      self.listNearGet(loc) 
-      })
-    this.$topic.on('userCurrentLocationSet',function(loc){
-      self.listNearGet(loc)
-      })
-    this.listNearGet(heap.state.user.location_main);
+    this.$topic.on('userMainLocationSet',loc=>this.listNearGet(loc))
+    this.$topic.on('userCurrentLocationSet',loc=>this.listNearGet(loc))
+    this.listNearGet(heap.state.user.location_current??heap.state.user.location_main);
   }
 };
 </script>

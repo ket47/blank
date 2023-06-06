@@ -131,8 +131,6 @@ import {
   IonCardHeader,
   IonCardTitle,
   IonCardContent,
-
-  IonLabel,
   IonItem,
   IonButton,
   IonCheckbox,
@@ -154,8 +152,6 @@ export default  {
   IonCardHeader,
   IonCardTitle,
   IonCardContent,
-
-  IonLabel,
   IonItem,
   IonButton,
   IonCheckbox,

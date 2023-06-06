@@ -102,7 +102,7 @@ ion-accordion-group .accordion-expanding .store-description{
   display: grid;/** for webview */
   grid-template-columns: repeat(30,min-content);
 }
-.groups-container ion-segment-button ion-label{
+.ios .groups-container ion-segment-button ion-label{
   padding:10px;
 }
 

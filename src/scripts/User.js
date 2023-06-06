@@ -11,7 +11,7 @@ import {
 
 const User = {
     init(){
-        this.geo.switch();
+        //this.geo.switch();
         this.firebase.init()
     },
     async settingsGet(){
@@ -255,11 +255,11 @@ const User = {
                         return;
                     }
 
-                    const current_address= await User.geo.geocode([position.coords.latitude,position.coords.longitude])
+                    const current_address= await User.geo.geocode([curr_lat,curr_lon])
                     const current_location={
                         group_name:'Current',
-                        location_latitude:position.coords.latitude,
-                        location_longitude:position.coords.longitude,
+                        location_latitude:curr_lat,
+                        location_longitude:curr_lon,
                         location_address: 'около ' + (current_address??'текущего местоположения'),
                         timestamp:position.timestamp
                     }

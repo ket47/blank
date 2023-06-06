@@ -4,105 +4,129 @@
           <ion-radio-group v-model="fields.user_avatar_name">
           <ion-item>
             <ion-thumbnail slot="start"><img :src="$heap.state.hostname+'img/avatar/man.png'" /></ion-thumbnail>
-            <ion-label>аватар 1</ion-label>
-            <ion-radio slot="end" value="man" @ionFocus="save('user_avatar_name', $event.target.value)"></ion-radio>
+            <ion-radio value="man" @ionFocus="save('user_avatar_name', $event.target.value)">аватар 1</ion-radio>
           </ion-item>
           <ion-item>
             <ion-thumbnail slot="start"><img :src="$heap.state.hostname+'img/avatar/woman.png'" /></ion-thumbnail>
-            <ion-label>аватар 2</ion-label>
-            <ion-radio slot="end" value="woman" @ionFocus="save('user_avatar_name', $event.target.value)"></ion-radio>
+            <ion-radio value="woman" @ionFocus="save('user_avatar_name', $event.target.value)">аватар 2</ion-radio>
           </ion-item>
           </ion-radio-group>
           <ion-item-divider>
             <ion-label>Данные пользователя</ion-label>
           </ion-item-divider>
           <ion-item>
-            <ion-label position="stacked" color="primary">Ваш псевдоним</ion-label>
             <ion-input 
               v-model="fields.user_name" 
               name="user_name" 
               type="text" 
               @change="save('user_name', $event.target.value)" 
               placeholder="как к вам обращаться?"
+              label="Ваш псевдоним"
+              label-placement="stacked"
               required
             ></ion-input>
           </ion-item>
 
           <ion-item>
-            <ion-label position="stacked" color="primary">Фамилия (не обязательно)</ion-label>
             <ion-input 
               v-model="fields.user_surname" 
+              placeholder="Фамилия (не обязательно)"
+              label="Фамилия (не обязательно)"
+              label-placement="stacked"
               name="user_surname" 
               type="text" 
               @change="save('user_surname', $event.target.value)" 
-              placeholder="Фамилия (не обязательно)"
             ></ion-input>
           </ion-item>
-          <!--
           <ion-item>
-            <ion-label position="stacked" color="primary">Отчество</ion-label>
-            <ion-input 
-              v-model="fields.user_middlename" 
-              name="user_middlename" 
-              type="text" 
-              @change="save('user_middlename', $event.target.value)" 
-              placeholder="Отчество"
-            ></ion-input>
-          </ion-item>
-          -->
-          <ion-item>
-            <ion-label position="stacked" color="primary">Телефон</ion-label>
             <ion-input readonly
               v-model="fields.user_phone"
+              label="Телефон"
+              label-placement="stacked"
             ></ion-input>
             <ion-button slot="end" v-if="fields.user_phone && (!fields.user_phone_verified || fields.user_phone_verified === '0')" @click="phoneVerify" expand="block">Подтвердить</ion-button>
             <ion-button slot="end" v-if="fields.user_phone && fields.user_phone_verified && fields.user_phone_verified !== '0'" expand="block" disabled="true">Подтверждено</ion-button>
           </ion-item>
 
           <ion-item>
-            <ion-label position="stacked" color="primary">Электронная почта</ion-label>
             <ion-input 
               v-model="fields.user_email" 
               name="user_email" 
               type="email" 
               @change ="save('user_email', $event.target.value)" 
               placeholder="Электронная почта"
+              label="Электронная почта"
+              label-placement="stacked"
             ></ion-input>
           </ion-item>
 
         </ion-list>
 
 
-          <ion-item-divider>
-            <ion-label>Пароль пользователя</ion-label>
-          </ion-item-divider>
+        <ion-item-divider>
+          <ion-label>Пароль пользователя</ion-label>
+        </ion-item-divider>
         <ion-row responsive-sm>
           <ion-col>
             <ion-button @click="passwordReset()" expand="block"><ion-icon :icon="keyOutline" slot="start"/>Сбросить</ion-button>
           </ion-col>
           <ion-col>
-            <ion-button id="passwordPromptButton" expand="block"><ion-icon :icon="keyOutline" slot="start"/>Изменить</ion-button>
+            <ion-button @click="passwordPromptShow=true" expand="block"><ion-icon :icon="keyOutline" slot="start"/>Изменить</ion-button>
+          </ion-col>
+        </ion-row>
+
+        <ion-item-divider>
+          <ion-label>Удаление учетной записи</ion-label>
+        </ion-item-divider>
+        <ion-row responsive-sm>
+          <ion-col>
+            <ion-button @click="deletePromptShow=true" expand="block"  fill="outline" color="danger"><ion-icon :icon="trashOutline" slot="start"/>Удалить аккаунт</ion-button>
+          </ion-col>
+          <ion-col>
+            
           </ion-col>
         </ion-row>
 
 
-    <ion-modal ref="passwordPrompt" trigger="passwordPromptButton" :initial-breakpoint="0.40" :breakpoints="[0, 0.40, 0.8]">
+      <ion-modal :isOpen="passwordPromptShow" :initial-breakpoint="0.40" :breakpoints="[0, 0.40, 0.8]">
+        <ion-header>
+          <ion-toolbar>
+            <ion-title>Новый пароль</ion-title>
+            <ion-icon :icon="closeOutline" @click="passwordPromptShow=false" slot="end" size="large"></ion-icon>
+          </ion-toolbar>
+        </ion-header>
+        <ion-content class="ion-padding">
+          <ion-item>
+            <ion-input v-model="fields.user_pass_current" type="password" placeholder="пароль" label="Действующий пароль" label-placement="stacked"></ion-input>
+          </ion-item>
+          <ion-item>
+            <ion-input v-model="fields.user_pass" type="text" placeholder="пароль" label="Новый пароль" label-placement="stacked"></ion-input>
+          </ion-item>
+          <ion-item>
+            <ion-input v-model="fields.user_pass_confirm" type="text" placeholder="пароль (повтор)" label="Новый пароль (повтор)" label-placement="stacked"></ion-input>
+          </ion-item>
+          <ion-button @click="passwordSave()" expand="block">Изменить</ion-button>
+        </ion-content>
+      </ion-modal>
+
+    <ion-modal :isOpen="deletePromptShow" :initial-breakpoint="0.40" :breakpoints="[0, 0.40, 0.8]">
       <ion-header>
-        <ion-toolbar color="secondary">
-          <ion-title>Новый пароль</ion-title>
-          <ion-icon :icon="closeOutline" @click="()=>{this.$refs.passwordPrompt.$el.dismiss();}" slot="end" size="large"></ion-icon>
+        <ion-toolbar color="danger">
+          <ion-title>Удаление учетной записи</ion-title>
+          <ion-icon :icon="closeOutline" @click="deletePromptShow=false" slot="end" size="large"></ion-icon>
         </ion-toolbar>
       </ion-header>
       <ion-content class="ion-padding">
-        <ion-item>
-          <ion-label position="stacked">Новый пароль</ion-label>
-          <ion-input v-model="fields.user_pass" type="text" placeholder="пароль"></ion-input>
+        <ion-item lines="none" style="margin-bottom:15px;">
+          <div>
+            <p>Ваши персональные данные будут безвозвратно удалены.</p>
+            <p>Повторная регистрация по этому номеру телефона будет невозможна!</p>
+          </div>
         </ion-item>
         <ion-item>
-          <ion-label position="stacked">Новый пароль (повтор)</ion-label>
-          <ion-input v-model="fields.user_pass_confirm" type="text" placeholder="пароль (повтор)"></ion-input>
+          <ion-input v-model="fields.user_pass_current" type="password" placeholder="пароль" label="Действующий пароль" label-placement="stacked"></ion-input>
         </ion-item>
-        <ion-button @click="passwordSave()" expand="full">Изменить</ion-button>
+        <ion-button @click="deleteAccount()" expand="block" color="danger">Удалить аккаунт</ion-button>
       </ion-content>
     </ion-modal>
 
@@ -133,10 +157,11 @@ import {
 }                   from '@ionic/vue'
 import {
   closeOutline,
-  keyOutline
+  keyOutline,
+  trashOutline,
 }                   from 'ionicons/icons';
 import jQuery       from "jquery";
-//import User         from '@/scripts/User'
+import User         from '@/scripts/User'
 
 export default  {
   components:{
@@ -159,7 +184,7 @@ export default  {
   IonToolbar,
   },
   setup(){
-    return {closeOutline,keyOutline}
+    return {closeOutline,keyOutline,trashOutline}
   },
   data(){
     return {
@@ -167,7 +192,8 @@ export default  {
         phoneMask: '+0(000)-000-00-00'
       },
       fields: this.$heap.state.user,
-      passwordPromptShow:false
+      passwordPromptShow:false,
+      deletePromptShow:false
     }
   },
   computed: {
@@ -242,17 +268,25 @@ export default  {
         this.$flash("Пароль и подтверждение не совпадают")
         return
       }
+      if(!this.fields.user_pass_current || !this.fields.user_pass || !this.fields.user_pass_confirm){
+        this.$flash("Все поля обязательны для заполнения")
+        return
+      }
       const requestData={
         user_id:this.$heap.state.user.user_id,
         user_pass:this.fields.user_pass,
+        user_pass_current:this.fields.user_pass_current,
       }
       const updated=await this.itemUpdate(requestData)
       if( updated ){
-        this.$refs.passwordPrompt.$el.dismiss()
+        this.passwordPromptShow=false
         this.$flash("Пароль изменен")
       }
     },
     async passwordReset(){
+      if(!confirm("Выслать новый пароль на телефон и электронную почту?")){
+        return
+      }
       const request={
         user_phone:this.fields.user_phone,
         user_email:this.fields.user_email,
@@ -262,6 +296,24 @@ export default  {
         await jQuery.post( `${this.$heap.state.hostname}User/passwordReset`, request)
         this.$alert("Вам был выслан новый пароль","Пароль сброшен")
       }catch{/** */}
+    },
+    async deleteAccount(){
+      try{
+        if(!this.fields.user_pass_current){
+          this.$flash("Действующий пароль обязателен")
+          return
+        }
+        const requestData={
+          user_id:this.$heap.state.user.user_id,
+          user_pass:this.fields.user_pass_current,
+        }
+        await jQuery.post( `${this.$heap.state.hostname}User/itemDelete`, requestData)
+        this.deletePromptShow=false
+        await User.signOut()
+        await this.$go('/user');
+      }catch{
+        this.$flash("Не удалось удалить аккаунт. Проверьте пароль")
+      }
     },
     isPhoneValidate(ev) {
       this.fields.user_phone = ev.target.value;
