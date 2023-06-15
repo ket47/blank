@@ -21,11 +21,9 @@
           <ion-item lines="full">
             <div style="display:grid;grid-template-columns:100px auto;width:100%;">
               <div>
-                  <ion-label position="stacked">Код</ion-label>
-                  <ion-input readonly>+7</ion-input>
+                  <ion-input readonly label="Код" labelPlacement="stacked">+7</ion-input>
               </div>
               <div>
-                  <ion-label position="stacked">Мобильный телефон*</ion-label>
                   <ion-input
                     v-model="user_phone"
                     @ionChange="phoneFormat()"
@@ -34,6 +32,7 @@
                     inputmode="tel"
                     placeholder="(xxx)xxxxxxxxx"
                     required
+                    label="Мобильный телефон*" labelPlacement="stacked"
                   ></ion-input>            
                   <ion-text color="danger" slot="helper"><p v-show="!phoneValid && submitted == true" padding-left>Неверный номер телефона</p></ion-text>
               </div>
@@ -44,7 +43,6 @@
           </ion-item>
 
           <ion-item lines="full">
-            <ion-label position="stacked">Пароль (Минимум 4 символа)*</ion-label>
             <ion-input 
               v-model="user_pass" 
               name="password" 
@@ -52,6 +50,7 @@
               autocorrect="off"
               placeholder="Пароль (Минимум 4 символа)"
               required
+              label="Пароль (Минимум 4 символа)*" labelPlacement="stacked"
             ></ion-input>
             <ion-text color="danger" slot="helper">
               <p v-show="!passwordValid && submitted == true" padding-left>Пароль должен содержать не менее 4 символов.</p>
@@ -83,7 +82,6 @@
 
 <script>
 import { 
-  IonLabel,
   IonCol,
   IonInput,
   IonRow,
@@ -104,7 +102,6 @@ import router                   from '@/router';
 
 export default{
   components:{
-  IonLabel,
   IonCol,
   IonInput,
   IonRow,

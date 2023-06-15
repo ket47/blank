@@ -5,7 +5,7 @@
                 Баланс
             </ion-segment-button>
         </ion-segment>
-        <ledger-comp permanentTag="acc::courier" v-if="activeTab=='ledger'"/>
+        <ledger-comp permanentTag="acc::supplier" v-if="activeTab=='ledger'"/>
     </base-layout>
 </template>
 

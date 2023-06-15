@@ -14,7 +14,9 @@ ion-item-divider.md{
     color: #666;
 }
 ion-item-divider.ios{
-    background-color: #e6e6e6;
+    background-color: #eeeeee;
+    margin-top: 10px;
+    color: #666;
 }
 .horizontalScroller{
     scrollbar-width: none;

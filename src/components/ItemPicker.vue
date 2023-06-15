@@ -4,7 +4,7 @@
 <template>
 <div class="ion-page">
   <ion-header>
-      <ion-toolbar color="secondary">
+      <ion-toolbar>
           <ion-title>Выбрать {{itemTypeName}}</ion-title>
           <ion-icon :icon="closeOutline" @click="closeModal();" slot="end" size="large"></ion-icon>
       </ion-toolbar>
@@ -20,7 +20,7 @@
     <ion-list v-else-if="itemList?.length">
         <ion-item v-for="item in itemList" :key="item.id" button detail @click="itemPick(item)">
             <ion-avatar slot="start">
-                <ion-img v-if="item.image_hash" :src="`${$heap.state.hostname}image/get.php/${item.image_hash}.50.50.webp`"/>
+                <ion-img v-if="item.image_hash" :src="`${$heap.state.hostname}image/get.php/${item.image_hash}.100.100.webp`"/>
             </ion-avatar>
             {{item.name}}
         </ion-item>

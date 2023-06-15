@@ -12,10 +12,6 @@
         </ion-segment>
         <div v-if="activeTab=='ledger'">
             <ion-list>
-                <ion-item button @click="this.$refs.ledger.listGet()">
-                    <ion-icon slot="start" :src="refreshOutline"/>
-                    <ion-label>Обновить</ion-label>
-                </ion-item>
                 <ion-item button @click="itemCreate()">
                     <ion-icon slot="start" :src="addOutline"/>
                     <ion-label>Добавить проводку</ion-label>

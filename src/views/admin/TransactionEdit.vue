@@ -1,18 +1,16 @@
 <template>
-    <base-layout pageDefaultBackLink="/user" page-title="Редактирование проводки">    
+    <base-layout pageDefaultBackLink="/user" page-title="Редактирование проводки">
         <ion-list v-if="transaction">
             <ion-item>
-                <ion-label position="floating">Дата</ion-label>
-                <ion-input v-model="transaction.trans_date" placeholder="дата" type="date"></ion-input>
+                <ion-input v-model="transaction.trans_date" label="Дата" labelPlacement="floating" placeholder="дата" type="date"></ion-input>
             </ion-item>
             <ion-item>
-                <ion-label position="floating">Тип проводки</ion-label>
-                <ion-select interface="popover" placeholder="Выберите тип проводки" v-model="transaction.trans_role" required @ionChange="itemUpdateRole(1)">
+                <ion-select interface="popover" placeholder="Выберите тип проводки" v-model="transaction.trans_role" label="Тип проводки" labelPlacement="floating" required @ionChange="itemUpdateRole(1)">
                     <ion-select-option v-for="trans in transTypes" :key="trans.trans_role" :value="trans.trans_role">{{trans.trans_name}}</ion-select-option>
                 </ion-select>
             </ion-item>
             <ion-item lines="none">
-                <ion-label position="stacked">Родительские элементы</ion-label>
+                <ion-label position="stacked" color="medium">Родительские элементы</ion-label>
                 <ion-text>
                     <ion-chip v-for="(tagLabel,tag) in tagDict" :key="tag" color="primary">#{{tagLabel}} <ion-icon v-if="tag.indexOf('acc')==-1" :src="closeCircle" @click="tagDictRemove(tag)"></ion-icon></ion-chip>
                 </ion-text>
@@ -25,35 +23,32 @@
                 </ion-text>
             </ion-item>
             <ion-item>
-                <ion-label position="floating">Сумма</ion-label>
-                <ion-input v-model="transaction.trans_amount" placeholder="сумма" inputmode="decimal" autocomplete="transaction-amount" min="1"></ion-input>
+                <ion-input @keyup.enter="itemSave()" v-model="transaction.trans_amount" label="Сумма" labelPlacement="floating" placeholder="сумма" inputmode="decimal" autocomplete="transaction-amount" min="1"></ion-input>
             </ion-item>
             <ion-item>
-                <ion-label position="floating">Комментарий</ion-label>
-                <ion-textarea v-model="transaction.trans_description"></ion-textarea>
+                <ion-textarea v-model="transaction.trans_description" label="Комментарий" labelPlacement="floating"></ion-textarea>
             </ion-item>
             <ion-item lines="full">
-                <ion-label>Отключена</ion-label>
-                <ion-toggle v-model="transaction.is_disabled" />
+                <ion-toggle v-model="transaction.is_disabled">Отключена</ion-toggle>
             </ion-item>
-            <ion-item lines="none">
-                <ion-note v-if="transaction.created_at">
-                Создано {{transaction.created_user_name}} {{transaction.created_at}}
-                </ion-note>
-                <ion-note v-if="transaction.created_at">
-                Изменено {{transaction.updated_user_name}} {{transaction.updated_at}}
-                </ion-note>
+            <ion-item lines="none" v-if="transaction.created_at">
+                <ion-label color="medium">Создано <b>{{transaction.created_user_name}}</b></ion-label>
+                <ion-text color="medium">{{transaction.created_at}}</ion-text>
+            </ion-item>
+            <ion-item lines="none" v-if="transaction.updated_at">
+                <ion-label color="medium">Изменено <b>{{transaction.updated_user_name}}</b></ion-label>
+                <ion-text color="medium">{{transaction.updated_at}}</ion-text>
             </ion-item>
         </ion-list>
         <ion-grid v-if="transaction">
             <ion-row>
-                <ion-col><ion-button color="medium" @click="itemDelete()" expand="block">Удалить</ion-button></ion-col>
+                <ion-col><ion-button color="medium" @click="itemDelete()" expand="block" fill="outline">Удалить</ion-button></ion-col>
                 <ion-col><ion-button color="primary" @click="itemSave()" expand="block">Сохранить</ion-button></ion-col>
             </ion-row>
         </ion-grid>
     </base-layout>
 </template>
-<script>
+<script >
 import {
   IonInput,
   IonIcon,
@@ -68,7 +63,6 @@ import {
   IonGrid,
   IonRow,
   IonCol,
-  IonNote,
   IonChip,
   IonText,
   modalController,
@@ -168,7 +162,6 @@ export default {
         IonGrid,
         IonRow,
         IonCol,
-        IonNote,
         IonChip,
         IonText,
     },
@@ -227,7 +220,9 @@ export default {
         },
         async itemGet(){
             if(this.transactionId==0){
-                this.transaction={}
+                this.transaction={
+                    trans_date:Utils.date.toIso(Utils.date.today())
+                }
                 return
             }
             let request={
@@ -273,7 +268,7 @@ export default {
                 this.$flash("Дата не выбрана")
                 return false
             }
-            if( (this.transaction.trans_amount==0) ){
+            if( !(this.transaction.trans_amount) ){
                 this.$flash("Сумма должна не равняться нулю")
                 return false
             }
@@ -291,11 +286,11 @@ export default {
                 trans_amount:this.transaction.trans_amount,
                 trans_role:this.transaction.trans_role,
                 trans_description:this.transaction.trans_description,
-                is_disabled:this.transaction.is_disabled,
+                is_disabled:this.transaction.is_disabled?1:0,
             }
             try{
                 const remoteFunction=request.trans_id?'itemUpdate':'itemCreate'
-                await jquery.post(`${this.$heap.state.hostname}Transaction/${remoteFunction}`,JSON.stringify(request))
+                await jquery.post(`${this.$heap.state.hostname}Transaction/${remoteFunction}`,request)
                 this.$flash("💾 сохранено")
                 this.$router.go(-1);
             }

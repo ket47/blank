@@ -44,7 +44,7 @@
         </ion-chip>
       </ion-item>
       <ion-item>
-          <ion-textarea label="" rows="1" placeholder="комментарий к адресу" @change="locationCommentChanged()" :value="location_delivery.location_comment"></ion-textarea>
+          <ion-textarea label="" rows="1" placeholder="комментарий к адресу" @change="locationCommentChanged()" v-model="location_delivery.location_comment"></ion-textarea>
       </ion-item>
   </ion-list>
   <ion-list v-else>

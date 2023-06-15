@@ -20,11 +20,11 @@
         <ion-list lines="none">
             <ion-item-divider>Заказ #{{order?.order_id}} из "{{order?.store?.store_name}}"</ion-item-divider>
             
-            <ion-item>
+            <!-- <ion-item>
                 <ion-checkbox v-model="storeCorrectionAllow">
                     Разрешить изменять заказ
                 </ion-checkbox>
-            </ion-item>
+            </ion-item> -->
 
             <ion-item>
                 <ion-textarea label="" rows="2" placeholder="комментарий к заказу" @change="orderDescriptionChanged()" v-model="order.order_description"></ion-textarea>
@@ -260,7 +260,7 @@ export default({
             order:null,
             order_sum_delivery:0,
 
-            storeCorrectionAllow:(localStorage.storeCorrectionAllow==0?0:1),
+            storeCorrectionAllow:1,//(localStorage.storeCorrectionAllow==0?0:1),
 
             promo:null,
             promoCount:0,
@@ -284,6 +284,9 @@ export default({
             }
             if(this.order_sum_total<this.order.order_sum_promo*2){
                 return `Сумма к оплате со скидкой ${this.order.order_sum_promo}${this.$heap.state.currencySign} должна быть больше чем ${this.order.order_sum_promo*2}${this.$heap.state.currencySign}`
+            }
+            if(this.order.order_sum_product*1<this.tariffRule.order_sum_minimal*1){
+                return `Сумма заказа должна быть больше чем ${this.tariffRule.order_sum_minimal}${this.$heap.state.currencySign}`;
             }
             if(this.order.order_sum_product*1<this.order?.store?.store_minimal_order*1){
                 return `Сумма заказа у "${this.order?.store?.store_name}" должна быть больше чем ${this.order?.store?.store_minimal_order}${this.$heap.state.currencySign}`
@@ -309,7 +312,7 @@ export default({
             if( this.termsAccepted==0 ){
                 return `К сожалению, мы не можем доставить вам заказ, без согласия с условиями`
             }
-            if( this.tariffRule.deliveryByCourier==1 && this.tariffRule.deliveryIsReady==0 ){
+            if( this.tariffRule.deliveryByCourier==1 && (this.tariffRule.deliveryIsReady==0 || this.tariffRule.deliveryIsReady=='idle') ){
                 return `К сожалению, нет доступных курьеров`;
             }
             return false
@@ -501,6 +504,9 @@ export default({
             Order.api.itemUpdate(request);
         },
         async proceed(){
+            if( this.tariffRule.deliveryIsReady=='busy' && !await this.heavyLoadConfirm() ){
+                return
+            }
             if( !await this.deliveryAddressConfirm() ){
                 return
             }
@@ -527,7 +533,7 @@ export default({
                   return false;
                 }
                 const exception_code=exception.messages.error;
-                this.$flash("С заказом возникла проблема")
+                this.$flash("Не удается оформить заказ, обратитесь на горячую линию")
                 return false
             }
             if(orderData.paymentByCard==1){
@@ -640,6 +646,28 @@ export default({
         //     this.$go('/user/user-addresses');
         //     return false
         // },
+        async heavyLoadConfirm(){
+            const alert = await alertController.create({
+                header: 'Высокая загруженность',
+                message:'Доставка может занять больше времени',
+                buttons: [
+                  {
+                    text: 'Отменить',
+                    role: 'cancel',
+                  },
+                  {
+                    text: 'Я подожду',
+                    role: 'confirm',
+                  },
+                ],
+            });
+            await alert.present();
+            const { role } = await alert.onDidDismiss();
+            if( role=='confirm' ){
+                return true
+            }
+            return false
+        },
         async deliveryAddressConfirm(){
             const alert = await alertController.create({
                 header: 'Адрес доставки',

@@ -32,6 +32,25 @@ const Utils={
         template=template.replace(/{{\.}}/,'-')
         return template
     },
+    date:{
+        today(){
+            const today = new Date();
+            today.setHours(-today.getTimezoneOffset()/60)
+            return today
+        },
+        firstDay( monthOffset=0 ){
+            const firstDay = this.today()
+            firstDay.setDate(1)
+            firstDay.setMonth(firstDay.getMonth()+monthOffset)
+            return firstDay
+        },
+        toIso( date ){
+            return date.toISOString().slice(0, 10)
+        },
+        isoToDmy( iso ){
+            return iso.split('-').reverse().join('.')
+        }
+    },
     //////////////////////////////////////////////////////
     //CACHE STORAGE SECTION
     //////////////////////////////////////////////////////

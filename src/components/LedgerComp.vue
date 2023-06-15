@@ -14,10 +14,11 @@
 <template>
 <div>
   <ion-list>
-    <ion-item>
-      <ion-title>Баланс</ion-title>
-      <ion-text slot="end" v-if="balance>0" color="success">{{ balance }}{{ $heap.state.currencySign }}</ion-text>
-      <ion-text slot="end" v-else>{{ balance }}{{ $heap.state.currencySign }}</ion-text>
+    <ion-item lines="full">
+      <ion-label>Баланс</ion-label>
+      <ion-text slot="end" v-if="balance>0" color="success"><b>{{ balance }}{{ $heap.state.currencySign }}</b></ion-text>
+      <ion-text slot="end" v-else-if="balance<0" color="danger"><b>{{ balance }}{{ $heap.state.currencySign }}</b></ion-text>
+      <ion-text slot="end" v-else color="medium"><b>{{ balance }}{{ $heap.state.currencySign }}</b></ion-text>
     </ion-item>
   </ion-list>
 
@@ -26,27 +27,28 @@
       <ion-item slot="header">
         <ion-icon :icon="calendarOutline" slot="start"/>
         <ion-text>Период</ion-text>
+        <ion-text color="medium" slot="end">{{ start_at_dmy }} - {{ finish_at_dmy }}</ion-text>
       </ion-item>
       <ion-list slot="content">
         <ion-item>
-          <ion-text>Начальная дата</ion-text>
+          <ion-text color="medium">Начальная дата</ion-text>
           <div slot="end" style="display:grid;grid-template-columns:120px 100px;">
-            <ion-input type="date" v-model="start_at"  @ionChange="listGet()"/>
-            <ion-input type="text" style="text-align:right" color="medium" v-if="meta.sum_start" :value="`${meta.sum_start}${$heap.state.currencySign}`" readonly />
+            <ion-input type="date" v-model="start_at"  @ionInput="listGet()" debounce="500" />
+            <ion-input type="text" style="text-align:right" v-if="meta.sum_start" :value="`${meta.sum_start}${$heap.state.currencySign}`" readonly />
           </div>
         </ion-item>
         <ion-item>
-          <ion-text>Обороты</ion-text>
+          <ion-text color="medium">Обороты</ion-text>
           <div slot="end" style="display:grid;grid-template-columns:120px 100px;">
-            <ion-input type="text" style="text-align:right" color="medium" v-if="meta.sum_debit" :value="`+${meta.sum_debit}${$heap.state.currencySign}`" readonly />
-            <ion-input type="text" style="text-align:right" color="medium" v-if="meta.sum_credit" :value="`-${meta.sum_credit}${$heap.state.currencySign}`" readonly />
+            <ion-input type="text" style="text-align:right" v-if="meta.sum_debit" :value="`+${meta.sum_debit}${$heap.state.currencySign}`" readonly />
+            <ion-input type="text" style="text-align:right" v-if="meta.sum_credit" :value="`-${meta.sum_credit}${$heap.state.currencySign}`" readonly />
           </div>
         </ion-item>
         <ion-item>
-          <ion-text>Конечная дата</ion-text>
+          <ion-text color="medium">Конечная дата</ion-text>
           <div slot="end" style="display:grid;grid-template-columns:120px 100px;">
             <ion-input type="date" v-model="finish_at"  @ionChange="listGet()" />
-            <ion-input type="text" style="text-align:right" color="medium" v-if="meta.sum_finish" :value="`${meta.sum_finish}${$heap.state.currencySign}`" readonly />
+            <ion-input type="text" style="text-align:right" v-if="meta.sum_finish" :value="`${meta.sum_finish}${$heap.state.currencySign}`" readonly />
           </div>
         </ion-item>
       </ion-list>
@@ -59,6 +61,7 @@
       <ion-list slot="content">
         <ion-item lines="none">
           <ion-text>
+            <ion-text v-if="!tagDict" color="medium">нажмите на #тег для фильтрации</ion-text>
             <ion-chip v-for="(tagLabel,tag) in tagDict" :key="tag" color="primary">#{{tagLabel}} <ion-icon :src="closeCircle" @click="itemTagRemove(tag)"></ion-icon></ion-chip>
             <ion-chip @click="itemTagCreate()" color="medium" v-if="is_admin"><ion-icon :src="addOutline"/><ion-label>Добавить #тег</ion-label></ion-chip>
           </ion-text>
@@ -78,6 +81,12 @@
 
 
   <ion-list v-else-if="ledger.length>0">
+    <ion-item detail="false">
+      <ion-chip @click="listGet()" color="medium">
+        <ion-icon :src="refreshOutline"/>
+        <ion-label>Обновить</ion-label>
+      </ion-chip>
+    </ion-item>
     <div v-for="trans in ledgerCalc" :key="trans.trans_id">
       <ion-item :detail="is_admin" lines="none" @click="itemClick(trans.trans_id)">
           <ion-text slot="start">{{trans.date}}</ion-text>
@@ -114,7 +123,6 @@
 <script>
 import {
   IonIcon,
-  IonTitle,
   IonLabel,
   IonItem,
   IonInput,
@@ -135,16 +143,18 @@ import {
   addOutline,
   closeCircle,
   pricetagOutline,
+  refreshOutline,
+  calculatorOutline,
 }                             from "ionicons/icons";
 import jquery                 from "jquery";
 import User                   from '@/scripts/User.js'
+import Utils                  from '@/scripts/Utils.js'
 
 import ItemPicker             from '@/components/ItemPicker.vue'
 
 export default {
   components: {
     IonIcon,
-    IonTitle,
     IonLabel,
     IonItem,
     IonInput,
@@ -165,15 +175,17 @@ export default {
       addOutline,
       closeCircle,
       pricetagOutline,
+      refreshOutline,
+      calculatorOutline,
     }
   },
   data() {
-    const today = new Date();
-    const firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
+    const today=Utils.date.today()
+    const firstDay=Utils.date.firstDay(-1)
     return {
       balance: '-',
-      start_at: firstDay.toISOString().slice(0, 10),
-      finish_at: today.toISOString().slice(0, 10),
+      start_at: Utils.date.toIso(firstDay),
+      finish_at: Utils.date.toIso(today),
       searchQuery:'',
       tagQuery:'',
       tagDict:null,
@@ -201,7 +213,13 @@ export default {
     },
     is_admin(){
       return User.isAdmin()
-    }
+    },
+    start_at_dmy(){
+      return Utils.date.isoToDmy(this.start_at)
+    },
+    finish_at_dmy(){
+      return Utils.date.isoToDmy(this.finish_at)
+    },
   },
   watch:{
     query:function(){
@@ -239,9 +257,9 @@ export default {
         }
         this.ledger=response.ledger
         this.meta=response.meta
-        if( this.finish_at==this.today.toISOString().slice(0, 10) ){
+        //if( this.finish_at==this.today ){
             this.balance=response.meta.sum_finish
-        }
+        //}
       } catch (err) {
         const exception_code = err?.responseJSON?.messages?.error;
         switch (exception_code) {
@@ -305,22 +323,18 @@ export default {
           buttons: [
             {
               text: 'Заказ',
-              role: 'destructive',
               data: 'order',
             },
             {
               text: 'Продавец',
-              role: 'destructive',
               data: 'store',
             },
             {
               text: 'Курьер',
-              role: 'destructive',
               data: 'courier',
             },
             {
               text: 'Счет',
-              role: 'destructive',
               data: 'acc',
             },
           ],
