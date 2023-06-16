@@ -156,6 +156,10 @@ const routes = [
         path: '/user/reactions',
         component: () => import('@/views/ReactionsView.vue')
       },
+      {
+        path: '/user/feedback',
+        component: () => import('@/views/user/FeedbackView.vue')
+      },
       
 
       {

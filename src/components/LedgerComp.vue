@@ -47,7 +47,7 @@
         <ion-item>
           <ion-text color="medium">Конечная дата</ion-text>
           <div slot="end" style="display:grid;grid-template-columns:120px 100px;">
-            <ion-input type="date" v-model="finish_at"  @ionChange="listGet()" />
+            <ion-input type="date" v-model="finish_at"  @ionInput="listGet()" />
             <ion-input type="text" style="text-align:right" v-if="meta.sum_finish" :value="`${meta.sum_finish}${$heap.state.currencySign}`" readonly />
           </div>
         </ion-item>

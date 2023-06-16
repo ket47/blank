@@ -203,6 +203,14 @@ ion-icon{
             <ion-button slot="end" color="light">Стать продавцом</ion-button>
           </ion-item>
         </div>
+
+        <ion-item-divider>
+          <ion-label>Обратная связь</ion-label>
+        </ion-item-divider>
+        <ion-item lines="full" button detail @click="$go('/user/feedback')">
+          <ion-icon :icon="bookOutline" slot="start" color="primary"></ion-icon>
+          <ion-text>Ваши пожелания или замечания</ion-text>
+        </ion-item>
       </ion-item-group>
 
       <ion-item-group>
@@ -289,6 +297,7 @@ import {
   receiptOutline,
   rocketOutline,
   briefcaseOutline,
+  bookOutline,
 
   pieChartOutline,
   thumbsUpSharp,
@@ -342,6 +351,7 @@ export default {
       briefcaseOutline,
       pieChartOutline,
       thumbsUpSharp,
+      bookOutline,
     };
   },
   data() {
