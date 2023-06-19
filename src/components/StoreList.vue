@@ -230,7 +230,6 @@ import {
   IonIcon,
   IonCardHeader,
   IonCardSubtitle,
-  IonCardTitle,
   IonCardContent,
   IonSkeletonText,
   IonThumbnail,
@@ -273,7 +272,6 @@ export default {
   IonIcon,
   IonCardHeader,
   IonCardSubtitle,
-  IonCardTitle,
   IonCardContent,
   IonSkeletonText,
   IonThumbnail,
@@ -320,6 +318,9 @@ export default {
     }
   },
   methods: {
+    async listNearReload(){
+      this.listNearGet(heap.state.user.location_current??heap.state.user.location_main);
+    },
     async listNearGet(loc) {
       try{
         const location={

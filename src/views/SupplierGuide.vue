@@ -14,6 +14,15 @@
       </div>
 
 
+      <div class="main-block-content" style="padding:10px;box-shadow:0px 5px 5px #eee">
+        <h2 style="text-align:center">Видео презентация</h2>
+        <div style="position:relative;">
+          <a href="https://www.youtube.com/watch?v=lC9llgvyefM" target="_new">
+          <h4 style="position:absolute;color:white;left:10px">Короткое видео о нашем сервисе</h4>
+          <img src="/img/supplier_guide/videoThumbnail.jpg" style="border-radius:10px;width:100%;"/>
+          </a>
+        </div>
+      </div>
       <div class="winnings-container main-block">
         <div class="main-block-content">
           <h2>Что Вы получите, работая именно с Tezkel?</h2>
@@ -66,7 +75,11 @@
           </div>
         </div>
       </div>
+
+
+
       
+
 
       <div class="benefits-container main-block">
         <div class="main-block-content">

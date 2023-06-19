@@ -388,7 +388,7 @@ export default({
             }
             try{
                 const bulkResponse=await jQuery.post(`${this.$heap.state.hostname}Order/itemCheckoutDataGet`,{order_id:this.order.order_id})
-                this.deliveryTime=Utils.deliveryTimeCalculate(bulkResponse.Location_distanceHolderGet,null)
+                this.deliveryTime=Utils.deliveryTimeCalculate(bulkResponse.Location_distanceHolderGet,bulkResponse.Store_preparationTime)
                 this.promo=bulkResponse.Promo_itemLinkGet
                 this.promoCount=bulkResponse.Promo_listGet
                 this.storeIsReady=Array.isArray(bulkResponse.Store_deliveryOptions)?1:0

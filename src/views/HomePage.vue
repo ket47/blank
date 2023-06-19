@@ -34,7 +34,7 @@ export default {
   },
   ionViewDidEnter(){
     //User.geo.switch();
-    this.$refs.homeStoreList.listNearGet();
+    this.$refs.homeStoreList.listNearReload();
   }
 };
 </script>
