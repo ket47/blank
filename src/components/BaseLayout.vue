@@ -24,13 +24,17 @@
 
 
       <div v-if="iosInstallPromptShow" class="installPrompt">
-        <div>
-          Установите это приложение на iPhone: <br/> 
-          - нажмите <ion-icon :src="shareOutline" color="primary" size="large" /> и потом <br/> 
-          - На экран «Домой» <ion-icon :src="addCircleOutline" size="large" color="light" />
+        <div style="padding-top:30px;">
+          <small>Установите приложение Tezkel из AppStore<br/></small> 
+          <a href="https://apps.apple.com/tr/app/tezkel-%D0%B1%D1%8B%D1%81%D1%82%D1%80%D0%B0%D1%8F-%D0%B4%D0%BE%D1%81%D1%82%D0%B0%D0%B2%D0%BA%D0%B0/id6449783821" target="_new">
+            <ion-button expand="block">
+              <ion-icon slot="start" :src="logoAppleAppstore"></ion-icon>
+              Установить
+            </ion-button>
+          </a>
         </div>
         <div>
-          <ion-icon :src="closeOutline" style="float:right" size="large" color="medium" @click="iosInstallPromptDissmiss()" />
+          <ion-icon :src="closeOutline" style="float:right" size="large" color="light" @click="iosInstallPromptDissmiss()" />
         </div>
       </div>
 
@@ -69,6 +73,7 @@ import {
   closeOutline,
   shareOutline,
   addCircleOutline,
+  logoAppleAppstore
 }                           from "ionicons/icons";
 
 export default defineComponent({
@@ -104,11 +109,12 @@ export default defineComponent({
       closeOutline,
       shareOutline,
       addCircleOutline,
+      logoAppleAppstore,
     }
   },
   data(){
     return {
-      isIosPromptDisssmissed:localStorage.iosInstallPromptDissmissed?1:0
+      isIosPromptDisssmissed:localStorage.iosInstallAppPromptDissmissed?1:0
     }
   },
   computed:{
@@ -136,7 +142,7 @@ export default defineComponent({
       history.back()
     },
     iosInstallPromptDissmiss(){
-      this.isIosPromptDisssmissed=localStorage.iosInstallPromptDissmissed=1
+      this.isIosPromptDisssmissed=localStorage.iosInstallAppPromptDissmissed=1
     }
   },
 })
@@ -175,8 +181,5 @@ ion-header ion-toolbar ion-title{
   grid-template-columns: auto 30px;
   font-size: 1.2em;
   line-height: 25px;
-}
-.installPrompt ion-icon{
-  margin-bottom: -10px;
 }
 </style>
