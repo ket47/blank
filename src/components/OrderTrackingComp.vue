@@ -1,4 +1,4 @@
-<style scoped>
+<style>
     ion-icon{
         font-size:40px;
         color:var(--ion-color-medium);
@@ -6,6 +6,17 @@
     .center_chip{
         text-align:center;
         width: 100%;
+    }
+    .placemarkBaloon{
+        min-width:150px;
+        border-radius: 5px;
+        border:var(--ion-color-primary) 1px solid;
+        background-color: #fffd;
+        padding:3px;
+        color:var(--ion-color-primary);
+        font-family: Comfortaa;
+        font-weight: bold;
+        text-align: left;
     }
 </style>
 <template>
@@ -41,6 +52,34 @@
             </ion-item>
         </ion-list>
     </ion-accordion>
+    <ion-accordion value="tracking" v-if="is_admin">
+        <ion-item slot="header">
+            <ion-label>Отслеживание заказа</ion-label>
+        </ion-item>
+        <ion-list slot="content">
+            <ion-item v-if="courier_finish_distance_km" lines="none">
+                <ion-label slot="start">Курьер, {{job?.courier_name}}</ion-label> 
+                <ion-chip color="success">
+                {{courier_finish_distance_km}}
+                </ion-chip>
+                <ion-chip slot="end" color="primary">
+                {{courier_finish_time_min.timeMin}}-{{courier_finish_time_min.timeMax}}мин
+                </ion-chip>   
+            </ion-item>
+            <yandex-map 
+            v-if="coords" 
+                :coords="coords" 
+                :zoom="16" 
+                :settings="mapsettings"
+                :controls="['fullscreenControl']"
+                style="height:200px" 
+            >
+                <ymap-marker :coords="coords" :icon="placemarkIcon" marker-id="1" :properties="placemarkProperties"/>
+            </yandex-map>
+        </ion-list>
+    </ion-accordion>
+
+
 </ion-accordion-group>
 
 </template>
@@ -64,6 +103,9 @@ import {
     }               from 'ionicons/icons';
 import Order        from '@/scripts/Order.js';
 import Utils        from '@/scripts/Utils.js';
+import User        from '@/scripts/User.js';
+
+import { yandexMap,ymapMarker,loadYmap }         from "vue-yandex-maps";
 
 
 export default({
@@ -79,6 +121,8 @@ export default({
     IonProgressBar,
     IonThumbnail,
     IonImg,
+    yandexMap,
+    ymapMarker,
     },
     setup() {
         return { 
@@ -92,6 +136,18 @@ export default({
             job:null,
             refreshInterval:1000*60,
             clock:null,
+
+            mapsettings:null,
+            placemarkProperties:{},
+            placemarkIcon:{
+                layout:'default#imageWithContent',
+                content: 'some content here',
+                contentLayout: '<div class="placemarkBaloon">$[properties.iconContent]</div>',
+                contentOffset: [45, 10],
+                imageSize:[40, 40],
+                imageOffset:[-20, -20]
+            },
+            coords: null,
         };
     },
     computed:{
@@ -106,6 +162,9 @@ export default({
         },
         courier_progress(){
             return this.job?.courier_finish_distance/this.job?.start_finish_distance
+        },
+        is_admin(){
+            return User.isAdmin()
         }
     },
     methods:{
@@ -119,6 +178,11 @@ export default({
                     clearTimeout(this.clock)
                     const self=this
                     this.clock=setTimeout(()=>{self.jobGet()},this.refreshInterval)
+                }
+                if(this.job?.location_latitude){
+                    this.coords=[this.job.location_latitude,this.job.location_longitude]
+                    this.placemarkProperties.iconContent='курьер '+this.job?.courier_name
+                    this.placemarkIcon.imageHref=`${this.$heap.state.hostname}image/get.php/${this.job?.image_hash}.200.200.webp`
                 }
             } catch(err){
                 const message=err.responseJSON?.messages?.error;
@@ -137,7 +201,27 @@ export default({
                 return true
             }
             return false
+        },
+        async ymapInit(locSettings){
+            this.mapsettings={
+                apiKey: locSettings.ymapApiKey,
+                lang: "ru_RU",
+                coordorder: "latlong",
+                version: "2.1",
+            }
+            //this.coords=JSON.parse(locSettings.mapCenter)
+            await loadYmap();
+            //this.ymapPlaceMarker()
+        },
+    },
+    async mounted(){
+        let settings=this.$heap.state.settings;
+        if(settings?.location){
+            this.ymapInit(settings.location)
         }
+        this.$topic.on('settingsGet',async settings=>{
+            this.ymapInit(settings.location)
+        })
     },
     watch:{
         'orderData':function(){
