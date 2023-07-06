@@ -12,30 +12,99 @@ firebase.initializeApp({
   messagingSenderId: "359468869452",
   appId: "1:359468869452:web:8db6fe690d192b427891e9"
 });
-
-// Retrieve an instance of Firebase Messaging so that it can handle background
-// messages.
 const messaging = firebase.messaging();
-messaging.onBackgroundMessage(async (payload) => {
+
+self.addEventListener('push', async event => {
+  let payload
+  try{
+    payload = event.data?.json() ?? {};
+  } catch (err){
+    payload = {data:{body:event.data.text()}};
+  }
+  const data=payload.data
+
 
   const cl=await clients.matchAll({includeUncontrolled: false, type: 'window'});
   if( cl.length ){
     cl.forEach(client => client.postMessage(payload));
   }
-  try{
-    if(payload.data.body){//if body is set then this is foreground notification!
-      const notificationTitle = payload.data.title??'Tezkel'
-      const notificationOptions = {
-        body: payload.data.body,
-        icon: payload.data.icon,
-        link: payload.data.link??'',
-        tag: payload.data.tag??'',
-        vibrate: [200, 100, 200]
-      }
-      return self.registration.showNotification(notificationTitle,notificationOptions);
-    }
-    return self.registration.showNotification(payload.title,payload);
-  } catch (err){
-    console.log('messaging.onBackgroundMessage',err)
-  }
+  
+  const title = data.title;
+  const options = data;
+  options.vibrate=[200, 100, 200, 100]
+  return await self.registration.showNotification(title, options);
 });
+
+self.addEventListener('notificationclick', function(event) {
+  event.waitUntil(
+    self.clients.matchAll().then(function(clientList) {
+      if (clientList.length > 0) {
+        return clientList[0].focus();
+      }
+    })
+  );
+});
+
+
+// Retrieve an instance of Firebase Messaging so that it can handle background
+// messages.
+// const messaging = firebase.messaging();
+// messaging.onBackgroundMessage(async (payload) => {
+//   const cl=await clients.matchAll({includeUncontrolled: false, type: 'window'});
+//   if( cl.length ){
+//     cl.forEach(client => client.postMessage(payload));
+//   }
+
+//   const notificationTitle = 'intercepted';//payload.notification.title??'Tezkel'
+//   const notificationOptions = {
+//     body: payload.notification.body,
+//     image: payload.notification.image,
+
+
+
+//     icon: payload.data.icon,
+//     link: payload.data.link??'',
+//     tag: payload.data.tag??'',
+//     vibrate: [200, 100, 200]
+//   }
+//   return self.registration.showNotification(notificationTitle,notificationOptions);
+
+
+
+//   // try{
+//   //   if(payload.data.body){//if body is set then this is foreground notification!
+//   //     const notificationTitle = payload.notification.title??'Tezkel'
+//   //     const notificationOptions = {
+//   //       body: payload.notification.body,
+//   //       image: payload.notification.image,
+
+
+
+//   //       icon: payload.data.icon,
+//   //       link: payload.data.link??'',
+//   //       tag: payload.data.tag??'',
+//   //       vibrate: [200, 100, 200]
+//   //     }
+//   //     return self.registration.showNotification(notificationTitle,notificationOptions);
+//   //   }
+//   // } catch (err){
+//   //   console.log('messaging.onBackgroundMessage',err)
+//   // }
+// });
+
+
+
+
+
+// messaging.onMessage(async (payload) => {
+//   const cl=await clients.matchAll({includeUncontrolled: false, type: 'window'});
+//   if( cl.length ){
+//     cl.forEach(client => client.postMessage(payload));
+//   }
+
+
+
+
+// })
+
+
