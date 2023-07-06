@@ -1,15 +1,4 @@
 <template>
-    <ion-list v-if="['delivery_finish'].includes(orderData?.stage_current)">
-        <ion-item lines="none">
-            <ion-thumbnail slot="start" v-if="orderData?.info?.courier_image_hash">
-                <ion-img :src="`${$heap.state.hostname}image/get.php/${orderData?.info?.courier_image_hash}.70.70.webp`" style="border-radius:10px;background-color:var(--ion-color-primary-tint)"/>
-            </ion-thumbnail>
-            <p>Ваш курьер <b>{{orderData?.info?.courier_name}}</b></p>
-        </ion-item>
-        <ion-item lines="none">
-            <ion-text>Вы можете отблагодарить курьера чаевыми ☕, если он доставил заказ быстро и качественно.</ion-text>
-        </ion-item>
-    </ion-list>
     <ion-list v-if="orderData?.info?.tariff_info">
         <ion-item lines="none" color="light">
             <h4>Условия оплаты и доставки</h4>
@@ -90,8 +79,6 @@ import {
     IonAccordionGroup,
     IonNote,
     IonList,
-    IonThumbnail,
-    IonImg,
     IonText,
 }                       from '@ionic/vue';
 import { 
@@ -112,8 +99,6 @@ export default({
     IonAccordionGroup,
     IonNote,
     IonList,
-    IonThumbnail,
-    IonImg,
     IonText,
     },
     setup() {
