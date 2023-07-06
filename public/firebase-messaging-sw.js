@@ -14,6 +14,78 @@ firebase.initializeApp({
 });
 const messaging = firebase.messaging();
 
+messaging.onMessage( (payload) => {
+
+
+
+  console.log('onMessage',payload)
+})
+
+messaging.onBackgroundMessage( ({ notification, data }) => {
+  const { title, body, image } = notification ?? {}
+
+  if (!title) {
+    return
+  }
+
+  self.registration.showNotification(title, {
+    body,
+    icon: image,
+    data
+  })
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// messaging.onBackgroundMessage(async (payload) => {
+//   const notificationTitle = 'intercepted';//payload.notification.title??'Tezkel'
+//   const notificationOptions = {
+//     body: 'payload.notification.body',
+//     //image: payload.notification.image,
+
+
+
+//     icon: payload.data.icon,
+//     link: payload.data.link??'',
+//     tag: payload.data.tag??'',
+//     vibrate: [200, 100, 200]
+//   }
+//   return self.registration.showNotification(notificationTitle,notificationOptions);
+// });
+
+
+
+
+
+
+
+
+/*
+
+
+
+
+
 self.addEventListener('push', async event => {
   let payload
   try{
@@ -21,17 +93,25 @@ self.addEventListener('push', async event => {
   } catch (err){
     payload = {data:{body:event.data.text()}};
   }
+  payload.data.body='----'
   const data=payload.data
 
 
-  const cl=await clients.matchAll({includeUncontrolled: false, type: 'window'});
-  if( cl.length ){
-    cl.forEach(client => client.postMessage(payload));
-  }
+  // const cl=await clients.matchAll({includeUncontrolled: false, type: 'window'});
+  // if( cl.length ){
+  //   cl.forEach(client => client.postMessage(payload));
+  // }
   
-  const title = data.title;
+  const title = 'intercept';//data.title;
   const options = data;
-  options.vibrate=[200, 100, 200, 100]
+  options.vibrate=[500, 100, 500, 100]
+
+
+
+
+
+  console.log(title,options)
+
   return await self.registration.showNotification(title, options);
 });
 
@@ -44,7 +124,7 @@ self.addEventListener('notificationclick', function(event) {
     })
   );
 });
-
+*/
 
 // Retrieve an instance of Firebase Messaging so that it can handle background
 // messages.
