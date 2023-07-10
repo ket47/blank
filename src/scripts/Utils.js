@@ -26,7 +26,7 @@ const Utils={
         return {time,timeMin,timeMax}
     },
     render(template,context){
-        for(let i in context){
+        for(const i in context){
             template=template.replace(`{{${i}}}`,context[i])
         }
         template=template.replace(/{{\.}}/,'-')
@@ -67,7 +67,7 @@ const Utils={
         let hash = 0;
         if (string.length == 0) return hash;
         for (let i = 0; i < string.length; i++) {
-            let char = string.charCodeAt(i);
+            const char = string.charCodeAt(i);
             hash = ((hash << 5) - hash) + char;
             hash = hash & hash;
         }

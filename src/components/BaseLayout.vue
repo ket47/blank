@@ -72,7 +72,7 @@ import {
   chevronBackOutline,
   closeOutline,
   shareOutline,
-  addCircleOutline,
+  addCircleOutline, 
   logoAppleAppstore
 }                           from "ionicons/icons";
 

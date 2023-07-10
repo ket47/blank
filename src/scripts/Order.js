@@ -33,7 +33,7 @@ const Order = {
             const list = await jQuery.post( heap.state.hostname + "Order/listGet",request );
             if(request.order_group_type=='active_only'){
                 let activeOrderCount=0;
-                for(let i in list){
+                for(const i in list){
                     if(list[i].stage_current!='customer_cart'){
                         activeOrderCount++
                     }
