@@ -24,6 +24,10 @@
                 <ion-img :src="`${$heap.state.hostname}image/get.php/${orderData?.info?.courier_image_hash}.70.70.webp`" style="border-radius:100px;background-color:var(--ion-color-primary-tint)"/>
             </ion-avatar>
             <ion-label>Курьер <b>{{orderData?.info?.courier_name}}</b></ion-label>
+            <ion-chip color="primary" v-if="orderData?.info?.courier_phone" slot="end">
+                <ion-icon :src="callOutline"/>
+                <a :href="`tel:${orderData?.info?.courier_phone}`">{{orderData?.info?.courier_phone}}</a>
+            </ion-chip>
         </ion-item>
         <ion-item v-if="has_delivery_finish && !has_system_finish" slot="content" lines="none">
             <p>Заказ доставлен за <ion-chip color="medium"><b style="color:var(--ion-color-primary)">⏱️ {{delivery_time}}</b></ion-chip>.
@@ -56,11 +60,13 @@ import {
     IonAccordion,
     IonAvatar,
     IonImg,
+    IonIcon,
 }                   from '@ionic/vue';
 import {
     storefrontOutline,
     locationOutline,
-    flagOutline
+    flagOutline,
+    callOutline,
     }               from 'ionicons/icons';
 import Order        from '@/scripts/Order.js';
 import Utils        from '@/scripts/Utils.js';
@@ -80,6 +86,7 @@ export default({
     IonAccordion,
     IonAvatar,
     IonImg,
+    IonIcon,
     yandexMap,
     ymapMarker,
     },
@@ -87,7 +94,8 @@ export default({
         return { 
             storefrontOutline,
             locationOutline,
-            flagOutline 
+            flagOutline,
+            callOutline,
             }
     },
     data(){
@@ -161,9 +169,12 @@ export default({
             }
             try{
                 this.job=await Order.api.itemJobTrack(this.orderData.order_id);
-                if(this.job?.location_latitude){
+                const max_location_age=3*60//3min
+                if(this.job?.location_latitude && this.job?.location_age<max_location_age ){
                     this.coords=[this.job.location_latitude,this.job.location_longitude]
                     this.placemarkProperties.iconContent=`${this.courier_finish_distance_km} (${this.courier_finish_time_min})`
+                } else {
+                    this.coords=null//hide map
                 }
                 clearTimeout(this.clock)
                 this.clock=setTimeout(()=>{this.jobGet()},this.refreshInterval)
