@@ -39,7 +39,7 @@
     "vue-cli": "^2.9.6",
     "vue-router": "^4.1.6",
     "vue-yandex-maps": "^0.12.2",
-    "vuex": "^4.0.2"
+    "vuex": "^4.0.2" 
   },
   "devDependencies": {
     "@capacitor/cli": "^5.0.4",

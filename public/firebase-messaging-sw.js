@@ -1,5 +1,5 @@
-importScripts('https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js');
-importScripts('https://www.gstatic.com/firebasejs/9.0.0/firebase-messaging-compat.js');
+importScripts('https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js');
+importScripts('https://www.gstatic.com/firebasejs/9.6.1/firebase-messaging-compat.js');
 
 // Initialize the Firebase app in the service worker by passing in
 // your app's Firebase config object.
@@ -12,30 +12,50 @@ firebase.initializeApp({
   messagingSenderId: "359468869452",
   appId: "1:359468869452:web:8db6fe690d192b427891e9"
 });
-
-// Retrieve an instance of Firebase Messaging so that it can handle background
-// messages.
 const messaging = firebase.messaging();
-messaging.onBackgroundMessage(async (payload) => {
 
-  const cl=await clients.matchAll({includeUncontrolled: false, type: 'window'});
+self.addEventListener('push', async event => {
+  let payload
+  try{
+    payload = event.data?.json() ?? {};
+  } catch (err){
+    payload = {data:{body:event.data.text()}};
+  }
+  const data=payload.data ?? {}
+  const title = data.title
+  const options = data
+  options.vibrate=[500, 100, 500, 100]
+  event.waitUntil(self.registration.showNotification(title, options))
+});
+
+self.addEventListener('notificationclick', function(event) {
+  event.waitUntil(
+    self.clients.matchAll({includeUncontrolled: true, type: 'window'}).then(function(clientList) {
+      if (clientList.length > 0) {
+        return clientList[0].focus();
+      }
+    })
+  );
+});
+
+async function sendToClient(payload){
+  const cl=await clients.matchAll({includeUncontrolled: true, type: 'window'});
+  console.log('clients',cl)
   if( cl.length ){
     cl.forEach(client => client.postMessage(payload));
   }
-  try{
-    if(payload.data.body){//if body is set then this is foreground notification!
-      const notificationTitle = payload.data.title??'Tezkel'
-      const notificationOptions = {
-        body: payload.data.body,
-        icon: payload.data.icon,
-        link: payload.data.link??'',
-        tag: payload.data.tag??'',
-        vibrate: [200, 100, 200]
-      }
-      return self.registration.showNotification(notificationTitle,notificationOptions);
-    }
-    return self.registration.showNotification(payload.title,payload);
-  } catch (err){
-    console.log('messaging.onBackgroundMessage',err)
-  }
-});
+}
+
+
+
+// messaging.onBackgroundMessage( payload => {
+//   const data=payload.data ?? {}
+//   const title = data.title
+//   const options = data
+//   options.vibrate=[500, 100, 500, 100]
+//   // if( data.topic ){
+//   //   sendToClient(payload)
+//   // }
+//   return  self.registration.showNotification(title, options)
+// })
+//messaging.onMessage( (payload) => {})//automatically routed to application

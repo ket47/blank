@@ -3,8 +3,8 @@
     <ion-header :class="[pageClass]">
       <ion-toolbar>
         <ion-buttons v-if="canGoBack" slot="start">
-          <ion-button v-if="isIos" @click="goback()" style="font-family:SF, Arial, Helvetica, sans-serif">&nbsp;<ion-icon :src="chevronBackOutline"/>Назад</ion-button>
-          <ion-button v-else @click="goback()">&nbsp;<ion-icon :src="arrowBackOutline"/>&nbsp;&nbsp;&nbsp;</ion-button>
+          <ion-button v-if="isIos" @click="goback()" style="font-family:SF, Arial, Helvetica, sans-serif"><ion-icon :src="chevronBackOutline"/>Назад</ion-button>
+          <ion-button v-else @click="goback()"><ion-icon :src="arrowBackOutline" size="large"/></ion-button>
         </ion-buttons>
         <ion-title v-if="pageTitle" size="small"><div style="line-height: 1.5;max-height:3em;text-overflow: ellipsis;overflow: hidden;font-weight: bold;">{{ pageTitle }}</div></ion-title>
         <ion-icon  v-if="pageLogo" class="toolbar_svg_logo" style="color: var(--ion-color-primary)"  :icon="pageLogo"/>
@@ -24,13 +24,17 @@
 
 
       <div v-if="iosInstallPromptShow" class="installPrompt">
-        <div>
-          Установите это приложение на iPhone: <br/> 
-          - нажмите <ion-icon :src="shareOutline" color="primary" size="large" /> и потом <br/> 
-          - На экран «Домой» <ion-icon :src="addCircleOutline" size="large" color="light" />
+        <div style="padding-top:30px;">
+          <small>Установите приложение Tezkel из AppStore<br/></small> 
+          <a href="https://apps.apple.com/tr/app/tezkel-%D0%B1%D1%8B%D1%81%D1%82%D1%80%D0%B0%D1%8F-%D0%B4%D0%BE%D1%81%D1%82%D0%B0%D0%B2%D0%BA%D0%B0/id6449783821" target="_new">
+            <ion-button expand="block">
+              <ion-icon slot="start" :src="logoAppleAppstore"></ion-icon>
+              Установить
+            </ion-button>
+          </a>
         </div>
         <div>
-          <ion-icon :src="closeOutline" style="float:right" size="large" color="medium" @click="iosInstallPromptDissmiss()" />
+          <ion-icon :src="closeOutline" style="float:right" size="large" color="light" @click="iosInstallPromptDissmiss()" />
         </div>
       </div>
 
@@ -68,7 +72,8 @@ import {
   chevronBackOutline,
   closeOutline,
   shareOutline,
-  addCircleOutline,
+  addCircleOutline, 
+  logoAppleAppstore
 }                           from "ionicons/icons";
 
 export default defineComponent({
@@ -104,11 +109,12 @@ export default defineComponent({
       closeOutline,
       shareOutline,
       addCircleOutline,
+      logoAppleAppstore,
     }
   },
   data(){
     return {
-      isIosPromptDisssmissed:localStorage.iosInstallPromptDissmissed?1:0
+      isIosPromptDisssmissed:localStorage.iosInstallAppPromptDissmissed?1:0
     }
   },
   computed:{
@@ -133,10 +139,13 @@ export default defineComponent({
       location.reload();
     },
     goback(){
+      if(this.pageDefaultBackLink){
+        return this.$go(this.pageDefaultBackLink)
+      }
       history.back()
     },
     iosInstallPromptDissmiss(){
-      this.isIosPromptDisssmissed=localStorage.iosInstallPromptDissmissed=1
+      this.isIosPromptDisssmissed=localStorage.iosInstallAppPromptDissmissed=1
     }
   },
 })
@@ -175,8 +184,5 @@ ion-header ion-toolbar ion-title{
   grid-template-columns: auto 30px;
   font-size: 1.2em;
   line-height: 25px;
-}
-.installPrompt ion-icon{
-  margin-bottom: -10px;
 }
 </style>

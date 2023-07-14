@@ -13,7 +13,7 @@
     }
 </style>
 <template>
-<base-layout :pageTitle="`Оформление заказа`" pageDefaultBackLink="/order/order-list">
+<base-layout :pageTitle="`Оформление заказа`" :pageDefaultBackLink="`/order/order-${order_id}`">
     <div v-if="is_checkout_data_loaded">
         <order-checkout-address :deliveryTime="deliveryTime" deliveryAddressOnly="1" showComment="1" :nextRoute="`/order/order-checkout-${order_id}`"></order-checkout-address>
 
@@ -282,21 +282,6 @@ export default({
             if( !this.order ){
                 return false
             }
-            if(this.order_sum_total<this.order.order_sum_promo*2){
-                return `Сумма к оплате со скидкой ${this.order.order_sum_promo}${this.$heap.state.currencySign} должна быть больше чем ${this.order.order_sum_promo*2}${this.$heap.state.currencySign}`
-            }
-            if(this.order.order_sum_product*1<this.tariffRule.order_sum_minimal*1){
-                return `Сумма заказа должна быть больше чем ${this.tariffRule.order_sum_minimal}${this.$heap.state.currencySign}`;
-            }
-            if(this.order.order_sum_product*1<this.order?.store?.store_minimal_order*1){
-                return `Сумма заказа у "${this.order?.store?.store_name}" должна быть больше чем ${this.order?.store?.store_minimal_order}${this.$heap.state.currencySign}`
-            }
-            if(this.order_sum_total*1<=this.order_sum_delivery*1){
-                return `Сумма к оплате должна быть больше чем ${this.order_sum_delivery}${this.$heap.state.currencySign}`
-            }
-            if(this.order_sum_total<=10){
-                return `Сумма к оплате слишком маленькая`
-            }
             if( this.errTooFar==1 ){
                 return "Адрес доставки заказа вне зоны обслуживания"
             }
@@ -314,6 +299,21 @@ export default({
             }
             if( this.tariffRule.deliveryByCourier==1 && (this.tariffRule.deliveryIsReady==0 || this.tariffRule.deliveryIsReady=='idle') ){
                 return `К сожалению, нет доступных курьеров`;
+            }
+            if(this.order_sum_total<this.order.order_sum_promo*2){
+                return `Сумма к оплате со скидкой ${this.order.order_sum_promo}${this.$heap.state.currencySign} должна быть больше чем ${this.order.order_sum_promo*2}${this.$heap.state.currencySign}`
+            }
+            if(this.order.order_sum_product*1<this.tariffRule.order_sum_minimal*1){
+                return `Сумма заказа должна быть больше чем ${this.tariffRule.order_sum_minimal}${this.$heap.state.currencySign}`;
+            }
+            if(this.order.order_sum_product*1<this.order?.store?.store_minimal_order*1){
+                return `Сумма заказа у "${this.order?.store?.store_name}" должна быть больше чем ${this.order?.store?.store_minimal_order}${this.$heap.state.currencySign}`
+            }
+            if(this.order_sum_total*1<=this.order_sum_delivery*1){
+                return `Сумма к оплате должна быть больше чем ${this.order_sum_delivery}${this.$heap.state.currencySign}`
+            }
+            if(this.order_sum_total<=10){
+                return `Сумма к оплате слишком маленькая`
             }
             return false
         },
@@ -526,7 +526,6 @@ export default({
             localStorage.storeCorrectionAllow=this.storeCorrectionAllow?1:0;
             try{
                 await jQuery.post(`${this.$heap.state.hostname}Order/itemCheckoutDataSet`,JSON.stringify(orderData))
-
             } catch(err){
                 const exception=err?.responseJSON;
                 if(!exception){

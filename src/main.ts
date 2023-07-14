@@ -151,24 +151,22 @@ jQuery( document ).ajaxComplete(()=>{
 
 if( 'serviceWorker' in navigator ){
   navigator.serviceWorker.onmessage = (event) => {
-    if(event.data.data.topic){
-      Topic.publish(event.data.data.topic,event.data.data)
+    const {data}=event.data??{}
+    const {title,body,topic,type}=data??{}
+    console.log('onmessage',title,body,topic,type)
+    if(topic){
+      Topic.publish(topic,data)
     } else
-    if(event.data.data.type === 'flash'){
-      flash(event.data.body)
+    if(type === 'flash'){
+      flash(body)
     } else
-    if(event.data.data.body){
-      alert(event.data.data.body,event.data.data.title)
+    if(body){
+      alert(body,title)
     } else {
-      console.log('UNHANDLED WEBPUSH',event.data)
+      console.log('UNHANDLED WEBPUSH',data)
     }
   };
 }
-
-
-
-
-
 
 const app = createApp(App)
   .use(IonicVue)
