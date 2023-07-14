@@ -96,6 +96,10 @@ ion-icon{
               <ion-icon :icon="pieChartOutline" slot="start" color="primary"></ion-icon>
               <ion-label>Бухгалтерия</ion-label>
           </ion-item>
+          <ion-item @click="$go('/catalog/home-2')" lines="full" button detail>
+              <ion-icon :icon="pieChartOutline" slot="start" color="primary"></ion-icon>
+              <ion-label>Новая главная страница</ion-label>
+          </ion-item>
         </ion-item-group>
       </ion-item-group>
 
