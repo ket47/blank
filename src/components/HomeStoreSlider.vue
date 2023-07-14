@@ -239,7 +239,7 @@ export default {
           if (item[key] === undefined ) return false;
           let outOfFilter = true
           if(this.filter[key].type == 'equals' && item[key] != this.filter[key].value) outOfFilter = false;
-          if(this.filter[key].type == 'includes' && !item[key].includes(this.filter[key].value)) outOfFilter = false;
+          if(this.filter[key].type == 'includes' && !item[key]?.includes(this.filter[key].value)) outOfFilter = false;
           if(!outOfFilter) return false
         }
         return true;
