@@ -24,16 +24,16 @@
                 <ion-img :src="`${$heap.state.hostname}image/get.php/${orderData?.info?.courier_image_hash}.70.70.webp`" style="border-radius:100px;background-color:var(--ion-color-primary-tint)"/>
             </ion-avatar>
             <ion-label>Курьер <b>{{orderData?.info?.courier_name}}</b></ion-label>
-            <ion-chip color="primary" v-if="orderData?.info?.courier_phone" slot="end">
-                <ion-icon :src="callOutline"/>
-                <a :href="`tel:${orderData?.info?.courier_phone}`">{{orderData?.info?.courier_phone}}</a>
-            </ion-chip>
         </ion-item>
         <ion-item v-if="has_delivery_finish && !has_system_finish" slot="content" lines="none">
             <p>Заказ доставлен за <ion-chip color="medium"><b style="color:var(--ion-color-primary)">⏱️ {{delivery_time}}</b></ion-chip>.
                 Вы можете отблагодарить курьера чаевыми☕, если он доставил заказ быстро и качественно.</p>
         </ion-item>
         <ion-list v-else slot="content">
+            <ion-chip color="primary" v-if="orderData?.info?.courier_phone" slot="end">
+                <ion-icon :src="callOutline"/>
+                <a :href="`tel:${orderData?.info?.courier_phone}`">{{orderData?.info?.courier_phone}}</a>
+            </ion-chip>
             <yandex-map 
             v-if="coords" 
                 :coords="coords" 
