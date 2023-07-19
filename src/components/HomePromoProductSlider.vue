@@ -69,7 +69,6 @@ ion-card{
 import {
   IonImg,
   IonChip,
-  IonItem,
   IonGrid,
   IonRow,
   IonCol,
@@ -92,7 +91,6 @@ export default {
     SwiperSlide,
     IonImg,
     IonChip,
-    IonItem,
     IonGrid,
     IonRow,
     IonCol,

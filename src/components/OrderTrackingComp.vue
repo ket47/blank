@@ -4,7 +4,7 @@
         width: 100%;
     }
     .placemarkBaloon{
-        min-width:100px;
+        min-width:140px;
         border-radius: 5px;
         border:var(--ion-color-shade) 1px solid;
         background-color: #fffd;
@@ -20,14 +20,14 @@
 <ion-accordion-group v-if="has_delivery_found && !has_system_finish" value="tracking" color="primary">
     <ion-accordion value="tracking">
         <ion-item slot="header">
-            <ion-avatar slot="start" v-if="orderData?.info?.courier_image_hash">
-                <ion-img :src="`${$heap.state.hostname}image/get.php/${orderData?.info?.courier_image_hash}.70.70.webp`" style="border-radius:100px;background-color:var(--ion-color-primary-tint)"/>
-            </ion-avatar>
+            <ion-thumbnail slot="start" v-if="orderData?.info?.courier_image_hash">
+                <ion-img :src="`${$heap.state.hostname}image/get.php/${orderData?.info?.courier_image_hash}.70.70.webp`" style="border-radius:10px;background-color:var(--ion-color-primary-tint)"/>
+            </ion-thumbnail>
             <ion-label>Курьер <b>{{orderData?.info?.courier_name}}</b></ion-label>
         </ion-item>
         <ion-item v-if="has_delivery_finish && !has_system_finish" slot="content" lines="none">
-            <p>Заказ доставлен за <ion-chip color="medium"><b style="color:var(--ion-color-primary)">⏱️ {{delivery_time}}</b></ion-chip>.
-                Вы можете отблагодарить курьера чаевыми☕, если он доставил заказ быстро и качественно.</p>
+            <p>Заказ доставлен за <ion-chip color="medium"><b style="color:var(--ion-color-primary)">⏱️ {{delivery_time}}</b></ion-chip>.<br/>
+            Вы можете отблагодарить курьера чаевыми☕, если он доставил заказ быстро и качественно.</p>
         </ion-item>
         <ion-list v-else slot="content">
             <ion-chip color="primary" v-if="orderData?.info?.courier_phone" slot="end">
@@ -58,7 +58,7 @@ import {
     IonLabel,
     IonAccordionGroup,
     IonAccordion,
-    IonAvatar,
+    IonThumbnail,
     IonImg,
     IonIcon,
 }                   from '@ionic/vue';
@@ -84,7 +84,7 @@ export default({
     IonLabel,
     IonAccordionGroup,
     IonAccordion,
-    IonAvatar,
+    IonThumbnail,
     IonImg,
     IonIcon,
     yandexMap,

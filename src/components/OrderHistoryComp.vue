@@ -7,7 +7,10 @@
             <ion-list slot="content">
                 <ion-item v-for="stage in orderData.stages" :key="stage.group_id">
                     <ion-icon slot="start" :icon="checkmarkOutline" size="small" color="success"></ion-icon>
-                    <ion-text>{{stage.group_name}}</ion-text>
+                    <ion-text>
+                        {{stage.group_name}}
+                        <a v-if="stage?.created_user" :href="`tel:+${stage?.created_user?.user_phone}`">{{stage?.created_user?.user_name}}</a>
+                    </ion-text>
                     <ion-note slot="end" style="width:80px">{{stage.created_at}}</ion-note>
                 </ion-item>
             </ion-list>

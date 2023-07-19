@@ -119,7 +119,7 @@ ion-card{
     <ion-item class="ion-justify-content-between" lines="none"  style="--background: transparent;">
           <h5 slot="start" class="section-title"><span class="fake-label" :style="`background-color: ${sliderTitleColor}`">#{{ sliderTitle }}</span></h5>
           <a slot="end"  @click="storeListModal(storeList, sliderTitle, sliderTitleColor)">
-            <ion-item lines="none" :style="`color: ${sliderTitleColor}`" >
+            <ion-item lines="none" :style="`color: ${sliderTitleColor}`"  style="--background: transparent;">
               Показать все
               <ion-icon :icon="chevronForwardOutline" :color="sliderTitleColor"></ion-icon>
             </ion-item>

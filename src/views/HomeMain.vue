@@ -50,10 +50,11 @@
       <div v-else-if="storeList && storeList.length>0">
         <home-promo-product-slider :store-list="storeList" :limit="30"/>  
         <ion-list ref="storeSlidersContainer">
-          <home-store-slider v-if="storeSliderLoadQueue >= 0" :store-list="storeList" :filter="{member_of_groups: {value: 'restaraunt', type: 'includes'}}" sliderTitle="Рестораны" sliderTitleColor="#f77f00" backgroundImage="/img/restaurant_background.jpg"/>  
-          <home-store-slider v-if="storeSliderLoadQueue >= 1" :store-list="storeList" :filter="{member_of_groups: {value: 'halal', type: 'includes'}}" sliderTitle="Халяль" sliderTitleColor="#41a663" backgroundImage="/img/halal_background.jpg"/>    
-          <home-store-slider v-if="storeSliderLoadQueue >= 2" :store-list="storeList" :filter="{member_of_groups: {value: 'foodstore', type: 'includes'}}" sliderTitle="Магазины" sliderTitleColor="#0097d2" backgroundImage="/img/market_background.jpg"/>    
-          <ion-infinite-scroll  v-if="storeSliderLoadQueue <= 2" threshold="50%" @ionInfinite="loadStoreSlider">
+          <home-store-slider v-if="storeSliderLoadQueue >= 0" :store-list="storeList" :filter="{member_of_groups: {value: 'fastfood', type: 'includes'}}" sliderTitle="Фастфуд" sliderTitleColor="#ff0000" backgroundImage="/img/fastfood_background.jpg"/>  
+          <home-store-slider v-if="storeSliderLoadQueue >= 1" :store-list="storeList" :filter="{member_of_groups: {value: 'restaraunt', type: 'includes'}}" sliderTitle="Рестораны" sliderTitleColor="#f77f00" backgroundImage="/img/restaurant_background.jpg"/>  
+          <home-store-slider v-if="storeSliderLoadQueue >= 2" :store-list="storeList" :filter="{member_of_groups: {value: 'halal', type: 'includes'}}" sliderTitle="Халяль" sliderTitleColor="#41a663" backgroundImage="/img/halal_background.jpg"/>    
+          <home-store-slider v-if="storeSliderLoadQueue >= 3" :store-list="storeList" :filter="{member_of_groups: {value: 'foodstore', type: 'includes'}}" sliderTitle="Магазины" sliderTitleColor="#0097d2" backgroundImage="/img/market_background.jpg"/>    
+          <ion-infinite-scroll  v-if="storeSliderLoadQueue <= 3" threshold="50%" @ionInfinite="loadStoreSlider">
             <ion-infinite-scroll-content></ion-infinite-scroll-content>
           </ion-infinite-scroll>
         </ion-list>
@@ -183,6 +184,10 @@ export default {
     async outFormSend(){
       this.out.phone??=this.$heap.state.user?.user_phone
       this.out.address??=this.showndelivery_address
+      if( !this.$heap.state.user?.user_id || this.$heap.state.user?.user_id<0 ){
+        this.$flash("Пожалуйста зарегистрируйтесь, чтобы мы могли с вами связаться")
+        return 
+      }
       try{
         const request={
           type:'outofrange',
@@ -199,6 +204,7 @@ export default {
     async suggestFormSend(){
       if(!this.storeSuggestion){
         this.$flash("Напишите что нам стоило бы добавить")
+        return 
       }
       try{
         const request={

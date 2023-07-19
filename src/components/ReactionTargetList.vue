@@ -56,7 +56,7 @@
                         rows="1"
                         auto-grow="true"
                         v-model="item.reaction_comment"
-                        placeholder="напишите отзыв"
+                        placeholder="отзыв о товаре"
                         label=""
                         style="background:var(--ion-color-primary-tint);border-radius:10px;margin-bottom:3px;"
                     ></ion-textarea>
