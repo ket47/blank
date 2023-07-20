@@ -10,6 +10,8 @@ import ProductView    from '@/views/ProductView.vue'
 import OrderCheckout  from '@/views/OrderCheckout.vue'
 import OrderView      from '@/views/OrderView.vue'
 
+import Topic                from '@/scripts/Topic.js';
+
 // const already_visited_app=localStorage?.already_visited_app?true:false;
 // const homePath=already_visited_app?"/catalog":'/page/about-us';
 // localStorage.already_visited_app=1;
@@ -246,4 +248,10 @@ const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes
 })
+
+router.beforeEach((to, from) => {
+  Topic.publish('dismissModal')
+  return true
+})
+
 export default router

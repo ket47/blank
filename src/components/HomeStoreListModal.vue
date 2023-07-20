@@ -50,45 +50,11 @@
            line-clamp: 2; 
    -webkit-box-orient: vertical;
 }
-/* .perk-slider .perk-label {
-  font-size: 16px;
-  background-color: var(--ion-color-primary);
-  color:white;
-  border-radius: 20px;
-  width:40px;
-  height:40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-} */
-
-/*
- @media screen and (min-width: 740px) {
-  .store-list {
-    display: grid;
-
-  }
-}
-@media screen and (min-width: 1080px) {
-  .store-list > ion-card{
-    width: 31%;
-    float: right;
-    margin: 1%;
-  }
-} */
-
-
- @media screen and (min-width: 740px) {
-  .store-list .store-list{
-      display: grid;
-      grid-template-columns: auto  auto;
-    }
- }
 </style>
 
 <template>
   <ion-header >
-      <ion-toolbar  :style="`--background: ${modalColor};`">
+      <ion-toolbar :style="`--background: ${modalColor};`">
         <ion-item lines="none"  :style="`--background: ${modalColor}; color: white`">
           <ion-title>{{ modalTitle }}</ion-title>
           <ion-icon slot="end" @click="closeModal();" :icon="closeOutline" size="large" color="light"></ion-icon>            
@@ -97,39 +63,49 @@
   </ion-header>
   <ion-content>
       <ion-list class="store-list">
-        <ion-card style="position:relative;height:fit-content" v-for="(store_item, store_index) in filteredStoreList"  :key="store_item.store_id"  :class="store_item.is_opened==0?'closed':''">
-          <div @click="$go(`/catalog/store-${store_item.store_id}`)" class="crop-to-fit" style="height: 180px;cursor:pointer">
-              <ion-img v-if="store_item.image_hash" :src="$heap.state.hostname +'/image/get.php/' +store_item.image_hash +'.500.500.webp'"/>
-          </div>
-          <div 
-            v-if="store_perks[store_index].length > 0" 
-            class="perk-row" 
-            :style="`width:${store_perks[store_index].length*50}px`">
-            <span v-for="perk in store_perks[store_index]" :key="perk.image_hash" class="perk" >
-              <ion-img v-if="perk.image_hash" :src="`${$heap.state.hostname +'/image/get.php/' +perk.image_hash +'.80.80.png'}`"/>
-              <ion-img v-else :src="`/img/perks/${perk.image_url}`"/>
-            </span>
-          </div>
-            
-          <div @click="$go(`/catalog/store-${store_item.store_id}`)" style="cursor:pointer">
-            <ion-item lines="none" class="store-title">
-                <b>{{store_item.store_name}}</b>
-            </ion-item>
-            <ion-grid>
-              <ion-row class="ion-justify-content-between">
-                <ion-col size="auto">
-                  <store-opened-indicator :storeItem="store_item"/>
-                  </ion-col>
-                <ion-col size="auto">
-                  <ion-chip v-if="store_item.deliveryTime.timeMin" color="medium"  background="transparent">
-                    <ion-icon :icon="timeOutline" ></ion-icon> 
-                    <label>{{store_item.deliveryTime.timeMin}}-{{store_item.deliveryTime.timeMax}}мин</label>
-                  </ion-chip>
-                </ion-col>
-              </ion-row>
-            </ion-grid>
-          </div>
-        </ion-card>
+        <div  v-for="(store_item, store_index) in filteredStoreList"  :key="store_item.store_id" >
+          <ion-card style="position:relative;height:fit-content"  :class="store_item.is_opened==0?'closed':''">
+            <div @click="$go(`/catalog/store-${store_item.store_id}`)" class="crop-to-fit" style="height: 180px;cursor:pointer">
+                <ion-img v-if="store_item.image_hash" :src="$heap.state.hostname +'/image/get.php/' +store_item.image_hash +'.500.500.webp'"/>
+            </div>
+            <div 
+              v-if="store_perks[store_index].length > 0" class="perk-row" 
+              :style="`width:${store_perks[store_index].length*50}px`">
+              <span v-for="perk in store_perks[store_index]" :key="perk.image_hash" class="perk" >
+                <ion-img v-if="perk.image_hash" :src="`${$heap.state.hostname +'/image/get.php/' +perk.image_hash +'.80.80.png'}`"/>
+                <ion-img v-else :src="`/img/perks/${perk.image_url}`"/>
+              </span>
+            </div>
+          </ion-card>
+          <ion-grid class="store-indicators">
+            <ion-row class="ion-justify-content-between">
+              <ion-col size="auto">
+                <div @click="$go(`/catalog/store-${store_item.store_id}`)" style="cursor:pointer"  class="">
+                  <ion-label lines="none" class="store-title" style="font-family: Roboto; font-size: 15px;">
+                      <b>{{store_item.store_name}}</b>
+                  </ion-label>
+                </div>
+              </ion-col>
+            </ion-row>
+            <ion-row class="ion-justify-content-between ion-padding-bottom" style="font-size: 12px">
+              <ion-col size="auto">
+                <div v-if="store_item.is_opened==1">
+                    <label><ion-text color="success"> ◉ </ion-text> <ion-text color="medium">открыт до {{ store_item.store_time_closes }}:00</ion-text></label>
+                </div>
+                <div v-else>
+                    <label v-if="store_item.is_working==0"><ion-text color="medium"> ◉ </ion-text><ion-text color="medium">временно не работает</ion-text></label>
+                    <label v-else-if="store_item.store_next_time_opens>0"><ion-text color="danger"> ◉ </ion-text><ion-text color="medium">закрыт до {{ store_item.store_next_time_opens }}:00</ion-text></label>
+                    <label v-else><ion-text color="danger"> ◉ </ion-text><ion-text color="medium">закрыт</ion-text></label>
+                </div>
+              </ion-col>
+              <ion-col size="auto">
+                <div v-if="store_item.deliveryTime.timeMin" lines="none">
+                  <ion-text color="medium">{{store_item.deliveryTime.timeMin}}-{{store_item.deliveryTime.timeMax}}мин</ion-text>
+                </div>
+              </ion-col>
+            </ion-row>
+          </ion-grid>  
+        </div>
       </ion-list>
   </ion-content>
 </template>
@@ -149,8 +125,9 @@ import {
   IonImg,
   IonContent,
   IonTitle,
-  IonChip,
   IonItem,
+  IonLabel,
+  IonText,
   IonCol,
   IonRow,
   IonGrid,
@@ -158,19 +135,19 @@ import {
   IonList
 }  from "@ionic/vue";
 
-import StoreOpenedIndicator from '@/components/StoreOpenedIndicator.vue';
+import Topic                    from '@/scripts/Topic.js'
 
 export default{
   props: ['filteredStoreList', 'modalTitle', 'modalColor'],
   components:{
     IonIcon,
-    StoreOpenedIndicator,
     IonToolbar,
     IonHeader,
     IonImg,
     IonContent,
     IonTitle,
-    IonChip,
+    IonLabel,
+    IonText,
     IonItem,
     IonCol,
     IonRow,
@@ -187,6 +164,13 @@ export default{
         closeOutline, 
         timeOutline 
       };
+  },
+  mounted(){
+    Topic.on('dismissModal',()=>{
+      if( modalController && modalController.isOpen ){
+        modalController.dismiss()
+      }
+    })
   },
   computed: {
     store_perks () {

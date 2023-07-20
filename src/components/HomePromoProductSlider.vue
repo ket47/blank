@@ -1,15 +1,31 @@
 <style scoped>
-.promo-label{
-  position: absolute;
-  z-index: 10;
-  top: 0;
-  right: 0;
-}
 ion-card{
   border-radius: 10px;
 }
 .section-title{
   margin: 0;
+}
+.promo-slider{
+  display: flex;
+}
+.promo-slider-container{
+  position: relative;
+}
+
+.promo-slider-container .scroller-navigation{
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+.promo-slider-container .scroller-navigation ion-button{
+  position: relative;
+  z-index: 100;
+  --padding-start: 8px;
+  --padding-end: 8px;
+}
+
+.promo-slider .promo-item{
+  width: 330px;
 }
 .promo-image{
     border-radius: 10px;
@@ -29,10 +45,25 @@ ion-card{
     min-width:100%;
     filter: blur(5px);
 }
+.promo-title{
+  max-height: 5em;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  white-space: initial;
+}
+.promo-label{
+  position: absolute;
+  z-index: 10;
+  top: 0;
+  right: 0;
+}
 
-
- @media screen and (min-width: 740px) {
- }
+@media screen and (max-width: 740px) {
+  .scroller-navigation{
+    display: none;
+  }
+}
 </style>
 
 <template>
@@ -44,24 +75,28 @@ ion-card{
         </ion-col>
       </ion-row>
     </ion-grid>
-    <swiper class="promo-slider"
-      :speed="200"
-      :spaceBetween="20"
-      :navigation="false"
-    >
-      <swiper-slide v-for="(productItem, productItemIndex) in promo_list"  :key="productItemIndex" style="width: 120px; height: 190px;">
+    <ion-row v-if="!isMobile" class="scroller-navigation ion-justify-content-between ion-align-items-center">
+      <ion-col class="ion-text-start">
+        <ion-button @click="scrollSlider('prev')" shape="round" color="light"><ion-icon slot="icon-only" :icon="chevronBackOutline"></ion-icon></ion-button>
+      </ion-col>
+      <ion-col class="ion-text-end">
+        <ion-button @click="scrollSlider('next')" shape="round" color="light"><ion-icon slot="icon-only" :icon="chevronForwardOutline"></ion-icon></ion-button>
+      </ion-col>
+    </ion-row>
+    <div class="horizontalScroller promo-slider" style="overflow-y: hidden;" ref="promoSlider">
+      <div v-for="(productItem, productItemIndex) in promo_list"  :key="productItemIndex" style="width: 120px;" class="promo-item ion-margin-horizontal">
         <div @click="$go(`/catalog/product-${productItem.product_id}`)" button detail="false" lines="none">
-          <ion-card class="promo-image" style="width: 120px; height: 120px;">
+          <ion-card class="promo-image" style="width: 120px; height: 120px; margin: 0;">
             <ion-chip class="promo-label" style="background: var(--ion-color-success); color: white"><b>{{ productItem.perk_label }}</b></ion-chip>
             <img class="blur-image" :src="`${$heap.state.hostname}image/get.php/${productItem.image_hash}.10.10.png`"/>
             <ion-img @click="$go(`/catalog/product-${productItem.product_id}`)" :src="`${$heap.state.hostname}image/get.php/${productItem.image_hash}.150.150.webp`"/>
           </ion-card>
-          <div lines="none" class="promo-title" style="color:black;height:3em;font-size:11px;overflow:hidden; line-height:1.4em; font-weight: bold;">
+          <div lines="none" class="promo-title ion-padding-vertical" style="color:black;font-size:11px;">
               <b>{{productItem.perk_title}}</b>
             </div>
         </div>
-      </swiper-slide>
-    </swiper>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -71,38 +106,39 @@ import {
   IonChip,
   IonGrid,
   IonRow,
+  IonButton,
+  IonIcon,
   IonCol,
   IonCard
 }                   from "@ionic/vue";
 import {  
-  timeOutline, 
-  searchOutline
- }                  from 'ionicons/icons'
+  chevronBackOutline,
+  chevronForwardOutline
+}                  from 'ionicons/icons'
  
-import { 
-  Swiper,
-  SwiperSlide 
- }                  from 'swiper/vue';
-
-
 export default {
   components: {
-    Swiper,
-    SwiperSlide,
     IonImg,
     IonChip,
     IonGrid,
     IonRow,
+    IonIcon,
+    IonButton,
     IonCol,
     IonCard
   },
   setup(){
       return {
-        timeOutline,
-        searchOutline
+        chevronBackOutline,
+        chevronForwardOutline
       }
   },
   props: ['storeList', 'limit'],
+  data() {
+    return {
+      isMobile: /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(window.navigator.userAgent)
+    };
+  },
   computed: {
     promo_list () {
       return this.filterSubstract(this.storeList).slice(0, this.limit);
@@ -120,6 +156,17 @@ export default {
         }
       }
       return result;
+    },
+    scrollSlider (direction){
+      let stepWidth = 330
+      let scrollLeft
+      if(direction == 'prev') scrollLeft = this.$refs.promoSlider.scrollLeft - stepWidth;
+      if(direction == 'next') scrollLeft = this.$refs.promoSlider.scrollLeft + stepWidth;
+      this.$refs.promoSlider.scrollTo({
+        top: 0,
+        left: scrollLeft,
+        behavior: 'smooth'
+      });
     }
   }
 };

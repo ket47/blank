@@ -175,8 +175,8 @@ export default {
             const modal = await modalController.create({
                 component: ImagePreviewModal,
                 componentProps:{image_hash},
-                initialBreakpoint: 0.5,
-                breakpoints: [0.5, 1]
+                initialBreakpoint: 0.75,
+                breakpoints: [0.75, 1]
                 });
             const dismissFn=function(){
                 modal.dismiss();

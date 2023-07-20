@@ -13,41 +13,17 @@
 .store-slider-container .scroller-navigation ion-button{
   position: relative;
   z-index: 100;
+  --padding-start: 8px;
+  --padding-end: 8px;
 }
-
 .store-slider{
   display: flex;
-}
-.scroll-left-animation{
-  animation: scrollLeft  1s ease;
-}
-@keyframes scrollLeft{
-  0% {
-    padding-left: 100vw;
-  }
-  50% {
-    padding-left: 100vw;
-  }
-  100% {
-    padding-left: 0vw;
-  }
 }
 .store-pair{
   display: grid;/* To equalize the gaps */
 }
 .store-slider .store-item{
   width: 330px;
-}
-.store-slider ion-card::before{
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(to top, rgba(0,0,0,0.6), rgba(0,0,0,0) 80%);
-  pointer-events: none;
-  z-index: 99;
 }
 .store-slider .crop-to-fit {
   display: flex;
@@ -61,9 +37,6 @@
   flex-shrink:0;
   min-width:100%;
   min-height:100%
-}
-ion-card{
-  border-radius: 10px;
 }
 .closed ion-img{
   filter: grayscale(1);
@@ -88,16 +61,17 @@ ion-card{
   border-radius: 5px;
   padding: 5px;
 }
-.store-indicators{
-  position:absolute;
-  bottom:10px;
-  left: 0;
-  width: 100%;
-  z-index: 100;
-}
 .store-indicators ion-chip{
   font-size: 12px;
 }
+.indicator-label{
+  background: #ffffffb2;
+  border-radius: 10px;
+}
+.indicator-label .indicator-label-text{
+  color: #000000b2;
+}
+
 
 @media screen and (max-width: 740px) {
   .scroller-navigation{
@@ -108,7 +82,7 @@ ion-card{
 
 <template>
   <div class="store-slider-container ion-margin-top ion-padding-vertical" v-if="list_filtered && list_filtered.length > 0" :style="`background-image: url(${backgroundImage})`">
-    <ion-row class="scroller-navigation ion-justify-content-between ion-align-items-center">
+    <ion-row v-if="!isMobile" class="scroller-navigation ion-justify-content-between ion-align-items-center">
       <ion-col class="ion-text-start">
         <ion-button @click="scrollSlider('prev')" shape="round" color="light"><ion-icon slot="icon-only" :icon="chevronBackOutline"></ion-icon></ion-button>
       </ion-col>
@@ -119,50 +93,55 @@ ion-card{
     <ion-item class="ion-justify-content-between" lines="none"  style="--background: transparent;">
           <h5 slot="start" class="section-title"><span class="fake-label" :style="`background-color: ${sliderTitleColor}`">#{{ sliderTitle }}</span></h5>
           <a slot="end"  @click="storeListModal(storeList, sliderTitle, sliderTitleColor)">
-            <ion-item lines="none" :style="`color: ${sliderTitleColor}`"  style="--background: transparent;">
+            <ion-item lines="none" :style="`color: ${sliderTitleColor}; cursor: pointer;`" >
               Показать все
               <ion-icon :icon="chevronForwardOutline" :color="sliderTitleColor"></ion-icon>
             </ion-item>
           </a>
     </ion-item>
-    <div class="horizontalScroller scroll-left-animation store-slider" ref="storeSlider">
+    <div class="horizontalScroller store-slider" ref="storeSlider">
       <div v-for="(store_pair, store_pair_index) in list_filtered"  :key="store_pair_index" class="store-pair">
         <div v-for="(store_item, store_index) in store_pair"  :key="store_item.store_id" class="store-item">
           <ion-card style="position:relative;height:fit-content" :class="store_item.is_opened==0?'closed':''">
             <div @click="$go(`/catalog/store-${store_item.store_id}`)" class="crop-to-fit" style="height: 180px;cursor:pointer">
                 <ion-img v-if="store_item.image_hash" :src="$heap.state.hostname +'/image/get.php/' +store_item.image_hash +'.500.500.webp'"/>
             </div>
-            <div 
-              v-if="store_perks[store_pair_index][store_index].length > 0" class="perk-row" 
+            <div v-if="store_perks[store_pair_index][store_index].length > 0" class="perk-row" 
               :style="`width:${store_perks[store_pair_index][store_index].length*50}px`">
               <span v-for="perk in store_perks[store_pair_index][store_index]" :key="perk.image_hash" class="perk" >
                 <ion-img v-if="perk.image_hash" :src="`${$heap.state.hostname +'/image/get.php/' +perk.image_hash +'.80.80.png'}`"/>
                 <ion-img v-else :src="`/img/perks/${perk.image_url}`"/>
               </span>
             </div>
-            <ion-grid class="store-indicators">
-              <ion-row class="ion-justify-content-between">
-                <ion-col size="auto">
-                  <store-opened-indicator :storeItem="store_item"/>
-                  </ion-col>
-                <ion-col size="auto">
-                  <ion-chip v-if="store_item.deliveryTime.timeMin" color="light" style="background: rgba(0,0,0,0.5);" >
-                    <ion-icon :icon="timeOutline" ></ion-icon> 
-                    <label>{{store_item.deliveryTime.timeMin}}-{{store_item.deliveryTime.timeMax}}мин</label>
-                  </ion-chip>
-                </ion-col>
-              </ion-row>
-              <ion-row class="ion-justify-content-between">
-                <ion-col size="auto">
-                  <div @click="$go(`/catalog/store-${store_item.store_id}`)" style="cursor:pointer"  class="ion-padding-horizontal">
-                    <ion-label lines="none" class="store-title" style="--background: transparent; color: white;">
-                        <b>{{store_item.store_name}}</b>
-                    </ion-label>
-                  </div>
-                </ion-col>
-              </ion-row>
-            </ion-grid>  
           </ion-card>
+          <ion-grid class="store-indicators">
+            <ion-row class="ion-justify-content-between">
+              <ion-col size="auto">
+                <div @click="$go(`/catalog/store-${store_item.store_id}`)" style="cursor:pointer"  class="">
+                  <ion-label lines="none" class="store-title" style="font-family: Roboto; font-size: 15px;">
+                      <b>{{store_item.store_name}}</b>
+                  </ion-label>
+                </div>
+              </ion-col>
+            </ion-row>
+            <ion-row class="ion-justify-content-between ion-padding-bottom" style="font-size: 12px">
+              <ion-col size="auto" class="indicator-label">
+                <div v-if="store_item.is_opened==1">
+                    <label><ion-text color="success"> ◉ </ion-text> <ion-text class="indicator-label-text" color="medium">открыт до {{ store_item.store_time_closes }}:00</ion-text></label>
+                </div>
+                <div v-else>
+                    <label v-if="store_item.is_working==0"><ion-text class="indicator-label-text"> ◉ </ion-text><ion-text color="medium">временно не работает</ion-text></label>
+                    <label v-else-if="store_item.store_next_time_opens>0"><ion-text class="indicator-label-text"> ◉ </ion-text><ion-text color="medium">закрыт до {{ store_item.store_next_time_opens }}:00</ion-text></label>
+                    <label v-else><ion-text color="danger"> ◉ </ion-text><ion-text class="indicator-label-text">закрыт</ion-text></label>
+                </div>
+              </ion-col>
+              <ion-col size="auto"  class="indicator-label">
+                <div v-if="store_item.deliveryTime.timeMin" lines="none">
+                  <ion-text class="indicator-label-text">{{store_item.deliveryTime.timeMin}}-{{store_item.deliveryTime.timeMax}}мин</ion-text>
+                </div>
+              </ion-col>
+            </ion-row>
+          </ion-grid>  
         </div>
       </div>
     </div>
@@ -172,44 +151,40 @@ ion-card{
 <script>
 import {
   IonImg,
-  IonChip,
   IonGrid,
   IonRow,
   IonCol,
   IonCard,
   IonIcon,
   IonLabel,
+  IonText,
   IonItem,
   IonButton,
   modalController
 }                   from "@ionic/vue";
 import {  
-  timeOutline, 
   chevronBackOutline,
   chevronForwardOutline
  }                  from 'ionicons/icons'
  
-import StoreOpenedIndicator from '@/components/StoreOpenedIndicator.vue';
 import HomeStoreListModal   from '@/components/HomeStoreListModal.vue'
 import Topic                    from '@/scripts/Topic.js'
 
 export default {
   components: {
-    StoreOpenedIndicator,
     IonImg,
-    IonChip,
     IonGrid,
     IonRow,
     IonCol,
     IonCard,
     IonLabel,
+    IonText,
     IonIcon,
     IonItem,
     IonButton
   },
   setup(){
       return {
-        timeOutline,
         chevronBackOutline,
         chevronForwardOutline
       }
@@ -217,6 +192,7 @@ export default {
   props: ['storeList', 'filter', 'sliderTitle', 'sliderTitleColor', 'backgroundImage'],
   data() {
     return {
+      isMobile: /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(window.navigator.userAgent)
     };
   },
   computed: {
@@ -263,8 +239,8 @@ export default {
           initialBreakpoint: 1,
           breakpoints: [1, 1]
           });
-      const dismissFn=function(){
-          modal.dismiss();
+        const dismissFn=function(){
+        modal.dismiss();
       };
       Topic.on('dismissModal',dismissFn);
       return modal.present();
