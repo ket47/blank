@@ -61,15 +61,15 @@ if( isPlatform('capacitor') ){
     });
 
     await PushNotifications.addListener('registrationError', err => {
-      console.error('Registration error: ', err.error);
+      //console.error('Registration error: ', err.error);
     });
 
     await PushNotifications.addListener('pushNotificationReceived', notification => {
-      console.log('Push notification received: ', notification);
+      //console.log('Push notification received: ', notification);
     });
 
     await PushNotifications.addListener('pushNotificationActionPerformed', notification => {
-      console.log('Push notification action performed', notification.actionId, notification.inputValue);
+      //console.log('Push notification action performed', notification.actionId, notification.inputValue);
     });
   }
 
@@ -89,7 +89,7 @@ if( isPlatform('capacitor') ){
 
   const getDeliveredNotifications = async () => {
     const notificationList = await PushNotifications.getDeliveredNotifications();
-    console.log('delivered notifications', notificationList);
+    //console.log('delivered notifications', notificationList);
   }
   addListeners()
   registerNotifications()
