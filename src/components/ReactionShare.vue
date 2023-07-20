@@ -45,7 +45,7 @@ export default {
               this.$alert("Устройство не поддерживает функцию поделиться",""); 
             }
         }catch(err){
-            console.log(err)
+            //console.log(err)
         }
       },
     }

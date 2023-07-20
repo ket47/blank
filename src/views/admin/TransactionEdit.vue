@@ -242,7 +242,6 @@ export default {
                 this.tagDictFill(this.transaction.tags)
             }
             catch(err){
-                console.log(err)
                 const exception_code=err?.responseJSON?.messages?.error;
                 switch(exception_code){
                     case 'forbidden':

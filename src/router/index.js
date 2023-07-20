@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory, } from '@ionic/vue-router';
 
 import BaseTabs       from '@/components/BaseTabs.vue'
-import HomePage       from '@/views/HomePage.vue'
+//import HomePage       from '@/views/HomePage.vue'
 import HomeMain       from '@/views/HomeMain.vue'
 import SearchView     from '@/views/SearchView.vue'
 import UserDashboard  from '@/views/UserDashboard.vue'
@@ -10,7 +10,7 @@ import ProductView    from '@/views/ProductView.vue'
 import OrderCheckout  from '@/views/OrderCheckout.vue'
 import OrderView      from '@/views/OrderView.vue'
 
-import Topic                from '@/scripts/Topic.js';
+import Topic          from '@/scripts/Topic.js';
 
 // const already_visited_app=localStorage?.already_visited_app?true:false;
 // const homePath=already_visited_app?"/catalog":'/page/about-us';
@@ -36,7 +36,7 @@ const routes = [
       // },
       {
         path: "/catalog",
-        component: HomePage
+        component: HomeMain
       },
       {
         path: "/catalog/home-2",

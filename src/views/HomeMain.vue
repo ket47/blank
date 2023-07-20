@@ -54,9 +54,9 @@
           <home-store-slider v-if="storeSliderLoadQueue >= 1" :store-list="storeList" :filter="{member_of_groups: {value: 'restaraunt', type: 'includes'}}" sliderTitle="Рестораны" sliderTitleColor="#f77f00" backgroundImage="/img/restaurant_background.jpg"/>  
           <home-store-slider v-if="storeSliderLoadQueue >= 2" :store-list="storeList" :filter="{member_of_groups: {value: 'halal', type: 'includes'}}" sliderTitle="Халяль" sliderTitleColor="#41a663" backgroundImage="/img/halal_background.jpg"/>    
           <home-store-slider v-if="storeSliderLoadQueue >= 3" :store-list="storeList" :filter="{member_of_groups: {value: 'foodstore', type: 'includes'}}" sliderTitle="Магазины" sliderTitleColor="#0097d2" backgroundImage="/img/market_background.jpg"/>    
-          <ion-infinite-scroll  v-if="storeSliderLoadQueue <= 3" threshold="50%" @ionInfinite="loadStoreSlider">
+          <!-- <ion-infinite-scroll  v-if="storeSliderLoadQueue <= 3" threshold="50%" @ionInfinite="loadStoreSlider">
             <ion-infinite-scroll-content></ion-infinite-scroll-content>
-          </ion-infinite-scroll>
+          </ion-infinite-scroll> -->
         </ion-list>
         <ion-card v-if="!suggestFormHidden">
           <ion-card-header>
@@ -100,8 +100,8 @@ import {
   IonInput,
   IonButton,
   IonNote,
-  IonInfiniteScroll,
-  IonInfiniteScrollContent
+//  IonInfiniteScroll,
+//  IonInfiniteScrollContent
 }                   from "@ionic/vue";
 
 export default {
@@ -129,8 +129,8 @@ export default {
     HomePromoProductSlider,
     HomeStoreSlider,
     UserAddressWidget,
-    IonInfiniteScroll,
-    IonInfiniteScrollContent
+//    IonInfiniteScroll,
+//    IonInfiniteScrollContent
 //    HomePrimaryCategoryWidget
   },
   data(){
@@ -142,7 +142,7 @@ export default {
       storeSuggestion:null,
       suggestFormHidden:0,
       hiddenCount:null,
-      storeSliderLoadQueue: 0
+      storeSliderLoadQueue: 100
     }
   },
   computed: {

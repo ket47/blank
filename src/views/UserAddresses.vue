@@ -208,7 +208,6 @@ export default{
         await User.geo.locationCurrentGet()
         this.$flash("Ваше местоположение определено")
       } catch(err){
-        console.log(err)
         this.$flash("Не удалось получить ваше местоположение")
       }
       loading.dismiss();

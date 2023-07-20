@@ -607,7 +607,6 @@ export default{
                 this.$router.replace("/catalog")
                 break;
         }
-        console.log(err)
         return false
       }
    },

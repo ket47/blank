@@ -188,7 +188,6 @@ export default {
     },
     mounted(){
         this.listLoad()
-        console.log('this.targetType');
     },
     methods:{
         async listLoadMore(ev){
@@ -224,7 +223,7 @@ export default {
                 }
                 this.items=this.items.concat(items)
             } catch(err){
-                console.log(err)
+                //console.log(err)
             }
         },
         async itemReact( request ){

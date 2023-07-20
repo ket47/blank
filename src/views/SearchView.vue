@@ -133,7 +133,6 @@ export default  {
         found=await Utils.post(`${this.$heap.state.hostname}Search/listGet`,request)
         this.found=this.storeListCalculate(found)
       }catch(err){
-        console.log(err)
         this.found=null
       }
     },

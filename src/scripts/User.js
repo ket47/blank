@@ -231,7 +231,7 @@ const User = {
             try{
                 return await Geolocation.getCurrentPosition({ enableHighAccuracy: false, timeout: 20000, maximumAge: 1000 });
             }catch(err){
-                console.log('User.geo.get',err)
+                //console.log('User.geo.get',err)
             }
             return null
         },
@@ -271,7 +271,7 @@ const User = {
                     }
                 });
             } catch (err){
-                console.log('trackingStart',err)
+                //console.log('trackingStart',err)
             }
         },
         trackingStop(){
@@ -281,7 +281,7 @@ const User = {
                 }
                 User.geo.trackingActive=false
             }catch(err){
-                console.log('trackingStop',err)
+                //console.log('trackingStop',err)
             }
         },
         async geocode(coords){
@@ -292,7 +292,7 @@ const User = {
                 const result=await window.ymaps.geocode(coords)
                 return result.geoObjects.get(0)?.getAddressLine();
             } catch(err){
-                console.log(err)
+                //console.log(err)
             }
             return null
         },
@@ -342,7 +342,7 @@ const User = {
                 await jQuery.post(`${heap.state.hostname}MessageSub/itemCreate`,request)
                 User.firebase.tokenSaved=true;
             }catch(err){
-                console.log(err)
+                //console.log(err)
             }
         },
         async savePushToken(token){
@@ -358,7 +358,7 @@ const User = {
                 await jQuery.post(`${heap.state.hostname}MessageSub/itemCreate`,request)
                 User.firebase.tokenSaved=true;
             }catch(err){
-                console.log(err)
+                //console.log(err)
             }
         },
     }

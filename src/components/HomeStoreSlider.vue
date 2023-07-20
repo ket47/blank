@@ -81,7 +81,7 @@
 </style>
 
 <template>
-  <div class="store-slider-container ion-margin-top ion-padding-vertical" v-if="list_filtered && list_filtered.length > 0" :style="`background-image: url(${backgroundImage})`">
+  <div class="store-slider-container ion-margin-top ion-padding-vertical" v-if="list_filtered && list_filtered[0]" :style="`background-image: url(${backgroundImage})`">
     <ion-row v-if="!isMobile" class="scroller-navigation ion-justify-content-between ion-align-items-center">
       <ion-col class="ion-text-start">
         <ion-button @click="scrollSlider('prev')" shape="round" color="light"><ion-icon slot="icon-only" :icon="chevronBackOutline"></ion-icon></ion-button>
@@ -210,23 +210,30 @@ export default {
   },
   methods: {
     filterSubstract(storeList){
-      let result = storeList.filter( (item)=> {
+      let result = storeList.filter( (store)=> {
         for (let key in this.filter) {
-          if (item[key] === undefined ) return false;
-          let outOfFilter = true
-          if(this.filter[key].type == 'equals' && item[key] != this.filter[key].value) outOfFilter = false;
-          if(this.filter[key].type == 'includes' && !item[key]?.includes(this.filter[key].value)) outOfFilter = false;
-          if(!outOfFilter) return false
+          if(this.filter[key].type == 'equals' && store[key] == this.filter[key].value){
+            return true
+          }
+          if(this.filter[key].type == 'includes' && store[key]?.includes(this.filter[key].value)){
+            return true
+          }
         }
-        return true;
+        return false;
       })
       return result;
     },
     filterGroup(listFiltered){
-      if(listFiltered.length <= 2) return [listFiltered]
+      if(!listFiltered.length){
+        return []
+      }
+      if(listFiltered.length <= 2){
+        return [listFiltered]
+      }
       let store_pairs = listFiltered.reduce(function(result, value, index, array) {
-        if (index % 2 === 0)
+        if (index % 2 === 0){
           result.push(array.slice(index, index + 2));
+        }
         return result;
       }, []);
       return store_pairs;

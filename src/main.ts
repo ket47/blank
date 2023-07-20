@@ -153,7 +153,6 @@ if( 'serviceWorker' in navigator ){
   navigator.serviceWorker.onmessage = (event) => {
     const {data}=event.data??{}
     const {title,body,topic,type}=data??{}
-    console.log('onmessage',title,body,topic,type)
     if(topic){
       Topic.publish(topic,data)
     } else

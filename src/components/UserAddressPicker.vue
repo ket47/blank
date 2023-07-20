@@ -89,7 +89,7 @@ export default({
                 const result=await window.ymaps.geocode(this.coords)
                 this.selectedAddress=result.geoObjects.get(0)?.getAddressLine();
             } catch(err){
-                console.log(err)
+                //console.log(err)
             }
             var location={
                 location_address:this.filterAddress(this.selectedAddress),

@@ -75,7 +75,6 @@
           }
         },
         go(link){
-          console.log(link)
           if(!link){
             return
           }
