@@ -21,7 +21,7 @@
     <ion-accordion value="tracking">
         <ion-item slot="header">
             <ion-thumbnail slot="start" v-if="orderData?.info?.courier_image_hash">
-                <ion-img :src="`${$heap.state.hostname}image/get.php/${orderData?.info?.courier_image_hash}.70.70.webp`" style="border-radius:10px;background-color:var(--ion-color-primary-tint)"/>
+                <ion-img :src="`${$heap.state.hostname}image/get.php/${orderData?.info?.courier_image_hash}.200.200.webp`" style="border-radius:10px;background-color:var(--ion-color-primary-tint)"/>
             </ion-thumbnail>
             <ion-label>Курьер <b>{{orderData?.info?.courier_name}}</b></ion-label>
         </ion-item>
