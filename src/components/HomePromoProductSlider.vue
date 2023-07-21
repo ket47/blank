@@ -46,11 +46,11 @@ ion-card{
     filter: blur(5px);
 }
 .promo-title{
-  max-height: 5em;
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
+  height: 3.2em;
   white-space: initial;
+  color:black;
+  font-size:11px;
+  overflow: hidden;
 }
 .promo-label{
   position: absolute;
@@ -85,10 +85,10 @@ ion-card{
             <img class="blur-image" :src="`${$heap.state.hostname}image/get.php/${productItem.image_hash}.10.10.png`"/>
             <ion-img @click="$go(`/catalog/product-${productItem.product_id}`)" :src="`${$heap.state.hostname}image/get.php/${productItem.image_hash}.150.150.webp`"/>
           </ion-card>
-          <div class="promo-title ion-padding-vertical" style="color:black;font-size:11px;">
+          <div class="promo-title ion-padding-vertical">
               <b>{{productItem.perk_title}}</b>
           </div>
-          <ion-label color="primary" style="font-size:1.2em">
+          <ion-label color="primary">
             <span v-if="productItem.product_price!=productItem.product_final_price" style="color:var(--ion-color-danger);font-size:0.75em">
                 <s>{{productItem.product_price}}{{$heap.state.currencySign}}</s>&nbsp;&nbsp;
             </span>
