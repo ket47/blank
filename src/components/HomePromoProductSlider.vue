@@ -58,12 +58,6 @@ ion-card{
   top: 0;
   right: 0;
 }
-
-@media screen and (max-width: 740px) {
-  .scroller-navigation{
-    display: none;
-  }
-}
 </style>
 
 <template>
@@ -75,7 +69,7 @@ ion-card{
         </ion-col>
       </ion-row>
     </ion-grid>
-    <ion-row v-if="!isMobile" class="scroller-navigation ion-justify-content-between ion-align-items-center">
+    <ion-row v-if="!isMobile" class="ion-justify-content-between ion-align-items-center">
       <ion-col class="ion-text-start">
         <ion-button @click="scrollSlider('prev')" shape="round" color="light"><ion-icon slot="icon-only" :icon="chevronBackOutline"></ion-icon></ion-button>
       </ion-col>
@@ -91,9 +85,15 @@ ion-card{
             <img class="blur-image" :src="`${$heap.state.hostname}image/get.php/${productItem.image_hash}.10.10.png`"/>
             <ion-img @click="$go(`/catalog/product-${productItem.product_id}`)" :src="`${$heap.state.hostname}image/get.php/${productItem.image_hash}.150.150.webp`"/>
           </ion-card>
-          <div lines="none" class="promo-title ion-padding-vertical" style="color:black;font-size:11px;">
+          <div class="promo-title ion-padding-vertical" style="color:black;font-size:11px;">
               <b>{{productItem.perk_title}}</b>
-            </div>
+          </div>
+          <ion-label color="primary" style="font-size:1.2em">
+            <span v-if="productItem.product_price!=productItem.product_final_price" style="color:var(--ion-color-danger);font-size:0.75em">
+                <s>{{productItem.product_price}}{{$heap.state.currencySign}}</s>&nbsp;&nbsp;
+            </span>
+            {{productItem.product_final_price}}{{$heap.state.currencySign}}
+          </ion-label>
         </div>
       </div>
     </div>
@@ -109,7 +109,8 @@ import {
   IonButton,
   IonIcon,
   IonCol,
-  IonCard
+  IonCard,
+  IonLabel,
 }                   from "@ionic/vue";
 import {  
   chevronBackOutline,
@@ -125,7 +126,8 @@ export default {
     IonIcon,
     IonButton,
     IonCol,
-    IonCard
+    IonCard,
+    IonLabel,
   },
   setup(){
       return {
