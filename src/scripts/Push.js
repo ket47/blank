@@ -53,8 +53,19 @@ import {
 }                             from "@ionic/vue";
 import { PushNotifications }  from '@capacitor/push-notifications';
 import User                   from '@/scripts/User';
+import { Haptics, ImpactStyle } from '@capacitor/haptics';
 
 if( isPlatform('capacitor') ){
+  
+
+
+
+
+
+
+
+
+
   const addListeners = async () => {
     await PushNotifications.addListener('registration', token => {
       User.firebase.savePushToken(token.value)
@@ -64,8 +75,11 @@ if( isPlatform('capacitor') ){
       //console.error('Registration error: ', err.error);
     });
 
-    await PushNotifications.addListener('pushNotificationReceived', notification => {
-      //console.log('Push notification received: ', notification);
+    await PushNotifications.addListener('pushNotificationReceived', async notification => {
+      if(notification.data.sound){
+        await Haptics.vibrate({duration:2000});
+      }
+      //console.log('Push notification received: ', notification,notification.data.sound);
     });
 
     await PushNotifications.addListener('pushNotificationActionPerformed', notification => {
