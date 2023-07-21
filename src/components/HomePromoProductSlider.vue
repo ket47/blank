@@ -85,7 +85,7 @@ ion-card{
             <img class="blur-image" :src="`${$heap.state.hostname}image/get.php/${productItem.image_hash}.10.10.png`"/>
             <ion-img @click="$go(`/catalog/product-${productItem.product_id}`)" :src="`${$heap.state.hostname}image/get.php/${productItem.image_hash}.150.150.webp`"/>
           </ion-card>
-          <div class="promo-title ion-padding-vertical">
+          <div class="promo-title">
               <b>{{productItem.perk_title}}</b>
           </div>
           <ion-label color="primary">
