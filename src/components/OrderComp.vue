@@ -134,6 +134,7 @@
                     @click="stageCreate(orderData.order_id, order_stage_code, stage_title[1])" 
                     expand="block" 
                     :color="stage_title[1]??'primary'"
+                    :fill="stage_title[2]??'solid'"
                     >
                         <ion-icon slot="start" :src="stage_title.icon"></ion-icon>
                         {{ stage_title[0] }}

@@ -68,6 +68,10 @@ export default{
           this.paymentLink=await jQuery.post(this.$heap.state.hostname+'CardAcquirer/paymentLinkGet',this.order_data);
         } catch(err){
             const exception_code = err?.responseJSON?.messages?.error;
+            if(exception_code =='order_notvalid'){
+              this.$flash("Оформление немного затянулось... Попробуйте еще раз");
+              this.$router.replace('/order/order-'+this.order_data.order_id);
+            } else 
             if(exception_code =='nocardid'){
               this.$flash("Не удалось добавить карту");
             } else {

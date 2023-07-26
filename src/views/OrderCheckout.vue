@@ -505,10 +505,10 @@ export default({
         },
         async proceed(){
             if( this.tariffRule.deliveryIsReady=='busy' && !await this.heavyLoadConfirm() ){
-                return
+                return false
             }
             if( !await this.deliveryAddressConfirm() ){
-                return
+                return false
             }
             this.tariffSplit()
             const orderData={
@@ -533,6 +533,7 @@ export default({
                 }
                 const exception_code=exception.messages.error;
                 this.$flash("Не удается оформить заказ, обратитесь на горячую линию")
+                this.$router.go(-1);
                 return false
             }
             if(orderData.paymentByCard==1){
