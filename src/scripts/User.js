@@ -1,6 +1,7 @@
 import jQuery                   from "jquery";
 import heap                     from '@/heap';
 import Topic                    from '@/scripts/Topic';
+import Utils                    from '@/scripts/Utils';
 import { Geolocation }          from '@capacitor/geolocation';
 import { loadYmap }             from "vue-yandex-maps";
 
@@ -45,8 +46,9 @@ const User = {
         return user;
     },
     async autoSignIn(){
-        if(localStorage.sessionId){
-            User.sessionIdUse(localStorage.sessionId);
+        const sessionId = await Utils.pref.get('sessionId')
+        if(sessionId){
+            User.sessionIdUse(sessionId);
         }
         let userData
         try{
@@ -55,7 +57,9 @@ const User = {
         if( userData?.user_id>1 ){
             return userData;
         }
-        const signInCredentials=JSON.parse(localStorage.signInData??'{}');
+        const signInData=await Utils.pref.get('signInData')
+        console.log(signInData)
+        const signInCredentials=JSON.parse(signInData||'{}');
         if( signInCredentials && signInCredentials.user_phone && signInCredentials.user_pass ){
             try{
                 await User.signIn(signInCredentials);
@@ -64,8 +68,8 @@ const User = {
         }
         return userData;
     },
-    sessionIdUse(sid){
-        localStorage.sessionId=sid;
+    async sessionIdUse(sid){
+        await Utils.pref.set('sessionId',sid)
         jQuery.ajaxSetup({ 
             beforeSend: function(xhr) {
                 xhr.setRequestHeader('x-sid',  sid);
@@ -73,36 +77,35 @@ const User = {
         });
     },
     async signIn(requestData){
-        // if( !localStorage.metric_user_id ){
-            
-        // }
-        requestData.metric_id=localStorage.metric_id??0
+        const metric_id=await Utils.pref.get('metric_id')
+        requestData.metric_id=metric_id??0
         return await jQuery.post( heap.state.hostname + "User/signIn", requestData)
-        .done(function(response, textStatus, request){
-            localStorage.signInData = JSON.stringify(requestData);
+        .done(async function(response, textStatus, request){
+            await Utils.pref.set('signInData',JSON.stringify(requestData))
             const sid = request.getResponseHeader('x-sid');
             User.sessionIdUse(sid);
             if(requestData.metric_id){
-                localStorage.metric_user_id=response
+                await Utils.pref.set('metric_user_id',response)
             }
         })
-        .fail(function(){
-            localStorage.signInData = null;//user signin is failed should we reset localStorage.signInData????
+        .fail(async function(){
+            await Utils.pref.set('signInData',null)//user signin is failed should we reset localStorage.signInData????
         });
     },
     async signOut(){
         try{
-            await User.courier.signOut();
+            await User.courier.signOut()
             await jQuery.post( heap.state.hostname + "User/signOut")
-            localStorage.removeItem('signInData');
-            heap.commit('setUser', {user_id: -1});
-            User.sessionIdUse(null);
-            User.geo.trackingStop();
-            return {user_id: -1};
+            await Utils.pref.remove('signInData')
+            heap.commit('setUser', {user_id: -1})
+            User.sessionIdUse(null)
+            User.geo.trackingStop()
+            return {user_id: -1}
         } catch{/** */}
     },
     async signUp(requestData){
-        requestData.metric_id=localStorage.metric_id??0
+        const metric_id=await Utils.pref.get('metric_id')
+        requestData.metric_id=metric_id??0
         return await jQuery.post( heap.state.hostname + "User/signUp", requestData)
     },
     isOnline(){

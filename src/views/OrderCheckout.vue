@@ -357,7 +357,10 @@ export default({
                     this.order_sum_delivery==this.order.order_sum_delivery
                 }
                 this.$heap.commit('setCurrentOrder',this.order)
-            }catch(err){/** */}
+            }catch(err){
+                this.$flash("Заказ не найден")
+                this.$go('/order/order-list')
+            }
         },
         debounce(){
             const now=Date.now

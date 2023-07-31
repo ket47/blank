@@ -1,10 +1,25 @@
-import heap     from '@/heap';
-import jquery   from 'jquery'
-import { Storage } from '@ionic/storage';
+import heap             from '@/heap';
+import jquery           from 'jquery'
+import { Storage }      from '@ionic/storage';
+import { Preferences }  from '@capacitor/preferences';
 
 
 
 const Utils={
+    pref:{
+        async set(key,value){
+            navigator?.storage?.persist()
+            await Preferences.set({key:key,value:value})
+        },
+        async get(key){
+            const prefValue=await Preferences.get({key:key})
+            return prefValue?.value || localStorage[key]
+        },
+        async remove(key){
+            await Preferences.remove({key:key})
+            localStorage.removeItem(key);
+        }
+    },
     deliveryCalculate(Store){
         if( !Store.locations || !Store.locations[0] || !Store.locations[0].distance){
             return null;

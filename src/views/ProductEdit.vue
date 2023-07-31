@@ -23,7 +23,7 @@
   <base-layout :page-title="productItem?.product_name??'Товар'" :pageDefaultBackLink="`/catalog/product-${productId}`">
 
   <div v-if="!is_option_child">
-    <ion-card :color="productItem?.validity<validity_min?'danger':''">
+    <ion-card :color="messageCardSeverity">
       <ion-card-header>
         <ion-card-title>
           Форма заполнена на {{productItem?.validity??0}}%
@@ -352,7 +352,7 @@ export default  {
       productItem: null,
       productGroupList:null,
       validity:0,
-      validity_min:80,
+      validity_min:70,
       optionData:null,
       refreshOptions:this.$route.query.refreshOptions,
       is_option_parent:false,
@@ -366,6 +366,15 @@ export default  {
     }
   },
   computed: {
+    messageCardSeverity(){
+      if(this.productItem?.validity<50){
+        return 'danger';
+      }
+      if(this.productItem?.validity<this.validity_min){
+        return 'warning';
+      }
+      return 'primary';
+    },
     message(){
       if(this.productItem?.deleted_at){
         return "Товар не активен и будет удален. Вы еще можете отменить удаление";
