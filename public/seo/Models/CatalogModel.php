@@ -75,8 +75,39 @@ class CatalogModel{
         ";
         return $this->db->query($sql)->row();        
     }
+    
+    public function categoryListGet( int $store_id ){
+        $sql="
+        SELECT
+            group_id,
+            group_parent_id,
+            group_name
+        FROM
+            product_group_list
+                JOIN
+            product_group_member_list USING(group_id)
+                JOIN
+            product_list ON member_id=product_id
+        WHERE
+            store_id='$store_id'
+        GROUP BY group_id
+        ";
+        return $this->db->query($sql)->rows();        
+    }
+    public function categoryListAllGet(){
+        $sql="
+        SELECT
+            group_id,
+            group_parent_id,
+            group_name
+        FROM
+            product_group_list
+        ";
+        return $this->db->query($sql)->rows();        
+    }
 
 
+    
 
 
 
@@ -107,19 +138,29 @@ class CatalogModel{
                 store_name,
                 pl.product_price,
                 ROUND(IF(IFNULL(`pl`.`product_promo_price`,0)>0 AND `pl`.`product_price`>`pl`.`product_promo_price` AND `pl`.`product_promo_start` < NOW() AND `pl`.`product_promo_finish` > NOW(),`pl`.`product_promo_price`,`pl`.`product_price`)) product_final_price,
+                pl.product_promo_start,
+                pl.product_promo_finish,
                 image_hash,
-                pl.updated_at
+                pl.updated_at,
+                group_id,
+                group_name
             FROM
                 product_list pl
                     LEFT JOIN
                 product_list pl_parent ON pl.product_parent_id=pl_parent.product_id
                     LEFT JOIN
-                store_list ON store_list.store_id=pl.store_id
+                store_list sl ON store_list.store_id=pl.store_id
                     LEFT JOIN
                 image_list ON image_holder='product' AND image_holder_id=COALESCE(pl_parent.product_id,pl.product_id) AND image_list.is_main=1
+                    LEFT JOIN
+                product_group_member_list ON pl.product_id=member_id
+                    LEFT JOIN
+                product_group_list USING(group_id)
             WHERE
                 pl.is_disabled=0
                 AND pl.deleted_at IS NULL
+                sl.is_disabled=0
+                AND sl.deleted_at IS NULL
                 $store_case
             ORDER BY pl.updated_at DESC
             LIMIT $limit OFFSET $offset
