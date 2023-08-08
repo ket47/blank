@@ -149,7 +149,7 @@ class CatalogModel{
                     LEFT JOIN
                 product_list pl_parent ON pl.product_parent_id=pl_parent.product_id
                     LEFT JOIN
-                store_list sl ON store_list.store_id=pl.store_id
+                store_list ON store_list.store_id=pl.store_id
                     LEFT JOIN
                 image_list ON image_holder='product' AND image_holder_id=COALESCE(pl_parent.product_id,pl.product_id) AND image_list.is_main=1
                     LEFT JOIN
@@ -159,8 +159,8 @@ class CatalogModel{
             WHERE
                 pl.is_disabled=0
                 AND pl.deleted_at IS NULL
-                sl.is_disabled=0
-                AND sl.deleted_at IS NULL
+                AND store_list.is_disabled=0
+                AND store_list.deleted_at IS NULL
                 $store_case
             ORDER BY pl.updated_at DESC
             LIMIT $limit OFFSET $offset
