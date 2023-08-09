@@ -187,6 +187,20 @@ const routes = [
       },
 
 
+      {
+        path: '/order/shipment-draft',
+        component: () => import('@/views/ShipmentDraftView.vue')
+      },
+      {
+        path: '/order/shipment-checkout-:id',
+        component: () => import('@/views/ShipmentCheckout.vue')
+      },
+      {
+        path: '/order/shipment-:id',
+        component: () => import('@/views/ShipmentView.vue')
+      },
+
+
 
 
           
@@ -229,6 +243,10 @@ const routes = [
       {
         path: '/admin/tariff-list',
         component: () => import('@/views/AdminTariffList.vue')
+      },
+      {
+        path: '/admin/mailing-list',
+        component: () => import('@/views/admin/MailingView.vue')
       },
   ]
   },

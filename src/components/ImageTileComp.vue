@@ -28,7 +28,7 @@ ion-avatar{
 </style>
 <template>
     <div>
-        <ion-item lines="none"  @click="editMode=!editMode;editMode&&load()">
+        <ion-item v-if="showTile" lines="none"  @click="editMode=!editMode;editMode&&load()">
             <ion-label v-if="title" color="imageList?.length?'':medium">{{title}}</ion-label>
             <ion-label v-else color="imageList?.length?'':medium">Фотографии</ion-label>
             <ion-icon v-if="editMode" slot="end" :icon="settingsSharp" color="primary"/>
@@ -80,7 +80,7 @@ import Topic                    from '@/scripts/Topic.js'
 import User                     from '@/scripts/User.js'
 
 export default {
-    props:['images','image_holder','image_holder_id','controller','title'],
+    props:['images','image_holder','image_holder_id','controller','title','hide_if_empty'],
     components:{
     IonLabel,
     IonIcon,
@@ -95,7 +95,7 @@ export default {
         return {
             images_loaded:null,
             editMode:false,
-            fileUploaderId:((this.image_holder??this.controller)+this.image_holder_id)
+            fileUploaderId:((this.image_holder??this.controller)+this.image_holder_id).replace(/[^\d\w]/,'')
         }
     },
     mounted(){//to force server load have to set images to null
@@ -126,6 +126,13 @@ export default {
         },
         isAdmin(){
             return User.isAdmin()
+        },
+        showTile(){
+            let list = this.images_loaded || this.images;
+            if( this.hide_if_empty && !list?.length){
+                return  false
+            }
+            return true
         }
     },
     methods:{

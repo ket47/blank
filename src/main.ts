@@ -127,7 +127,7 @@ jQuery( document ).ajaxError(( event, jqxhr, settings, thrownError )=>{
   }
 
   if(status_code==0){
-    flash('Похоже нет связи с интерентом.');
+    //flash('Похоже нет связи с интерентом.');
     Topic.publish('dismissModal')
     //router.push({path: `/error-offline`});
   } else
@@ -136,7 +136,7 @@ jQuery( document ).ajaxError(( event, jqxhr, settings, thrownError )=>{
     //router.push({path: `/error-offline`});
   } else
   if(thrownError === 'timeout'){
-    flash('Похоже нет связи с интерентом.');
+    //flash('Похоже нет связи с интерентом.');
     //router.push({path: `/error-offline`});
   }
 })

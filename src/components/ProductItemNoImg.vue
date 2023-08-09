@@ -66,7 +66,6 @@
 </template>
 <script>
 import {
-  IonImg,
   IonIcon,
   IonChip,
 }                       from '@ionic/vue'
@@ -76,7 +75,6 @@ import {
 }                       from "ionicons/icons";
 export default {
     components:{
-        IonImg,
         IonIcon,
         IonChip,
         CartAddButtons,

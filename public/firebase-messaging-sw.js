@@ -25,26 +25,80 @@ self.addEventListener('push', async event => {
   const title = data.title
   const options = data
   options.vibrate=[500, 100, 500, 100]
+  options.data=data//to handle click
+
+  console.log(options)
   event.waitUntil(self.registration.showNotification(title, options))
 });
 
-self.addEventListener('notificationclick', function(event) {
+self.addEventListener("notificationclick", (event) => {
   event.waitUntil(
-    self.clients.matchAll({includeUncontrolled: true, type: 'window'}).then(function(clientList) {
-      if (clientList.length > 0) {
-        return clientList[0].focus();
+    (async () => {
+      if( !event.notification?.data?.link ){
+        return;
       }
-    })
+      const allClients = await clients.matchAll({
+        includeUncontrolled: true,
+      });
+
+      let currentClient;
+
+      // Let's see if we already have a chat window open:
+      for (const client of allClients) {
+        const url = new URL(client.url);
+
+        if (url.pathname === event.notification.data.link) {
+          // Excellent, let's use it!
+          client.focus();
+          currentClient = client;
+          break;
+        }
+      }
+
+      // If we didn't find an existing chat window,
+      // open a new one:
+      if (!currentClient) {
+        currentClient = await clients.openWindow(event.notification.data.link);
+      }
+      
+      // Message the client:
+      currentClient.postMessage(event.notification?.data);
+    })(),
   );
 });
 
-async function sendToClient(payload){
-  const cl=await clients.matchAll({includeUncontrolled: true, type: 'window'});
-  console.log('clients',cl)
-  if( cl.length ){
-    cl.forEach(client => client.postMessage(payload));
-  }
-}
+
+
+
+
+
+
+
+// self.addEventListener('notificationclick', (event) => {
+//   event.notification.close();
+//   if (clients.openWindow && event.notification.data.link) {
+//       //event.waitUntil(clients.openWindow(event.notification.data.link));
+//       event.waitUntil(()=>{clients.location.href=(event.notification.data.link)});
+//   }
+// });
+
+// self.addEventListener('notificationclick', function(event) {
+//   event.waitUntil(
+//     self.clients.matchAll({includeUncontrolled: true, type: 'window'}).then(function(clientList) {
+//       if (clientList.length > 0) {
+//         return clientList[0].focus();
+//       }
+//     })
+//   );
+// });
+
+// async function sendToClient(payload){
+//   const cl=await clients.matchAll({includeUncontrolled: true, type: 'window'});
+//   console.log('clients',cl)
+//   if( cl.length ){
+//     cl.forEach(client => client.postMessage(payload));
+//   }
+// }
 
 
 
