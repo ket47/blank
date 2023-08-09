@@ -277,7 +277,7 @@ export default  {
       if( !entry ){
         return 0;
       }
-      return entry.data.entry_quantity*entry.data.entry_price
+      return Math.round(entry.data.entry_quantity*entry.data.entry_price)
     },
     inCartComment(){
       const entry=Order.cart.entryGet(this.productId)

@@ -187,7 +187,6 @@ export default {
             try{
                 const result=await jQuery.post(`${this.$heap.state.hostname}Admin/Mailing/itemGet`,request)
                 result.user_filter??={}
-                result.images=[result.image]
                 this.currentMailing=result
                 this.isMailingOpen=true
             }catch{/** */}
