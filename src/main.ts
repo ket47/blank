@@ -186,7 +186,13 @@ if(isMobile){
 } else {
   app.component('base-layout', BaseLayoutDesktop);
 }
-app.mount('#app');
-User.autoSignIn();
 
+async function startApp(){
+  /**
+   * Signing in first is slower but is more solid because all requests will go with session header
+   */
+  await User.autoSignIn();
+  app.mount('#app');
+}
+startApp();
 Metrics.init()

@@ -49,7 +49,7 @@ const User = {
         const sessionId = await Utils.pref.get('sessionId')
         if(sessionId){
             User.sessionIdUse(sessionId);
-        }
+        }        
         let userData
         try{
             userData=await User.get();

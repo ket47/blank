@@ -27,11 +27,11 @@ self.addEventListener('push', async event => {
   options.vibrate=[500, 100, 500, 100]
   options.data=data//to handle click
 
-  console.log(options)
   event.waitUntil(self.registration.showNotification(title, options))
 });
 
 self.addEventListener("notificationclick", (event) => {
+  event.notification.close();
   event.waitUntil(
     (async () => {
       if( !event.notification?.data?.link ){

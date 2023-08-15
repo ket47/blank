@@ -161,6 +161,7 @@ class CatalogModel{
                 AND pl.deleted_at IS NULL
                 AND store_list.is_disabled=0
                 AND store_list.deleted_at IS NULL
+                AND image_hash IS NOT NULL
                 $store_case
             ORDER BY pl.updated_at DESC
             LIMIT $limit OFFSET $offset
