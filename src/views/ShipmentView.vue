@@ -1,3 +1,14 @@
+<style scoped>
+    ion-segment ion-segment-button{
+        padding: 10px;
+        color: var(--ion-color-medium)
+    }
+    ion-segment ion-segment-button ion-label{
+        font-weight: bold;
+        color: var(--ion-color-dark)
+    }
+</style>
+
 <template>
     <base-layout pageTitle="Оформление" pageDefaultBackLink="/order/order-list">
         <ion-title class="ion-padding">Ваш заказ</ion-title>
@@ -32,13 +43,64 @@
             <ion-text color="medium">Куда?</ion-text>
         </ion-item>
 
+        <div style="padding:10px">
+            <ion-segment mode="ios" value="atonce">
+                <ion-segment-button value="atonce">
+                    <ion-label>Как можно скорее</ion-label>
+                    отвезти сразу
+                </ion-segment-button>
+                <ion-segment-button value="schedule" disabled>
+                    <ion-label><b>Ко времени</b></ion-label>
+                    выберите день и время
+                </ion-segment-button>
+            </ion-segment>
+        </div>
 
-        <ion-grid>
-            <ion-row>
-                <ion-col>
-                </ion-col>
-            </ion-row>
-        </ion-grid>
+        <ion-title class="ion-padding">Способы оплаты</ion-title>
+
+
+
+        <ion-item button detail="false" @click="paymentType='use_cash'" v-if="tariffRule.paymentByCash==1">
+            <ion-icon :icon="cashOutline" slot="start" color="primary"></ion-icon>
+            <label for="payment_cash">Оплата наличными</label>
+            <div slot="end">
+                <input type="radio" name="paymentType" id="payment_cash" value="cash" :checked="paymentType == 'use_cash'">
+            </div>
+        </ion-item>
+        <ion-item button detail="false" @click="paymentType='use_cash_store'" v-if="tariffRule.paymentByCashStore==1">
+            <ion-icon :icon="cashOutline" slot="start" color="primary"></ion-icon>
+            <label for="payment_cash_store">Оплата наличными продавцу</label>
+            <div slot="end">
+                <input type="radio" name="paymentType" id="payment_cash_store" value="cash" :checked="paymentType == 'use_cash_store'">
+            </div>
+        </ion-item>
+
+
+
+        <div v-if="tariffRule.paymentByCard==1">
+            <ion-item detail="false" button @click="paymentType='use_card'">
+                <ion-icon :icon="cardOutline" slot="start" color="primary"></ion-icon>
+                <label for="payment_card">Оплата картой без привязки</label>
+                <div slot="end">
+                    <input type="radio" name="paymentType" id="payment_card" value="card"  :checked="paymentType == 'use_card'">
+                </div>
+            </ion-item>
+            <ion-item v-if="bankCard?.card_type" button detail="false" @click="paymentType='use_card_recurrent'">
+                <ion-img v-if="bankCard.card_type=='mir'" class="card_type" :src="`/img/icons/card-${bankCard.card_type}.svg`" slot="start"/>
+                <ion-img v-else-if="bankCard.card_type=='visa'" class="card_type" :src="`/img/icons/card-${bankCard.card_type}.svg`" slot="start"/>
+                <ion-img v-else-if="bankCard.card_type=='mastercard'" class="card_type" :src="`/img/icons/card-${bankCard.card_type}.svg`" slot="start"/>
+                <ion-icon v-else :src="cardOutline" slot="start" color="primary"/>
+                
+                <label for="use_card_recurrent">Оплата картой {{bankCard?.card_mask}}</label>
+                <div slot="end">
+                    <input type="radio" name="paymentType" id="use_card_recurrent" value="registered_card"  :checked="paymentType == 'use_card_recurrent'">
+                </div>
+            </ion-item>
+            <ion-item v-if="recurrentPaymentAllow" button detail @click="$go('/user/user-cards')">
+                <ion-label v-if="bankCard?.card_type" color="medium">Выбрать другую карту</ion-label>
+                <ion-label v-else color="medium">Привязать карту</ion-label>
+            </ion-item>
+        </div>
 
     </base-layout>
 </template>
@@ -100,6 +162,12 @@ export default {
             ship:null,
             shipAutoloadClock:null,
 
+            paymentType:'use_card',
+            bankCard:null,
+            recurrentPaymentAllow:this.$heap.state.settings?.other?.recurrentPaymentAllow==1?1:0,
+            tariffRule:{},
+            tariffRuleList:[],
+
 
             mapsettings:null,
             placemarkCoords: null,
@@ -132,6 +200,11 @@ export default {
                         this.$go('/order/order-list');
                         break;
                 }
+            }
+        },
+        async itemCheckoutDataGet(){
+            if( !this.ship ){
+                await this.itemLoad()
             }
         },
         async ymapInit(locSettings){

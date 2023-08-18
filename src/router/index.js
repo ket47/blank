@@ -132,10 +132,6 @@ const routes = [
         component: () => import('@/views/UserResetPassword.vue')
       },
       {
-        path: '/user/user-addresses',
-        component: () => import('@/views/UserAddresses.vue')
-      },
-      {
         path: '/user/confirm-password',
         component: () => import('@/views/UserResetPasswordConfirm.vue')
       },
@@ -251,6 +247,10 @@ const routes = [
   ]
   },
   
+  {
+    path: '/user/user-addresses',
+    component: () => import('@/views/UserAddresses.vue')
+  },
 
   {
     path: '/catalog/store-:id/menu',
