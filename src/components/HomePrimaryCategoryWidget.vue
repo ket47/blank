@@ -1,80 +1,143 @@
 <style scoped>
-#hcat_widget_grid {
-  cursor: pointer;
+.primary-category-grid{
+  background-size: cover;
+}
+.primary-categories{
   display: grid;
-  margin:10px;
-  gap:6px;
-  grid-template-columns: repeat(3,1fr);
-  grid-template-rows: 140px;
+  position: relative;
+  grid-template-areas:  "a a b b"
+                        "a a c c" 
+                        "d d f f"
+                        "e e f f";
+  grid-gap: 10px;
 }
-ion-thumbnail{
-  border-radius:10px;
-  border:1px solid var(--ion-color-medium);
-  height:100px;
-  width:100px;
-  padding: 1px;
+.primary-categories > div:nth-child(1){
+  grid-area: a;
 }
-ion-img{
-  border-radius:10px;
+.primary-categories > div:nth-child(1) ion-img{
+  width: 150px !important;
+  height: 150px !important;
 }
-@media screen and (min-width: 600px) {
-    #hcat_widget_grid {
-        grid-template-columns: repeat(5,1fr);
-    }
+.primary-categories > div:nth-child(2){
+  grid-area: b;
 }
-@media screen and (min-width: 1000px) {
-    #hcat_widget_grid {
-        grid-template-columns: repeat(8,1fr);
-    }
+.primary-categories > div:nth-child(3){
+  grid-area: c;
 }
-#hcat_widget_grid>div{
-    display: flex;
-    flex-direction: column;
-    -moz-box-align: center;
-    align-items: center;
-    -moz-box-pack: center;
-    justify-content: center;
+.primary-categories > div:nth-child(4){
+  grid-area: d;
 }
-#hcat_widget_wrapper{
+.primary-categories > div:nth-child(5){
+  grid-area: e;
+}
+.primary-categories > div:nth-child(6){
+  grid-area: f;
+}
+.primary-categories > div  ion-card{
+  min-height: 80px; 
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: end;
+}
+.primary-categories > div  ion-card ion-img{
+  border-radius: 10px;
+  margin-top: -20px;
+}
+#primary-category-wrapper{
     background-color: var(--ion-color-light);
-    margin-top: 10px;
-    padding-bottom: 10px;
 }
-#hcat_widget_header{
+#primary-category-wrapper > div{
+  position: relative;
+}
+    
+#primary-category-header{
   background-position: top center;
   height: 200px;
   border-radius: 10px;
   margin: 0px 10px 10px 10px;
   cursor: pointer;
 }
-#hcat_widget_info{
+#primary-category-info{
   background-color: #fffa;
   color:#333;
   padding: 10px;
   font-weight: 700;
 }
+.indicator-label{
+  background: #ffffffb2;
+  border-radius: 10px;
+  font-size: 12px;
+}
+.indicator-label .indicator-label-text{
+  color: #000000b2;
+}
+.section-title{
+  margin: 0;
+  color: white;
+}
+.fake-label{
+  border-radius: 5px;
+  padding: 5px;
+}
+@media screen and (min-width: 740px) {
+  
+  .primary-categories{
+    grid-template-areas:  "a a b b d d e e"
+                          "a a c c d d f f" ;
+    grid-gap: 20px;
+  }
+  .primary-categories > div:nth-child(4) ion-img{
+    width: 150px !important;
+    height: 150px !important;
+  }
+}
 </style>
 
 <template>
-    <div id="hcat_widget_wrapper" v-if="productGroupList">
-
-        <div id="hcat_widget_header" @click="this.$go('/catalog/store-'+primaryStoreData.store_id)"  :style="`background-image:url(${$heap.state.hostname}image/get.php/${primaryStoreData.image_hash}.500.500.webp)`">
-          <div id="hcat_widget_info">
-            <ion-title size="large">{{primaryStoreData.store_name}}</ion-title>
-            <ion-title size="small">опорный поставщик</ion-title>
-          </div>
-        </div>
-          <store-opened-indicator :storeItem="primaryStoreData"/>
-          <ion-chip v-if="deliveryTime.timeMin" color="primary">доставка {{deliveryTime.timeMin}}-{{deliveryTime.timeMax}}мин</ion-chip>
-
-        <div id="hcat_widget_grid">
-            <div v-for="group in productGroupList" :key="group.group_id" @click="$go(`/catalog/store-${primaryStoreData.store_id}?parent_group_id=${group.group_id}`)">
-                <ion-thumbnail>
-                    <ion-img :src="$heap.state.hostname + 'image/get.php/'+group.image_hash+'.250.250.webp'"/>
-                </ion-thumbnail>
-                <ion-label style="height:2em;text-align:center;padding: 3px;font-size:0.7em" color="dark">{{group.group_name}}</ion-label>
-            </div>
-        </div>
+    <div id="primary-category-wrapper" class="ion-padding-vertical" v-if="productGroupList">
+      <ion-grid class="primary-category-grid" :style="`background-image: url(${$heap.state.hostname}/image/get.php/${primaryStoreData.image_hash}.1000.1000.webp);`" >
+        <ion-item lines="none"  style="--background: transparent;">
+          <h5 slot="start" class="section-title"><span class="fake-label" style="background-color: var(--ion-color-primary)">#{{ primaryStoreData.store_name }}</span></h5>
+        </ion-item>
+        <ion-item lines="none"  style="--background: transparent;">
+          <ion-grid class="store-indicators">
+            <ion-row class="ion-justify-content-between ion-padding-bottom" >
+              <ion-col size="auto" class="indicator-label">
+                <div v-if="primaryStoreData.is_opened==1">
+                    <label><ion-text color="success"> ◉ </ion-text> <ion-text class="indicator-label-text" color="medium">открыт до {{ primaryStoreData.store_time_closes }}:00</ion-text></label>
+                </div>
+                <div v-else>
+                    <label v-if="primaryStoreData.is_working==0"><ion-text class="indicator-label-text"> ◉ </ion-text><ion-text color="medium">временно не работает</ion-text></label>
+                    <label v-else-if="primaryStoreData.store_next_time_opens>0"><ion-text class="indicator-label-text"> ◉ </ion-text><ion-text color="medium">закрыт до {{ primaryStoreData.store_next_time_opens }}:00</ion-text></label>
+                    <label v-else><ion-text color="danger"> ◉ </ion-text><ion-text class="indicator-label-text">закрыт</ion-text></label>
+                </div>
+              </ion-col>
+              <ion-col size="auto"  class="indicator-label">
+                <div v-if="deliveryTime.timeMin" >
+                  <label><ion-text class="indicator-label-text">{{deliveryTime.timeMin}}-{{deliveryTime.timeMax}}мин</ion-text></label>
+                </div>
+              </ion-col>
+            </ion-row>
+          </ion-grid>
+        </ion-item>
+        <ion-row class="primary-category-container ion-padding-vertical ion-align-self-end">
+          <ion-col class="primary-categories">
+              <div v-for="group in productGroupList" :key="group.group_id" @click="$go(`/catalog/store-${primaryStoreData.store_id}?parent_group_id=${group.group_id}`)" style="cursor: pointer">
+                  <ion-card class="ion-no-margin">
+                    <ion-card-title class="ion-padding" style="font-size:1em; width: 100%" color="dark"><b>{{group.group_name}}</b></ion-card-title>
+                    <ion-img style="width: 80px; height: 80px;" :src="$heap.state.hostname + 'image/get.php/'+group.image_hash+'.150.150.webp'"/>
+                  </ion-card>
+              </div>
+              <div @click="$go(`/catalog/store-${primaryStoreData.store_id}`)" style="cursor: pointer">
+                  <ion-card class="ion-no-margin ion-justify-content-center ion-text-center" color="primary">
+                    <ion-card-title style="padding: 3px; font-size:1em; width: 100%" color="dark">Показать ещё...</ion-card-title>
+                  </ion-card>
+              </div>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
     </div>
 </template>
 
@@ -85,22 +148,45 @@ import Topic      from "@/scripts/Topic.js"
 import Utils      from "@/scripts/Utils.js"
 import {
   IonImg,
+  IonText,
+  IonGrid,
+  IonItem,
+  IonCol,
+  IonRow,
+  IonCard,
+  IonCardTitle,
   IonThumbnail,
   IonLabel,
-  IonTitle,
-  IonChip
+  IonButton,
+  IonIcon,
 } from "@ionic/vue"
+import {  
+  chevronBackOutline,
+  chevronForwardOutline
+ }                  from 'ionicons/icons'
 import { defineComponent } from 'vue';
-import StoreOpenedIndicator from '@/components/StoreOpenedIndicator.vue';
 
 export default defineComponent({
   components:{
     IonImg,
+    IonText,
+    IonGrid,
+    IonItem,
+    IonCol,
+    IonRow,
+    IonCard,
+    IonCardTitle,
     IonThumbnail,
     IonLabel,
-    IonTitle,
-    IonChip,
-    StoreOpenedIndicator
+    IonButton,
+    IonIcon
+  },
+  props: ['categoryLimit'],
+  setup(){
+      return {
+        chevronBackOutline,
+        chevronForwardOutline
+      }
   },
   data() {
     return {
@@ -131,18 +217,19 @@ export default defineComponent({
         }
         this.old_location_id=this.main_location_id
         try{
-          const primaryStore=await jQuery.get(heap.state.hostname + "Store/primaryNearGet",{location_id:this.main_location_id})
-          this.productGroupList=primaryStore.category_list;
-          this.deliveryTime=Utils.deliveryTimeCalculate(primaryStore.distance,primaryStore.store_time_preparation)
-          this.primaryStoreData=primaryStore
+          const primaryStore = await jQuery.get(heap.state.hostname + "Store/primaryNearGet",{location_id:this.main_location_id})
+          this.productGroupList = Object.entries(primaryStore.category_list).slice(0, this.categoryLimit).map(entry => entry[1])
+          this.deliveryTime = Utils.deliveryTimeCalculate(primaryStore.distance,primaryStore.store_time_preparation)
+          this.primaryStoreData = primaryStore
+          
           this.$emit('deliveryTimeGet',this.deliveryTime)
         } catch(err){
-          this.productGroupList=null
-          this.primaryStoreData=null
+          this.productGroupList = null
+          this.primaryStoreData = null
           this.$emit('deliveryTimeGet',null)
           //
         }
-    },
+    }
   },
 })
 </script>

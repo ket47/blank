@@ -49,6 +49,8 @@
       <!-- STORES ARE FOUND -->
       <div v-else-if="storeList && storeList.length>0">
         <home-promo-product-slider :store-list="storeList" :limit="30"/>  
+        <home-primary-category-widget category-limit="5"/>  
+
         <ion-list ref="storeSlidersContainer">
           <home-store-slider v-if="storeSliderLoadQueue >= 0" :store-list="storeList" :filter="{member_of_groups: {value: 'fastfood', type: 'includes'}}" sliderTitle="Фастфуд" sliderTitleColor="#ff0000" backgroundImage="/img/fastfood_background.jpg"/>  
           <home-store-slider v-if="storeSliderLoadQueue >= 1" :store-list="storeList" :filter="{member_of_groups: {value: 'restaraunt', type: 'includes'}}" sliderTitle="Рестораны" sliderTitleColor="#f77f00" backgroundImage="/img/restaurant_background.jpg"/>  
@@ -78,6 +80,7 @@
 
 <script>
 import HomeSlider                 from "@/components/HomeSlider";
+import HomePrimaryCategoryWidget  from "@/components/HomePrimaryCategoryWidget";
 import HomePromoProductSlider     from "@/components/HomePromoProductSlider";
 import HomeStoreSlider            from "@/components/HomeStoreSlider";
 import UserAddressWidget          from "@/components/UserAddressWidget";
@@ -126,6 +129,7 @@ export default {
     IonButton,
     IonNote,
     HomeSlider,
+    HomePrimaryCategoryWidget,
     HomePromoProductSlider,
     HomeStoreSlider,
     UserAddressWidget,
