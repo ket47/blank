@@ -161,6 +161,10 @@
             <ion-card-content>{{checkoutError}}</ion-card-content>
         </ion-card>
 
+        <ion-card v-if="isVPNon && (paymentType=='use_card' || paymentType=='use_card_recurrent')" color="light">
+            <ion-card-content>Возможно включен VPN. Банк часто блокирует платежи через VPN.</ion-card-content>
+        </ion-card>
+
         <ion-button v-if="paymentType=='use_card' || paymentType=='use_card_recurrent'" expand="block" @click="proceed()" :disabled="checkoutError">Оплатить картой</ion-button>
         <ion-button v-else expand="block" @click="proceed()" :disabled="checkoutError">Послать заказ</ion-button>
     </div>
@@ -270,6 +274,7 @@ export default({
             errNotfound:0,
             errTooFar:0,
 
+            iplocation:null,
             paymentType:'use_card',
             bankCard:null,
             recurrentPaymentAllow:this.$heap.state.settings?.other?.recurrentPaymentAllow==1?1:0,
@@ -341,7 +346,13 @@ export default({
         },
         pickupByCustomerRuleChecked(){
             return this.tariffRule.pickupByCustomer==1
-        }, 
+        },
+        isVPNon(){
+            if( !this.iplocation || ['UA','RU','???'].includes(this.iplocation.country_code??'???') ){
+                return false
+            }
+            return true
+        }
     },
     mounted(){
         this.checkoutDataGet();
@@ -357,7 +368,10 @@ export default({
                     this.order_sum_delivery==this.order.order_sum_delivery
                 }
                 this.$heap.commit('setCurrentOrder',this.order)
-            }catch(err){/** */}
+            }catch(err){
+                this.$flash("Заказ не найден")
+                this.$go('/order/order-list')
+            }
         },
         debounce(){
             const now=Date.now
@@ -397,6 +411,8 @@ export default({
                 this.tariffRuleList=bulkResponse.Store_deliveryOptions
                 this.tariffRuleSet(this.tariffRuleList[0]||{})
                 this.is_checkout_data_loaded=1
+
+                this.customerIpLocationGet()
             }
             catch(err){
                 this.is_checkout_data_loaded=1
@@ -414,6 +430,12 @@ export default({
                 }
                 return false
             }
+        },
+        async customerIpLocationGet(){
+            try{
+                const response = await fetch("https://geolocation-db.com/json/");
+                this.iplocation = await response.json();
+            }catch{/** */}
         },
         tariffRuleSet( tariffRule ){
             if(tariffRule.deliveryByCourier==1){

@@ -8,7 +8,7 @@
 .swiper .cropper.crop-to-fit img {
   min-width: 100%;
   min-height: 100%;
-  height: auto !important;
+  object-fit: cover;
 }
 .swiper .cropper.save-aspect-ratio{
   display: block;
@@ -54,9 +54,9 @@
     <swiper-slide v-for="image in imageList" :key="image.image_hash">
       <div :class="`${(mode) ? mode: ''} cropper`" :style="`height: ${imgHeight+'px'||'100%'}`">
         <div class="blur-image">
-          <img :src="`${$heap.state.hostname}image/get.php/${image.image_hash}.${imgHeight*4||1200}.${imgHeight*4||1200}.webp`"/>
+          <img :src="`${$heap.state.hostname}image/get.php/${image.image_hash}.1200.1200.webp`"/>
         </div>
-        <img :style="``" :src="`${$heap.state.hostname}image/get.php/${image.image_hash}.${imgHeight*4||1200}.${imgHeight*4||1200}.webp`"/>
+        <img :src="`${$heap.state.hostname}image/get.php/${image.image_hash}.1200.1200.webp`"/>
       </div>
     </swiper-slide>
   </swiper>

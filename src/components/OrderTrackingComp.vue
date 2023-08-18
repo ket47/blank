@@ -27,7 +27,9 @@
         </ion-item>
         <ion-item v-if="has_delivery_finish && !has_system_finish" slot="content" lines="none">
             <p>Заказ доставлен за <ion-chip color="medium"><b style="color:var(--ion-color-primary)">⏱️ {{delivery_time}}</b></ion-chip>.<br/>
-            Вы можете отблагодарить курьера чаевыми☕, если он доставил заказ быстро и качественно.</p>
+            Вы можете отблагодарить курьера чаевыми☕, если он доставил заказ быстро и качественно.
+            <a :href="`tel:${orderData?.info?.courier_phone}`">{{orderData?.info?.courier_phone}}</a>
+            </p>
         </ion-item>
         <ion-list v-else slot="content">
             <ion-chip color="primary" v-if="orderData?.info?.courier_phone" slot="end">

@@ -132,10 +132,6 @@ const routes = [
         component: () => import('@/views/UserResetPassword.vue')
       },
       {
-        path: '/user/user-addresses',
-        component: () => import('@/views/UserAddresses.vue')
-      },
-      {
         path: '/user/confirm-password',
         component: () => import('@/views/UserResetPasswordConfirm.vue')
       },
@@ -187,6 +183,20 @@ const routes = [
       },
 
 
+      {
+        path: '/order/shipment-draft',
+        component: () => import('@/views/ShipmentDraftView.vue')
+      },
+      {
+        path: '/order/shipment-checkout-:id',
+        component: () => import('@/views/ShipmentCheckout.vue')
+      },
+      {
+        path: '/order/shipment-:id',
+        component: () => import('@/views/ShipmentView.vue')
+      },
+
+
 
 
           
@@ -230,9 +240,17 @@ const routes = [
         path: '/admin/tariff-list',
         component: () => import('@/views/AdminTariffList.vue')
       },
+      {
+        path: '/admin/mailing-list',
+        component: () => import('@/views/admin/MailingView.vue')
+      },
   ]
   },
   
+  {
+    path: '/user/user-addresses',
+    component: () => import('@/views/UserAddresses.vue')
+  },
 
   {
     path: '/catalog/store-:id/menu',

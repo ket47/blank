@@ -209,11 +209,11 @@
         </ion-item>
       </ion-list>
       <ion-list v-else>
-        <ion-item>
+        <ion-item lines="none">
           <ion-text>Пока адреса не добавлены</ion-text>
         </ion-item>
-        <ion-button @click="modalLocationCreate()" size="small" expand="full" color="medium">
-          <ion-icon :src="locationOutline"/> Добавить
+        <ion-button @click="modalLocationCreate()" color="light" expand="block">
+          <ion-icon :src="locationOutline"/> Добавить адрес
         </ion-button>
       </ion-list>
       <ion-list>
@@ -789,6 +789,7 @@ export default  {
         field_name
       };
       try{
+        await this.save(field_name, this.storeItem[field_name])
         await jQuery.post( heap.state.hostname + "Store/fieldApprove", request)
       } catch(err){
         const validationErrors=err.responseJSON.messages.error

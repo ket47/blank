@@ -133,6 +133,7 @@ export default{
       }
     },
     addToOrder(step){
+      console.log(step)
       let newQuantity=parseFloat(this.currentQuantity)+parseFloat(step);
       if( !this.productItem && !this.entry ){
         return;//haven't loaded yet or qty is negative
@@ -182,6 +183,7 @@ export default{
         product_id:this.productData.product_id,
         product_unit:this.productData.product_unit,
         product_quantity:stock_product_quantity,
+        product_quantity_min:this.productData.product_quantity_min,
         is_counted:this.productData.is_counted,
         entry_quantity:newQuantity,
         entry_price:this.productData.product_final_price||this.productData.entry_price,
@@ -197,10 +199,10 @@ export default{
     currentQuantity(){
       if( this.productItem ){
         //If buttons are in storeview
-        return heap.state.cartProductWatchList[this.productData.product_id]||0;
+        return Math.round(100*(heap.state.cartProductWatchList[this.productData.product_id]||0))/100;
       }
       //if buttons are in orderview or cartview
-      return this.productData.entry_quantity;
+      return Math.round(100*this.productData.entry_quantity)/100;
     },
     componentLayout(){
       if(this.display=='inline'){

@@ -117,7 +117,7 @@ const Order = {
                 total+= (entry.entry_quantity) * (entry.entry_price);
                 }
             }
-            return total;
+            return Math.round(total);
         },
 
         async itemSync(order_id){

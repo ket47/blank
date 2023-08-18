@@ -267,7 +267,7 @@ export default({
                 }
                 total+= (entry.entry_quantity) * (entry.entry_price) - (entry.entry_discount||0);
             }
-            return total;
+            return Math.round(total);
         },
         isEditable(){
             return this.atCorrection || this.atCart

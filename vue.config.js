@@ -15,7 +15,7 @@ module.exports = {
       //clientsClaim: true
     },
     manifestOptions: {
-      name: "Tezkel экспресс доставка",
+      name: "Tezkel",
       short_name: "Tezkel",
       background_color: "#fff",
       categories: ["shopping", "business", "food"],

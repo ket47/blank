@@ -1,2 +1,2 @@
 User-agent: * Disallow: /user/
-Sitemap: /sitemap.xml
+Sitemap: https://tezkel.com/sitemap.xml
