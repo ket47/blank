@@ -48,14 +48,14 @@
       </div>
       <!-- STORES ARE FOUND -->
       <div v-else-if="storeList && storeList.length>0">
-        <home-promo-product-slider :store-list="storeList" :limit="30"/>  
-        <home-primary-category-widget category-limit="5"/>  
+        <home-promo-product-slider :store-list="storeList" :limit="30" titleColor="#f77f00" />  
+        <home-primary-category-widget category-limit="5" titleColor="#0097d2" />  
 
         <ion-list ref="storeSlidersContainer">
           <home-store-slider v-if="storeSliderLoadQueue >= 0" :store-list="storeList" :filter="{member_of_groups: {value: 'fastfood', type: 'includes'}}" sliderTitle="Фастфуд" sliderTitleColor="#ff0000" backgroundImage="/img/fastfood_background.jpg"/>  
-          <home-store-slider v-if="storeSliderLoadQueue >= 1" :store-list="storeList" :filter="{member_of_groups: {value: 'restaraunt', type: 'includes'}}" sliderTitle="Рестораны" sliderTitleColor="#f77f00" backgroundImage="/img/restaurant_background.jpg"/>  
+          <home-store-slider v-if="storeSliderLoadQueue >= 1" :store-list="storeList" :filter="{member_of_groups: {value: 'restaraunt', type: 'includes'}}" sliderTitle="Рестораны" sliderTitleColor="#326cd9" backgroundImage="/img/restaurant_background.jpg"/>  
           <home-store-slider v-if="storeSliderLoadQueue >= 2" :store-list="storeList" :filter="{member_of_groups: {value: 'halal', type: 'includes'}}" sliderTitle="Халяль" sliderTitleColor="#41a663" backgroundImage="/img/halal_background.jpg"/>    
-          <home-store-slider v-if="storeSliderLoadQueue >= 3" :store-list="storeList" :filter="{member_of_groups: {value: 'foodstore', type: 'includes'}}" sliderTitle="Магазины" sliderTitleColor="#0097d2" backgroundImage="/img/market_background.jpg"/>    
+          <home-store-slider v-if="storeSliderLoadQueue >= 3" :store-list="storeList" :filter="{member_of_groups: {value: 'foodstore', type: 'includes'}}" sliderTitle="Магазины" sliderTitleColor="#893abf" backgroundImage="/img/market_background.jpg"/>    
         </ion-list>
         <ion-card v-if="!suggestFormHidden">
           <ion-card-header>

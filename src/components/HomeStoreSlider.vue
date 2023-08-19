@@ -78,7 +78,7 @@
 </style>
 
 <template>
-  <div class="store-slider-container ion-margin-top ion-padding-vertical" v-if="list_filtered && list_filtered[0]">
+  <div class="store-slider-container ion-padding-vertical" v-if="list_filtered && list_filtered[0]">
     <ion-row v-if="!isMobile" class="scroller-navigation ion-justify-content-between ion-align-items-center">
       <ion-col class="ion-text-start">
         <ion-button @click="scrollSlider('prev')" shape="round" color="light"><ion-icon slot="icon-only" :icon="chevronBackOutline"></ion-icon></ion-button>
