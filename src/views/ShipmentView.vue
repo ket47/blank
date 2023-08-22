@@ -106,7 +106,6 @@
 </template>
 <script>
 import {
-    IonButton,
     IonText,
     IonItem,
     IonIcon,
@@ -134,7 +133,6 @@ export default {
     components:{
     yandexMap,
     ymapMarker,
-    IonButton,
     IonText,
     IonItem,
     IonIcon,

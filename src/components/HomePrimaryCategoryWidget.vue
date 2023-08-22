@@ -39,7 +39,7 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  align-items: end;
+  align-items: flex-end;
 }
 .primary-categories > div  ion-card ion-img{
   border-radius: 10px;
@@ -155,10 +155,6 @@ import {
   IonRow,
   IonCard,
   IonCardTitle,
-  IonThumbnail,
-  IonLabel,
-  IonButton,
-  IonIcon,
 } from "@ionic/vue"
 import {  
   chevronBackOutline,
@@ -176,10 +172,6 @@ export default defineComponent({
     IonRow,
     IonCard,
     IonCardTitle,
-    IonThumbnail,
-    IonLabel,
-    IonButton,
-    IonIcon
   },
   props: ['categoryLimit'],
   setup(){

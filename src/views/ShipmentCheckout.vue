@@ -127,7 +127,6 @@
 <script>
 import {
     modalController,
-    IonButton,
     IonText,
     IonItem,
     IonIcon,
@@ -166,7 +165,6 @@ export default {
     components:{
     yandexMap,
     ymapMarker,
-    IonButton,
     IonText,
     IonItem,
     IonIcon,
