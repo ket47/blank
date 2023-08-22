@@ -1,63 +1,26 @@
 <style scoped>
 .primary-category-grid{
-  background-size: cover;
-}
-.primary-categories{
-  display: grid;
   position: relative;
-  grid-template-areas:  "a a b b"
-                        "a a c c" 
-                        "d d f f"
-                        "e e f f";
-  grid-gap: 10px;
-}
-.primary-categories > div:nth-child(1){
-  grid-area: a;
-}
-.primary-categories > div:nth-child(1) ion-img{
-  width: 150px !important;
-  height: 150px !important;
-}
-.primary-categories > div:nth-child(2){
-  grid-area: b;
-}
-.primary-categories > div:nth-child(3){
-  grid-area: c;
-}
-.primary-categories > div:nth-child(4){
-  grid-area: d;
-}
-.primary-categories > div:nth-child(5){
-  grid-area: e;
-}
-.primary-categories > div:nth-child(6){
-  grid-area: f;
-}
-.primary-categories > div  ion-card{
-  min-height: 80px; 
-  height: 100%;
+  background-size: cover;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  align-items: flex-end;
+  justify-content: flex-end;
 }
-.primary-categories > div  ion-card ion-img{
-  border-radius: 10px;
-  margin-top: -20px;
+.primary-category-grid:before{
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to top, #000000b2, #0000);
 }
-#primary-category-wrapper{
-    background-color: var(--ion-color-light);
-}
-#primary-category-wrapper > div{
+.primary-categories{
+  display: flex;
   position: relative;
-}
-    
-#primary-category-header{
-  background-position: top center;
-  height: 200px;
-  border-radius: 10px;
-  margin: 0px 10px 10px 10px;
-  cursor: pointer;
+  grid-gap: 10px;
+  max-width: 100vw;
+  padding: 0 10px;
 }
 #primary-category-info{
   background-color: #fffa;
@@ -81,29 +44,46 @@
   border-radius: 5px;
   padding: 5px;
 }
-@media screen and (min-width: 740px) {
-  
-  .primary-categories{
-    grid-template-areas:  "a a b b d d e e"
-                          "a a c c d d f f" ;
-    grid-gap: 20px;
-  }
-  .primary-categories > div:nth-child(4) ion-img{
-    width: 150px !important;
-    height: 150px !important;
-  }
-}
 </style>
 
 <template>
     <div id="primary-category-wrapper" class="ion-padding-vertical" v-if="productGroupList">
-      <ion-grid class="primary-category-grid" :style="`background-image: url(${$heap.state.hostname}/image/get.php/${primaryStoreData.image_hash}.1000.1000.webp);`" >
         <ion-item lines="none"  style="--background: transparent;">
-          <h5 slot="start" class="section-title"><span class="fake-label" style="background-color: var(--ion-color-primary)">#{{ primaryStoreData.store_name }}</span></h5>
+          <h5 slot="start" class="section-title"><span class="fake-label" :style="`background-color: ${titleColor}`">#Маркет</span></h5>
         </ion-item>
-        <ion-item lines="none"  style="--background: transparent;">
-          <ion-grid class="store-indicators">
-            <ion-row class="ion-justify-content-between ion-padding-bottom" >
+      <ion-grid class="primary-category-grid ion-margin-top  ion-no-padding" :style="`background-image: url(${$heap.state.hostname}/image/get.php/${primaryStoreData.image_hash}.1000.1000.webp); height: 250px;`" >
+        <ion-row class="ion-justify-content-between">
+            <ion-col class="ion-padding-horizontal">
+                <ion-label lines="none" class="store-title" style="color: white">
+                    <b>Категории:</b>
+                </ion-label>
+            </ion-col>
+          </ion-row>
+        <ion-row class="primary-category-container ion-padding-vertical">
+          <ion-col class="primary-categories horizontalScroller">
+              <div v-for="group in productGroupList" :key="group.group_id" @click="$go(`/catalog/store-${primaryStoreData.store_id}?parent_group_id=${group.group_id}`)" style="cursor: pointer">
+                  <ion-card class="ion-no-margin" style="border-radius: 10px; border: 1px solid rgb(221, 221, 221);">
+                    <ion-img style="width: 70px; height: 70px;" :src="$heap.state.hostname + 'image/get.php/'+group.image_hash+'.150.150.webp'"/>
+                  </ion-card>
+              </div>
+              <div @click="$go(`/catalog/store-${primaryStoreData.store_id}`)" style="cursor: pointer">
+                  <ion-card class="ion-no-margin ion-align-items-center ion-text-center" color="primary" style="display: grid; width: 70px; height: 70px;">
+                    <ion-card-title style="font-size: 12px;">Ещё...</ion-card-title>
+                  </ion-card>
+              </div>
+          </ion-col>
+        </ion-row>
+      </ion-grid><ion-grid class="store-indicators">
+            <ion-row class="ion-justify-content-between">
+              <ion-col size="auto">
+                <div @click="$go(`/catalog/store-${primaryStoreData.store_id}`)" style="cursor:pointer"  class="">
+                  <ion-label lines="none" class="store-title" style="font-family: Roboto; font-size: 17px;">
+                      <b>{{primaryStoreData.store_name}}</b>
+                  </ion-label>
+                </div>
+              </ion-col>
+            </ion-row>
+            <ion-row class="ion-justify-content-between " style="font-size: 12px">
               <ion-col size="auto" class="indicator-label">
                 <div v-if="primaryStoreData.is_opened==1">
                     <label><ion-text color="success"> ◉ </ion-text> <ion-text class="indicator-label-text" color="medium">открыт до {{ primaryStoreData.store_time_closes }}:00</ion-text></label>
@@ -115,29 +95,12 @@
                 </div>
               </ion-col>
               <ion-col size="auto"  class="indicator-label">
-                <div v-if="deliveryTime.timeMin" >
-                  <label><ion-text class="indicator-label-text">{{deliveryTime.timeMin}}-{{deliveryTime.timeMax}}мин</ion-text></label>
+                <div v-if="deliveryTime.timeMin" lines="none">
+                  <ion-text class="indicator-label-text">{{deliveryTime.timeMin}}-{{deliveryTime.timeMax}}мин</ion-text>
                 </div>
               </ion-col>
             </ion-row>
-          </ion-grid>
-        </ion-item>
-        <ion-row class="primary-category-container ion-padding-vertical ion-align-self-end">
-          <ion-col class="primary-categories">
-              <div v-for="group in productGroupList" :key="group.group_id" @click="$go(`/catalog/store-${primaryStoreData.store_id}?parent_group_id=${group.group_id}`)" style="cursor: pointer">
-                  <ion-card class="ion-no-margin">
-                    <ion-card-title class="ion-padding" style="font-size:1em; width: 100%" color="dark"><b>{{group.group_name}}</b></ion-card-title>
-                    <ion-img style="width: 80px; height: 80px;" :src="$heap.state.hostname + 'image/get.php/'+group.image_hash+'.150.150.webp'"/>
-                  </ion-card>
-              </div>
-              <div @click="$go(`/catalog/store-${primaryStoreData.store_id}`)" style="cursor: pointer">
-                  <ion-card class="ion-no-margin ion-justify-content-center ion-text-center" color="primary">
-                    <ion-card-title style="padding: 3px; font-size:1em; width: 100%" color="dark">Показать ещё...</ion-card-title>
-                  </ion-card>
-              </div>
-          </ion-col>
-        </ion-row>
-      </ion-grid>
+          </ion-grid>  
     </div>
 </template>
 
@@ -155,6 +118,7 @@ import {
   IonRow,
   IonCard,
   IonCardTitle,
+  IonLabel,
 } from "@ionic/vue"
 import {  
   chevronBackOutline,
@@ -172,8 +136,9 @@ export default defineComponent({
     IonRow,
     IonCard,
     IonCardTitle,
+    IonLabel,
   },
-  props: ['categoryLimit'],
+  props: ['categoryLimit', 'titleColor'],
   setup(){
       return {
         chevronBackOutline,

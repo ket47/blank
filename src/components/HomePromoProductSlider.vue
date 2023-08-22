@@ -4,6 +4,11 @@ ion-card{
 }
 .section-title{
   margin: 0;
+  color: white;
+}
+.fake-label{
+  border-radius: 5px;
+  padding: 5px;
 }
 .promo-slider{
   display: flex;
@@ -61,14 +66,10 @@ ion-card{
 </style>
 
 <template>
-  <div class="promo-slider-container ion-margin-top" v-if="promo_list && promo_list.length > 0">
-    <ion-grid class="ion-justify-content-between ion-align-items-center" style="padding: 0 16px;">
-      <ion-row>
-        <ion-col size="12">
-          <h5 class="section-title">Акция</h5>
-        </ion-col>
-      </ion-row>
-    </ion-grid>
+  <div class="promo-slider-container ion-margin-vertical" v-if="promo_list && promo_list.length > 0">
+    <ion-item lines="none"  style="--background: transparent;">
+      <h5 slot="start" class="section-title"><span class="fake-label" :style="`background-color: ${titleColor}`">#Акция</span></h5>
+    </ion-item>
     <ion-row v-if="!isMobile" class="ion-justify-content-between ion-align-items-center">
       <ion-col class="ion-text-start">
         <ion-button @click="scrollSlider('prev')" shape="round" color="light"><ion-icon slot="icon-only" :icon="chevronBackOutline"></ion-icon></ion-button>
@@ -135,7 +136,7 @@ export default {
         chevronForwardOutline
       }
   },
-  props: ['storeList', 'limit'],
+  props: ['storeList', 'titleColor', 'limit'],
   data() {
     return {
       isMobile: /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(window.navigator.userAgent)
