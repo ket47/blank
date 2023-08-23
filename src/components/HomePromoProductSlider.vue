@@ -56,6 +56,7 @@ ion-card{
   color:black;
   font-size:11px;
   overflow: hidden;
+  text-align: center;
 }
 .promo-label{
   position: absolute;
@@ -67,7 +68,7 @@ ion-card{
 
 <template>
   <div class="promo-slider-container ion-margin-vertical" v-if="promo_list && promo_list.length > 0">
-    <ion-item lines="none"  style="--background: transparent;">
+    <ion-item lines="none"  style="--background: transparent;--padding-start: 10px;">
       <h5 slot="start" class="section-title"><span class="fake-label" :style="`background-color: ${titleColor}`">#Акция</span></h5>
     </ion-item>
     <ion-row v-if="!isMobile" class="ion-justify-content-between ion-align-items-center">
@@ -80,21 +81,23 @@ ion-card{
     </ion-row>
     <div class="horizontalScroller promo-slider" style="overflow-y: hidden;" ref="promoSlider">
       <div v-for="(productItem, productItemIndex) in promo_list"  :key="productItemIndex" style="width: 120px;" class="promo-item ion-margin-horizontal">
-        <div @click="$go(`/catalog/product-${productItem.product_id}`)" button detail="false" lines="none">
-          <ion-card class="promo-image" style="width: 120px; height: 120px; margin: 0;">
+        <div @click="$go(`/catalog/product-${productItem.product_id}`)" style="position:relative">
+
             <ion-chip class="promo-label" style="background: var(--ion-color-success); color: white"><b>{{ productItem.perk_label }}</b></ion-chip>
+
+          <ion-card class="promo-image" style="width: 120px; height: 120px; margin: 0;border-radius:1000000px">
             <img class="blur-image" :src="`${$heap.state.hostname}image/get.php/${productItem.image_hash}.10.10.png`"/>
             <ion-img @click="$go(`/catalog/product-${productItem.product_id}`)" :src="`${$heap.state.hostname}image/get.php/${productItem.image_hash}.150.150.webp`"/>
           </ion-card>
           <div class="promo-title">
               <b>{{productItem.perk_title}}</b>
           </div>
-          <ion-label color="primary">
-            <span v-if="productItem.product_price!=productItem.product_final_price" style="color:var(--ion-color-danger);font-size:0.75em">
+          <div class="promo-title" style="color:var(--ion-color-primary);font-size:1.2em">
+            <span v-if="productItem.product_price!=productItem.product_final_price" style="color:var(--ion-color-danger);font-size:0.5em">
                 <s>{{productItem.product_price}}{{$heap.state.currencySign}}</s>&nbsp;&nbsp;
             </span>
             {{productItem.product_final_price}}{{$heap.state.currencySign}}
-          </ion-label>
+          </div>
         </div>
       </div>
     </div>
@@ -112,6 +115,7 @@ import {
   IonCol,
   IonCard,
   IonLabel,
+  IonItem,
 }                   from "@ionic/vue";
 import {  
   chevronBackOutline,
@@ -129,6 +133,7 @@ export default {
     IonCol,
     IonCard,
     IonLabel,
+  IonItem,
   },
   setup(){
       return {

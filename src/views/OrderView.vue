@@ -270,9 +270,8 @@ export default({
         this.$topic.on('orderSumChanged',()=>this.itemGet('skipCaching'))
         
         this.$topic.on('pushStageChanged',data=>{
-            if( self.order?.order_id==data?.order_id && self.order.stage_current!=data.stage ){
-                self.itemGet();
-                console.log('pushStageChanged')
+            if( this.order?.order_id==data?.order_id && this.order.stage_current!=data.stage ){
+                this.itemGet();
             }
         })
     }

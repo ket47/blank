@@ -87,7 +87,7 @@
         <ion-button @click="scrollSlider('next')" shape="round" color="light"><ion-icon slot="icon-only" :icon="chevronForwardOutline"></ion-icon></ion-button>
       </ion-col>
     </ion-row>
-    <ion-item class="ion-justify-content-between" lines="none"  style="--background: transparent;">
+    <ion-item class="ion-justify-content-between" lines="none"  style="--background: transparent;--padding-start: 10px;">
           <h5 slot="start" class="section-title"><span class="fake-label" :style="`background-color: ${sliderTitleColor}`">#{{ sliderTitle }}</span></h5>
           <a slot="end"  @click="storeListModal(storeList, sliderTitle, sliderTitleColor)">
             <ion-item lines="none" :style="`color: ${sliderTitleColor}; cursor: pointer;`" >

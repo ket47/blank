@@ -39,6 +39,7 @@
                     inputmode="tel"
                     placeholder="(xxx)xxxxxxxxx"
                     required
+                    autocomplete="tel-national"
                   ></ion-input>            
                   <ion-text color="danger" slot="helper"><p v-show="!phoneValid && submitted == true" padding-left>Неверный номер телефона</p></ion-text>
               </div>
@@ -52,6 +53,7 @@
               type="text" 
               placeholder="как к вам обращаться?"
               required
+              autocomplete="name"
             ></ion-input>
             <ion-text color="danger" slot="helper">
               <p v-show="!usernameValid && submitted == true" padding-left>Проверьте ваш псевдоним</p>
@@ -65,6 +67,7 @@
               type="email" 
               placeholder="е-маил"
               required
+              autocomplete="email"
             ></ion-input>
           </ion-item>
         </ion-list>
@@ -84,6 +87,7 @@
               placeholder="пароль (минимум 4 символа)"
               required
               style="font-family:monospace,serif"
+              autocomplete="new-password"
             ></ion-input>
             <ion-text color="danger" slot="helper">
               <p v-show="!passwordValid && submitted == true" padding-left>Пароль должен содержать не менее 4 символов.</p>

@@ -27,6 +27,7 @@
                   @ionInput="verification_code=$event.target.value;onSubmit()"
                   enterkeyhint="go"
                   required
+                  autocomplete="one-time-code"
                 ></ion-input>
               </ion-col>
             </ion-row>

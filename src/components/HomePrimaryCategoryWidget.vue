@@ -48,7 +48,7 @@
 
 <template>
     <div id="primary-category-wrapper" class="ion-padding-vertical" v-if="productGroupList">
-        <ion-item lines="none"  style="--background: transparent;">
+        <ion-item lines="none"  style="--background: transparent;--padding-start: 10px;">
           <h5 slot="start" class="section-title"><span class="fake-label" :style="`background-color: ${titleColor}`">#Маркет</span></h5>
         </ion-item>
       <ion-grid class="primary-category-grid ion-margin-top  ion-no-padding" :style="`background-image: url(${$heap.state.hostname}/image/get.php/${primaryStoreData.image_hash}.1000.1000.webp); height: 250px;`" >

@@ -40,9 +40,7 @@ import Topic                from '@/scripts/Topic.js';
 import User                 from '@/scripts/User.js'
 import Order                from '@/scripts/Order.js'
 import Metrics              from '@/scripts/Metrics.js'
-
-
-import  '@/scripts/Push'
+import Push                 from '@/scripts/Push.js'
 import './registerServiceWorker';
 
 
@@ -193,6 +191,11 @@ async function startApp(){
    */
   await User.autoSignIn();
   app.mount('#app');
+
+
+  Metrics.init()
+  Push.setFlashHandler(flash)
+  Push.setAlertHandler(alert)
+  Push.setGoHandler(go)
 }
 startApp();
-Metrics.init()
