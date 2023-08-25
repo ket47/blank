@@ -7,9 +7,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:359468869452:android:ba0d1fc72850023d7891e9",
+        "mobilesdk_app_id": "1:359468869452:android:2ffc08a9b92eac927891e9",
         "android_client_info": {
-          "package_name": "com.tezkel.app"
+          "package_name": "com.tezkel.twa"
         }
       },
       "oauth_client": [

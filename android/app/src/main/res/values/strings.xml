@@ -2,7 +2,7 @@
 <resources>
     <string name="app_name">Tezkel</string>
     <string name="title_activity_main">Tezkel</string>
-    <string name="package_name">com.tezkel.app</string>
-    <string name="custom_url_scheme">com.tezkel.app</string>
-    <string name="default_notification_channel_id">com.tezkel.app.urgent</string>
+    <string name="package_name">com.tezkel.twa</string>
+    <string name="custom_url_scheme">com.tezkel.twa</string>
+    <string name="default_notification_channel_id">com.tezkel.twa.urgent</string>
 </resources>

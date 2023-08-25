@@ -43,14 +43,12 @@
   import { defineComponent } from 'vue';
   import { Autoplay } from 'swiper';
   import { Swiper, SwiperSlide } from 'swiper/vue';
-  import {IonImg} from '@ionic/vue'
 
   import 'swiper/css/bundle';
   export default defineComponent({
     components: {
       Swiper,
       SwiperSlide,
-      IonImg
     },
     setup() {
       return {

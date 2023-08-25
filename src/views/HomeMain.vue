@@ -96,7 +96,6 @@ import {
   IonRow,
   IonCol,
   IonCard,
-  IonChip,
   IonItem,
   IonCardHeader,
   IonCardSubtitle,
@@ -119,7 +118,6 @@ export default {
     IonRow,
     IonCol,
     IonCard,
-    IonChip,
     IonItem,
     IonCardHeader,
     IonCardSubtitle,
@@ -232,6 +230,13 @@ export default {
   },
   ionViewDidEnter(){
     this.listNearReload();
+  },
+  watch:{
+    '$route'(to,from){
+      if(to=='/catalog/'){
+        this.listNearReload();
+      }
+    }
   }
 };
 </script>

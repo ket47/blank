@@ -13,9 +13,7 @@
 		}
 	},
 	"server": {
-		"url": "http://192.168.0.104:8100",
 		"hostname": "tezkel.com",
-		"androidScheme": "https",
-		"cleartext": true
+		"androidScheme": "https"
 	}
 }

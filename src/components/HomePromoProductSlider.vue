@@ -51,12 +51,13 @@ ion-card{
     filter: blur(5px);
 }
 .promo-title{
-  height: 3.2em;
   white-space: initial;
   color:black;
   font-size:11px;
   overflow: hidden;
   text-align: center;
+  height: 2.3em;
+  color:var(--ion-color-medium)
 }
 .promo-label{
   position: absolute;
@@ -85,7 +86,7 @@ ion-card{
 
             <ion-chip class="promo-label" style="background: var(--ion-color-success); color: white"><b>{{ productItem.perk_label }}</b></ion-chip>
 
-          <ion-card class="promo-image" style="width: 120px; height: 120px; margin: 0;border-radius:1000000px">
+          <ion-card class="promo-image" style="width: 100px; height: 100px; margin: 0;border-radius:1000000px">
             <img class="blur-image" :src="`${$heap.state.hostname}image/get.php/${productItem.image_hash}.10.10.png`"/>
             <ion-img @click="$go(`/catalog/product-${productItem.product_id}`)" :src="`${$heap.state.hostname}image/get.php/${productItem.image_hash}.150.150.webp`"/>
           </ion-card>
@@ -108,13 +109,11 @@ ion-card{
 import {
   IonImg,
   IonChip,
-  IonGrid,
   IonRow,
   IonButton,
   IonIcon,
   IonCol,
   IonCard,
-  IonLabel,
   IonItem,
 }                   from "@ionic/vue";
 import {  
@@ -126,13 +125,11 @@ export default {
   components: {
     IonImg,
     IonChip,
-    IonGrid,
     IonRow,
     IonIcon,
     IonButton,
     IonCol,
     IonCard,
-    IonLabel,
   IonItem,
   },
   setup(){

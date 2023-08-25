@@ -25,9 +25,7 @@ import './theme/core.css';
 
 import { createApp }        from 'vue';
 import { IonicVue }         from '@ionic/vue';
-import { toastController,alertController }  from '@ionic/vue';
-
-import App                  from '@/App.vue';
+import VueApp               from '@/VueApp.vue';
 import router               from '@/router';
 import heap                 from '@/heap';
 
@@ -42,6 +40,14 @@ import Order                from '@/scripts/Order.js'
 import Metrics              from '@/scripts/Metrics.js'
 import Push                 from '@/scripts/Push.js'
 import './registerServiceWorker';
+import { 
+  toastController,
+  alertController
+}                           from '@ionic/vue';
+import {
+   App, 
+   URLOpenListenerEvent 
+}                           from '@capacitor/app';
 
 
 const FlashNotice={
@@ -165,7 +171,7 @@ if( 'serviceWorker' in navigator ){
   };
 }
 
-const app = createApp(App)
+const app = createApp(VueApp)
   .use(IonicVue)
   .use(router)
   .use(heap)
@@ -177,20 +183,29 @@ app.config.globalProperties.$topic = Topic;
 app.config.globalProperties.$go = go;
 
 const isMobile= /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(window.navigator.userAgent);
-
-
 if(isMobile){
   app.component('base-layout', BaseLayout);
 } else {
   app.component('base-layout', BaseLayoutDesktop);
 }
 
+/**
+ * opens deeplinking urls in this app
+ */
+App.addListener('appUrlOpen', function (event: URLOpenListenerEvent) {
+  const slug = event.url.split('.com').pop();
+  if (slug) {
+    go(slug)
+  }
+});
+
+
 async function startApp(){
   /**
    * Signing in first is slower but is more solid because all requests will go with session header
    */
-  await User.autoSignIn();
   app.mount('#app');
+  await User.autoSignIn();
 
 
   Metrics.init()

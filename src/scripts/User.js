@@ -58,7 +58,6 @@ const User = {
             return userData;
         }
         const signInData=await Utils.pref.get('signInData')
-        console.log(signInData)
         const signInCredentials=JSON.parse(signInData||'{}');
         if( signInCredentials && signInCredentials.user_phone && signInCredentials.user_pass ){
             try{
@@ -122,10 +121,10 @@ const User = {
         let user_types="";
         try{
             user_types=heap.state.user.member_of_groups.group_types;
+            if( user_types.indexOf('courier')>-1 ){
+                return true;
+            }
         }catch{/** */}
-        if( user_types.indexOf('courier')>-1 ){
-          return true;
-        }
         return false;
     },
     isSupplier(){
@@ -349,6 +348,9 @@ const User = {
             }
         },
         async savePushToken(token){
+            if(User.firebase.tokenSaved){
+                return 'idle'
+            }
             /**
              * for ios notifications
              */
@@ -358,8 +360,9 @@ const User = {
                     registration_id:token,
                     user_agent:navigator.userAgent
                 }
-                await jQuery.post(`${heap.state.hostname}MessageSub/itemCreate`,request)
+                const result=await jQuery.post(`${heap.state.hostname}MessageSub/itemCreate`,request)
                 User.firebase.tokenSaved=true;
+                return result
             }catch(err){
                 //console.log(err)
             }

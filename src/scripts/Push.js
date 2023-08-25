@@ -11,9 +11,11 @@ import Topic                  from '@/scripts/Topic.js';
 class Push{
   constructor( ){
     if( isPlatform('capacitor') ){
-      this.registerNotifications()
-      this.addListeners()
-      this.setChannels()
+      Topic.on('userGet',()=>{
+        this.registerNotifications()
+        this.addListeners()
+        this.setChannels()
+      })
     }
   }
 
@@ -51,6 +53,14 @@ class Push{
     await PushNotifications.addListener('registrationError', err => {
       //console.error('Registration error: ', err.error);
     });
+    
+    await PushNotifications.addListener('pushNotificationActionPerformed', action => {
+      alert('pushNotificationActionPerformed')
+      if(action?.notification?.data?.link){
+        this.go(action.notification.data.link)
+      }
+      this.dispatchIncoming(action?.notification)
+    });
 
     await PushNotifications.addListener('pushNotificationReceived', async notification => {
       if(notification.data.sound){
@@ -60,12 +70,6 @@ class Push{
       //console.log('Push notification received: ', JSON.stringify(notification));
     });
 
-    await PushNotifications.addListener('pushNotificationActionPerformed', action => {
-      if(action?.notification?.data?.link){
-        this.go(action.notification.data.link)
-      }
-      this.dispatchIncoming(action?.notification)
-    });
   }
 
 
@@ -83,7 +87,7 @@ class Push{
   setChannels = async () => {
     PushNotifications.createChannel({
       description: 'Urgent Notifications',
-      id: 'com.tezkel.app.urgent',
+      id: 'com.tezkel.urgent',
       importance: 5,
       lights: true,
       name: 'My Urgent notification channel',
@@ -94,7 +98,7 @@ class Push{
     })
     PushNotifications.createChannel({
       description: 'High Notifications',
-      id: 'com.tezkel.app.high',
+      id: 'com.tezkel.high',
       importance: 5,
       lights: true,
       name: 'My High notification channel',
@@ -105,7 +109,7 @@ class Push{
     })
     PushNotifications.createChannel({
       description: 'Normal Notifications',
-      id: 'com.tezkel.app.normal',
+      id: 'com.tezkel.normal',
       importance: 5,
       lights: true,
       name: 'My Normal notification channel',
