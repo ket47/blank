@@ -51,6 +51,7 @@
       
       <ion-button v-if="!this.currentQuantity" @click="addToOrder(+this.productData.product_quantity_min)" color="primary" size="small">
         <span style="font-size:2em">+</span><!-- that is strange but improves chrome performance-->
+        <span v-if="buttonLayout=='horizontal'">купить</span>
       </ion-button>
       
       <ion-button v-if="this.currentQuantity>0" @click="addToOrder(+this.productData.product_quantity_min)" color="light" size="small">
