@@ -55,11 +55,11 @@ class Push{
     });
     
     await PushNotifications.addListener('pushNotificationActionPerformed', action => {
-      alert('pushNotificationActionPerformed')
       if(action?.notification?.data?.link){
         this.go(action.notification.data.link)
       }
       this.dispatchIncoming(action?.notification)
+      console.log('pushNotificationActionPerformed: '+ JSON.stringify(action));
     });
 
     await PushNotifications.addListener('pushNotificationReceived', async notification => {
@@ -67,7 +67,7 @@ class Push{
         await Haptics.vibrate({duration:2000});
       }
       this.dispatchIncoming(notification)
-      //console.log('Push notification received: ', JSON.stringify(notification));
+      console.log('Push notification received: ', JSON.stringify(notification));
     });
 
   }

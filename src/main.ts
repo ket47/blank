@@ -171,6 +171,7 @@ if( 'serviceWorker' in navigator ){
   };
 }
 
+
 const app = createApp(VueApp)
   .use(IonicVue)
   .use(router)
@@ -189,17 +190,6 @@ if(isMobile){
   app.component('base-layout', BaseLayoutDesktop);
 }
 
-/**
- * opens deeplinking urls in this app
- */
-App.addListener('appUrlOpen', function (event: URLOpenListenerEvent) {
-  const slug = event.url.split('.com').pop();
-  if (slug) {
-    go(slug)
-  }
-});
-
-
 async function startApp(){
   /**
    * Signing in first is slower but is more solid because all requests will go with session header
@@ -212,5 +202,17 @@ async function startApp(){
   Push.setFlashHandler(flash)
   Push.setAlertHandler(alert)
   Push.setGoHandler(go)
+
+
+
+  /**
+   * opens deeplinking urls in this app
+   */
+  App.addListener('appUrlOpen', function (event: URLOpenListenerEvent) {
+    const slug = event.url.split('.com').pop();
+    if (slug) {
+      go(slug)
+    }
+  });
 }
 startApp();

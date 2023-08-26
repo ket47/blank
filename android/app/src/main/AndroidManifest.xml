@@ -27,6 +27,10 @@
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data android:scheme="https" android:host="tezkel.com" />
             </intent-filter>
+            <intent-filter>
+                <action android:name="NOTIF_ACTIVATE" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
         </activity>
 
         <meta-data android:name="com.google.firebase.messaging.default_notification_icon" android:resource="@mipmap/ic_launcher" />
