@@ -248,7 +248,7 @@ const routes = [
   },
   
   {
-    path: '/user/user-addresses',
+    path: '/modal/user-addresses',
     component: () => import('@/views/UserAddresses.vue')
   },
 

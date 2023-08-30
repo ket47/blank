@@ -250,13 +250,31 @@ export default {
                 return false
             }
         },
+        async itemCheckoutDataSet(){
+            const request={
+                start_location_latitude:this.locationStart.location_latitude,
+                start_location_longitude:this.locationStart.location_longitude,
+                start_location_address:this.locationStart.location_address,
+
+                finish_location_latitude:this.locationFinish.location_latitude,
+                finish_location_longitude:this.locationFinish.location_longitude,
+                finish_location_address:this.locationFinish.location_address,
+
+
+            }
+            try{
+                const response=await jQuery.post(`${this.heap.state.hostname}Shipment/itemCheckoutDataSet`,request)
+            } catch(err){
+                console.log(err)
+            }
+        },
         locationStartSelect(){
             this.locationStart='waiting_for_selection'
-            this.$go('/user/user-addresses');
+            this.$go('/modal/user-addresses');
         },
         locationFinishSelect(){
             this.locationFinish='waiting_for_selection'
-            this.$go('/user/user-addresses');
+            this.$go('/modal/user-addresses');
         },
 
         // async modalLocationCreate( location_group_id, location_group_name ) {
@@ -306,7 +324,9 @@ export default {
             if(this.locationFinish=='waiting_for_selection'){
                 this.locationFinish=loc
             }
-            console.log(loc)
+            if(this.locationStart && this.locationFinish){
+                this.itemCheckoutDataSet()
+            }
         })
 
     },

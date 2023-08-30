@@ -1,5 +1,5 @@
 {
-	"appId": "com.tezkel.app",
+	"appId": "com.tezkel.twa",
 	"appName": "Tezkel",
 	"webDir": "../pwa/www",
 	"bundledWebRuntime": false,
@@ -14,6 +14,7 @@
 	},
 	"server": {
 		"url": "http://192.168.0.104:8100",
-		"cleartext": true
+		"hostname": "tezkel.com",
+		"androidScheme": "https"
 	}
 }

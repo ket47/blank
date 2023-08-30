@@ -590,7 +590,7 @@ export default({
                         case 'address_not_set':
                             this.$flash("Необходимо добавить адрес доставки")
                             this.$topic.publish('dismissModal')
-                            this.$go('/user/user-addresses')
+                            this.$go('/modal/user-addresses')
                             break;
                     }
                     return false
@@ -665,7 +665,7 @@ export default({
         //     if( role=='confirm' ){
         //         return true
         //     }
-        //     this.$go('/user/user-addresses');
+        //     this.$go('/modal/user-addresses');
         //     return false
         // },
         async heavyLoadConfirm(){
@@ -710,7 +710,7 @@ export default({
             if( role=='confirm' ){
                 return true
             }
-            this.$go('/user/user-addresses');
+            this.$go('/modal/user-addresses');
             return false
         },
         async promoPick() {

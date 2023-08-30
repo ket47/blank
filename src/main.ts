@@ -109,7 +109,6 @@ const alert = async (message:string,title:string)=>{
 }
 
 const go = async (route:any)=>{
-  Topic.publish('dismissModal')
   router.push(route)
 }
 

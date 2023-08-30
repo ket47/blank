@@ -108,7 +108,7 @@ export default {
       if(this.nextRoute){
         this.$heap.state.next_route=this.nextRoute
       }
-      this.$go('/user/user-addresses');
+      this.$go('/modal/user-addresses');
     },
     async locationCommentChanged(){
       const request={

@@ -129,7 +129,7 @@ export default{
                     case 'address_not_set':
                         this.$flash("Необходимо добавить адрес доставки")
                         this.$topic.publish('dismissModal')
-                        this.$go('/user/user-addresses')
+                        this.$go('/modal/user-addresses')
                         this.$heap.state.next_route='/order/order-'+order_id;
                         break;
                 }

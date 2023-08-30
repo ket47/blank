@@ -78,6 +78,10 @@ import ImagePreviewModal        from '@/components/ImagePreviewModal.vue'
 import jQuery                   from 'jquery'
 import Topic                    from '@/scripts/Topic.js'
 import User                     from '@/scripts/User.js'
+// import {
+//   isPlatform,
+// }                             from "@ionic/vue";
+// import { Camera, CameraResultType } from '@capacitor/camera';
 
 export default {
     props:['images','image_holder','image_holder_id','controller','title','hide_if_empty'],
@@ -191,9 +195,14 @@ export default {
             Topic.on('dismissModal',dismissFn);
             return modal.present();
         },
-        async uploadImage(event) {
+        async uploadImage(event=null, imagedata=null) {
             let data = new FormData();
-            data.append("files[]", event.target.files[0]); 
+            if( event ){
+                data.append("files[]", event.target.files[0]); 
+            }
+            if( imagedata ){
+                data.append("files[]", imagedata); 
+            }
             data.set("image_holder_id", this.image_holder_id);
             if(this.image_holder){
                 data.set("image_holder", this.image_holder);
@@ -220,8 +229,25 @@ export default {
                 this.$flash("Не удалось загрузить фото");
             }
         },
+        // async useCamera(){
+        //     const imageBase64 = await Camera.getPhoto({
+        //         quality: 90,
+        //         allowEditing: false,
+        //         resultType: CameraResultType.Base64
+        //     });
+
+        //     alert(imageBase64.base64String)
+
+
+        //     await this.uploadImage(null,imageBase64.base64String)
+        //     console.log(imageBase64)
+        // },
         take_photo(){
-            jQuery(`#${this.fileUploaderId}`).trigger('click');
+            // if( isPlatform('capacitor') ){
+            //     this.useCamera();
+            // } else {
+                jQuery(`#${this.fileUploaderId}`).trigger('click');
+            // }
             this.editMode=true
         },
     }

@@ -111,6 +111,9 @@ import {
     IonIcon,
     IonLabel,
     IonTitle,
+    IonImg,
+    IonSegment,
+    IonSegmentButton,
 }                   from '@ionic/vue'
 import {
     cubeOutline,
@@ -138,6 +141,9 @@ export default {
     IonIcon,
     IonLabel,
     IonTitle,
+    IonImg,
+    IonSegment,
+    IonSegmentButton,
     },
     setup(){
         return {

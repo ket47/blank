@@ -173,7 +173,7 @@ export default({
                         break;
                     case 'address_not_set':
                         this.$flash("Необходимо добавить адрес доставки")
-                        this.$go('/user/user-addresses');
+                        this.$go('/modal/user-addresses');
                         break;
                     case 'order_sum_exceeded':
                         this.$flash("Сумма заказа должна быть меньше предоплаты")
