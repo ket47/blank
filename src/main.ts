@@ -36,6 +36,7 @@ import BaseLayoutDesktop    from '@/components/BaseLayoutDesktop.vue';
 import jQuery               from "jquery";
 import Topic                from '@/scripts/Topic.js';
 import User                 from '@/scripts/User.js'
+import Utils                 from '@/scripts/Utils.js'
 import Order                from '@/scripts/Order.js'
 import Metrics              from '@/scripts/Metrics.js'
 import Push                 from '@/scripts/Push.js'
@@ -152,6 +153,7 @@ jQuery( document ).ajaxComplete(()=>{
   },100)
 })
 
+
 if( 'serviceWorker' in navigator ){
   navigator.serviceWorker.onmessage = (event) => {
     const {data}=event.data??{}
@@ -193,6 +195,15 @@ async function startApp(){
   /**
    * Signing in first is slower but is more solid because all requests will go with session header
    */
+
+  const sessionId = await Utils.pref.get('sessionId')
+  if(sessionId){
+    console.log(sessionId)
+    await User.sessionIdUse(sessionId);
+  }
+
+
+
   app.mount('#app');
   await User.autoSignIn();
 
