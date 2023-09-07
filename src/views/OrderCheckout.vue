@@ -13,7 +13,7 @@
     }
 </style>
 <template>
-<base-layout :pageTitle="`Оформление заказа из ${order?.store?.store_name}`" :pageDefaultBackLink="`/order/order-${order_id}`">
+<base-layout :pageTitle="`Оформление заказа из ${order?.store?.store_name||''}`" :pageDefaultBackLink="`/order/order-${order_id}`">
     <div v-if="is_checkout_data_loaded">
 
 
@@ -219,7 +219,6 @@ import {
     IonImg,
     IonLabel,
     IonSkeletonText,
-    IonFab,
 }                               from "@ionic/vue";
 import OrderCheckoutAddress     from '@/components/OrderCheckoutAddress.vue';
 import OrderPaymentCardModal    from '@/components/OrderPaymentCardModal.vue';
@@ -242,7 +241,6 @@ export default({
     IonImg,
     IonLabel,
     IonSkeletonText,
-    IonFab,
     },
     setup(){
         return {
@@ -367,6 +365,7 @@ export default({
         async itemLoad(){
             try{
                 this.order=await jQuery.post(`${this.$heap.state.hostname}Order/itemGet`,{order_id:this.order_id})
+                console.log('checkout order get')
                 if( this.order_sum_delivery==0 ){
                     this.order_sum_delivery==this.order.order_sum_delivery
                 }
@@ -386,11 +385,11 @@ export default({
             return reject
         },
         async checkoutDataGet(){
+            this.order=this.$heap.state.currentOrder;
             if(this.debounce()){
                 return
             }
 
-            this.order=this.$heap.state.currentOrder;
             if( !this.order ){
                 await this.itemLoad()
             }

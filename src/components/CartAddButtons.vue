@@ -134,7 +134,6 @@ export default{
       }
     },
     addToOrder(step){
-      console.log(step)
       let newQuantity=parseFloat(this.currentQuantity)+parseFloat(step);
       if( !this.productItem && !this.entry ){
         return;//haven't loaded yet or qty is negative

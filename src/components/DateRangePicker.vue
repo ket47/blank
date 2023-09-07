@@ -38,10 +38,7 @@ import {
         modalController,
         IonTitle,
         IonDatetime,
-        IonModal,
         IonToolbar,
-        IonButtons,
-        IonButton,
         IonContent,
         IonHeader,
 }               from '@ionic/vue'
@@ -50,10 +47,7 @@ export default {
     components:{
         IonTitle,
         IonDatetime,
-        IonModal,
         IonToolbar,
-        IonButtons,
-        IonButton,
         IonContent,
         IonHeader,
     },

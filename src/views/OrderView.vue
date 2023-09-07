@@ -117,10 +117,9 @@ export default({
         },
         itemAutoReload(){
             clearTimeout(this.orderAutoloadClock)
-            const self=this
             this.orderAutoloadClock=setTimeout(()=>{
-                self.itemGet()
-                //console.log('autoreload')
+                this.itemGet()
+                console.log('order autoreload')
             },60*1000)
         },
         async onStageCreate(order_id, order_stage_code){
@@ -144,17 +143,6 @@ export default({
                         return;
                     }
                     await this.itemGet();
-                    if( order_stage_code=='customer_cart' ){
-                        let order={
-                            order_store_id:this.order.order_store_id,
-                            order_id:this.order.order_id,
-                            entries:this.order.entries,
-                            stage_current_name:this.order.stage_current_name,
-                            stage_next:this.order.stage_next,
-                            store:{store_name:this.order.store.store_name}
-                        }
-                        Order.cart.itemSet(order)//fill local cart with reduced remote version
-                    }
                     return true;
                 }
             }catch(err){
@@ -201,7 +189,8 @@ export default({
             }
         },
         async action_checkout(){
-            this.$heap.commit('setCurrentOrder',this.order);
+            console.log('setCurrentOrder',this.order)
+            await this.$heap.commit('setCurrentOrder',this.order);
             this.$go(`/modal/order-checkout-${this.order_id}`);
         },
         async action_add(){

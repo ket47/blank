@@ -166,7 +166,6 @@ import {
     IonItem,
     IonIcon,
     IonLabel,
-    IonTitle,
     IonSegment,
     IonSegmentButton,
     IonImg,
@@ -200,13 +199,11 @@ export default {
     IonItem,
     IonIcon,
     IonLabel,
-    IonTitle,
     IonSegment,
     IonSegmentButton,
     IonImg,
     IonCard,
     IonCardContent,
-    DateRangePicker,
     },
     setup(){
         return {

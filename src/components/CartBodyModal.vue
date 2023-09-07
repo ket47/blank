@@ -124,7 +124,7 @@ export default{
                 const exception_code=exception.messages.error;
                 switch(exception_code){
                     case 'order_is_empty':
-                        this.$alert("К сожалению, товара не осталось в наличии &#9785;","Заказ пуст");
+                        this.$alert("К сожалению, товара не осталось в наличии ☹️","Заказ пуст");
                         break;
                     case 'address_not_set':
                         this.$flash("Необходимо добавить адрес доставки")
