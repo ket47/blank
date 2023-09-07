@@ -10,7 +10,7 @@ const Order = {
         },
         async itemGet(order_id){
             const order= await Utils.post( heap.state.hostname + "Order/itemGet",{order_id} )
-            if( order.stage_current=='customer_cart' ){
+            if( order.stage_current=='customer_cart' && order.user_role=='customer' ){
                 const cart={
                     order_store_id:order.order_store_id,
                     order_id:order.order_id,
@@ -23,6 +23,8 @@ const Order = {
                     created_at:order.created_at
                 }
                 Order.cart.itemSet(cart)//fill local cart with reduced remote version
+            } else if(order?.order_store_id){
+                Order.cart.itemDelete(order.order_id)//delete cart from device if order is at another stage
             }
             return order
         },
@@ -175,8 +177,9 @@ const Order = {
             const existingOrder=this.itemGetByStoreId(order.order_store_id);
             if( existingOrder ){
                 heap.state.cartList[existingOrder.order_index]=order
+            } else{
+                heap.state.cartList.push(order)
             }
-            heap.state.cartList.push(order)
             Order.cart.listSave();
         },
         itemSave(store_id,entries){
