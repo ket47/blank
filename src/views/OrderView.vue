@@ -202,7 +202,7 @@ export default({
         },
         async action_checkout(){
             this.$heap.commit('setCurrentOrder',this.order);
-            this.$go(`/order/order-checkout-${this.order_id}`);
+            this.$go(`/modal/order-checkout-${this.order_id}`);
         },
         async action_add(){
             const modal = await modalController.create({
@@ -257,9 +257,7 @@ export default({
         },
     },
     ionViewDidEnter() {
-        if(this.order==null){
-            this.itemGet();
-        }
+        this.itemGet();
     },
     ionViewDidLeave(){
         this.order=null;

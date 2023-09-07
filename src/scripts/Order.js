@@ -185,12 +185,11 @@ const Order = {
                 entries:entries||[],
                 created_at:date.toISOString().replace(/[T]/g,' ').replace(/.\d\d\dZ/,''),
                 stage_next:{
-                    "customer_purged": ["Удалить","danger"],
-                    "customer_confirmed": ["Продолжить"],
+                    "customer_confirmed": ["Перейти к оформлению"],
+                    "customer_purged": ["Удалить","danger","clear"],
                 },
                 stage_current:'customer_cart',
                 user_role:'customer',
-
             };
             heap.state.cartList.push(cart);
             Order.cart.listSave();

@@ -112,7 +112,7 @@ export default{
               const confirmedOrder=await Order.api.itemGet(syncedOrder.order_id)
               this.$heap.commit('setCurrentOrder',confirmedOrder);
               await this.$router.push(`/order/order-${syncedOrder.order_id}`)
-              await this.$router.push(`/order/order-checkout-${syncedOrder.order_id}`);
+              await this.$router.push(`/modal/order-checkout-${syncedOrder.order_id}`);
               return;
             }
             this.$go('/order/order-'+syncedOrder.order_id);
