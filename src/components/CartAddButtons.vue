@@ -158,6 +158,7 @@ export default{
       if( newQuantity<0 || !newQuantity ){
         newQuantity=0;
       }
+      console.log(newQuantity,newQuantity/this.productData.product_quantity_min)
       newQuantity=this.productData.product_quantity_min*Math.round(newQuantity/this.productData.product_quantity_min);
       if( this.productData.is_counted==1 ){
         let freeProductQuantity=this.productData.product_quantity-this.productData.product_quantity_reserved

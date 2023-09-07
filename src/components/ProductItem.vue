@@ -15,9 +15,9 @@
 }
 .product_list_item_img{
     border-radius: 10px;
-    border: 2px solid var(--ion-color-light);
-    width:125px;
-    height:125px;
+    -border: 2px solid var(--ion-color-light);
+    width:140px;
+    height:140px;
     overflow:hidden;
     align-items: center;
     justify-content: center;
@@ -53,7 +53,7 @@
             </div> 
             <ion-chip v-if="discount<0" style="position:absolute;right:0px;top:0px;background-color:var(--ion-color-success-tint)" outline color="success">{{discount}}%</ion-chip>
             <img class="blur-image" :src="`${$heap.state.hostname}image/get.php/${productItem.image_hash}.10.10.png`"/>
-            <ion-img @click="$go(`/catalog/product-${productItem.product_id}`)" :src="`${$heap.state.hostname}image/get.php/${productItem.image_hash}.200.200.webp`"/>
+            <ion-img @click="$go(`/catalog/product-${productItem.product_id}`)" :src="`${$heap.state.hostname}image/get.php/${productItem.image_hash}.280.280.webp`"/>
             <ion-icon v-if="productItem.options" :src="layersOutline" color="primary" size="large" style="position:absolute;bottom:3px;right:3px"/>
         </div>
         <div style="height:5em;overflow:hidden">

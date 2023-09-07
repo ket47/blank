@@ -81,7 +81,7 @@
         </ion-item>
 
         <ion-item-group v-if="job">
-            <ion-button @click="deliveryStart()" expand="full">Начать доставку</ion-button>
+            <ion-button @click="deliveryStart()" expand="full">Взять задание</ion-button>
         </ion-item-group>
     </ion-list>
   </ion-content>
