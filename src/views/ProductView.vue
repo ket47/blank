@@ -121,13 +121,14 @@ ion-accordion-group .accordion-expanding .product-description{
 
           <ion-label v-if="productItem.product_unit=='порция'" color="medium">Цена за {{weight_in_gramms}}г</ion-label>
           <ion-label v-else-if="productItem.product_unit=='порция мл'" color="medium">Цена за {{weight_in_gramms}}мл</ion-label>
+          <ion-label v-else-if="productItem.product_unit=='кг' && productItem.product_quantity_min<1" style="color:var(--ion-color-medium)">Цена за {{unit_in_gramms}}г</ion-label>
           <ion-label v-else color="medium">Цена за {{productItem.product_unit}}</ion-label>
 
           <ion-label slot="end" color="primary" style="font-size:1.2em">
             <span v-if="productItem.product_price!=productItem.product_final_price" style="color:var(--ion-color-danger);font-size:0.75em">
-                <s>{{productItem.product_price}}{{$heap.state.currencySign}}</s>&nbsp;&nbsp;
+                <s>{{product_price}}{{$heap.state.currencySign}}</s>&nbsp;&nbsp;
             </span>
-            {{productItem.product_final_price}}{{$heap.state.currencySign}}
+            {{product_final_price}}{{$heap.state.currencySign}}
           </ion-label>
         </ion-item>
         <ion-item lines="none">
@@ -291,6 +292,21 @@ export default  {
     },
     weight_in_gramms(){
         return this.productItem.product_weight*1000
+    },
+    unit_in_gramms(){
+        return Math.round(this.productItem.product_quantity_min*1000)
+    },
+    product_price(){
+        if(this.productItem.product_unit=='кг' && this.productItem.product_quantity_min<1){
+            return Math.round(this.productItem.product_price*this.productItem.product_quantity_min)
+        }
+        return this.productItem.product_price;
+    },
+    product_final_price(){
+        if(this.productItem.product_unit=='кг' && this.productItem.product_quantity_min<1){
+            return Math.round(this.productItem.product_final_price*this.productItem.product_quantity_min)
+        }
+        return this.productItem.product_final_price;
     },
     itemDescription(){
       return this.productItem?.product_description?.replace(/<\/?[^>]+(>|$)/g, "").replace(/[\n\r]/g,'<br>')

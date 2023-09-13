@@ -61,15 +61,16 @@
                 {{ productItem.product_name }}
             </div>
             <span v-if="productItem.product_price!=productItem.product_final_price" style="color:var(--ion-color-danger)">
-                <s>{{productItem.product_price}}{{$heap.state.currencySign}}</s>&nbsp;&nbsp;
+                <s>{{product_price}}{{$heap.state.currencySign}}</s>&nbsp;&nbsp;
             </span>
             <span style="color:var(--ion-color-primary)">
-                <b style="font-weight: bold; margin: 0; font-size: 1.4em">{{productItem.product_final_price}}</b>
+                <b style="font-weight: bold; margin: 0; font-size: 1.4em">{{product_final_price}}</b>
                 <b style="font-weight: bold; margin: 0; font-size: 1.2em">{{$heap.state.currencySign}}</b>
             </span>
             /
             <span v-if="productItem.product_unit=='порция'" style="color:var(--ion-color-medium)">{{weight_in_gramms}}г</span>
             <span v-else-if="productItem.product_unit=='порция мл'" style="color:var(--ion-color-medium)">{{weight_in_gramms}}мл</span>
+            <span v-else-if="productItem.product_unit=='кг' && productItem.product_quantity_min<1" style="color:var(--ion-color-medium)">{{unit_in_gramms}}г</span>
             <span v-else style="color:var(--ion-color-medium)">{{productItem.product_unit}}</span>
         </div>
     </div>
@@ -106,7 +107,7 @@ export default {
             if(this.productItem.is_disabled==1){
                 return 'disabled'
             }
-            if(this.productItem.is_counted==1 && (this.productItem.product_quantity-this.productItem.product_quantity_reserved)<1){
+            if(this.productItem.is_counted==1 && !( (this.productItem.product_quantity-this.productItem.product_quantity_reserved)>0 ) ){
                 return 'absent'
             }
             return ''
@@ -116,7 +117,22 @@ export default {
         },
         weight_in_gramms(){
             return this.productItem.product_weight*1000
-        }
+        },
+        unit_in_gramms(){
+            return Math.round(this.productItem.product_quantity_min*1000)
+        },
+        product_price(){
+            if(this.productItem.product_unit=='кг' && this.productItem.product_quantity_min<1){
+                return Math.round(this.productItem.product_price*this.productItem.product_quantity_min)
+            }
+            return this.productItem.product_price;
+        },
+        product_final_price(){
+            if(this.productItem.product_unit=='кг' && this.productItem.product_quantity_min<1){
+                return Math.round(this.productItem.product_final_price*this.productItem.product_quantity_min)
+            }
+            return this.productItem.product_final_price;
+        },
     }
 }
 </script>

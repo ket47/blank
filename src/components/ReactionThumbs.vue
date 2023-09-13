@@ -4,6 +4,7 @@
         <ion-label v-if="reactionSummary?.sum_is_like>0">{{reactionSummary?.sum_is_like??''}}</ion-label>
         <ion-label color="medium">&nbsp;|&nbsp;</ion-label> 
         <ion-icon :src="thumbsDownSharp" :color="reactionSummary?.reaction_is_dislike==1?'dark':'medium'"/>
+        <ion-label v-if="reactionSummary?.sum_is_dislike>0">{{reactionSummary?.sum_is_dislike??''}}</ion-label>
     </ion-chip>
 </template>
 <script>

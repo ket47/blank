@@ -37,60 +37,100 @@
                 </ion-toolbar>
             </ion-header>
             <ion-content class="ion-padding">
-                <ion-list>
-                    <ion-item>
-                        <ion-input v-model="currentMailing.user_filter.phones" label="Телефоны получателей" label-placement="stacked"></ion-input>
-                    </ion-item>
-                    <ion-item>
-                        <ion-input v-model="currentMailing.subject_template" label="Тема" label-placement="stacked"></ion-input>
-                    </ion-item>
-                    <ion-item>
-                        <ion-textarea v-model="currentMailing.text_template" label="Сообщение" label-placement="stacked"></ion-textarea>
-                    </ion-item>
-                    <image-tile-comp :images="currentMailing?.images" image_holder="mailing" :image_holder_id="currentMailing?.mailing_id" hide_if_empty="true" controller="Admin/Mailing" ref="mailingImgs"/>
-                    <ion-item lines="none" @click="this.$refs.mailingImgs.take_photo()">
-                        <ion-icon :src="addOutline" slot="start"/>
-                        Добавить фото
-                    </ion-item>
+                <ion-accordion-group value="recievers">
+                    <ion-accordion value="recievers">
+                        <ion-item slot="header">
+                            <ion-label>Получатели ({{currentMailing.recieverCount.sent}}/{{currentMailing.recieverCount.all}})</ion-label>
+                        </ion-item>
+                        <div class="ion-padding" slot="content">
+                            <ion-list>
+                                <ion-item>
+                                    <ion-input v-model="currentMailing.user_filter.phones" label="Телефоны получателей" label-placement="stacked"></ion-input>
+                                </ion-item>
 
-                    <ion-item>
-                        <ion-input v-model="currentMailing.link" label="Link" label-placement="stacked"></ion-input>
-                    </ion-item>
-                    <ion-item>
-                        <ion-select label="Транспорт" label-placement="stacked" v-model="currentMailing.transport">
-                            <ion-select-option value="push">Push</ion-select-option>
-                        </ion-select>
-                    </ion-item>
-                    <ion-item>
-                        <ion-select label="Рингтон" label-placement="stacked" v-model="currentMailing.sound" value="default">
-                            <ion-select-option value="">-</ion-select-option>
-                            <ion-select-option value="default">стандарт</ion-select-option>
-                            <ion-select-option value="short.wav">Короткий</ion-select-option>
-                            <ion-select-option value="medium.wav">Средний</ion-select-option>
-                            <ion-select-option value="long.wav">Длинный</ion-select-option>
-                        </ion-select>
-                    </ion-item>
-                    <ion-item>
-                        <ion-input v-model="currentMailing.start_at" type="datetime-local" label="Начало запуска" label-placement="stacked"></ion-input>
-                    </ion-item>
-                    <ion-grid>
-                        <ion-row>
-                            <ion-col>
-                                <ion-button @click="itemDelete()" color="danger" fill="clear" expand="block">Удалить</ion-button>
-                            </ion-col>
-                            <ion-col>
-                                <ion-button @click="itemUpdate()" expand="block">Сохранить</ion-button>
-                            </ion-col>
-                            <ion-col>
-                                <ion-button @click="itemStart()" expand="block" color="light">
-                                    <ion-icon slot="start" :src="playOutline"></ion-icon>
-                                    Запустить
+                                <ion-item lines="none">
+                                    <ion-label>Локация клиентов</ion-label>
+                                </ion-item>
+                                <ion-item lines="none" v-if="currentMailing.user_filter.location">
+                                    <ion-icon slot="start" :src="locationOutline"/>
+                                    <ion-label style="white-space:normal;cursor:pointer;">{{ currentMailing.user_filter.location.location_address }}</ion-label>
+                                    <ion-icon slot="end" :icon="trash" @click="locationDelete(`${currentMailing.user_filter.location.location_id}`)"></ion-icon>
+                                </ion-item>
+                                <ion-button v-else @click="modalLocationCreate()" color="light" expand="block">
+                                    <ion-icon :src="locationOutline"/> Добавить адрес
                                 </ion-button>
-                            </ion-col>
-                        </ion-row>
-                    </ion-grid>
-                </ion-list>
+                                <ion-item v-if="currentMailing.user_filter.location">
+                                    <ion-input v-model="currentMailing.user_filter.radius" label="Радиус вокруг локации км" label-placement="stacked"></ion-input>
+                                </ion-item>
 
+                                <ion-item lines="none">
+                                    <ion-chip v-if="currentMailing.recieverCount.all>0">Всего олучателей {{currentMailing.recieverCount.all}}</ion-chip>
+                                    <ion-chip v-if="currentMailing.recieverCount.sent>0" color="success">Послано {{currentMailing.recieverCount.sent}}</ion-chip>
+                                    <ion-chip v-if="currentMailing.recieverCount.fail>0" color="danger">Ошибка {{currentMailing.recieverCount.fail}}</ion-chip>
+                                </ion-item>
+                                <ion-button @click="recieverListCreate()" expand="block">
+                                    Создать список получателей
+                                </ion-button>
+
+                            </ion-list>
+                        </div>
+                    </ion-accordion>
+                    <ion-accordion value="message">
+                        <ion-item slot="header">
+                            <ion-label>Сообщение</ion-label>
+                        </ion-item>
+                        <ion-list slot="content">
+                            <ion-item>
+                                <ion-input v-model="currentMailing.subject_template" label="Тема" label-placement="stacked"></ion-input>
+                            </ion-item>
+                            <ion-item>
+                                <ion-textarea v-model="currentMailing.text_template" label="Сообщение" label-placement="stacked"></ion-textarea>
+                            </ion-item>
+                            <image-tile-comp :images="currentMailing?.images" image_holder="mailing" :image_holder_id="currentMailing?.mailing_id" hide_if_empty="true" controller="Admin/Mailing" ref="mailingImgs"/>
+                            <ion-item lines="none" @click="this.$refs.mailingImgs.take_photo()">
+                                <ion-icon :src="addOutline" slot="start"/>
+                                Добавить фото
+                            </ion-item>
+
+                            <ion-item>
+                                <ion-input v-model="currentMailing.link" label="Link" label-placement="stacked"></ion-input>
+                            </ion-item>
+                            <ion-item>
+                                <ion-select label="Транспорт" label-placement="stacked" v-model="currentMailing.transport">
+                                    <ion-select-option value="push">Push</ion-select-option>
+                                </ion-select>
+                            </ion-item>
+                            <ion-item>
+                                <ion-select label="Рингтон" label-placement="stacked" v-model="currentMailing.sound" value="default">
+                                    <ion-select-option value="">-</ion-select-option>
+                                    <ion-select-option value="default">стандарт</ion-select-option>
+                                    <ion-select-option value="short.wav">Короткий</ion-select-option>
+                                    <ion-select-option value="medium.wav">Средний</ion-select-option>
+                                    <ion-select-option value="long.wav">Длинный</ion-select-option>
+                                </ion-select>
+                            </ion-item>
+                            <ion-item>
+                                <ion-input v-model="currentMailing.start_at" type="datetime-local" label="Начало запуска" label-placement="stacked"></ion-input>
+                            </ion-item>
+                            <ion-grid>
+                                <ion-row>
+                                    <ion-col>
+                                        <ion-button @click="itemDelete()" color="danger" fill="clear" expand="block">Удалить</ion-button>
+                                    </ion-col>
+                                    <ion-col>
+                                        <ion-button @click="itemUpdate()" expand="block">Сохранить</ion-button>
+                                    </ion-col>
+                                    <ion-col>
+                                        <ion-button @click="itemStart()" expand="block" color="light">
+                                            <ion-icon slot="start" :src="playOutline"></ion-icon>
+                                            Запустить
+                                        </ion-button>
+                                    </ion-col>
+                                </ion-row>
+                            </ion-grid>
+                        </ion-list>
+                    </ion-accordion>
+                </ion-accordion-group>
 
             </ion-content>
         </ion-modal>
@@ -99,6 +139,7 @@
 </template>
 <script>
 import {
+  modalController,
   IonList,
   IonItem,
   IonLabel,
@@ -117,6 +158,9 @@ import {
   IonGrid,
   IonRow,
   IonCol,
+  IonAccordionGroup,
+  IonAccordion,
+  IonImg,
  }                          from '@ionic/vue';
  import {
     addOutline,
@@ -124,33 +168,39 @@ import {
     imageOutline,
     closeOutline,
     playOutline,
+    locationOutline,
+    trash,
  }                          from "ionicons/icons";
 import Utils                from '@/scripts/Utils'
 import jQuery               from 'jquery'
 import ImageTileComp        from '@/components/ImageTileComp.vue'
+import UserAddressPicker    from '@/components/UserAddressPicker.vue'
 
 
 export default {
     components: {
         ImageTileComp,
-  IonList,
-  IonItem,
-  IonLabel,
-  IonIcon,
-  IonModal,
-  IonHeader,
-  IonToolbar,
-  IonButtons,
-  IonTitle,
-  IonButton,
-  IonContent,
-  IonInput,
-  IonTextarea,
-  IonSelect,
-  IonSelectOption,
-  IonGrid,
-  IonRow,
-  IonCol,
+        IonList,
+        IonItem,
+        IonLabel,
+        IonIcon,
+        IonModal,
+        IonHeader,
+        IonToolbar,
+        IonButtons,
+        IonTitle,
+        IonButton,
+        IonContent,
+        IonInput,
+        IonTextarea,
+        IonSelect,
+        IonSelectOption,
+        IonGrid,
+        IonRow,
+        IonCol,
+        IonAccordionGroup,
+        IonAccordion,
+  IonImg,
     },
     setup(){
         return {
@@ -159,6 +209,8 @@ export default {
             imageOutline,
             closeOutline,
             playOutline,
+            locationOutline,
+            trash,
         }
     },
     data(){
@@ -195,8 +247,7 @@ export default {
             const request=this.currentMailing
             try{
                 await jQuery.post(`${this.$heap.state.hostname}Admin/Mailing/itemUpdate`,JSON.stringify(request))
-                this.isMailingOpen=false
-                this.listGet()
+                //this.listGet()
             }catch{/** */}
         },
         async itemDelete(){
@@ -256,6 +307,50 @@ export default {
                 console.log(err)
             }
             
+        },
+        async modalLocationCreate() {
+            if(!this.$heap.state.user.user_id){
+                this.$flash('Чтобы добавленные адреса сохранились, пожалуйста войдите в систему');
+                this.$go({name: 'UserSignIn'});
+                return;
+            }
+            var location_group_name_low="рабочий";
+            const modal = await modalController.create({
+                component: UserAddressPicker,
+                showBackdrop:true,
+                backdropDismiss:true,
+                componentProps:{
+                location_group_name_low
+                },
+            });
+            await modal.present()
+            const location=await modal.onDidDismiss()
+            if(location){
+                this.currentMailing.user_filter.location=location.data
+                this.itemUpdate()
+            }
+        },
+        async locationDelete( location_id ){
+            try{
+                this.currentMailing.user_filter.location=null
+                this.itemUpdate()
+            }catch{
+                this.$flash("Удалить адрес не удалось")
+            }
+        },
+        async recieverListCreate(){
+            try{
+                const request={
+                    mailing_id:this.currentMailing.mailing_id,
+                }
+                await this.itemUpdate()
+                const recieverCount=await jQuery.post(this.$heap.state.hostname + "Admin/Mailing/recieverListCreate",request)
+                this.$flash(`В список получателей добавлено ${recieverCount} запись`)
+                this.itemGet()
+            }catch{
+                this.$flash("Создать список получателей не удалось")
+            }
+
         }
     },
     ionViewDidEnter(){

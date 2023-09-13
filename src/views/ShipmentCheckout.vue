@@ -74,7 +74,8 @@
                     </ion-segment-button>
                     <ion-segment-button value="schedule" @click="datetimePick()">
                         <ion-label><b>Ко времени</b></ion-label>
-                        выберите день и время
+                        <span v-if="deliveryArriveDatetimeLoc">{{deliveryArriveDatetimeLoc}}</span>
+                        <span v-else>выберите день и время</span>
                     </ion-segment-button>
                 </ion-segment>
             </ion-item>
@@ -216,6 +217,15 @@ export default {
         };
     },
     computed:{
+        deliveryArriveDatetimeLoc(){
+            if(!this.deliveryArriveDatetime){
+                return null
+            }
+            const event = new Date(Date.parse(this.deliveryArriveDatetime));
+            const options = { month: 'short', day: 'numeric',hour:'numeric',minute:'numeric' };
+
+            return event.toLocaleDateString(undefined, options);
+        },
         checkoutError(){
             if( this.errorCode=='no_input' ){
                 return "Выберите адрес забора и доставки посылки"
@@ -230,8 +240,9 @@ export default {
         return {
             presentingElement: null,
             isDatePickerOpen:false,
-            deliveryStartRange:{},
-            deliveryStartRangeHours:[],
+            deliveryArriveRange:{},
+            deliveryArriveRangeHours:[],
+            deliveryArriveDatetime:null,
 
             ship_id:this.$route.params.id,
             ship:null,
@@ -299,7 +310,7 @@ export default {
                 return
             }
             this.deliveryTime=Utils.deliveryTimeCalculate(bulkResponse.Location_distanceGet,0)
-            this.deliveryStartRange=bulkResponse.DeliveryStartRange
+            this.deliveryArriveRange=bulkResponse.deliveryArriveRange
 
             this.locationStart=bulkResponse.Ship_locationStart
             this.locationFinish=bulkResponse.Ship_locationFinish
@@ -315,6 +326,7 @@ export default {
                 ship_id:this.ship_id,
                 ship_start_location_id:this.locationStart?.location_id,
                 ship_finish_location_id:this.locationFinish?.location_id,
+                ship_arrive_time:this.deliveryArriveDatetime,
             }
             try{
                 const response=await jQuery.post(`${this.$heap.state.hostname}Shipment/itemCheckoutDataSet`,JSON.stringify(shipData))
@@ -357,32 +369,19 @@ export default {
             this.locationFinish=await this.locationSelect()
         },
         async datetimePick(){
+            this.deliveryArriveRange.defaultValue=this.deliveryArriveDatetime??null
             const modal = await modalController.create({
                 component: DateRangePicker,
                 initialBreakpoint:'0.4',
                 showBackdrop:true,
-                componentProps:{dateRange:this.deliveryStartRange},
+                componentProps:{dateRange:this.deliveryArriveRange},
             });
             modal.present()
-            const datetime=await modal.onDidDismiss()
-            
-            console.log(datetime)
+            const data=await modal.onDidDismiss()
+            if(data.role=="confirm"){
+                this.deliveryArriveDatetime=data.data
+            }
         },
-
-        // async modalLocationCreate( location_group_id, location_group_name ) {
-
-        //     const modal = await modalController.create({
-        //         component: UserAddressPicker,
-        //         showBackdrop:true,
-        //         componentProps:{},
-        //     });
-        //     modal.onDidDismiss().then(location => {
-        //         console.log(location);
-        //         //this.locationCreate(location_group_id,location.data);
-        //     });
-        //     return modal.present();
-        // },
-
         async customerIpLocationGet(){
             try{
                 const response = await fetch("https://geolocation-db.com/json/");
