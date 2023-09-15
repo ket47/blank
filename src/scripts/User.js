@@ -88,7 +88,7 @@ const User = {
             }
         })
         .fail(async function(){
-            await Utils.pref.set('signInData',null)//user signin is failed should we reset localStorage.signInData????
+            //await Utils.pref.set('signInData',null)//user signin is failed should we reset localStorage.signInData????
         });
     },
     async signOut(){
