@@ -112,7 +112,7 @@ export default{
               const confirmedOrder=await Order.api.itemGet(syncedOrder.order_id)
               this.$heap.commit('setCurrentOrder',confirmedOrder);
               await this.$router.push(`/order/order-${syncedOrder.order_id}`)
-              await this.$router.push(`/order/order-checkout-${syncedOrder.order_id}`);
+              await this.$router.push(`/modal/order-checkout-${syncedOrder.order_id}`);
               return;
             }
             this.$go('/order/order-'+syncedOrder.order_id);
@@ -124,7 +124,7 @@ export default{
                 const exception_code=exception.messages.error;
                 switch(exception_code){
                     case 'order_is_empty':
-                        this.$alert("К сожалению, товара не осталось в наличии &#9785;","Заказ пуст");
+                        this.$alert("К сожалению, товара не осталось в наличии ☹️","Заказ пуст");
                         break;
                     case 'address_not_set':
                         this.$flash("Необходимо добавить адрес доставки")

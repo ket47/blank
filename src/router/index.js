@@ -174,10 +174,6 @@ const routes = [
         component: () => import('@/views/OrderList.vue')
       },
       {
-        path: '/order/order-checkout-:id',
-        component: OrderCheckout
-      },
-      {
         path: '/order/order-:id',
         component: OrderView
       },
@@ -246,12 +242,14 @@ const routes = [
       },
   ]
   },
-  
+  {
+    path: '/modal/order-checkout-:id',
+    component: OrderCheckout
+  },
   {
     path: '/modal/user-addresses',
     component: () => import('@/views/UserAddresses.vue')
   },
-
   {
     path: '/catalog/store-:id/menu',
     component: () => import('@/views/StoreMenu.vue')

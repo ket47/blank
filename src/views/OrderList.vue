@@ -23,7 +23,7 @@
                     <ion-text>
                         <ion-label>
                             <ion-chip color="medium">{{order.order_sum_total}}{{$heap.state.currencySign}}</ion-chip>
-                            <ion-chip color="primary" v-if="order.stage_current_name">
+                            <ion-chip :color="order.stage_color" v-if="order.stage_current_name">
                                 <ion-icon :icon="checkmarkOutline"></ion-icon>
                                 <ion-label color="dark">{{order.stage_current_name}}</ion-label>
                             </ion-chip>
@@ -169,6 +169,7 @@ export default {
                         break;
                 }
                 order.date=this.toLocDate(order.created_at)
+                order.stage_color=order.stage_current=='customer_cart'?'light':'primary'
             }
             return this.orderList;
         },

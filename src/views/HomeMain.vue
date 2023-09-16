@@ -54,7 +54,7 @@
       <!-- STORES ARE FOUND -->
       <div v-else-if="storeList && storeList.length>0">
         <home-promo-product-slider :store-list="storeList" :limit="30" titleColor="#f77f00" />  
-        <home-primary-category-widget category-limit="5" titleColor="#0097d2" />  
+        <home-primary-category-widget category-limit="10" titleColor="#0097d2" />  
 
         <ion-list ref="storeSlidersContainer">
           <home-store-slider v-if="storeSliderLoadQueue >= 0" :store-list="storeList" :filter="{member_of_groups: {value: 'fastfood', type: 'includes'}}" sliderTitle="Фастфуд" sliderTitleColor="#ff0000" backgroundImage="/img/fastfood_background.jpg"/>  

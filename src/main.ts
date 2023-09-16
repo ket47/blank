@@ -106,7 +106,8 @@ const alert = async (message:string,title:string)=>{
         translucent:true,
         buttons: ['Ok'],
       });
-    return globalAlertPrompt.present();
+    await globalAlertPrompt.present();
+    return await globalAlertPrompt.onDidDismiss();
 }
 
 const go = async (route:any)=>{

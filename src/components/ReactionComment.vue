@@ -1,6 +1,6 @@
 <template>
-<div style="--ion-color-light:rgba(222, 222, 222,0.2);">
-    <ion-item v-if="itemCommentCount>0" color="light" lines="none" style="border-radius:10px;margin:10px" @click="reactionCommentView()">
+<div style="--ion-color-light:rgba(222, 222, 222,0.2);padding:10px;">
+    <ion-item v-if="itemCommentCount>0" color="light" lines="none" style="border-radius:10px;--min-height:80px" @click="reactionCommentView()">
       <ion-label position="stacked" color="medium">
         <b>Отзывы {{itemCommentCount}}</b>
       </ion-label>
@@ -9,7 +9,7 @@
       </ion-text>
       <ion-icon :src="chevronDownOutline" slot="end" size="small"/>
     </ion-item>
-    <ion-item v-else color="light" lines="none" @click="reactionTargetPick()" style="border-radius:10px;margin:10px">
+    <ion-item v-else color="light" lines="none" @click="reactionTargetPick()" style="border-radius:10px;--min-height:80px">
       <ion-label position="stacked" color="medium">
         <b>Отзывы</b>
       </ion-label>

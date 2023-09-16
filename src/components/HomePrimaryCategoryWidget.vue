@@ -63,7 +63,7 @@
         <ion-item lines="none"  style="--background: transparent;--padding-start: 10px;">
           <h5 slot="start" class="section-title"><span class="fake-label" :style="`background-color: ${titleColor}`">#Маркет</span></h5>
         </ion-item>
-      <ion-grid class="primary-category-grid ion-margin-top  ion-no-padding" :style="`background: no-repeat center/ cover url(${$heap.state.hostname}/image/get.php/${primaryStoreData.image_hash}.1500.1500.webp); height: 250px;`" >
+      <ion-grid class="primary-category-grid ion-margin-top  ion-no-padding"  @click="$go(`/catalog/store-${primaryStoreData.store_id}`)" :style="`background: no-repeat center/ cover url(${$heap.state.hostname}/image/get.php/${primaryStoreData.image_hash}.1500.1500.webp); height: 250px;`" >
         <ion-row class="primary-category-container ion-padding-vertical">
           <ion-col class="primary-categories horizontalScroller">
               <div v-for="group in productGroupList" :key="group.group_id" @click="$go(`/catalog/store-${primaryStoreData.store_id}?parent_group_id=${group.group_id}`)" style="cursor: pointer">
