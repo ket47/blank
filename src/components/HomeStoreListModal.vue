@@ -4,18 +4,17 @@
   justify-content: center;
   align-items: center;
   overflow: hidden;
-  height: 150px;
 }
 
-.store-list .crop-to-fit ion-img {
-  flex-shrink:0;
-  min-width:100%;
-  min-height:100%
+.store-list .crop-to-fit img {
+  width: 100%;
+  min-height: 190px !important;
+  object-fit: cover;
 }
 .store-list ion-card{
   border-radius: 10px;
 }
-.store-list .closed ion-img{
+.closed img{
   filter: grayscale(1);
 }
 .store-list .section-title{
@@ -66,7 +65,7 @@
         <div  v-for="(store_item, store_index) in filteredStoreList"  :key="store_item.store_id" >
           <ion-card style="position:relative;height:fit-content"  :class="store_item.is_opened==0?'closed':''">
             <div @click="$go(`/catalog/store-${store_item.store_id}`)" class="crop-to-fit" style="height: 180px;cursor:pointer">
-                <ion-img v-if="store_item.image_hash" :src="$heap.state.hostname +'/image/get.php/' +store_item.image_hash +'.500.500.webp'"/>
+                <img v-if="store_item.image_hash" :src="$heap.state.hostname +'/image/get.php/' +store_item.image_hash +'.700.700.webp'"/>
             </div>
             <div 
               v-if="store_perks[store_index].length > 0" class="perk-row" 

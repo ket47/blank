@@ -25,9 +25,7 @@ import './theme/core.css';
 
 import { createApp }        from 'vue';
 import { IonicVue }         from '@ionic/vue';
-import { toastController,alertController }  from '@ionic/vue';
-
-import App                  from '@/App.vue';
+import VueApp               from '@/VueApp.vue';
 import router               from '@/router';
 import heap                 from '@/heap';
 
@@ -38,12 +36,19 @@ import BaseLayoutDesktop    from '@/components/BaseLayoutDesktop.vue';
 import jQuery               from "jquery";
 import Topic                from '@/scripts/Topic.js';
 import User                 from '@/scripts/User.js'
+import Utils                 from '@/scripts/Utils.js'
 import Order                from '@/scripts/Order.js'
 import Metrics              from '@/scripts/Metrics.js'
-
-
-import  '@/scripts/Push'
+import Push                 from '@/scripts/Push.js'
 import './registerServiceWorker';
+import { 
+  toastController,
+  alertController
+}                           from '@ionic/vue';
+import {
+   App, 
+   URLOpenListenerEvent 
+}                           from '@capacitor/app';
 
 
 const FlashNotice={
@@ -101,11 +106,11 @@ const alert = async (message:string,title:string)=>{
         translucent:true,
         buttons: ['Ok'],
       });
-    return globalAlertPrompt.present();
+    await globalAlertPrompt.present();
+    return await globalAlertPrompt.onDidDismiss();
 }
 
 const go = async (route:any)=>{
-  Topic.publish('dismissModal')
   router.push(route)
 }
 
@@ -149,6 +154,7 @@ jQuery( document ).ajaxComplete(()=>{
   },100)
 })
 
+
 if( 'serviceWorker' in navigator ){
   navigator.serviceWorker.onmessage = (event) => {
     const {data}=event.data??{}
@@ -167,7 +173,8 @@ if( 'serviceWorker' in navigator ){
   };
 }
 
-const app = createApp(App)
+
+const app = createApp(VueApp)
   .use(IonicVue)
   .use(router)
   .use(heap)
@@ -179,8 +186,6 @@ app.config.globalProperties.$topic = Topic;
 app.config.globalProperties.$go = go;
 
 const isMobile= /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(window.navigator.userAgent);
-
-
 if(isMobile){
   app.component('base-layout', BaseLayout);
 } else {
@@ -191,8 +196,34 @@ async function startApp(){
   /**
    * Signing in first is slower but is more solid because all requests will go with session header
    */
-  await User.autoSignIn();
+
+  const sessionId = await Utils.pref.get('sessionId')
+  if(sessionId){
+    console.log(sessionId)
+    await User.sessionIdUse(sessionId);
+  }
+
+
+
   app.mount('#app');
+  await User.autoSignIn();
+
+
+  Metrics.init()
+  Push.setFlashHandler(flash)
+  Push.setAlertHandler(alert)
+  Push.setGoHandler(go)
+
+
+
+  /**
+   * opens deeplinking urls in this app
+   */
+  App.addListener('appUrlOpen', function (event: URLOpenListenerEvent) {
+    const slug = event.url.split('.com').pop();
+    if (slug) {
+      go(slug)
+    }
+  });
 }
 startApp();
-Metrics.init()

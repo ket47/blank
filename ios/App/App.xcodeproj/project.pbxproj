@@ -14,9 +14,9 @@
 		504EC30F1FED79650016851F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 504EC30E1FED79650016851F /* Assets.xcassets */; };
 		504EC3121FED79650016851F /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 504EC3101FED79650016851F /* LaunchScreen.storyboard */; };
 		50B271D11FEDC1A000F3C39B /* public in Resources */ = {isa = PBXBuildFile; fileRef = 50B271D01FEDC1A000F3C39B /* public */; };
-		7CA09C0D2A6AAFE700FCD31B /* long.wav in Resources */ = {isa = PBXBuildFile; fileRef = 7CA09C0A2A6AAFE700FCD31B /* long.wav */; };
-		7CA09C0E2A6AAFE700FCD31B /* medium.wav in Resources */ = {isa = PBXBuildFile; fileRef = 7CA09C0B2A6AAFE700FCD31B /* medium.wav */; };
-		7CA09C0F2A6AAFE700FCD31B /* short.wav in Resources */ = {isa = PBXBuildFile; fileRef = 7CA09C0C2A6AAFE700FCD31B /* short.wav */; };
+		7C42C62C2AAB4A52009E3ADD /* long.wav in Resources */ = {isa = PBXBuildFile; fileRef = 7C42C62B2AAB4A52009E3ADD /* long.wav */; };
+		7C42C62F2AAB4A8A009E3ADD /* short.wav in Resources */ = {isa = PBXBuildFile; fileRef = 7C42C62D2AAB4A8A009E3ADD /* short.wav */; };
+		7C42C6302AAB4A8A009E3ADD /* medium.wav in Resources */ = {isa = PBXBuildFile; fileRef = 7C42C62E2AAB4A8A009E3ADD /* medium.wav */; };
 		7CA09C122A6AB11100FCD31B /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7CA09C102A6AB11100FCD31B /* GoogleService-Info.plist */; };
 		A084ECDBA7D38E1E42DFC39D /* Pods_App.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AF277DCFFFF123FFC6DF26C7 /* Pods_App.framework */; };
 /* End PBXBuildFile section */
@@ -32,9 +32,9 @@
 		504EC3131FED79650016851F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		50B271D01FEDC1A000F3C39B /* public */ = {isa = PBXFileReference; lastKnownFileType = folder; path = public; sourceTree = "<group>"; };
 		7C37838B2A6966BE002A4888 /* App.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = App.entitlements; sourceTree = "<group>"; };
-		7CA09C0A2A6AAFE700FCD31B /* long.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = long.wav; sourceTree = "<group>"; };
-		7CA09C0B2A6AAFE700FCD31B /* medium.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = medium.wav; sourceTree = "<group>"; };
-		7CA09C0C2A6AAFE700FCD31B /* short.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = short.wav; sourceTree = "<group>"; };
+		7C42C62B2AAB4A52009E3ADD /* long.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = long.wav; path = ../../../resources/long.wav; sourceTree = "<group>"; };
+		7C42C62D2AAB4A8A009E3ADD /* short.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = short.wav; path = ../../../resources/short.wav; sourceTree = "<group>"; };
+		7C42C62E2AAB4A8A009E3ADD /* medium.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = medium.wav; path = ../../../resources/medium.wav; sourceTree = "<group>"; };
 		7CA09C102A6AB11100FCD31B /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "GoogleService-Info.plist"; sourceTree = SOURCE_ROOT; };
 		7CA09C112A6AB11100FCD31B /* App.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = App.entitlements; sourceTree = SOURCE_ROOT; };
 		AF277DCFFFF123FFC6DF26C7 /* Pods_App.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_App.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -83,11 +83,11 @@
 		504EC3061FED79650016851F /* App */ = {
 			isa = PBXGroup;
 			children = (
+				7C42C62B2AAB4A52009E3ADD /* long.wav */,
+				7C42C62E2AAB4A8A009E3ADD /* medium.wav */,
+				7C42C62D2AAB4A8A009E3ADD /* short.wav */,
 				7CA09C112A6AB11100FCD31B /* App.entitlements */,
 				7CA09C102A6AB11100FCD31B /* GoogleService-Info.plist */,
-				7CA09C0A2A6AAFE700FCD31B /* long.wav */,
-				7CA09C0B2A6AAFE700FCD31B /* medium.wav */,
-				7CA09C0C2A6AAFE700FCD31B /* short.wav */,
 				7C37838B2A6966BE002A4888 /* App.entitlements */,
 				50379B222058CBB4000EE86E /* capacitor.config.json */,
 				504EC3071FED79650016851F /* AppDelegate.swift */,
@@ -138,8 +138,8 @@
 		504EC2FC1FED79650016851F /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 0920;
-				LastUpgradeCheck = 0920;
+				LastSwiftUpdateCheck = 920;
+				LastUpgradeCheck = 920;
 				TargetAttributes = {
 					504EC3031FED79650016851F = {
 						CreatedOnToolsVersion = 9.2;
@@ -171,16 +171,16 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7C42C62C2AAB4A52009E3ADD /* long.wav in Resources */,
+				7C42C6302AAB4A8A009E3ADD /* medium.wav in Resources */,
+				7C42C62F2AAB4A8A009E3ADD /* short.wav in Resources */,
 				504EC3121FED79650016851F /* LaunchScreen.storyboard in Resources */,
-				7CA09C0F2A6AAFE700FCD31B /* short.wav in Resources */,
 				50B271D11FEDC1A000F3C39B /* public in Resources */,
-				7CA09C0D2A6AAFE700FCD31B /* long.wav in Resources */,
 				504EC30F1FED79650016851F /* Assets.xcassets in Resources */,
 				50379B232058CBB4000EE86E /* capacitor.config.json in Resources */,
 				504EC30D1FED79650016851F /* Main.storyboard in Resources */,
 				7CA09C122A6AB11100FCD31B /* GoogleService-Info.plist in Resources */,
 				2FAD9763203C412B000D30F8 /* config.xml in Resources */,
-				7CA09C0E2A6AAFE700FCD31B /* medium.wav in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -365,16 +365,17 @@
 			baseConfigurationReference = FC68EB0AF532CFC21C3344DD /* Pods-App.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_ENTITLEMENTS = App/App.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 6;
 				DEVELOPMENT_TEAM = 53Z92V4FP8;
 				INFOPLIST_FILE = App/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = Tezkel;
+				INFOPLIST_KEY_CFBundleDisplayName = "Tezkel доставка";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.shopping";
 				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MARKETING_VERSION = 1.2;
+				MARKETING_VERSION = 1.6;
 				OTHER_SWIFT_FLAGS = "$(inherited) \"-D\" \"COCOAPODS\" \"-DDEBUG\"";
 				PRODUCT_BUNDLE_IDENTIFIER = com.tezkel.app;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -389,16 +390,17 @@
 			baseConfigurationReference = AF51FD2D460BCFE21FA515B2 /* Pods-App.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_ENTITLEMENTS = App/App.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 6;
 				DEVELOPMENT_TEAM = 53Z92V4FP8;
 				INFOPLIST_FILE = App/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = Tezkel;
+				INFOPLIST_KEY_CFBundleDisplayName = "Tezkel доставка";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.shopping";
 				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MARKETING_VERSION = 1.2;
+				MARKETING_VERSION = 1.6;
 				PRODUCT_BUNDLE_IDENTIFIER = com.tezkel.app;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "";

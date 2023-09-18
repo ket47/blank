@@ -217,13 +217,16 @@ ion-chip .active-chip {
 @media only screen and (min-width: 1000px) {
   .desktop-main-container .group-fixed-block{
     left: 0px;
-    top: 300px;
+    top: 320px;
     width: 250px;
   }
   .desktop-main-container .group-fixed-block ion-segment{
     display: grid;
     grid-template-columns: 100%;
     --background: white;
+  }
+  .desktop-main-container .group-fixed-block ion-segment ion-segment-button{
+    grid-row:unset;
   }
   .desktop-main-container .group-fixed-block ion-segment span{
     width: 100%;

@@ -30,7 +30,7 @@
             </ion-item>
             <ion-item v-for="entry in orderData?.entries"  :key="entry.product_id" :class="entry.deleted_at?'entry-deleted':''" lines="full" style="padding-top:10px;">
                 <ion-thumbnail slot="start" v-if="entry.image_hash" @click="productOpen(entry.product_id)">
-                    <ion-img :src="`${$heap.state.hostname}image/get.php/${entry.image_hash}.150.150.webp`"/>
+                    <ion-img :src="`${$heap.state.hostname}image/get.php/${entry.image_hash}.150.150.webp`" style="border-radius:10px"/>
                 </ion-thumbnail>
                 <div style="display:grid;grid-template-columns:auto 135px;width:100%;gap:5px;">
                     <div style="grid-column: 1 / span 2">

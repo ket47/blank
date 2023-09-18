@@ -1,6 +1,6 @@
 {
 	"appId": "com.tezkel.app",
-	"appName": " Тезкель доставка",
+	"appName": "Tezkel",
 	"webDir": "../pwa/www",
 	"bundledWebRuntime": false,
 	"plugins": {
@@ -11,5 +11,9 @@
 				"alert"
 			]
 		}
+	},
+	"server": {
+		"hostname": "tezkel.com",
+		"androidScheme": "https"
 	}
 }

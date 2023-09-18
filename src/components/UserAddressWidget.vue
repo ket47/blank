@@ -110,7 +110,7 @@ export default {
   },
   methods: {
     selectDeliveryAddress() {
-        this.$go('/user/user-addresses');
+        this.$go('/modal/user-addresses');
     },
     async locationCommentChanged(){
       const request={

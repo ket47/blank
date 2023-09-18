@@ -13,7 +13,7 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(to top, #000000b2, #0000);
+  background: linear-gradient(to top, #000000b2, #00000000 50%);
 }
 .primary-categories{
   display: flex;
@@ -21,6 +21,18 @@
   grid-gap: 10px;
   max-width: 100vw;
   padding: 0 10px;
+}
+.primary-categories .category-label{
+  color: #ffffff;
+  padding: 3px;
+  text-overflow:elipsis;
+  text-align: center;
+  font-size:0.5em;
+}
+.primary-categories ion-card{
+  border-top-left-radius: 20px;
+  border-bottom-right-radius: 20px; 
+  border: 1px solid #cccccc;
 }
 #primary-category-info{
   background-color: #fffa;
@@ -48,26 +60,21 @@
 
 <template>
     <div id="primary-category-wrapper" class="ion-padding-vertical" v-if="productGroupList">
-        <ion-item lines="none"  style="--background: transparent;">
+        <ion-item lines="none"  style="--background: transparent;--padding-start: 10px;">
           <h5 slot="start" class="section-title"><span class="fake-label" :style="`background-color: ${titleColor}`">#Маркет</span></h5>
         </ion-item>
-      <ion-grid class="primary-category-grid ion-margin-top  ion-no-padding" :style="`background-image: url(${$heap.state.hostname}/image/get.php/${primaryStoreData.image_hash}.1000.1000.webp); height: 250px;`" >
-        <ion-row class="ion-justify-content-between">
-            <ion-col class="ion-padding-horizontal">
-                <ion-label lines="none" class="store-title" style="color: white">
-                    <b>Категории:</b>
-                </ion-label>
-            </ion-col>
-          </ion-row>
+      <ion-grid class="primary-category-grid ion-margin-top  ion-no-padding"  @click="$go(`/catalog/store-${primaryStoreData.store_id}`)" :style="`background: no-repeat center/ cover url(${$heap.state.hostname}/image/get.php/${primaryStoreData.image_hash}.1500.1500.webp); height: 250px;`" >
         <ion-row class="primary-category-container ion-padding-vertical">
           <ion-col class="primary-categories horizontalScroller">
               <div v-for="group in productGroupList" :key="group.group_id" @click="$go(`/catalog/store-${primaryStoreData.store_id}?parent_group_id=${group.group_id}`)" style="cursor: pointer">
-                  <ion-card class="ion-no-margin" style="border-radius: 10px; border: 1px solid rgb(221, 221, 221);">
-                    <ion-img style="width: 70px; height: 70px;" :src="$heap.state.hostname + 'image/get.php/'+group.image_hash+'.150.150.webp'"/>
+                  <ion-card class="ion-no-margin">
+                    <ion-img style="width: 70px; height: 70px;" :src="$heap.state.hostname + 'image/get.php/'+group.image_hash+'.200.200.webp'"/>
+
                   </ion-card>
+                  <div class="category-label">{{group.group_name}}</div>
               </div>
               <div @click="$go(`/catalog/store-${primaryStoreData.store_id}`)" style="cursor: pointer">
-                  <ion-card class="ion-no-margin ion-align-items-center ion-text-center" color="primary" style="display: grid; width: 70px; height: 70px;">
+                  <ion-card class="ion-no-margin ion-align-items-center ion-text-center" style="display: grid; width: 70px; height: 70px;">
                     <ion-card-title style="font-size: 12px;">Ещё...</ion-card-title>
                   </ion-card>
               </div>

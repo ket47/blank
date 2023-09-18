@@ -117,10 +117,9 @@ export default({
         },
         itemAutoReload(){
             clearTimeout(this.orderAutoloadClock)
-            const self=this
             this.orderAutoloadClock=setTimeout(()=>{
-                self.itemGet()
-                //console.log('autoreload')
+                this.itemGet()
+                console.log('order autoreload')
             },60*1000)
         },
         async onStageCreate(order_id, order_stage_code){
@@ -144,17 +143,6 @@ export default({
                         return;
                     }
                     await this.itemGet();
-                    if( order_stage_code=='customer_cart' ){
-                        let order={
-                            order_store_id:this.order.order_store_id,
-                            order_id:this.order.order_id,
-                            entries:this.order.entries,
-                            stage_current_name:this.order.stage_current_name,
-                            stage_next:this.order.stage_next,
-                            store:{store_name:this.order.store.store_name}
-                        }
-                        Order.cart.itemSet(order)//fill local cart with reduced remote version
-                    }
                     return true;
                 }
             }catch(err){
@@ -173,7 +161,7 @@ export default({
                         break;
                     case 'address_not_set':
                         this.$flash("Необходимо добавить адрес доставки")
-                        this.$go('/user/user-addresses');
+                        this.$go('/modal/user-addresses');
                         break;
                     case 'order_sum_exceeded':
                         this.$flash("Сумма заказа должна быть меньше предоплаты")
@@ -201,8 +189,9 @@ export default({
             }
         },
         async action_checkout(){
-            this.$heap.commit('setCurrentOrder',this.order);
-            this.$go(`/order/order-checkout-${this.order_id}`);
+            console.log('setCurrentOrder',this.order)
+            await this.$heap.commit('setCurrentOrder',this.order);
+            this.$go(`/modal/order-checkout-${this.order_id}`);
         },
         async action_add(){
             const modal = await modalController.create({
@@ -257,9 +246,7 @@ export default({
         },
     },
     ionViewDidEnter() {
-        if(this.order==null){
-            this.itemGet();
-        }
+        this.itemGet();
     },
     ionViewDidLeave(){
         this.order=null;
@@ -270,9 +257,8 @@ export default({
         this.$topic.on('orderSumChanged',()=>this.itemGet('skipCaching'))
         
         this.$topic.on('pushStageChanged',data=>{
-            if( self.order?.order_id==data?.order_id && self.order.stage_current!=data.stage ){
-                self.itemGet();
-                console.log('pushStageChanged')
+            if( this.order?.order_id==data?.order_id && this.order.stage_current!=data.stage ){
+                this.itemGet();
             }
         })
     }

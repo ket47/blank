@@ -11,6 +11,7 @@
     transition: all 0.3s ease;
     font-weight: bold;
 
+    background-color:var(--ion-color-primary-tint);
   }
   .product-actions  ion-button{
     box-shadow: none;
@@ -38,7 +39,6 @@
     top: 0px;
   }
   .incart{
-    background-color:var(--ion-color-primary-tint);
   }
   .sold{
     display: none;
@@ -51,6 +51,7 @@
       
       <ion-button v-if="!this.currentQuantity" @click="addToOrder(+this.productData.product_quantity_min)" color="primary" size="small">
         <span style="font-size:2em">+</span><!-- that is strange but improves chrome performance-->
+        <span v-if="buttonLayout=='horizontal'">купить</span>
       </ion-button>
       
       <ion-button v-if="this.currentQuantity>0" @click="addToOrder(+this.productData.product_quantity_min)" color="light" size="small">
@@ -133,7 +134,6 @@ export default{
       }
     },
     addToOrder(step){
-      console.log(step)
       let newQuantity=parseFloat(this.currentQuantity)+parseFloat(step);
       if( !this.productItem && !this.entry ){
         return;//haven't loaded yet or qty is negative
@@ -157,16 +157,25 @@ export default{
       if( newQuantity<0 || !newQuantity ){
         newQuantity=0;
       }
-      newQuantity=this.productData.product_quantity_min*Math.round(newQuantity/this.productData.product_quantity_min);
-      if( this.productData.is_counted==1 ){
-        let freeProductQuantity=this.productData.product_quantity-this.productData.product_quantity_reserved
+      const isInCorrection=this.orderData?.order_stock_status=='reserved'?true:false
+      const isInCart=!isInCorrection
 
-        if(this.orderData?.order_stock_status=='reserved'){//if order at correction stage
+      if(isInCart){
+        /**
+         * If we are in cart we need to round quantity to integer times minimal quantity
+         */
+        newQuantity=this.productData.product_quantity_min*Math.round(newQuantity/this.productData.product_quantity_min)
+      }
+      //console.log(newQuantity,newQuantity/this.productData.product_quantity_min,Math.round(newQuantity/this.productData.product_quantity_min))
+      if( this.productData.is_counted==1 ){
+        let freeProductQuantity=Math.round( 100*(this.productData.product_quantity-this.productData.product_quantity_reserved) )/100
+
+        if(isInCorrection){//if order at correction stage
           freeProductQuantity+=parseFloat(this.productData.entry_quantity)
         }
         if(newQuantity>freeProductQuantity){
           this.$flash(`В наличии есть только ${freeProductQuantity}${this.productData.product_unit}`);
-          newQuantity=this.productData.product_quantity;
+          newQuantity=Math.min(this.productData.product_quantity,freeProductQuantity)
         }
       }
       return newQuantity

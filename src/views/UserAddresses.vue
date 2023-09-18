@@ -4,7 +4,7 @@
 }
 </style>
 <template>
-  <base-layout page-title="Мои адреса" pageDefaultBackLink="/user" ref="UserAddressPage">
+  <base-layout page-title="Мои адреса" ref="UserAddressPage">
         <ion-card v-if="mainAddress">
           <ion-card-header>
             <ion-card-subtitle>

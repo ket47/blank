@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "359468869452",
+    "project_id": "tezkel-8e371",
+    "storage_bucket": "tezkel-8e371.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:359468869452:android:2ffc08a9b92eac927891e9",
+        "android_client_info": {
+          "package_name": "com.tezkel.twa"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "359468869452-1p9g5pduqcogk0h37kf9lnlhj80g59ki.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAH1afu0NfXvdNciEbQS7v41JH3nBQAyj4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "359468869452-1p9g5pduqcogk0h37kf9lnlhj80g59ki.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "359468869452-qf4m41k9p9i2a33kqjf8kuquj9v31ct1.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.tezkel.app"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

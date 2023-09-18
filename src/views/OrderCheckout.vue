@@ -13,39 +13,38 @@
     }
 </style>
 <template>
-<base-layout :pageTitle="`Оформление заказа`" :pageDefaultBackLink="`/order/order-${order_id}`">
+<base-layout :pageTitle="`Оформление заказа из ${order?.store?.store_name||''}`" :pageDefaultBackLink="`/order/order-${order_id}`">
     <div v-if="is_checkout_data_loaded">
-        <order-checkout-address :deliveryTime="deliveryTime" deliveryAddressOnly="1" showComment="1" :nextRoute="`/order/order-checkout-${order_id}`"></order-checkout-address>
+
 
         <ion-list lines="none">
-            <ion-item-divider>Заказ #{{order?.order_id}} из "{{order?.store?.store_name}}"</ion-item-divider>
+            <ion-item-divider v-if="storeIsReady" style="margin-top:0px;box-shadow:none;">Адрес доставки заказа</ion-item-divider>
+            <order-checkout-address :deliveryTime="deliveryTime" deliveryAddressOnly="1" showComment="1" :nextRoute="`/modal/order-checkout-${order_id}`"></order-checkout-address>
+            <!-- <ion-item-divider>Заказ #{{order?.order_id}} из "{{order?.store?.store_name}}"</ion-item-divider>
             
-            <!-- <ion-item>
+            <ion-item>
                 <ion-checkbox v-model="storeCorrectionAllow">
                     Разрешить изменять заказ
                 </ion-checkbox>
             </ion-item> -->
 
-            <ion-item>
-                <ion-textarea label="" rows="2" placeholder="комментарий к заказу" @change="orderDescriptionChanged()" v-model="order.order_description"></ion-textarea>
-            </ion-item>
             <ion-item-divider v-if="storeIsReady">Способы доставки</ion-item-divider>
             <ion-item button detail="false" @click="tariffRuleSet(deliveryByCourierRule)" v-if="deliveryByCourierRule">
-                <ion-icon :icon="rocketOutline" slot="start" color="primary"></ion-icon>
+                <ion-icon :icon="rocketOutline" slot="start" color="medium"></ion-icon>
                 <label for="delivery_by_courier">Доставит <b>{{$heap.state.settings?.app_title}}</b></label>
                 <div slot="end">
                     <input type="radio" name="deliveryBy" id="delivery_by_courier" value="courier"  :checked="deliveryByCourierRuleChecked">
                 </div>
             </ion-item>
             <ion-item button detail="false" @click="tariffRuleSet(deliveryByStoreRule)" v-if="deliveryByStoreRule">
-                <ion-icon :icon="rocketOutline" slot="start"></ion-icon>
+                <ion-icon :icon="rocketOutline" slot="start" color="medium"></ion-icon>
                 <label for="delivery_by_store">Доставит <b>{{order?.store?.store_name}}</b></label>
                 <div slot="end">
                     <input type="radio" name="deliveryBy" id="delivery_by_store" value="store" :checked="deliveryByStoreRuleChecked">
                 </div>
             </ion-item>
             <ion-item button detail="false" @click="tariffRuleSet(pickupByCustomerRule)" v-if="pickupByCustomerRule">
-                <ion-icon :icon="storefrontOutline" slot="start"></ion-icon>
+                <ion-icon :icon="storefrontOutline" slot="start" color="medium"></ion-icon>
                 <label for="pickup_by_customer">Самовывоз</label>
                 <div slot="end">
                     <input type="radio" name="deliveryBy" id="pickup_by_customer" value="store" :checked="pickupByCustomerRuleChecked">
@@ -56,14 +55,14 @@
 
             <ion-item-divider v-if="storeIsReady">Способы оплаты</ion-item-divider>
             <ion-item button detail="false" @click="paymentType='use_cash'" v-if="tariffRule.paymentByCash==1">
-                <ion-icon :icon="cashOutline" slot="start" color="primary"></ion-icon>
+                <ion-icon :icon="cashOutline" slot="start" color="medium"></ion-icon>
                 <label for="payment_cash">Оплата наличными</label>
                 <div slot="end">
                     <input type="radio" name="paymentType" id="payment_cash" value="cash" :checked="paymentType == 'use_cash'">
                 </div>
             </ion-item>
             <ion-item button detail="false" @click="paymentType='use_cash_store'" v-if="tariffRule.paymentByCashStore==1">
-                <ion-icon :icon="cashOutline" slot="start" color="primary"></ion-icon>
+                <ion-icon :icon="cashOutline" slot="start" color="medium"></ion-icon>
                 <label for="payment_cash_store">Оплата наличными продавцу</label>
                 <div slot="end">
                     <input type="radio" name="paymentType" id="payment_cash_store" value="cash" :checked="paymentType == 'use_cash_store'">
@@ -74,7 +73,7 @@
 
             <div v-if="tariffRule.paymentByCard==1">
                 <ion-item detail="false" button @click="paymentType='use_card'">
-                    <ion-icon :icon="cardOutline" slot="start" color="primary"></ion-icon>
+                    <ion-icon :icon="cardOutline" slot="start" color="medium"></ion-icon>
                     <label for="payment_card">Оплата картой без привязки</label>
                     <div slot="end">
                         <input type="radio" name="paymentType" id="payment_card" value="card"  :checked="paymentType == 'use_card'">
@@ -84,7 +83,7 @@
                     <ion-img v-if="bankCard.card_type=='mir'" class="card_type" :src="`/img/icons/card-${bankCard.card_type}.svg`" slot="start"/>
                     <ion-img v-else-if="bankCard.card_type=='visa'" class="card_type" :src="`/img/icons/card-${bankCard.card_type}.svg`" slot="start"/>
                     <ion-img v-else-if="bankCard.card_type=='mastercard'" class="card_type" :src="`/img/icons/card-${bankCard.card_type}.svg`" slot="start"/>
-                    <ion-icon v-else :src="cardOutline" slot="start" color="primary"/>
+                    <ion-icon v-else :src="cardOutline" slot="start" color="medium"/>
                     
                     <label for="use_card_recurrent">Оплата картой {{bankCard?.card_mask}}</label>
                     <div slot="end">
@@ -101,15 +100,14 @@
 
             <ion-item-divider>Итог</ion-item-divider>
             <ion-item>
-                <ion-icon :icon="cubeOutline" slot="start" color="primary"></ion-icon>
+                <ion-icon :icon="cubeOutline" slot="start" color="medium"></ion-icon>
                 Сумма заказа 
                 <ion-text slot="end">{{order.order_sum_product}}{{$heap.state.currencySign}}</ion-text>
             </ion-item>
-
             <div v-if="deliveryByCourierRuleChecked">
                 <ion-item v-if="promo" button @click="promoPick()" color="success">
                     <div slot="start">
-                        <ion-icon :icon="giftOutline" color="primary" style="font-size:1.5em"></ion-icon>
+                        <ion-icon :icon="giftOutline" color="medium" style="font-size:1.5em"></ion-icon>
                         <sup class="righttop_badge"><ion-badge v-if="promoCount>0" color="secondary">{{promoCount}}</ion-badge></sup>
                     </div>
                     {{promo.promo_name}}
@@ -117,7 +115,7 @@
                 </ion-item>
                 <ion-item v-else button detail @click="promoPick()">
                     <div slot="start">
-                        <ion-icon :icon="giftOutline" color="primary" style="font-size:1.5em"></ion-icon>
+                        <ion-icon :icon="giftOutline" color="medium" style="font-size:1.5em"></ion-icon>
                         <sup class="righttop_badge"><ion-badge v-if="promoCount>0" color="secondary">{{promoCount}}</ion-badge></sup>
                     </div>
                     Выберите скидку 
@@ -137,17 +135,20 @@
 
 
             <ion-item v-if="order_sum_delivery>0">
-                <ion-icon :icon="rocketOutline" slot="start" color="primary"></ion-icon>
+                <ion-icon :icon="rocketOutline" slot="start" color="medium"></ion-icon>
                 Доставка 
                 <ion-text slot="end">{{order_sum_delivery??0}}{{$heap.state.currencySign}}</ion-text>
             </ion-item>
             <ion-item v-if="order_sum_total>0">
-                <ion-icon :icon="walletOutline" slot="start" color="primary"></ion-icon>
+                <ion-icon :icon="walletOutline" slot="start" color="medium"></ion-icon>
                 Итого к оплате
                 <ion-text slot="end"><b>{{order_sum_total}}</b>{{$heap.state.currencySign}}</ion-text> 
             </ion-item>
 
 
+            <ion-item>
+                <ion-textarea style="background-color:var(--ion-color-light-tint);border-radius:10px" label="" rows="2" placeholder="комментарий к заказу" @change="orderDescriptionChanged()" v-model="order.order_description"></ion-textarea>
+            </ion-item>
             <ion-item>
                 <ion-text style="font-size:0.9em">
                     Я согласен(на) с <router-link to="/page/rules-customer">офертой об оказании услуг доставки</router-link>
@@ -364,6 +365,7 @@ export default({
         async itemLoad(){
             try{
                 this.order=await jQuery.post(`${this.$heap.state.hostname}Order/itemGet`,{order_id:this.order_id})
+                console.log('checkout order get')
                 if( this.order_sum_delivery==0 ){
                     this.order_sum_delivery==this.order.order_sum_delivery
                 }
@@ -383,11 +385,11 @@ export default({
             return reject
         },
         async checkoutDataGet(){
+            this.order=this.$heap.state.currentOrder;
             if(this.debounce()){
                 return
             }
 
-            this.order=this.$heap.state.currentOrder;
             if( !this.order ){
                 await this.itemLoad()
             }
@@ -397,7 +399,7 @@ export default({
                 return
             }
             if( this.order.stage_current!="customer_confirmed" ){
-                this.$router.replace('order-'+this.order.order_id);
+                this.$router.replace('/order/order-'+this.order.order_id);
                 return;
             }
             try{
@@ -590,14 +592,14 @@ export default({
                         case 'address_not_set':
                             this.$flash("Необходимо добавить адрес доставки")
                             this.$topic.publish('dismissModal')
-                            this.$go('/user/user-addresses')
+                            this.$go('/modal/user-addresses')
                             break;
                     }
                     return false
             }
         },
         async cancel(){
-            this.$router.replace('order-'+this.order.order_id);
+            this.$router.replace('/order/order-'+this.order.order_id);
         },
         async paymentFormOpen( order_data ) {
             const self=this;
@@ -624,21 +626,21 @@ export default({
             try{
                 const result= await jQuery.post( this.$heap.state.hostname + "CardAcquirer/statusGet", request );
                 if(result=='OK'){
-                    router.replace('order-'+this.order.order_id)
+                    this.$router.replace('/order/order-'+this.order.order_id)
                 }
             } catch(err){
                 const message=err.responseJSON?.messages?.error;
                 if(message=='wrong_status'){
                     this.$flash("Данный заказ не может быть оплачен");
-                    router.replace('order-'+this.order.order_id);
+                    this.$router.replace('/order/order-'+this.order.order_id);
                 }
                 if(message=='not_authorized'){
                     this.$flash("Оплата не удалась, возможно не достаточно средств");
-                    router.replace('order-'+this.order.order_id);
+                    this.$router.replace('/order/order-'+this.order.order_id);
                 }
                 if(message=='waiting'){
                     this.$flash("Ваш платеж на ожидании");
-                    router.replace('order-'+this.order.order_id);
+                    this.$router.replace('/order/order-'+this.order.order_id);
                 }
             }
         },
@@ -665,7 +667,7 @@ export default({
         //     if( role=='confirm' ){
         //         return true
         //     }
-        //     this.$go('/user/user-addresses');
+        //     this.$go('/modal/user-addresses');
         //     return false
         // },
         async heavyLoadConfirm(){
@@ -710,7 +712,7 @@ export default({
             if( role=='confirm' ){
                 return true
             }
-            this.$go('/user/user-addresses');
+            this.$go('/modal/user-addresses');
             return false
         },
         async promoPick() {

@@ -1,7 +1,8 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name"> Тезкель экспресс доставка</string>
-    <string name="title_activity_main"> Тезкель экспресс доставка</string>
-    <string name="package_name">com.tezkel.app</string>
-    <string name="custom_url_scheme">com.tezkel.app</string>
+    <string name="app_name">Tezkel</string>
+    <string name="title_activity_main">Tezkel доставка</string>
+    <string name="package_name">com.tezkel.twa</string>
+    <string name="custom_url_scheme">com.tezkel.twa</string>
+    <string name="default_notification_channel_id">com.tezkel.urgent</string>
 </resources>

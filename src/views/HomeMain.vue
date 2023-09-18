@@ -4,16 +4,21 @@
       <user-address-widget :deliveryTime="primaryDeliveryTime"/>
       <!-- <home-primary-category-widget @deliveryTimeGet="deliveryTime=>{primaryDeliveryTime=deliveryTime}"/> -->
       <!-- STORES ARE LOADING -->
-      <ion-list v-if="!storeList" class="store-list" >
-        <ion-card button v-for="store_item in [1,1,1,1]" :key="store_item">
-            <div class="crop-to-fit" style="background-color:var(--ion-color-light)"></div>
-            <ion-chip color="medium"><ion-skeleton-text style="width:130px;" animated></ion-skeleton-text></ion-chip>
-            <ion-chip color="primary"><ion-skeleton-text style="width:100px;" animated></ion-skeleton-text></ion-chip>
+      <div v-if="!storeList" class="store-list" >
+        <ion-item lines="none" style="--padding-start: 10px;">
+          <h5 slot="start" style="background:#eee;border-radius:5px;padding: 5px;width:120px;color:#999">#</h5>
+          <ion-skeleton-text slot="end" style="width:130px;border-radius:3px;"></ion-skeleton-text>
+        </ion-item>
+        <div style="display:grid;grid-template-columns:330px 330px;">
+          <div button v-for="store_item in [1,1,1,1]" :key="store_item">
+              <ion-skeleton-text style="width:310px;height:180px;border-radius:5px;margin-left:10px" animated></ion-skeleton-text>
             <ion-item lines="none">
-                <ion-skeleton-text style="width:70%;height:1.5em" animated></ion-skeleton-text>
+              <ion-skeleton-text slot="start" style="width:130px;border-radius:3px;"></ion-skeleton-text>
+              <ion-skeleton-text slot="end" style="width:60px;border-radius:3px;"></ion-skeleton-text>
             </ion-item>
-        </ion-card>
-      </ion-list>
+          </div>
+        </div>
+      </div>
       <!-- STORES ARE NOT FOUND -->
       <div v-else-if="storeList.length==0">
         <ion-grid>
@@ -49,7 +54,7 @@
       <!-- STORES ARE FOUND -->
       <div v-else-if="storeList && storeList.length>0">
         <home-promo-product-slider :store-list="storeList" :limit="30" titleColor="#f77f00" />  
-        <home-primary-category-widget category-limit="5" titleColor="#0097d2" />  
+        <home-primary-category-widget category-limit="10" titleColor="#0097d2" />  
 
         <ion-list ref="storeSlidersContainer">
           <home-store-slider v-if="storeSliderLoadQueue >= 0" :store-list="storeList" :filter="{member_of_groups: {value: 'fastfood', type: 'includes'}}" sliderTitle="Фастфуд" sliderTitleColor="#ff0000" backgroundImage="/img/fastfood_background.jpg"/>  
@@ -91,7 +96,6 @@ import {
   IonRow,
   IonCol,
   IonCard,
-  IonChip,
   IonItem,
   IonCardHeader,
   IonCardSubtitle,
@@ -114,7 +118,6 @@ export default {
     IonRow,
     IonCol,
     IonCard,
-    IonChip,
     IonItem,
     IonCardHeader,
     IonCardSubtitle,
@@ -227,6 +230,13 @@ export default {
   },
   ionViewDidEnter(){
     this.listNearReload();
+  },
+  watch:{
+    '$route'(to,from){
+      if(to=='/catalog/'){
+        this.listNearReload();
+      }
+    }
   }
 };
 </script>

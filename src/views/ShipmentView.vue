@@ -106,12 +106,14 @@
 </template>
 <script>
 import {
-    IonButton,
     IonText,
     IonItem,
     IonIcon,
     IonLabel,
     IonTitle,
+    IonImg,
+    IonSegment,
+    IonSegmentButton,
 }                   from '@ionic/vue'
 import {
     cubeOutline,
@@ -134,12 +136,14 @@ export default {
     components:{
     yandexMap,
     ymapMarker,
-    IonButton,
     IonText,
     IonItem,
     IonIcon,
     IonLabel,
     IonTitle,
+    IonImg,
+    IonSegment,
+    IonSegmentButton,
     },
     setup(){
         return {

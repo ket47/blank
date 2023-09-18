@@ -1,5 +1,6 @@
 <template>
       <swiper 
+        v-if="home_slides"
         :modules="modules" 
         :autoplay='{delay: 6000, disableOnInteraction: false}' 
         :loop="true" 
@@ -7,7 +8,7 @@
         <swiper-slide v-for="hslide in home_slides" :key="hslide.title" 
           :style="`background-color:${hslide.color};`"
           @click="go(hslide.link)">
-          <ion-img :src="hslide.image" class="home_slide_img" :alt="hslide.alt"/>
+          <img :src="hslide.image" class="home_slide_img" :alt="hslide.alt"/>
           <div class="home_slide">
             <h1 style="font-size:3em">{{hslide.title}}</h1>
             <p>{{hslide.description}}</p>
@@ -42,14 +43,12 @@
   import { defineComponent } from 'vue';
   import { Autoplay } from 'swiper';
   import { Swiper, SwiperSlide } from 'swiper/vue';
-  import {IonImg} from '@ionic/vue'
 
   import 'swiper/css/bundle';
   export default defineComponent({
     components: {
       Swiper,
       SwiperSlide,
-      IonImg
     },
     setup() {
       return {
@@ -58,7 +57,7 @@
     },
     data(){
       return {
-        home_slides:[],
+        home_slides:null,
         error:""
       };
     },

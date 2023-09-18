@@ -1,8 +1,10 @@
 <template>
   <ion-header>
-      <ion-toolbar color="secondary">
+      <ion-toolbar>
+        <ion-item lines="none">
           <ion-title>Ваши доступные скидки</ion-title>
           <ion-icon :icon="closeOutline" @click="$topic.publish('dismissModal')" slot="end" size="large"></ion-icon>
+        </ion-item>
       </ion-toolbar>
   </ion-header>
   <ion-content>

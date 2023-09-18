@@ -1,7 +1,19 @@
+<style scoped>
+  .activecart{
+    background-color: var(--ion-color-primary);
+  }
+  .activecart ion-icon{
+    font-weight: bold;
+    color: white;
+  }
+  .activecart ion-label{
+    font-weight: bold; color: white;
+  }
+</style>
 <template>
-  <ion-chip @click="openCartList()" color="dark" v-if="cartListTotal" style="background-color: var(--ion-color-primary);">
-    <ion-icon :icon="cart" style="font-weight: bold; color: white;"></ion-icon>
-    <ion-label style="font-weight: bold; color: white;">{{ cartListTotal }}{{$heap.state.currencySign}}</ion-label>
+  <ion-chip @click="openCartList()" color="dark" v-if="cartListTotal" :class="currentClass">
+    <ion-icon :icon="cart"></ion-icon>
+    <ion-label>{{ cartListTotal }}{{$heap.state.currencySign}}</ion-label>
   </ion-chip>
 </template>
  
@@ -29,6 +41,11 @@ export default{
       cart
     }
   },
+  data(){
+    return {
+      currentClass:'activecart'
+    }
+  },
   computed:{
     cartListTotal(){
       return this.$Order.cart.listTotalGet()
@@ -52,6 +69,12 @@ export default{
       };
       Topic.on('dismissModal',dismissFn);
       return modal.present();
+    }
+  },
+  watch:{
+    cartListTotal(){
+      this.currentClass='';
+      setTimeout(()=>{this.currentClass='activecart'},300)
     }
   }
 };

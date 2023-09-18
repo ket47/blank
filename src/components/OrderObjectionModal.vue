@@ -1,6 +1,6 @@
 <template>
   <ion-header>
-      <ion-toolbar color="secondary">
+      <ion-toolbar>
         <ion-title>Возражение</ion-title>
       </ion-toolbar>
   </ion-header>

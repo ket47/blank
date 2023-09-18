@@ -29,10 +29,10 @@
 
 <template>
   <ion-list v-if="location_delivery" lines="none">
-      <ion-item @click="selectDeliveryAddress()">
+      <!-- <ion-item @click="selectDeliveryAddress()">
         <ion-text color="medium">Адрес доставки заказа</ion-text>
         <ion-icon slot="end" :icon="chevronDownOutline"/>
-      </ion-item>
+      </ion-item> -->
       <ion-item @click="selectDeliveryAddress()">
         <ion-thumbnail v-if="location_delivery.image_hash" slot="start" style="width:30px;height:30px">
           <ion-img :src="`${$heap.state.hostname}/image/get.php/${location_delivery.image_hash}.32.32.png`" />
@@ -108,7 +108,7 @@ export default {
       if(this.nextRoute){
         this.$heap.state.next_route=this.nextRoute
       }
-      this.$go('/user/user-addresses');
+      this.$go('/modal/user-addresses');
     },
     async locationCommentChanged(){
       const request={

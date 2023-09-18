@@ -1,8 +1,8 @@
 <style scoped>
     .product_list_widget_grid {
       display: grid;
-      gap: 3em;
-      grid-template-columns: repeat(auto-fill, 130px);
+      gap: 2em;
+      grid-template-columns: repeat(auto-fill, 140px);
       font-size: 0.8em;
     }
     .product_item_colspan2{

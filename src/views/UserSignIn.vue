@@ -33,6 +33,7 @@
                     placeholder="(xxx)xxxxxxxxx"
                     required
                     label="Мобильный телефон*" labelPlacement="stacked"
+                    autocomplete="tel-national"
                   ></ion-input>            
                   <ion-text color="danger" slot="helper"><p v-show="!phoneValid && submitted == true" padding-left>Неверный номер телефона</p></ion-text>
               </div>
@@ -51,6 +52,7 @@
               placeholder="Пароль (Минимум 4 символа)"
               required
               label="Пароль (Минимум 4 символа)*" labelPlacement="stacked"
+              autocomplete="current-password"
             ></ion-input>
             <ion-text color="danger" slot="helper">
               <p v-show="!passwordValid && submitted == true" padding-left>Пароль должен содержать не менее 4 символов.</p>

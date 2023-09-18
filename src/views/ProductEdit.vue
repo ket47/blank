@@ -358,7 +358,7 @@ export default  {
       is_option_parent:false,
       is_option_child:false,
       is_option_menu_open:false,
-//      is_option_same_price:false,
+      is_option_same_price:false,
       is_groups_marked:0,
       is_deleted:0,
       is_disabled:0,

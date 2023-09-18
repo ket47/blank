@@ -50,7 +50,7 @@ ion-icon{
               <ion-icon :icon="thumbsUpSharp" slot="start" color="primary"></ion-icon>
               <ion-label>Мои отзывы</ion-label>
           </ion-item>
-          <ion-item lines="full" button detail @click="$go('/user/user-addresses')">
+          <ion-item lines="full" button detail @click="$go('/modal/user-addresses')">
               <ion-icon :icon="locationOutline" slot="start" color="primary"></ion-icon>
               <ion-label>Мои адреса</ion-label>
           </ion-item>

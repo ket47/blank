@@ -34,7 +34,22 @@
           </a>
         </div>
         <div>
-          <ion-icon :src="closeOutline" style="float:right" size="large" color="light" @click="iosInstallPromptDissmiss()" />
+          <ion-icon :src="closeOutline" style="float:right" size="large" color="light" @click="iosInstallPromptDismiss()" />
+        </div>
+      </div>
+
+      <div v-if="androidInstallPromptShow" class="installPrompt">
+        <div style="padding-top:30px;">
+          <small>Установите приложение Tezkel из GooglePlay<br/></small> 
+          <a href="https://play.google.com/store/apps/details?id=com.tezkel.twa" target="_new">
+            <ion-button expand="block">
+              <ion-icon slot="start" :src="logoGooglePlaystore"></ion-icon>
+              Установить
+            </ion-button>
+          </a>
+        </div>
+        <div>
+          <ion-icon :src="closeOutline" style="float:right" size="large" color="light" @click="androidInstallPromptDismiss()" />
         </div>
       </div>
 
@@ -73,7 +88,8 @@ import {
   closeOutline,
   shareOutline,
   addCircleOutline, 
-  logoAppleAppstore
+  logoAppleAppstore,
+  logoGooglePlaystore,
 }                           from "ionicons/icons";
 
 export default defineComponent({
@@ -110,11 +126,13 @@ export default defineComponent({
       shareOutline,
       addCircleOutline,
       logoAppleAppstore,
+      logoGooglePlaystore,
     }
   },
   data(){
     return {
-      isIosPromptDisssmissed:localStorage.iosInstallAppPromptDissmissed?1:0
+      isIosPromptDismissed:localStorage.iosInstallAppPromptDismissed?1:0,
+      isAndroidPromptDismissed:localStorage.androidInstallAppPromptDismissed?1:0,
     }
   },
   computed:{
@@ -131,8 +149,11 @@ export default defineComponent({
       return isPlatform('ios')
     },
     iosInstallPromptShow(){
-      return isPlatform('ios') && !isPlatform('capacitor') && !this.isIosPromptDisssmissed
-    }
+      return isPlatform('ios') && !isPlatform('capacitor') && !this.isIosPromptDismissed
+    },
+    androidInstallPromptShow(){
+      return isPlatform('android') && !isPlatform('capacitor') && !this.isAndroidPromptDismissed
+    },
   },
   methods:{
     reload(){
@@ -144,9 +165,13 @@ export default defineComponent({
       }
       history.back()
     },
-    iosInstallPromptDissmiss(){
-      this.isIosPromptDisssmissed=localStorage.iosInstallAppPromptDissmissed=1
-    }
+    iosInstallPromptDismiss(){
+      this.isIosPromptDismissed=localStorage.iosInstallAppPromptDismissed=1
+    },
+    androidInstallPromptDismiss(){
+      this.isAndroidPromptDismissed=localStorage.androidInstallAppPromptDismissed=1
+    },
+    
   },
 })
 </script>
