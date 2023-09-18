@@ -17,6 +17,13 @@ class Catalog{
             'limit'=>48
         ]);
         $context['topProductListPageCount']=$CatalogModel->productListPageCountGet();
+
+        $context['topCategoryList']=$CatalogModel->categoryListGet([
+            'parent_only' => true,
+            'limit'=>48
+        ]);
+
+        
         view('aboutUs',$context);
     }
 
@@ -25,11 +32,30 @@ class Catalog{
         
         $CatalogModel=new \Models\CatalogModel();
         $store=$CatalogModel->storeItemGet($store_id);
+        if(empty($store)){
+            return redirect('/');
+        }
+        $store->categories=$CatalogModel->categoryListGet([
+            'store_id'=>$store_id,
+            'parent_only' => true
+        ]);
+
+        $locations = $CatalogModel->locationGetList('store', $store->store_id);
+        $store_cities = [];
+        if(!empty($locations)){
+            foreach($locations as $location){
+                $location_city = array_reverse(explode(',', $location->location_address))[0]; 
+                if(!in_array($location_city, $store_cities)){
+                    $store_cities[] = $location_city;
+                }
+            }
+        }
+        $store->cities = count($store_cities)>0?implode(', ', $store_cities):getenv('app.location');
 
         $context['image_host']='https://api.tezkel.com/image/get.php/';
         $context['image_hash']=$store->image_hash;
-        $context['title']="{$store->store_name} с доставкой Тезкель";
-        $context['description']="{$store->store_description} Вы можете заказать домой или в офис через Тезкель.";
+        $context['title']="{$store->store_name} с доставкой Тезкель в {$store->cities}";
+        $context['description']="{$store->store_description} Вы можете заказать домой или в офис через Тезкель в {$store->cities}.";
         $context['store']=$store;
         $context['productList']=$CatalogModel->productListGet([
             'limit'=>150,
@@ -44,11 +70,60 @@ class Catalog{
         $CatalogModel=new \Models\CatalogModel();
         $product=$CatalogModel->productItemGet($product_id);
 
+        $locations = $CatalogModel->locationGetList('store', $product->store_id);
+        $product_cities = [];
+        if(!empty($locations)){
+            foreach($locations as $location){
+                $location_city = array_reverse(explode(',', $location->location_address))[0]; 
+                if(!in_array($location_city, $product_cities)){
+                    $product_cities[] = $location_city;
+                }
+            }
+        }
+        $product->cities = count($product_cities)>0?implode(', ', $product_cities):getenv('app.location');
+
         $context['image_hash']=$product->image_hash;
         $context['image_host']='https://api.tezkel.com/image/get.php/';
-        $context['title']="{$product->product_name} из {$product->store_name} на Тезкель";
-        $context['description']="{$product->product_description} из {$product->store_name} Вы можете заказать через Тезкель.";
+        $context['title']="{$product->product_name} из {$product->store_name} на Тезкель в {$product->cities}";
+        $context['description']="{$product->product_description} из {$product->store_name} Вы можете заказать через Тезкель  в {$product->cities}.";
         $context['product']=$product;
         view('product',$context);
+    }
+    public function category(){
+        $category_id=(int)func_get_arg(0);
+        $CatalogModel=new \Models\CatalogModel();
+        $category=$CatalogModel->categoryItemGet($category_id);
+        $category_cities = [];
+        $store_name = "";
+        $store_id=$_REQUEST['store_id']??null;
+        if($store_id){
+            $store=$CatalogModel->storeItemGet($store_id);
+            $store_name = "из {$store->store_name}";
+            $locations = $CatalogModel->locationGetList('store', $store_id);
+            if(!empty($locations)){
+                foreach($locations as $location){
+                    $location_city = array_reverse(explode(',', $location->location_address))[0]; 
+                    if(!in_array($location_city, $category_cities)){
+                        $category_cities[] = $location_city;
+                    }
+                }
+            }
+        }
+        $category->cities = count($category_cities)>0?implode(', ', $category_cities):getenv('app.location');
+
+        $category->subcategories=$CatalogModel->categoryListGet([
+            'group_parent_id'=>$category_id
+        ]);
+        $context['image_host']='https://api.tezkel.com/image/get.php/';
+        $context['image_hash']=$category->image_hash;
+        $context['title']="{$category->group_name} с доставкой Тезкель {$store_name} в {$category->cities}";
+        $context['description']="{$category->group_name} Вы можете заказать домой или в офис через Тезкель {$store_name} в {$category->cities}.";
+        $context['category']=$category;
+        $context['productList']=$CatalogModel->productListGet([
+            'limit'=>150,
+            'store_id'=>$store_id,
+            'category_id'=>$category_id
+        ]);
+        view('category',$context);
     }
 }

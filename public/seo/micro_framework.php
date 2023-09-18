@@ -17,6 +17,7 @@ function mb_escape(string $string){
     return mb_ereg_replace('[\x00\x0A\x0D\x1A\x22\x27\x5C]', '\\\0', $string);
 }
 function argumentsParse( $Class, $method, $uri_id ){
+    
     if( !method_exists($Class,$method) ){
         http_response_code(404);
         die('"Page not found"');
@@ -27,6 +28,9 @@ function argumentsParse( $Class, $method, $uri_id ){
     foreach( $method_args_config as $param ){
         $param_name=$param->getName();
         $param_default=$param->isDefaultValueAvailable()?$param->getDefaultValue():null;
+        if(!isset($_REQUEST[$param_name])){
+            break;
+        }
         $arguments[]=mb_escape($_REQUEST[$param_name])??$param_default;
     }
     $arguments[]=$uri_id;
@@ -51,7 +55,11 @@ function parseDotEnv(){
 }
 parseDotEnv();
 
-
+function redirect($url, $permanent = false)
+{
+    header('Location: ' . $url, true, $permanent ? 301 : 302);
+    exit();
+}
 
 try{
     $uri=$_SERVER['REQUEST_URI'];

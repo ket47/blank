@@ -32,3 +32,4 @@ npm-debug.log*
 /Tezkel.App/nbproject/private/
 /nbproject/private/
 public/seo/.htaccess
+.env
