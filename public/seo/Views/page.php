@@ -1,5 +1,5 @@
-<h1><?=$page->page_title?></h1>
 
-<div style="padding: 5%;">
-<?=$page->page_content?>
+<div class="t-container ">
+    <h1><?=$page->page_title?></h1>
+    <?=$page->page_content?>
 </div>

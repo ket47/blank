@@ -1,44 +1,58 @@
-    <div class="store-item">
-        <div class="store-left">
-            <div class="image"><img src="<?=$image_host?>/<?=$store->image_hash?>.750.750.webp" alt="<?=$store->store_name?>"/></div>
-        </div>
-        <div class="store-right">
-            <h1 class="title"><?=$store->store_name?></h1>
-            <div class="description"><?=$store->store_description?></div>
+    <div class="t-container t-pa-sm">
+        <div class="t-card t-pa-sm" data-block="card">
+            <figure class="t-figure-md  t-rounded-border">
+                <img src="<?=$image_host?>/<?=$store->image_hash?>.750.750.webp"/>
+                <figcaption><?=$store->store_name?></figcaption>
+            </figure>
+            <h1><?=$store->store_name?></h1>
+            <p><i><?=$store->store_description?></i></p>
             <hr>
-            <div class="address">Адрес: <?=$store->location_address?></div>
-            <div class="phone">Телефон: <?=$store->store_phone?></div>
-            <div>Предприятие: <?=$store->store_company_name?></div>
-            <div>ИНН: <?=$store->store_tax_num?></div>
+            <p><small>Адрес: <?=$store->location_address?></small></p>
+            <p><small>Телефон: <?=$store->store_phone?></small></p>
+            <p><small>Предприятие: <?=$store->store_company_name?></small></p>
+            <p><small>ИНН: <?=$store->store_tax_num?></small></p>
         </div>
-    </div>
 
-    <div>
-    <div class="product-top-tile main-block">
-        <h2>Топ товаров</h2>
-        <div class="product-list">
+        <?php if(!empty($store->categories)): ?>
+        <h2>Подразделы: </h2>
+        <div  class="t-grid t-grid-six-cols ">
+            <?php foreach($store->categories as $category): ?>
+            <div class="t-card t-pa-sm t-text-center t-card-rounded"  data-block="card">
+                <a href="/catalog/category-<?=$category->group_id ?>&store_id=<?=$store->store_id ?>">
+                    <figure class="t-rounded-border  t-figure-sm">
+                        <img src="<?=$image_host?>/<?=$category->image_hash?>.750.750.webp"/>
+                        <figcaption><?=$category->group_name?></figcaption>
+                    </figure>
+                </a>
+                <h5 class="t-my-sm">
+                    <a href="/catalog/category-<?=$category->group_id ?>&store_id=<?=$store->store_id ?>">
+                        <b><?=$category->group_name?></b>
+                    </a>
+                </h5>
+            </div>
+            <?php endforeach; ?>
+        </div>
+        <?php endif; ?>
+        
+        <h2>Каталог товаров</h2>
+        <div  class="t-grid t-grid-five-cols ">
             <?php foreach($productList as $product): ?>
-                <div class="product-item">
-                    <div class="product-right">
-                        <div class="image">
-                            <a href="<?=$image_host?><?=$product->image_hash?>.1000.1000.webp" target="_new" title="<?=$product->product_name?>">
-                                <img src="<?=$image_host?>/<?=$product->image_hash?>.150.150.webp" alt="<?=$product->product_name?>"/>
-                            </a>
-                        </div>
-                    </div>
-                    <div class="product-right">
-                        <a href="/catalog/store-<?=$product->store_id ?>">
-                            <div class="store-name"><?=$product->store_name?></div>
-                        </a>
-                        <div class="name">
-                            <a href="/catalog/product-<?=$product->product_id ?>">
-                            Купить <?=$product->product_name?>
-                            </a>
-                        </div>
-                        <div class="barcode"><?=$product->product_barcode?></div>
-                        <div class="description"><?=$product->product_description?></div>
-                    </div>
-                </div>
+            <div class="t-card t-pa-sm"  data-block="card">
+                <figure class="t-rounded-border">
+                    <img src="<?=$image_host?>/<?=$product->image_hash?>.500.500.webp"/>
+                    <figcaption><?=$product->product_name?></figcaption>
+                </figure>
+                <h5 class="t-my-sm">
+                    <a href="/catalog/product-<?=$product->product_id ?>">
+                        <b><?=$product->product_name?></b>
+                    </a>
+                </h5>
+                <h4 class="t-my-sm">
+                    <b><?=$product->product_final_price?> ₽</b>
+                </h4>
+                <code><?=$product->product_barcode?></code>
+                <sub><i class="t-text-cut"><?=$product->product_description?></i></sub>
+            </div>
             <?php endforeach; ?>
         </div>
     </div>
