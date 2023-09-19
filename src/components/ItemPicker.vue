@@ -55,7 +55,7 @@ import {
 import jQuery             from 'jquery'
 
 export default {
-    props:['itemType'],
+    props:['itemType','filter'],
     components:{
         IonContent,
         IonHeader,
@@ -121,10 +121,13 @@ export default {
             }catch{/** */}
         },
         async couriersGet(){
-            const request={
+            let request={
                 name_query:this.query,
                 name_query_fields:'user_name,user_phone',
                 limit:10
+            }
+            if( this.filter ){
+                request=Object.assign(request,this.filter)
             }
             try{
                 let result=await jQuery.post(`${this.$heap.state.hostname}Courier/listGet`,request)

@@ -66,6 +66,9 @@ import OrderObjectionModal  from '@/components/OrderObjectionModal.vue'
 import OrderEntryAdd        from '@/components/OrderEntryAdd.vue'
 import ImageTileComp        from '@/components/ImageTileComp.vue'
 import MsgSubscriptionComp  from '@/components/MsgSubscriptionComp.vue'
+import ItemPicker           from '@/components/ItemPicker.vue'
+
+import jQuery               from 'jquery'
 
 export default({
     components: { 
@@ -244,6 +247,38 @@ export default({
         action_call_customer(){
             location.href=`tel:+${this.order.customer.user_phone}`
         },
+        async action_courier_assign(){
+            const itemType='courier'
+            const filter={
+                status:'ready||busy'
+            }
+            const modal = await modalController.create({
+                component: ItemPicker,
+                componentProps:{itemType,filter},
+                initialBreakpoint: 0.75,
+                breakpoints: [0.75, 1],
+                canDissmiss:true,
+            });
+            modal.present()
+            this.$topic.on('dismissModal',()=>{
+                modal.dismiss()
+            });
+            const item=await modal.onDidDismiss();
+            if(!item.data){
+                return
+            }
+            try{
+                const request={
+                    order_id:this.order_id,
+                    courier_id:item.data.courier_id
+                }
+                await jQuery.post(`${this.$heap.state.hostname}Courier/itemAssign`,request)
+                await this.itemGet()
+                this.$flash("Курьер назначен")
+            } catch{
+                this.$flash("Не удалось назначить курьера")
+            }
+        }
     },
     ionViewDidEnter() {
         this.itemGet();
