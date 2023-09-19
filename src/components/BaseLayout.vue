@@ -143,6 +143,9 @@ export default defineComponent({
       if(this.hideBackLink){
         return 0
       }
+      if(this.pageDefaultBackLink){
+        return 1
+      }
       return history.state.back?1:0
     },
     isIos(){

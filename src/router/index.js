@@ -184,10 +184,6 @@ const routes = [
         component: () => import('@/views/ShipmentDraftView.vue')
       },
       {
-        path: '/order/shipment-checkout-:id',
-        component: () => import('@/views/ShipmentCheckout.vue')
-      },
-      {
         path: '/order/shipment-:id',
         component: () => import('@/views/ShipmentView.vue')
       },
@@ -245,6 +241,10 @@ const routes = [
   {
     path: '/modal/order-checkout-:id',
     component: OrderCheckout
+  },
+  {
+    path: '/modal/shipment-checkout-:id',
+    component: () => import('@/views/ShipmentCheckout.vue')
   },
   {
     path: '/modal/user-addresses',

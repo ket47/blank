@@ -12,10 +12,13 @@
         font-weight: bold;
         --color:#000
     }
+    ion-segment ion-segment-button span{
+        font-size:0.8em;
+    }
 </style>
 
 <template>
-    <base-layout pageTitle="Оформление" pageDefaultBackLink="/order/order-list" ref="page">
+    <base-layout pageTitle="Оформление вызова курьера" pageDefaultBackLink="/order/order-list" ref="page">
         <ion-list  lines="none">
             <ion-item>
                 <ion-label>
@@ -23,15 +26,18 @@
                     <p><b>Курьер</b></p>
                 </ion-label>
             </ion-item>
-            <ion-item detail="" lines="none">
+            <ion-item detail="" lines="none" @click="descriptionPick()">
                 <ion-icon :src="cubeOutline" slot="start" size="large" color="medium" style="font-size:2em"/>
-                <ion-text color="medium">Скажите нам, что нужно перевезти?</ion-text>
-            </ion-item>
-            <ion-item >
-                <ion-label><h1>Детали перевозки</h1></ion-label>
+                <ion-text v-if="ship?.ship_description" color="primary">{{ship.ship_description}}</ion-text>
+                <ion-text v-else color="medium">Скажите нам, что нужно перевезти?</ion-text>
             </ion-item>
 
-            <div style="border-radius:10px;margin:10px;overflow: hidden;">
+            <ion-item-divider>Детали перевозки</ion-item-divider>
+            <!-- <ion-item >
+                <ion-label><h1>Детали перевозки</h1></ion-label>
+            </ion-item> -->
+
+            <div style="border-radius:10px;margin:10px;overflow: hidden;" v-if="0">
                 <yandex-map 
                     v-if="placemarkCoords" 
                     :coords="placemarkCoords" 
@@ -70,7 +76,7 @@
                 <ion-segment mode="ios" value="atonce">
                     <ion-segment-button value="atonce">
                         <ion-label>Как можно скорее</ion-label>
-                        отвезти сразу
+                        <span>отвезти сразу</span>
                     </ion-segment-button>
                     <ion-segment-button value="schedule" @click="datetimePick()">
                         <ion-label><b>Ко времени</b></ion-label>
@@ -84,63 +90,83 @@
 
 
             
-            <ion-item >
+            <ion-item-divider>Способы оплаты</ion-item-divider>
+            <!-- <ion-item>
                 <ion-label><h1>Способы оплаты</h1></ion-label>
-            </ion-item>
+            </ion-item> -->
         
+
+
+
+            <ion-item button detail="false" @click="paymentType='use_credit_store'" v-if="tariffRule.paymentByCreditStore==1">
+                <ion-icon :icon="businessOutline" slot="start" color="medium"></ion-icon>
+                <label for="use_credit_store">Со счета предприятия</label>
+                <div slot="end">
+                    <input type="radio" name="paymentType" id="payment_credit_store" value="cash" :checked="paymentType == 'use_credit_store'">
+                </div>
+            </ion-item>
+            <ion-item button detail="false" @click="paymentType='use_cash'" v-if="tariffRule.paymentByCash==1">
+                <ion-icon :icon="cashOutline" slot="start" color="medium"></ion-icon>
+                <label for="payment_cash">Оплата наличными</label>
+                <div slot="end">
+                    <input type="radio" name="paymentType" id="payment_cash" value="cash" :checked="paymentType == 'use_cash'">
+                </div>
+            </ion-item>
+
+            <div v-if="tariffRule.paymentByCard==1">
+                <ion-item detail="false" button @click="paymentType='use_card'">
+                    <ion-icon :icon="cardOutline" slot="start" color="medium"></ion-icon>
+                    <label for="payment_card">Оплата картой без привязки</label>
+                    <div slot="end">
+                        <input type="radio" name="paymentType" id="payment_card" value="card"  :checked="paymentType == 'use_card'">
+                    </div>
+                </ion-item>
+                <ion-item v-if="bankCard?.card_type" button detail="false" @click="paymentType='use_card_recurrent'">
+                    <ion-img v-if="bankCard.card_type=='mir'" class="card_type" :src="`/img/icons/card-${bankCard.card_type}.svg`" slot="start"/>
+                    <ion-img v-else-if="bankCard.card_type=='visa'" class="card_type" :src="`/img/icons/card-${bankCard.card_type}.svg`" slot="start"/>
+                    <ion-img v-else-if="bankCard.card_type=='mastercard'" class="card_type" :src="`/img/icons/card-${bankCard.card_type}.svg`" slot="start"/>
+                    <ion-icon v-else :src="cardOutline" slot="start" color="medium"/>
+                    
+                    <label for="use_card_recurrent">Оплата картой {{bankCard?.card_mask}}</label>
+                    <div slot="end">
+                        <input type="radio" name="paymentType" id="use_card_recurrent" value="registered_card"  :checked="paymentType == 'use_card_recurrent'">
+                    </div>
+                </ion-item>
+                <ion-item v-if="recurrentPaymentAllow" button detail @click="$go('/user/user-cards')">
+                    <ion-label v-if="bankCard?.card_type" color="medium">Выбрать другую карту</ion-label>
+                    <ion-label v-else color="medium">Привязать карту</ion-label>
+                </ion-item>
+            </div>
+
+            <ion-item-divider>Итог</ion-item-divider>
+            <!-- <ion-item >
+                <ion-label><h1>Итог</h1></ion-label>
+            </ion-item> -->
+
+            <ion-item v-if="ship_sum_total>0">
+                <ion-icon :icon="walletOutline" slot="start" color="medium"></ion-icon>
+                Итого к оплате
+                <ion-text slot="end"><b>{{ship_sum_total}}</b>{{$heap.state.currencySign}}</ion-text> 
+            </ion-item>
+
+
+            <ion-item>
+                <ion-text style="font-size:0.9em">
+                    Я согласен(на) с <router-link to="/page/rules-customer">офертой об оказании услуг доставки</router-link>
+                </ion-text>
+                <ion-checkbox slot="end" v-model="termsAccepted" aria-label=""></ion-checkbox>
+            </ion-item>
+
         </ion-list>
-
-
-        <ion-item button detail="false" @click="paymentType='use_cash'" v-if="tariffRule.paymentByCash==1">
-            <ion-icon :icon="cashOutline" slot="start" color="primary"></ion-icon>
-            <label for="payment_cash">Оплата наличными</label>
-            <div slot="end">
-                <input type="radio" name="paymentType" id="payment_cash" value="cash" :checked="paymentType == 'use_cash'">
-            </div>
-        </ion-item>
-        <ion-item button detail="false" @click="paymentType='use_cash_store'" v-if="tariffRule.paymentByCashStore==1">
-            <ion-icon :icon="cashOutline" slot="start" color="primary"></ion-icon>
-            <label for="payment_cash_store">Оплата наличными продавцу</label>
-            <div slot="end">
-                <input type="radio" name="paymentType" id="payment_cash_store" value="cash" :checked="paymentType == 'use_cash_store'">
-            </div>
-        </ion-item>
-
-
-
-        <div v-if="tariffRule.paymentByCard==1">
-            <ion-item detail="false" button @click="paymentType='use_card'">
-                <ion-icon :icon="cardOutline" slot="start" color="primary"></ion-icon>
-                <label for="payment_card">Оплата картой без привязки</label>
-                <div slot="end">
-                    <input type="radio" name="paymentType" id="payment_card" value="card"  :checked="paymentType == 'use_card'">
-                </div>
-            </ion-item>
-            <ion-item v-if="bankCard?.card_type" button detail="false" @click="paymentType='use_card_recurrent'">
-                <ion-img v-if="bankCard.card_type=='mir'" class="card_type" :src="`/img/icons/card-${bankCard.card_type}.svg`" slot="start"/>
-                <ion-img v-else-if="bankCard.card_type=='visa'" class="card_type" :src="`/img/icons/card-${bankCard.card_type}.svg`" slot="start"/>
-                <ion-img v-else-if="bankCard.card_type=='mastercard'" class="card_type" :src="`/img/icons/card-${bankCard.card_type}.svg`" slot="start"/>
-                <ion-icon v-else :src="cardOutline" slot="start" color="primary"/>
-                
-                <label for="use_card_recurrent">Оплата картой {{bankCard?.card_mask}}</label>
-                <div slot="end">
-                    <input type="radio" name="paymentType" id="use_card_recurrent" value="registered_card"  :checked="paymentType == 'use_card_recurrent'">
-                </div>
-            </ion-item>
-            <ion-item v-if="recurrentPaymentAllow" button detail @click="$go('/user/user-cards')">
-                <ion-label v-if="bankCard?.card_type" color="medium">Выбрать другую карту</ion-label>
-                <ion-label v-else color="medium">Привязать карту</ion-label>
-            </ion-item>
-        </div>
-
-
-        {{locationStart}}
-
 
         <ion-card v-if="checkoutError" color="warning">
             <ion-card-content>{{checkoutError}}</ion-card-content>
         </ion-card>
-
+        <ion-card v-if="isVPNon && (paymentType=='use_card' || paymentType=='use_card_recurrent')" color="light">
+            <ion-card-content>Возможно включен VPN. Банк часто блокирует платежи через VPN.</ion-card-content>
+        </ion-card>
+        <ion-button v-if="paymentType=='use_card' || paymentType=='use_card_recurrent'" expand="block" @click="proceed()" :disabled="checkoutError">Оплатить картой</ion-button>
+        <ion-button v-else expand="block" @click="proceed()" :disabled="checkoutError">Вызвать курьера</ion-button>
 
 
 
@@ -172,7 +198,10 @@ import {
     IonImg,
     IonCard,
     IonCardContent,
-}                   from '@ionic/vue'
+    IonButton,
+    IonCheckbox,
+    IonItemDivider,
+}                               from '@ionic/vue'
 import {
     cubeOutline,
     locationOutline,
@@ -180,16 +209,21 @@ import {
     chevronDown,
     addOutline,
     checkmark,
-}                   from 'ionicons/icons';
+    cardOutline,
+    cashOutline,
+    businessOutline,
+    walletOutline,
+}                               from 'ionicons/icons';
 import {
     yandexMap,
     ymapMarker,
     loadYmap 
-}                   from "vue-yandex-maps";
-import Utils        from '@/scripts/Utils'
-import jQuery       from 'jquery'
-import UserAddressesModal from '@/components/UserAddressesModal.vue';
-import DateRangePicker from '@/components/DateRangePicker.vue'
+}                               from "vue-yandex-maps";
+import Utils                    from '@/scripts/Utils'
+import jQuery                   from 'jquery'
+import UserAddressesModal       from '@/components/UserAddressesModal.vue';
+import DateRangePicker          from '@/components/DateRangePicker.vue'
+import ShipDescriptionPicker    from '@/components/ShipDescriptionPicker.vue'
 
 export default {
     components:{
@@ -205,6 +239,9 @@ export default {
     IonImg,
     IonCard,
     IonCardContent,
+    IonButton,
+    IonCheckbox,
+    IonItemDivider,
     },
     setup(){
         return {
@@ -214,27 +251,11 @@ export default {
             chevronDown,
             addOutline,
             checkmark,
+            cardOutline,
+            cashOutline,
+            businessOutline,
+            walletOutline,
         };
-    },
-    computed:{
-        deliveryArriveDatetimeLoc(){
-            if(!this.deliveryArriveDatetime){
-                return null
-            }
-            const event = new Date(Date.parse(this.deliveryArriveDatetime));
-            const options = { month: 'short', day: 'numeric',hour:'numeric',minute:'numeric' };
-
-            return event.toLocaleDateString(undefined, options);
-        },
-        checkoutError(){
-            if( this.errorCode=='no_input' ){
-                return "Выберите адрес забора и доставки посылки"
-            }
-            if( this.errorCode=='no_courier' ){
-                return "Нет доступных курьеров"
-            }
-            return null
-        }
     },
     data(){
         return {
@@ -247,7 +268,10 @@ export default {
             ship_id:this.$route.params.id,
             ship:null,
             shipAutoloadClock:null,
+            ship_sum_delivery:0,
+            termsAccepted:1,
 
+            iplocation:null,
             paymentType:'use_card',
             bankCard:null,
             recurrentPaymentAllow:this.$heap.state.settings?.other?.recurrentPaymentAllow==1?1:0,
@@ -270,8 +294,39 @@ export default {
                 imageSize:[50, 50],
                 imageOffset:[-25, -50]
             },
-
         }
+    },
+    computed:{
+        deliveryArriveDatetimeLoc(){
+            if(!this.deliveryArriveDatetime){
+                return null
+            }
+            const event = new Date(Date.parse(this.deliveryArriveDatetime));
+            const options = { month: 'short', day: 'numeric',hour:'numeric',minute:'numeric' };
+
+            return event.toLocaleDateString(undefined, options);
+        },
+        checkoutError(){
+            if( this.errorCode=='no_input' ){
+                return "Выберите адрес забора и доставки посылки"
+            }
+            if( this.errorCode=='no_courier' ){
+                return "Нет доступных курьеров"
+            }
+            if( this.termsAccepted==0 ){
+                return `К сожалению, мы не можем доставить вам заказ, без согласия с условиями`
+            }
+            return null
+        },
+        isVPNon(){
+            if( !this.iplocation || ['UA','RU','???'].includes(this.iplocation.country_code??'???') ){
+                return false
+            }
+            return true
+        },
+        ship_sum_total(){
+            return this.ship_sum_delivery
+        },
     },
     methods:{
         deliveryTimeAllowed( dateString ){
@@ -286,17 +341,9 @@ export default {
             try{
                 let bulkResponse=await Utils.prePost(`${this.$heap.state.hostname}Shipment/itemCheckoutDataGet`,{ship_id:this.ship_id})
                 this.itemCheckoutDataUse(bulkResponse)
-
                 bulkResponse=await Utils.post(`${this.$heap.state.hostname}Shipment/itemCheckoutDataGet`,{ship_id:this.ship_id})
+                this.ship=bulkResponse.ship
                 this.itemCheckoutDataUse(bulkResponse)
-
-
-
-
-
-
-
-                this.isDatePickerOpen=true
             }
             catch(err){
                 this.is_checkout_data_loaded=1
@@ -315,7 +362,7 @@ export default {
             this.locationStart=bulkResponse.Ship_locationStart
             this.locationFinish=bulkResponse.Ship_locationFinish
             this.bankCard=bulkResponse?.bankCard;
-            this.tariffRuleList=bulkResponse.Store_deliveryOptions
+            this.tariffRuleList=bulkResponse.Ship_deliveryOptions
             this.tariffRuleSet(this.tariffRuleList?.[0]||{})
             this.is_checkout_data_loaded=1
 
@@ -327,6 +374,7 @@ export default {
                 ship_start_location_id:this.locationStart?.location_id,
                 ship_finish_location_id:this.locationFinish?.location_id,
                 ship_arrive_time:this.deliveryArriveDatetime,
+                ship_description:this.ship.ship_description,
             }
             try{
                 const response=await jQuery.post(`${this.$heap.state.hostname}Shipment/itemCheckoutDataSet`,JSON.stringify(shipData))
@@ -335,13 +383,17 @@ export default {
             }
         },
         tariffRuleSet( tariffRule ){
+            
             this.tariffRule=tariffRule
 
-            this.order_sum_delivery=tariffRule.order_sum_delivery
+            this.ship_sum_delivery=tariffRule.ship_sum_delivery
             this.paymentType='use_card'
             if(this.bankCard?.card_type){
                 this.paymentType='use_card_recurrent'
             }
+            if(tariffRule.paymentByCreditStore==1){
+                this.paymentType='use_credit_store'
+            } else
             if(tariffRule.paymentByCashStore==1){
                 this.paymentType='use_cash_store'
             } else
@@ -372,7 +424,7 @@ export default {
             this.deliveryArriveRange.defaultValue=this.deliveryArriveDatetime??null
             const modal = await modalController.create({
                 component: DateRangePicker,
-                initialBreakpoint:'0.4',
+                initialBreakpoint:'0.5',
                 showBackdrop:true,
                 componentProps:{dateRange:this.deliveryArriveRange},
             });
@@ -380,6 +432,21 @@ export default {
             const data=await modal.onDidDismiss()
             if(data.role=="confirm"){
                 this.deliveryArriveDatetime=data.data
+            }
+        },
+        async descriptionPick(){
+            const ship_description=this.ship?.ship_description
+            const modal = await modalController.create({
+                component: ShipDescriptionPicker,
+                initialBreakpoint:'0.5',
+                showBackdrop:true,
+                componentProps:{ship_description},
+            });
+            modal.present()
+            const data=await modal.onDidDismiss()
+            if(data.role=="confirm"){
+                this.ship.ship_description=data.data
+                this.itemCheckoutDataSet()
             }
         },
         async customerIpLocationGet(){
