@@ -4,7 +4,7 @@
 }
 </style>
 <template>
-    <base-layout pageDefaultBackLink="/user" page-title="Модерация">
+    <base-layout pageDefaultBackLink="/user" page-title="Элементы">
         <ion-segment :scrollable="true" v-model="moderationType" @ionChange="listTypeChanged($event)">
             <ion-segment-button value="images">
                 Картинки
@@ -20,6 +20,13 @@
             </ion-segment-button>
         </ion-segment>
         <div>
+            <ion-item>
+                <ion-select v-model="item_type" value="disabled" label="Тип элементов" label-placement="stacked" @ionChange="listReload()">
+                    <ion-select-option value="active">активные</ion-select-option>
+                    <ion-select-option value="disabled">выключенные</ion-select-option>
+                    <ion-select-option value="deleted">удаленные</ion-select-option>
+                </ion-select>
+            </ion-item>
             <ion-searchbar v-if="moderationType=='stores' || moderationType=='products' || moderationType=='couriers'" placeholder="Фильтр" v-model="filter"/>
             <ion-list v-if="listComputed.length>0">
                 <ion-item v-for="item in listComputed" :key="item.item_id" button detail @click="itemEdit(item)">
@@ -64,6 +71,8 @@ import {
   IonCard,
   IonCardContent,
   IonSearchbar,
+  IonSelect,
+  IonSelectOption,
  }                          from '@ionic/vue';
 import jquery               from 'jquery'
 import ImagePreviewModal    from '@/components/ImagePreviewModal'
@@ -83,11 +92,14 @@ export default {
         IonSkeletonText,
         IonCard,
         IonCardContent,
-        IonSearchbar
+        IonSearchbar,
+  IonSelect,
+  IonSelectOption,
     },
     data(){
         return{
             items:[],
+            item_type:'disabled',
             filter:'',
             is_loading:0,
             moderationType:'images',
@@ -126,8 +138,9 @@ export default {
         },
         async listLoad(){
             let request={
-                is_disabled:1,
-                is_active:0,
+                is_disabled: this.item_type=='disabled'?1:0,
+                is_active: this.item_type=='active'?1:0,
+                is_deleted: this.item_type=='deleted'?1:0,
                 name_query:this.filter,
                 offset:this.items.length,
                 limit:15,
@@ -168,9 +181,8 @@ export default {
         },
         listFilter(){
             clearTimeout(this.clock)
-            const self=this
             this.clock=setTimeout(()=>{
-                self.listReload()
+                this.listReload()
             },300)
         },
         toLocDate( iso ){

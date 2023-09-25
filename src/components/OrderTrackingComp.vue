@@ -1,4 +1,4 @@
-<style>
+<style scoped>
     .center_chip{
         text-align:center;
         width: 100%;
@@ -13,6 +13,9 @@
         font-family: Comfortaa;
         font-weight: bold;
         text-align: left;
+    }
+    .disabled{
+        filter:grayscale(1)
     }
 </style>
 <template>
@@ -31,11 +34,13 @@
             <a :href="`tel:${orderData?.info?.courier_phone}`">{{orderData?.info?.courier_phone}}</a>
             </p>
         </ion-item>
+
         <ion-list v-else slot="content">
             <ion-chip color="primary" v-if="orderData?.info?.courier_phone" slot="end">
                 <ion-icon :src="callOutline"/>
                 <a :href="`tel:${orderData?.info?.courier_phone}`">{{orderData?.info?.courier_phone}}</a>
             </ion-chip>
+
             <yandex-map 
             v-if="coords" 
                 :coords="coords" 
@@ -44,6 +49,7 @@
                 :controls="['fullscreenControl']"
                 :behaviors="[]"
                 style="height:200px" 
+                :class="mapclass"
             >
                 <ymap-marker :coords="coords" :icon="placemarkIcon" marker-id="1" :properties="placemarkProperties"/>
             </yandex-map>
@@ -106,6 +112,7 @@ export default({
             refreshInterval:1000*60,
             clock:null,
 
+            mapclass:'',
             mapsettings:null,
             placemarkProperties:{},
             placemarkIcon:{
@@ -172,11 +179,15 @@ export default({
             try{
                 this.job=await Order.api.itemJobTrack(this.orderData.order_id);
                 const max_location_age=3*60//3min
-                if(this.job?.location_latitude && this.job?.location_age<max_location_age ){
+                if(this.job?.location_latitude){
                     this.coords=[this.job.location_latitude,this.job.location_longitude]
                     this.placemarkProperties.iconContent=`${this.courier_finish_distance_km} (${this.courier_finish_time_min})`
-                } else {
-                    this.coords=null//hide map
+                    this.mapclass=''
+                }
+                if(this.job?.location_age>max_location_age){
+                    //this.coords=null//hide map
+                    this.placemarkProperties.iconContent=``
+                    this.mapclass='disabled'
                 }
                 clearTimeout(this.clock)
                 this.clock=setTimeout(()=>{this.jobGet()},this.refreshInterval)

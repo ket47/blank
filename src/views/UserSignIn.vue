@@ -74,7 +74,7 @@
         
         <ion-row responsive-sm>
           <ion-col>
-              <ion-button @click="openModal" color="light" expand="block">Забыли пароль?</ion-button>
+              <ion-button @click="forgotPassModal" color="light" expand="block">Забыли пароль?</ion-button>
           </ion-col>
         </ion-row>
       </ion-grid>
@@ -177,7 +177,7 @@ export default{
             break;
           case 'user_phone_unverified':
             this.$flash("Номер телефона не подтвержден");
-            localStorage.signInData = JSON.stringify({user_phone: this.user_phone_prefix+this.user_phone,user_pass: this.user_pass});
+            //localStorage.signInData = JSON.stringify({user_phone: this.user_phone_prefix+this.user_phone,user_pass: this.user_pass});
             this.phoneVerify();
             break;
           default:
@@ -197,9 +197,9 @@ export default{
         this.user_phone=user_phone
       } catch{/** */}
     },
-    async openModal() {
+    async forgotPassModal() {
       this.modalOpen = true
-      const phone=this.user_phone_prefix??''+this.user_phone??''
+      const phone=(this.user_phone_prefix??'')+(this.user_phone??'')
       const modal = await modalController
         .create({
           component: UserPasswordReset,

@@ -39,7 +39,6 @@
 import {
         modalController,
         IonTitle,
-        IonDatetime,
         IonToolbar,
         IonContent,
         IonHeader,
@@ -58,7 +57,6 @@ export default {
     props:['ship_description'],
     components:{
         IonTitle,
-        IonDatetime,
         IonToolbar,
         IonContent,
         IonHeader,

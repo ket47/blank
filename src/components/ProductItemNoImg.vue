@@ -3,7 +3,7 @@
     display: grid;
     gap:10px;
     grid-template-columns: 50px auto;
-    background-color: #fafafa;
+    background-color: var(--ion-color-light);
     border-radius: 10px;
     padding:2px;
 }

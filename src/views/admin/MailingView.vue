@@ -159,7 +159,6 @@ import {
   IonCol,
   IonAccordionGroup,
   IonAccordion,
-  IonImg,
   IonChip,
  }                          from '@ionic/vue';
  import {
@@ -201,7 +200,6 @@ export default {
         IonAccordionGroup,
         IonAccordion,
         IonChip,
-  IonImg,
     },
     setup(){
         return {

@@ -17,7 +17,7 @@
           </ion-card-title>
         </ion-card-header>
         <ion-card-content>
-          Для регистрации необходим только ваш номер мобильного телефона и имя, чтобы мы знали как обращаться к вам. 
+          Для регистрации необходим только ваш номер мобильного телефона и имя, чтобы мы знали как к вам обращаться. 
         </ion-card-content>
       </ion-card>
       
@@ -127,6 +127,8 @@
 
 <script>
 import { 
+  modalController,
+  alertController,
   IonLabel,
   IonInput,
   IonItem,
@@ -143,6 +145,7 @@ import {
 }                               from '@ionic/vue';
 import User                     from '@/scripts/User.js'
 import jQuery                   from "jquery";
+import UserPasswordReset        from '@/components/UserPasswordReset.vue'
 
 export default  {
   components: {
@@ -194,7 +197,7 @@ export default  {
         user_phone: this.user_phone_prefix+this.user_phone,
         user_pass: this.user_pass,
         user_pass_confirm: this.user_pass,
-        user_name: this.user_name,
+        user_name: this.user_name.trim(),
         user_email:this.user_email,
         inviter_user_id:localStorage.inviter_user_id??0
       }
@@ -202,7 +205,7 @@ export default  {
       try{
         await User.signUp(requestData);
         this.phoneVerify()
-        localStorage.signInData = JSON.stringify({user_phone: this.user_phone_prefix+this.user_phone,user_pass: this.user_pass});
+        //localStorage.signInData = JSON.stringify({user_phone: this.user_phone_prefix+this.user_phone,user_pass: this.user_pass});
       } catch(err){
         let exception_code=err?.responseJSON?.messages?.error;
         if(exception_code=='user_phone_unverified'){
@@ -219,7 +222,10 @@ export default  {
         
         switch(exception_code){
           case 'user_phone_notunique':
-            this.$flash("Пользователь с таким телефоном уже зарегистрирован");
+            this.$flash("Пользователь с таким телефоном уже зарегистрирован")
+            if( await this.forgotPassConfirm() ){
+              this.forgotPassModal()
+            }
             break;
           case 'user_phone_required':
           case 'user_phone_invalid':
@@ -283,6 +289,41 @@ export default  {
       } catch{
         this.$flash("Не удалось выслать смс с подтверждением")
       }
+    },
+    async forgotPassModal() {
+      this.modalOpen = true
+      const phone=(this.user_phone_prefix??'')+(this.user_phone??'')
+      const modal = await modalController
+        .create({
+          component: UserPasswordReset,
+          componentProps: {phone},
+          initialBreakpoint: 0.5,
+          breakpoints: [0.5, 0.75]
+        })
+      return modal.present();
+    },
+    async forgotPassConfirm(){
+        const phone=(this.user_phone_prefix??'')+(this.user_phone??'')
+        const alert = await alertController.create({
+            header: 'Восстановить пароль?',
+            message:`Возможно вы уже регистрировались с телефоном ${phone}.\n\nМожем восстановить пароль.`,
+            buttons: [
+              {
+                text: 'Отменить',
+                role: 'cancel',
+              },
+              {
+                text: 'Восстановить',
+                role: 'confirm',
+              },
+            ],
+        });
+        await alert.present();
+        const { role } = await alert.onDidDismiss();
+        if( role=='confirm' ){
+            return true
+        }
+        return false
     },
   },
 }

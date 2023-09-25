@@ -1,6 +1,7 @@
 <style scoped>
   .activecart{
     background-color: var(--ion-color-primary);
+    transition: 1s;
   }
   .activecart ion-icon{
     font-weight: bold;

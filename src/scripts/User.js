@@ -105,7 +105,13 @@ const User = {
     async signUp(requestData){
         const metric_id=await Utils.pref.get('metric_id')
         requestData.metric_id=metric_id??0
-        return await jQuery.post( heap.state.hostname + "User/signUp", requestData)
+        const user_id=await jQuery.post( heap.state.hostname + "User/signUp", requestData)
+        if(user_id>0){//successfull signup
+            const user_phone=requestData.user_phone
+            const user_pass=requestData.user_pass
+            await Utils.pref.set('signInData',JSON.stringify({user_phone,user_pass}));
+        }
+        return user_id
     },
     isOnline(){
         return 1;//should check connection and login status

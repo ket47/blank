@@ -108,7 +108,7 @@
             <ion-card-header>
                 <ion-card-title>Фото заказа</ion-card-title>
             </ion-card-header>
-            <ion-card-content>Рекомендуем делать фотографии товара до упаковки, чтобы избежать претензий со стороны покупателя к качеству и комплектности.</ion-card-content>
+            <ion-card-content>Рекомендуем делать фотографии товара до упаковки.  Ответственность, в случае претензий со стороны Покупателя к качеству и комплектности, лежит на <b>Продавце</b>.</ion-card-content>
         </ion-card>
 
         <ion-card color="primary"  v-if="orderData.order_description">

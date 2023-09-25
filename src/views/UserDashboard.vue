@@ -86,7 +86,7 @@ ion-icon{
           </ion-item>
           <ion-item @click="$go('/admin/list-moderation')" lines="full" button detail>
               <ion-icon :icon="ribbonOutline" slot="start" color="primary"></ion-icon>
-              <ion-label>Модерация элементов</ion-label>
+              <ion-label>Элементы</ion-label>
           </ion-item>
           <ion-item @click="$go('/admin/tariff-list')" lines="full" button detail>
               <ion-icon :icon="briefcaseOutline" slot="start" color="primary"></ion-icon>

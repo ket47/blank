@@ -6,23 +6,23 @@
       </ion-toolbar>
   </ion-header>
   <ion-content>
-      <form novalidate>
+      <form validate>
         <ion-list>
           <ion-item>
-            <ion-input label="Ваш номер телефона" label-placement="stacked" v-model="userphone" placeholder="Ваш телефон"/>
+            <ion-input label="Ваш номер телефона" label-placement="stacked" v-model="userphone" placeholder="Ваш телефон" required/>
           </ion-item>
           <ion-item>
             <ion-input label="Ваш ник" label-placement="stacked" v-model="username" placeholder="Имя, указанное вами при регистрации"/>
           </ion-item>
         </ion-list>
-        <ion-button @click="passwordReset()" expand="full">Создать новый пароль</ion-button>
+        <ion-button @click="passwordReset()" expand="block">Создать новый пароль</ion-button>
       </form>
       <div style="padding: 15px;font-size:0.8em;color:#999">
         Рекомендуем сначала проверить СМС сообщение с паролем, которое было выслано вам при регистрации в сервисе.
       </div>
 
-      <div style="padding: 15px;font-size:0.8em" @click="$router.push('page/contacts')">
-        Если у вас возникли сложности с восстановлением пароля, обращайтесь в <a href="#">службу поддержки</a>
+      <div style="padding: 15px;font-size:0.8em" @click="$router.push('/page/contacts')">
+        Если у вас возникли сложности с восстановлением пароля, обращайтесь в <u style="color:blue">службу поддержки</u>
       </div>
       
   </ion-content>
@@ -71,9 +71,17 @@ export default {
   },
   methods: {
     closeModal(){
-      return modalController.dismiss();
+      return modalController.dismiss()
     },
     async passwordReset(){
+      if( this.userphone.replace(/\D/g,"").length<11 ){
+        alert("Проверьте ваш номер телефона")
+        return 
+      }
+      if(!this.username){
+        alert("Введите ваше имя при регистрации")
+        return 
+      }
       let requestData = {
         user_phone: '+'+this.userphone.replace(/\D/g,""),
         user_name:  this.username
@@ -81,6 +89,7 @@ export default {
       try{
         await jQuery.post(`${this.$heap.state.hostname}User/passwordReset`, requestData)
         this.$flash(`Ваш новый пароль выслан на номер '${this.userphone}'`)
+        this.closeModal()
       } catch(err){
         const message=err?.responseJSON?.messages?.error
         if(message=='user_notfound'){
@@ -89,8 +98,12 @@ export default {
           this.$flash(`Не удалось восстановить пароль`)
         }
       }
-      this.closeModal()
     },
+  },
+  mouted(){
+    this.$topic.on('dismissModal',()=>{
+      this.closeModal()
+    })
   }
 };
 </script>
