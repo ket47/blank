@@ -134,7 +134,7 @@
                   <li><b class="icon green-icon">✔</b><a href="#qst_5">Система</a> управления заказами.</li>
                   <li><b class="icon green-icon">✔</b>Синхронизация с <a href="#qst_10">системами торгового учёта</a>.</li>
                   <li><b class="icon green-icon">✔</b>Функция "Электронное меню" (доступно для кафе и ресторанов).</li>
-                  <li><b class="icon green-icon">✔</b>Маркетинговая поддержка для проветения рекламных акций.</li>
+                  <li><b class="icon green-icon">✔</b>Маркетинговая поддержка для проведения рекламных акций.</li>
                   <li><b class="icon green-icon">✔</b>Приём <a href="#qst_6">онлайн-оплат</a>.</li>
                   <li><b class="icon green-icon">✔</b>Ускоренные <a href="#qst_9">взаиморасчёты</a>.</li>
                   <li><b class="icon green-icon">✔</b>Услуги <a href="#qst_11">доставки</a> с помощью наших курьеров.</li>
@@ -154,7 +154,7 @@
                   <li><b class="icon green-icon">✔</b><a href="#qst_5">Система</a> управления заказами.</li>
                   <li><b class="icon green-icon">✔</b>Синхронизация с <a href="#qst_10">системами торгового учёта</a>.</li>
                   <li><b class="icon green-icon">✔</b>Функция "Электронное меню" (доступно для кафе и ресторанов).</li>
-                  <li><b class="icon green-icon">✔</b>Маркетинговая поддержка для проветения рекламных акций.</li>
+                  <li><b class="icon green-icon">✔</b>Маркетинговая поддержка для проведения рекламных акций.</li>
                   <li><b class="icon green-icon">✔</b>Приём <a href="#qst_6">онлайн-оплат</a>.</li>
                   <li><b class="icon green-icon">✔</b>Ускоренные <a href="#qst_9">взаиморасчёты</a>.</li>
                   <li><b class="icon red-icon">✖</b>Услуги <a href="#qst_11">доставки</a> с помощью наших курьеров.</li>
@@ -174,7 +174,7 @@
                   <li><b class="icon green-icon">✔</b><a href="#qst_5">Система</a> управления заказами.</li>
                   <li><b class="icon green-icon">✔</b>Синхронизация с <a href="#qst_10">системами торгового учёта</a>.</li>
                   <li><b class="icon green-icon">✔</b>Функция "Электронное меню" (доступно для кафе и ресторанов).</li>
-                  <li><b class="icon green-icon">✔</b>Маркетинговая поддержка для проветения рекламных акций.</li>
+                  <li><b class="icon green-icon">✔</b>Маркетинговая поддержка для проведения рекламных акций.</li>
                   <li><b class="icon red-icon">✖</b>Приём <a href="#qst_6">онлайн-оплат</a>.</li>
                   <li><b class="icon red-icon">✖</b>Ускоренные <a href="#qst_9">взаиморасчёты</a>.</li>
                   <li><b class="icon red-icon">✖</b>Услуги <a href="#qst_11">доставки</a> с помощью наших курьеров.</li>

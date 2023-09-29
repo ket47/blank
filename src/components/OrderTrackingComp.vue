@@ -1,4 +1,4 @@
-<style scoped>
+<style>
     .center_chip{
         text-align:center;
         width: 100%;
@@ -178,15 +178,17 @@ export default({
             }
             try{
                 this.job=await Order.api.itemJobTrack(this.orderData.order_id);
+                this.placemarkProperties.iconContent=``
                 const max_location_age=3*60//3min
                 if(this.job?.location_latitude){
                     this.coords=[this.job.location_latitude,this.job.location_longitude]
-                    this.placemarkProperties.iconContent=`${this.courier_finish_distance_km} (${this.courier_finish_time_min})`
+                    if( this.orderData.stage_current=='delivery_start' ){
+                        this.placemarkProperties.iconContent=`${this.courier_finish_distance_km} (${this.courier_finish_time_min})`
+                    }
                     this.mapclass=''
                 }
                 if(this.job?.location_age>max_location_age){
                     //this.coords=null//hide map
-                    this.placemarkProperties.iconContent=``
                     this.mapclass='disabled'
                 }
                 clearTimeout(this.clock)

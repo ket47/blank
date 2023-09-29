@@ -94,7 +94,7 @@ export default {
             if(this.productItem.is_disabled==1){
                 return 'disabled'
             }
-            if(this.productItem.is_counted==1 && (this.productItem.product_quantity-this.productItem.product_quantity_reserved)<1){
+            if(this.productItem.is_counted==1 && !( (this.productItem.product_quantity-this.productItem.product_quantity_reserved)>0 ) ){
                 return 'absent'
             }
             return ''

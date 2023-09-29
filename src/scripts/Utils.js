@@ -71,11 +71,10 @@ const Utils={
     //////////////////////////////////////////////////////
     storage:null,
     async storageCreate(){
-        if(Utils.storage){
-            return this.storage;
+        if(!Utils.storage){
+            this.storage = new Storage()
+            await this.storage.create()
         }
-        this.storage = new Storage()
-        await this.storage.create()
         return this.storage
     },
     stringToHash(string) {
@@ -94,10 +93,14 @@ const Utils={
     debounceDictionary:{},
     debounceControl(requestId,debounce=2000){//rejects subsequent requests if interval is smaller than debounce
         const now=Date.now()
-        if( this.debounceDictionary[requestId] && this.debounceDictionary[requestId]+debounce>now ){
+        this.debounceCheck(requestId,debounce)
+        this.debounceDictionary[requestId]=now
+    },
+    debounceCheck(requestId,debounce=2000){
+        const now=Date.now()
+        if( this.debounceDictionary[requestId] && (this.debounceDictionary[requestId]+debounce)>now ){
             throw new Error('Too many requests')
         }
-        this.debounceDictionary[requestId]=now
     },
     /**
      * Makes post request and caches response
@@ -105,18 +108,14 @@ const Utils={
      * @param {*} request 
      * @returns 
      */
-    async post( url, request ){
+    async post( url, request, debounce=2000 ){
         const requestId=Utils.requestIdGet(url,request)
-        this.debounceControl(requestId)
+        this.debounceControl(requestId,debounce)
         const response=await jquery.post(url,request)
         const responseStamp=Date.now()
         const cache={response,responseStamp}
         await this.storageCreate()
         await this.storage.set(requestId, cache)
-
-        if( Math.random()<0.01 ){//1% chance to get here
-            setTimeout(()=>this.clearPost(),5000)
-        }
         return response
     },
     /**
@@ -125,18 +124,22 @@ const Utils={
      * @param {*} request to calculate hash
      * @returns cache
      */
-    async prePost( url, request ){
+    async prePost( url, request, debounce=2000 ){
         const requestId=Utils.requestIdGet(url,request)
+        this.debounceCheck(requestId,debounce)
         await this.storageCreate()
         const cache=await this.storage.get(requestId)
         if( !cache ){
             return null
         }
-        if(cache?.is_used){
-            await this.storage.remove(requestId)//some time stuck on old cache
-        } else {
-            cache.is_used=true
-            await this.storage.set(requestId, cache)
+        // if(cache?.is_used){
+        //     await this.storage.remove(requestId)//some time stuck on old cache
+        // } else {
+        //     cache.is_used=true
+        //     await this.storage.set(requestId, cache)
+        // }
+        if( Math.random()<0.01 ){//1% chance to get here
+            setTimeout(()=>this.clearPost(),5000)
         }
         return cache?.response
     },

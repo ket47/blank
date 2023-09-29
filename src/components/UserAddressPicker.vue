@@ -120,14 +120,20 @@ export default({
     async mounted(){
         await loadYmap();
         let ymaps=window.ymaps
+
+
+
+        const response= await fetch(`https://api-maps.yandex.ru/2.1/?lang=ru_RU&apikey=${this.$heap.state.settings.location.ymapApiKey}&suggest_apikey=c69170d5-6cad-444d-a0fb-ef87134398f6`)
+
+
         const mapBoundaries = JSON.parse('['+this.locSettings.mapBoundaries[0]+']');
-        const suggestView = new ymaps.SuggestView('suggest',{boundedBy:mapBoundaries});
-        suggestView.events.add('select',(e)=>{
-            this.selectedAddress=e.get('item').displayName;
-            ymaps.geocode(this.selectedAddress).then(res=>{
-                this.coords=res.geoObjects.get(0).geometry.getCoordinates();
-            });
-        });
+        // const suggestView = new ymaps.SuggestView('suggest',{boundedBy:mapBoundaries});
+        // suggestView.events.add('select',(e)=>{
+        //     this.selectedAddress=e.get('item').displayName;
+        //     ymaps.geocode(this.selectedAddress).then(res=>{
+        //         this.coords=res.geoObjects.get(0).geometry.getCoordinates();
+        //     });
+        // });
         this.$flash("Получаем местоположение устройства")
         ymaps.geolocation.get().then(res => {
             this.coords = res.geoObjects.position;

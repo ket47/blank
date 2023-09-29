@@ -394,9 +394,6 @@ export default {
             if(tariffRule.paymentByCreditStore==1){
                 this.paymentType='use_credit_store'
             } else
-            if(tariffRule.paymentByCashStore==1){
-                this.paymentType='use_cash_store'
-            } else
             if(tariffRule.paymentByCash==1){
                 this.paymentType='use_cash'
             }
@@ -455,16 +452,127 @@ export default {
                 this.iplocation = await response.json();
             }catch{/** */}
         },
-        async ymapInit(locSettings){
-            this.mapsettings={
-                apiKey: locSettings.ymapApiKey,
-                lang: "ru_RU",
-                coordorder: "latlong",
-                version: "2.1",
+
+
+
+
+        async proceed(){
+            const shipData={
+                ship_id:this.ship.ship_id,
+                tariff_id:this.tariffRule.tariff_id,
+                paymentByCard:this.paymentType=='use_card'?1:0,
+                paymentByCardRecurrent:this.paymentType=='use_card_recurrent'?1:0,
+                paymentByCash:this.paymentType=='use_cash'?1:0,
+                paymentByCreditStore:this.paymentType=='use_credit_store'?1:0
             }
-            this.placemarkCoords=JSON.parse(locSettings.mapCenter)
-            await loadYmap();
+            try{
+                await jQuery.post(`${this.$heap.state.hostname}Order/itemCheckoutDataSet`,JSON.stringify(shipData))
+            } catch(err){
+                const exception=err?.responseJSON;
+                if(!exception){
+                  return false;
+                }
+                const exception_code=exception.messages.error;
+                this.$flash("Не удается оформить заказ, обратитесь на горячую линию")
+                this.$router.go(-1);
+                return false
+            }
+            if(shipData.paymentByCard==1){
+                this.paymentFormOpen({
+                    ship_id:this.ship.ship_id,
+                    ship_sum_total:this.ship_sum_total,
+                    user_id:this.ship.owner_id
+                });
+                return;
+            }
+            if(shipData.paymentByCardRecurrent==1){
+                const request={
+                    ship_id:this.ship.ship_id,
+                    card_id:this.bankCard.card_id
+                }
+                try{
+                    await jQuery.post(`${this.$heap.state.hostname}CardAcquirer/paymentDo`,request)
+                } catch(err){
+                    this.$flash("Оплата привязанной картой не удалась")
+                    return false
+                }
+            }
+            try{
+                await Order.api.itemStageCreate(this.order.order_id,'customer_start');
+                this.$router.replace('/order/order-'+this.order.order_id);
+            } catch(err){
+                    const exception_code=err?.responseJSON?.messages?.error;
+                    switch(exception_code){
+                        case 'order_is_empty':
+                            this.$alert("К сожалению, товара не осталось в наличии &#9785;","Заказ пуст");
+                            break;
+                        case 'address_not_set':
+                            this.$flash("Необходимо добавить адрес доставки")
+                            this.$topic.publish('dismissModal')
+                            this.$go('/modal/user-addresses')
+                            break;
+                    }
+                    return false
+            }
         },
+        async paymentFormOpen( order_data ) {
+            const self=this;
+            const modal = await modalController.create({
+                component: OrderPaymentCardModal,
+                componentProps:{order_data},
+                initialBreakpoint: 0.85,
+                breakpoints: [0, 0.85, 0.95]
+                });
+            const dismissFn=function(){
+                modal.dismiss();
+            };
+            Topic.on('dismissModal',dismissFn);
+
+            modal.onDidDismiss().then(()=>{
+                self.paymentStatusCheck();
+            })
+            return modal.present();
+        },
+        async paymentStatusCheck(){
+            const request={
+                order_id:this.order.order_id
+            };
+            try{
+                const result= await jQuery.post( this.$heap.state.hostname + "CardAcquirer/statusGet", request );
+                if(result=='OK'){
+                    this.$router.replace('/order/order-'+this.order.order_id)
+                }
+            } catch(err){
+                const message=err.responseJSON?.messages?.error;
+                if(message=='wrong_status'){
+                    this.$flash("Данный заказ не может быть оплачен");
+                    this.$router.replace('/order/order-'+this.order.order_id);
+                }
+                if(message=='not_authorized'){
+                    this.$flash("Оплата не удалась, возможно не достаточно средств");
+                    this.$router.replace('/order/order-'+this.order.order_id);
+                }
+                if(message=='waiting'){
+                    this.$flash("Ваш платеж на ожидании");
+                    this.$router.replace('/order/order-'+this.order.order_id);
+                }
+            }
+        },
+
+
+
+
+
+        // async ymapInit(locSettings){
+        //     this.mapsettings={
+        //         apiKey: locSettings.ymapApiKey,
+        //         lang: "ru_RU",
+        //         coordorder: "latlong",
+        //         version: "2.1",
+        //     }
+        //     this.placemarkCoords=JSON.parse(locSettings.mapCenter)
+        //     await loadYmap();
+        // },
     },
     mounted(){
         this.itemLoad()

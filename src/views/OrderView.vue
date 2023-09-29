@@ -284,7 +284,7 @@ export default({
         this.itemGet();
     },
     ionViewDidLeave(){
-        this.order=null;
+        //this.order=null;
         clearTimeout(this.orderAutoloadClock)
     },
     created(){

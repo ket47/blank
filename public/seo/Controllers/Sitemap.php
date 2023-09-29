@@ -52,10 +52,10 @@ class Sitemap{
 
     public function ymlFeed(){
         header("Content-Type:text/xml");
-        $CatalogModel=new \Models\CatalogModel();
-        $stores=$CatalogModel->storeListGet([
-            'limit'=>500
-        ]);
+        // $CatalogModel=new \Models\CatalogModel();
+        // $stores=$CatalogModel->storeListGet([
+        //     'limit'=>500
+        // ]);
         $xml=new \XMLWriter();
         $xml->openMemory();
         $xml->setIndent(true);
@@ -63,38 +63,147 @@ class Sitemap{
         $xml->startElement('yml_catalog');
         $xml->writeAttribute('date',date("Y-m-d\TH:i:s"));
 
-        foreach($stores as $store){
+        //foreach($stores as $store){
             $xml->startElement('shop');
-            $xml->writeElement('name',$store->store_name);
-            $xml->writeElement('company',$store->store_company_name);
-            $xml->writeElement('url',getenv('app.frontendURL').'catalog/store-'.$store->store_id);
+            $xml->writeElement('name',getenv('app.title'));
+            $xml->writeElement('company',getenv('app.company'));
+            $xml->writeElement('url',getenv('app.frontendURL'));
+            
+            $CatalogModel=new \Models\CatalogModel();
+            $categories=$CatalogModel->categoryListAllGet();
+            
+            
+            if($categories){
+                $categories[]=(object)[
+                    'group_id'=>1,
+                    'group_name'=>'другое'
+                    ];
+                $xml->startElement('categories');
+                foreach($categories as $cat){
+                    $xml->startElement('category');
+                    $xml->writeAttribute('id',$cat->group_id);
+                    $xml->text($cat->group_name);
+                    $xml->endElement();
+                }
+                $xml->endElement();
+            }
             $xml->startElement('offers');
-            $this->ymlProductsWrite($xml,$store->store_id);
+            $this->ymlProductsWrite($xml);
             $xml->endElement();
             $xml->endElement();
-        }
+        //}
 
         $xml->endElement();
         $xml->endDocument();
         echo $xml->flush();
     }
 
-    private function ymlProductsWrite($xml,$store_id){
+    private function ymlProductsWrite($xml){
         $CatalogModel=new \Models\CatalogModel();
         $products=$CatalogModel->productListGet([
-            'limit'=>500,
-            'store_id'=>$store_id
+            'limit'=>5000
         ]);
         foreach($products as $product){
+            if( !$product->product_final_price ){
+                continue;
+            }
             $xml->startElement('offer');
             $xml->writeAttribute('id',$product->product_id);
             $xml->writeElement('name',$product->product_name);
             $xml->writeElement('url',getenv('app.frontendURL').'catalog/product-'.$product->product_id);
             $xml->writeElement('price',$product->product_final_price);
+            if($product->product_final_price!=$product->product_price){
+                $xml->writeElement('oldprice',$product->product_price);
+            }
             $xml->writeElement('delivery','true');
             $xml->writeElement('weight',$product->product_weight);
+            if(!$product->group_id){
+                $product->group_id=1;
+            }
+            $xml->writeElement('categoryId',$product->group_id);
+            $xml->writeElement('currencyId','RUR');
+            
+            $xml->writeElement('picture',getenv('app.backendURL')."image/get.php/{$product->image_hash}.500.500.jpg");
+                $xml->startElement('description');
+                $xml->writeCdata($product->product_description);
+                $xml->endElement();
             $xml->endElement();
         }
+    }
+
+    public function googleFeed(){
+        header("Content-Type: text/plain");
+        $CatalogModel=new \Models\CatalogModel();
+        $products=$CatalogModel->productListGet([
+            'limit'=>5000,
+        ]);
+        $out = fopen('php://output', 'w');
+        fputcsv($out, [
+            'id','title','description','price','condition','link','availability','image_link',
+        ], "\t");
+        foreach ($products as $prod) {
+            $fields=[
+                $prod->product_id,
+                addslashes($prod->product_name),
+                addslashes($prod->product_description),
+                "{$prod->product_final_price} RUB",
+                'new',
+                getenv('app.frontendURL').'catalog/product-'.$prod->product_id,
+                'in_stock',
+                getenv('app.backendURL')."/image/get.php/{$prod->image_hash}.500.500.webp"
+            ];
+            fputcsv($out, $fields, "\t");
+        }
+        fclose($out);
+    }
+    public function googleFeedXml(){
+        header("Content-Type:text/xml");
+        $CatalogModel=new \Models\CatalogModel();
+        $products=$CatalogModel->productListGet([
+            'limit'=>5000,
+        ]);
+        
+        $xml=new \XMLWriter();
+        $xml->openMemory();
+        $xml->setIndent(true);
+        $xml->startDocument('1.0', 'UTF-8');
+        $xml->startElement('rss');
+        $xml->writeAttribute('xmlns:g','http://base.google.com/ns/1.0');
+        $xml->writeAttribute('version','2.0');
+
+        $xml->startElement('channel');
+        $xml->writeElement('title',getenv('app.title'));
+        $xml->writeElement('description',getenv('app.description'));
+        $xml->writeElement('link',getenv('app.frontendURL'));
+        
+        
+        foreach($products as $prod){
+            $xml->startElement('item');
+            $xml->writeElement('g:id',$prod->product_id);
+            $xml->writeElement('g:title',$prod->product_name);
+            $xml->writeElement('g:description',$prod->product_description);
+            $xml->writeElement('g:link',getenv('app.frontendURL').'catalog/product-'.$prod->product_id);
+            $xml->writeElement('g:image_link',getenv('app.backendURL')."/image/get.php/{$prod->image_hash}.500.500.webp");
+            
+            $xml->writeElement('g:availability','in stock');
+            $xml->writeElement('g:price',"{$prod->product_price} RUB");
+            if($prod->product_final_price!=$prod->product_price){
+                $xml->writeElement('g:sale_price',"{$prod->product_final_price} RUB");
+                $start=strtotime($prod->product_promo_start);
+                $finish=strtotime($prod->product_promo_finish);
+                $xml->writeElement('g:sale_price_effective_date',date("Y-m-d\TH:i O",$start)." / ".date("Y-m-d\TH:i O",$finish));
+            }
+            $xml->writeElement('g:unit_pricing_measure',$prod->product_unit);
+            $xml->writeElement('g:product_type',$prod->group_name??'');
+            $xml->writeElement('g:identifier_exists','no');
+            $xml->writeElement('g:adult','no');
+            $xml->writeElement('g:product_weight',$prod->product_weight);
+            $xml->endElement();
+        }
+        $xml->endElement();
+        $xml->endElement();
+        $xml->endDocument();
+        echo $xml->flush();
     }
 }
 

@@ -6,10 +6,12 @@ import Utils from '@/scripts/Utils.js'
 const Order = {
     api:{
         async itemPreGet(order_id){
-            return await Utils.prePost( heap.state.hostname + "Order/itemGet",{order_id} );
+            const debounce=500
+            return await Utils.prePost( heap.state.hostname + "Order/itemGet",{order_id},debounce );
         },
         async itemGet(order_id){
-            const order= await Utils.post( heap.state.hostname + "Order/itemGet",{order_id} )
+            const debounce=500
+            const order= await Utils.post( heap.state.hostname + "Order/itemGet",{order_id},debounce )
             if( order.stage_current=='customer_cart' && order.user_role=='customer' ){
                 const cart={
                     order_store_id:order.order_store_id,

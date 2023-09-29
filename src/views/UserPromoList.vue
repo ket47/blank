@@ -20,7 +20,7 @@
                     </ion-accordion>
                 </ion-accordion-group>
                 <p>
-                    <ion-button @click="shareInvitation()" expand="full">Пригласить друга</ion-button>
+                    <ion-button @click="shareInvitation()" expand="block"><ion-icon :src="arrowRedoOutline"/>Пригласить друга</ion-button>
                 </p>
             </ion-card-content>
         </ion-card>
@@ -117,8 +117,11 @@ import {
     closeOutline,
     banOutline,
     helpCircle,
+    arrowRedoOutline,
 }                       from 'ionicons/icons'
 import jQuery           from 'jquery'
+import { Share }        from '@capacitor/share';
+
 export default {
     components:{
   IonIcon,
@@ -143,6 +146,7 @@ export default {
     closeOutline,
     banOutline,
     helpCircle,
+    arrowRedoOutline,
         }
     },
     data(){
@@ -188,22 +192,23 @@ export default {
             return event.toLocaleDateString(undefined, options);
         },
         async shareInvitation(){
-            if(!this.$heap.state.user?.user_id){
-                this.$flash('Вы не авторизированы');
-                return
-            }
             try{
-                const link=`${this.$heap.state.settings.app.frontendUrl}invitation.html?inviter_user_id=${this.$heap.state.user.user_id}`;
-                if(navigator.share){
-                    const shareData = {
-                        title: this.$heap.state.settings.app_title,
-                        text: 'Присоединяйтесь и получите 5 сертификатов по 200руб',
-                        url:link
-                    }
-                    await navigator.share(shareData);
+                const targetTitle=this.$heap.state.settings.app_title
+                const targetText='Присоединяйтесь и получите 5 сертификатов по 200руб'
+                const canshare=await Share.canShare()
+                const fullUrl=this.$heap.getters.settings.app.frontendUrl+this.targetUrl
+                if(canshare){
+                    await Share.share({
+                        title: targetTitle,
+                        text: targetText,
+                        url: fullUrl,
+                        dialogTitle: targetTitle,
+                    });
+                } else if(navigator.clipboard){
+                    await navigator.clipboard.writeText(fullUrl);
+                    this.$alert("Теперь вы можете поделиться ей с друзьями в социальных сетях или мессенджерах.","Ссылка на страницу скопирована");
                 } else {
-                    await navigator.clipboard.writeText(link);
-                    this.$alert("Ссылка с приглашением скопирована. Теперь вы можете поделиться ей с друзьями в социальных сетях или мессенджерах.","Готово");
+                    this.$alert("Устройство не поддерживает функцию поделиться",""); 
                 }
             }catch(err){
                 //console.log(err)
