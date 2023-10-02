@@ -10,9 +10,8 @@ class CatalogModel{
 
 
     public function storeListGet($filter){
-        $limit = $filter['limit'] ? $this->db->esc($filter['limit']) : 12;
-
-        $offset = ( $filter['page'] ?? 0 ) * $limit;
+        $limit=$filter['limit']?$this->db->esc($filter['limit']):12;
+        $offset=($filter['page']??0)*$limit;
 
         $sql="
             SELECT
@@ -76,8 +75,39 @@ class CatalogModel{
         ";
         return $this->db->query($sql)->row();        
     }
+    
+    public function categoryListGet( int $store_id ){
+        $sql="
+        SELECT
+            group_id,
+            group_parent_id,
+            group_name
+        FROM
+            product_group_list
+                JOIN
+            product_group_member_list USING(group_id)
+                JOIN
+            product_list ON member_id=product_id
+        WHERE
+            store_id='$store_id'
+        GROUP BY group_id
+        ";
+        return $this->db->query($sql)->rows();        
+    }
+    public function categoryListAllGet(){
+        $sql="
+        SELECT
+            group_id,
+            group_parent_id,
+            group_name
+        FROM
+            product_group_list
+        ";
+        return $this->db->query($sql)->rows();        
+    }
 
 
+    
 
 
 
@@ -95,10 +125,8 @@ class CatalogModel{
     public function productListGet($filter){
         $limit=$filter['limit']?$this->db->esc($filter['limit']):12;
         $offset=($filter['page']??0)*$limit;
-        
-        $store_case=!empty($filter['store_id'])?"AND pl.store_id='{$filter['store_id']}'":'';
-        
-        $category_case=isset($filter['category_id'])?" AND pl.product_id IN (SELECT ml.member_id FROM product_group_list pgl JOIN product_group_member_list ml  ON pgl.group_id = ml.group_id WHERE pgl.group_id = '{$filter['category_id']}' OR pgl.group_parent_id = '{$filter['category_id']}') ":'';
+
+        $store_case=isset($filter['store_id'])?"AND pl.store_id='{$filter['store_id']}'":'';
 
         $sql="
             SELECT
@@ -110,8 +138,12 @@ class CatalogModel{
                 store_name,
                 pl.product_price,
                 ROUND(IF(IFNULL(`pl`.`product_promo_price`,0)>0 AND `pl`.`product_price`>`pl`.`product_promo_price` AND `pl`.`product_promo_start` < NOW() AND `pl`.`product_promo_finish` > NOW(),`pl`.`product_promo_price`,`pl`.`product_price`)) product_final_price,
+                pl.product_promo_start,
+                pl.product_promo_finish,
                 image_hash,
-                pl.updated_at
+                pl.updated_at,
+                group_id,
+                group_name
             FROM
                 product_list pl
                     LEFT JOIN
@@ -120,11 +152,17 @@ class CatalogModel{
                 store_list ON store_list.store_id=pl.store_id
                     LEFT JOIN
                 image_list ON image_holder='product' AND image_holder_id=COALESCE(pl_parent.product_id,pl.product_id) AND image_list.is_main=1
+                    LEFT JOIN
+                product_group_member_list ON pl.product_id=member_id
+                    LEFT JOIN
+                product_group_list USING(group_id)
             WHERE
                 pl.is_disabled=0
                 AND pl.deleted_at IS NULL
+                AND store_list.is_disabled=0
+                AND store_list.deleted_at IS NULL
+                AND image_hash IS NOT NULL
                 $store_case
-                $category_case
             ORDER BY pl.updated_at DESC
             LIMIT $limit OFFSET $offset
         ";
@@ -201,59 +239,4 @@ class CatalogModel{
         return $this->db->query($sql)->row();        
     }
 
-
-
-    public function locationGetList( $scope, int $item_id )
-    {
-        $sql="SELECT * FROM location_list WHERE location_holder = '$scope' AND location_holder_id = $item_id";
-        return $this->db->query($sql)->rows();        
-    }
-
-
-
-    
-    public function categoryItemGet( int $category_id ){
-        $sql="
-        SELECT
-            product_group_list.*,
-            image_hash
-        FROM
-            product_group_list
-                LEFT JOIN
-            image_list ON image_holder='product_group_list' AND image_holder_id=group_id AND image_list.is_main=1
-        WHERE
-            product_group_list.is_disabled=0
-            AND product_group_list.deleted_at IS NULL
-            AND group_id='$category_id'
-        ";
-        return $this->db->query($sql)->row();        
-    }
-    
-    public function categoryListGet( $filter ){
-        $limit= isset($filter['limit'])?$this->db->esc($filter['limit']):12;
-        $offset=($filter['page']??0)*$limit;
-
-        $store_case=isset($filter['store_id'])?" AND pgl.group_id IN (SELECT pgl.group_parent_id  FROM product_group_list pgl JOIN product_group_member_list ml ON pgl.group_id = ml.group_id JOIN product_list pl ON ml.member_id = pl.product_id WHERE pl.store_id = '{$filter['store_id']}') ":'';
-        $group_parent_case=isset($filter['group_parent_id'])?" AND pgl.group_parent_id='{$filter['group_parent_id']}'":'';
-        $parent_only_case=isset($filter['parent_only'])?" AND pgl.group_parent_id='0'":'';
-         
-        $sql="
-            SELECT
-                pgl.*,
-                image_hash
-            FROM
-                product_group_list pgl
-                    LEFT JOIN
-                image_list ON image_holder='product_group_list' AND image_holder_id=group_id AND image_list.is_main=1
-            WHERE
-                pgl.is_disabled=0
-                AND pgl.deleted_at IS NULL
-                $store_case
-                $group_parent_case
-                $parent_only_case
-            ORDER BY pgl.updated_at DESC
-            LIMIT $limit OFFSET $offset
-        ";
-        return $this->db->query($sql)->rows();        
-    }
 }

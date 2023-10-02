@@ -11,9 +11,5 @@
 				"alert"
 			]
 		}
-	},
-	"server": {
-		"hostname": "tezkel.com",
-		"androidScheme": "https"
 	}
 }

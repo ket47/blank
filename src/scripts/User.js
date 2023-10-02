@@ -3,6 +3,7 @@ import heap                     from '@/heap';
 import Topic                    from '@/scripts/Topic';
 import Utils                    from '@/scripts/Utils';
 import { Geolocation }          from '@capacitor/geolocation';
+import { Device }               from '@capacitor/device'
 import { loadYmap }             from "vue-yandex-maps";
 
 import { initializeApp }        from "firebase/app";
@@ -178,12 +179,23 @@ const User = {
         async get(){
             try{
                 const data=await jQuery.post( heap.state.hostname + "Courier/itemGet")
-                User.courier.data=data;
-                User.courier.parseStatus();
+                User.courier.data=data
+                User.courier.parseStatus()
+                User.courier.batteryCheck()
                 return data;
             }catch(err){
                 User.courier.data=null;
             }
+        },
+        async batteryCheck(){
+            try{
+                const info = await Device.getBatteryInfo()
+                const request={
+                    courier_id:User.courier.data?.courier_id,
+                    courier_comment:JSON.stringify(info)
+                }
+                await jQuery.post( heap.state.hostname + "Courier/itemUpdate",JSON.stringify(request))
+            } catch{/** */}
         },
         async updateStatus(new_status){
             if( !User.courier.data?.courier_id ){

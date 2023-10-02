@@ -1,27 +1,29 @@
 <template>
-    <ion-header>
-        <ion-toolbar>
-          <ion-buttons slot="start">
-            <ion-button @click="closeModal()" color="primary">
-                <ion-icon :icon="closeOutline" slot="start"/>
-                Закрыть
-            </ion-button>
-          </ion-buttons>
-          <ion-label size="large">Добавление адреса</ion-label>
-          <ion-buttons slot="end">
-            <ion-button :strong="true" @click="pickAddress()" color="primary">
-                <ion-icon :src="checkmark" slot="start"/>
-                Ок
-            </ion-button>
-          </ion-buttons>
-        </ion-toolbar>
-        <ion-searchbar id="suggest" placeholder="название улицы, номер дома"/>
-    </ion-header>
-  <ion-content>
-    <yandex-map :coords="coords" :zoom="16" @click="onClick($event)" style="height:100%" :settings="settings">
-        <ymap-marker :coords="coords" marker-id="1" :properties="placemarkProperties"/>
-    </yandex-map>
-  </ion-content>
+    <ion-content>
+        <yandex-map @click="onClick($event)" style="height:100%" 
+        :coords="coords"
+        :zoom="16"
+        :settings="settings"
+        :controls="['zoomControl']"
+        >
+            <ymap-marker :coords="coords" marker-id="1" :properties="placemarkProperties"/>
+        </yandex-map>
+        <div style="position: absolute;top: 0px;width:100%;--ion-item-background: #ffffffdd;border-radius:10px;">
+            <ion-searchbar debounce="500" v-model="addressSearchQuery" @ionInput="suggestionsGet()" placeholder="поиск адреса" style="margin:0px;padding-bottom:0px"/>
+            <ion-item v-for="(row,i) in suggestions" :key="i" @click="suggestionSelect(`${row.subtitle.text}, ${row.title.text}`,row.uri)" style="margin-right:10px;margin-left:10px">
+                {{row.subtitle.text}} {{row.title.text}} 
+                <span slot="end" style="color:#666">{{row.distance.text}}</span>
+            </ion-item>
+        </div>
+    </ion-content>
+    <ion-toolbar>
+
+        <ion-button :strong="true" @click="pickAddress()" color="primary" expand="block">
+            <ion-icon :src="checkmark" slot="start"/>
+            Ок
+        </ion-button>
+        <ion-button @click="closeModal()" color="light" expand="block">Закрыть</ion-button>
+    </ion-toolbar>
 </template>
 
 <script>
@@ -29,10 +31,9 @@ import {
     IonContent,
     IonToolbar,
     IonButton,
-    IonButtons,
     IonSearchbar,
-    IonHeader,
     IonIcon,
+    IonItem,
     modalController
 }                           from "@ionic/vue";
 import { yandexMap,ymapMarker,loadYmap }         from "vue-yandex-maps";
@@ -43,10 +44,9 @@ export default({
     IonContent,
     IonToolbar,
     IonButton,
-    IonButtons,
     IonSearchbar,
-    IonHeader,
     IonIcon,
+    IonItem,
     yandexMap,
     ymapMarker,
     },
@@ -75,6 +75,8 @@ export default({
             placemarkProperties:{
                 iconCaption:locationType
             },
+            suggestions:[],
+            addressSearchQuery:null,
             locationType,
             locSettings,
             selectedPlacemark:0,
@@ -86,8 +88,10 @@ export default({
     methods:{
         async pickAddress(){
             try{
-                const result=await window.ymaps.geocode(this.coords)
-                this.selectedAddress=result.geoObjects.get(0)?.getAddressLine();
+                if( !this.selectedAddress ){
+                    const result=await window.ymaps.geocode(this.coords)
+                    this.selectedAddress=result.geoObjects.get(0)?.getAddressLine();                    
+                }
             } catch(err){
                 //console.log(err)
             }
@@ -114,26 +118,45 @@ export default({
             if( !e || !e.get ){
                 return
             }
+            this.suggestions=[]
+            this.selectedAddress=null
             this.coords=e.get('coords')
+        },
+        async suggestionsGet(){
+            if( !this.addressSearchQuery ){
+                this.suggestions=[]
+                return
+            }
+            try{
+                const sapikey=this.$heap.state.settings.location.ymapSuggestionApiKey
+                const ll=this.coords.slice().reverse().join(',')
+                const response= await fetch(`https://suggest-maps.yandex.ru/v1/suggest?apikey=${sapikey}&lang=ru_RU&ll=${ll}&spn=1,1&attrs=uri&types=house&results=5&text=${this.addressSearchQuery}`)
+                const responseData=await response.json()
+                this.suggestions=responseData.results||[]
+            }catch{
+                /** */
+            }
+        },
+        async suggestionSelect( address, uri ){
+            this.selectedAddress=address
+            this.geocode(uri)
+        },
+        async geocode( uri ){
+            try{
+                this.suggestions=[]
+                const apikey=this.$heap.state.settings.location.ymapApiKey
+                const response= await fetch(`https://geocode-maps.yandex.ru/1.x?apikey=${apikey}&format=json&results=1&uri=${uri}`)
+                const responseData=await response.json()
+                const geoObject=responseData.response.GeoObjectCollection.featureMember[0].GeoObject
+                this.coords=geoObject.Point.pos.split(" ").reverse()
+            }catch(err){
+                console.log(err)
+            }
         }
     },
     async mounted(){
         await loadYmap();
         let ymaps=window.ymaps
-
-
-
-        const response= await fetch(`https://api-maps.yandex.ru/2.1/?lang=ru_RU&apikey=${this.$heap.state.settings.location.ymapApiKey}&suggest_apikey=c69170d5-6cad-444d-a0fb-ef87134398f6`)
-
-
-        const mapBoundaries = JSON.parse('['+this.locSettings.mapBoundaries[0]+']');
-        // const suggestView = new ymaps.SuggestView('suggest',{boundedBy:mapBoundaries});
-        // suggestView.events.add('select',(e)=>{
-        //     this.selectedAddress=e.get('item').displayName;
-        //     ymaps.geocode(this.selectedAddress).then(res=>{
-        //         this.coords=res.geoObjects.get(0).geometry.getCoordinates();
-        //     });
-        // });
         this.$flash("Получаем местоположение устройства")
         ymaps.geolocation.get().then(res => {
             this.coords = res.geoObjects.position;
