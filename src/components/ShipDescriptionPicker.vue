@@ -9,28 +9,28 @@
             </ion-toolbar>
         </ion-header>
         <ion-content class="ion-padding">
-            <ion-item lines="full">
-                <ion-textarea v-model="description" rows="5" label="Описание посылки" label-placement="stacked" placeholder="что будем везти?"></ion-textarea>
-            </ion-item>
-            <ion-item lines="none">
-                Подтверждаю, что посылка
-            </ion-item>
+            <ion-list  lines="none">
+                <ion-item>
+                    <ion-textarea v-model="description" rows="5" label="" placeholder="напишите, что будем везти" style="background-color:var(--ion-color-light);border-radius:10px"></ion-textarea>
+                </ion-item>
+                
+                <ion-item lines="full">
+                    Подтверждаю, что посылка:
+                </ion-item>
 
-            <div style="display:grid;grid-template-columns:1fr 1fr;width:100%">
-                <ion-card :color="isDimentionValid?'light':''" mode="md">
-                    <ion-card-content>
-                            <ion-checkbox v-model="isDimentionValid" label-placement="end">меньше 40см</ion-checkbox>
-                    </ion-card-content>
-                </ion-card>
-                <ion-card :color="isWeightValid?'light':''" mode="md">
-                    <ion-card-content>
-                        <ion-checkbox v-model="isWeightValid" label-placement="end">легче 8кг</ion-checkbox>
-                    </ion-card-content>
-                </ion-card>
-            </div>
+                <ion-item>
+                    <ion-checkbox v-model="isDimentionValid">меньше 40см</ion-checkbox>
+                </ion-item>
+                <ion-item>
+                    <ion-checkbox v-model="isWeightValid">легче 8кг</ion-checkbox>
+                </ion-item>
+                <ion-item>
+                    <ion-checkbox v-model="isContentValid">без запрещенных вещей</ion-checkbox>
+                </ion-item>
+            </ion-list>
 
             <ion-button v-if="!isValid && !description" disabled expand="block" color="medium">Заполните описание</ion-button>
-            <ion-button v-else-if="!isValid && (!isDimentionValid||!isWeightValid)" disabled expand="block" color="medium">Подтвердите размеры</ion-button>
+            <ion-button v-else-if="!isValid && (!isDimentionValid||!isWeightValid||!isContentValid)" disabled expand="block" color="medium">Подтвердите условия</ion-button>
             <ion-button v-else expand="block" @click="confirm()">Ок</ion-button>
         </ion-content>
     </div>
@@ -52,6 +52,7 @@ import {
 }                           from '@ionic/vue'
 import {
   closeOutline,
+  checkmarkOutline,
 }                           from 'ionicons/icons';
 export default {
     props:['ship_description'],
@@ -69,18 +70,22 @@ export default {
         IonCardContent,
     },
     setup(){
-        return {closeOutline}
+        return {
+            closeOutline,
+            checkmarkOutline,
+            }
     },
     data(){
         return {
             description:this.ship_description,
             isDimentionValid:this.ship_description?1:0,
             isWeightValid:this.ship_description?1:0,
+            isContentValid:this.ship_description?1:0,
         }
     },
     computed:{
         isValid(){
-            return this.description && this.isDimentionValid && this.isWeightValid
+            return this.description && this.isDimentionValid && this.isWeightValid && this.isContentValid
         }
     },
     methods:{

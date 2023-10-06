@@ -20,56 +20,7 @@
 <template>
     <base-layout pageTitle="Оформление вызова курьера" pageDefaultBackLink="/order/order-list" ref="page">
         <ion-list  lines="none">
-            <ion-item>
-                <ion-label>
-                    <h1>Ваш заказ</h1>
-                    <p><b>Курьер</b></p>
-                </ion-label>
-            </ion-item>
-            <ion-item detail="" lines="none" @click="descriptionPick()">
-                <ion-icon :src="cubeOutline" slot="start" size="large" color="medium" style="font-size:2em"/>
-                <ion-text v-if="ship?.ship_description" color="primary">{{ship.ship_description}}</ion-text>
-                <ion-text v-else color="medium">Скажите нам, что нужно перевезти?</ion-text>
-            </ion-item>
-
-            <ion-item-divider>Детали перевозки</ion-item-divider>
-            <!-- <ion-item >
-                <ion-label><h1>Детали перевозки</h1></ion-label>
-            </ion-item> -->
-
-            <div style="border-radius:10px;margin:10px;overflow: hidden;" v-if="0">
-                <yandex-map 
-                    v-if="placemarkCoords" 
-                    :coords="placemarkCoords" 
-                    :zoom="16" 
-                    :settings="mapsettings"
-                    :controls="['fullscreenControl']"
-                    :behaviors="[]"
-                    style="height:200px;" 
-                >
-                    <ymap-marker :coords="placemarkCoords" :icon="placemarkIcon" marker-id="1" :properties="placemarkProperties"/>
-                </yandex-map>
-            </div>
-
-
-
-            <ion-item v-if="locationStart" button @click="locationStartSelect()">
-                <ion-icon color="primary" :src="locationOutline" slot="start"/>
-                <ion-text><b>Откуда:</b> {{locationStart.location_address}}</ion-text>
-            </ion-item>
-            <ion-item v-else button :detail-icon="addOutline" @click="locationStartSelect()">
-                <ion-icon color="medium" :src="locationOutline" slot="start"/>
-                <ion-text color="medium">Откуда забрать?</ion-text>
-            </ion-item>
-
-            <ion-item v-if="locationFinish" button @click="locationFinishSelect()">
-                <ion-icon color="primary" :src="flagOutline" slot="start"/>
-                <ion-text><b>Куда:</b> {{locationFinish.location_address}}</ion-text>
-            </ion-item>
-            <ion-item v-else button :detail-icon="addOutline" @click="locationFinishSelect()">
-                <ion-icon color="medium" :src="flagOutline" slot="start"/>
-                <ion-text color="medium">Куда отвезти?</ion-text>
-            </ion-item>
+            
 
 
             <ion-item>
@@ -100,7 +51,10 @@
 
             <ion-item button detail="false" @click="paymentType='use_credit_store'" v-if="tariffRule.paymentByCreditStore==1">
                 <ion-icon :icon="businessOutline" slot="start" color="medium"></ion-icon>
-                <label for="use_credit_store">Со счета предприятия</label>
+                <label for="use_credit_store">
+                    Со счета предприятия
+                    <div style="font-size:0.7em;color:var(--ion-color-medium)">{{tariffRule.storeCreditName}} {{tariffRule.storeCreditBalance}}{{$heap.state.currencySign}}</div>
+                </label>
                 <div slot="end">
                     <input type="radio" name="paymentType" id="payment_credit_store" value="cash" :checked="paymentType == 'use_credit_store'">
                 </div>
@@ -213,6 +167,7 @@ import {
     cashOutline,
     businessOutline,
     walletOutline,
+    alertCircleOutline,
 }                               from 'ionicons/icons';
 import {
     yandexMap,
@@ -221,9 +176,7 @@ import {
 }                               from "vue-yandex-maps";
 import Utils                    from '@/scripts/Utils'
 import jQuery                   from 'jquery'
-import UserAddressesModal       from '@/components/UserAddressesModal.vue';
 import DateRangePicker          from '@/components/DateRangePicker.vue'
-import ShipDescriptionPicker    from '@/components/ShipDescriptionPicker.vue'
 
 export default {
     components:{
@@ -255,6 +208,7 @@ export default {
             cashOutline,
             businessOutline,
             walletOutline,
+            alertCircleOutline,
         };
     },
     data(){
@@ -278,8 +232,6 @@ export default {
             tariffRule:{},
             tariffRuleList:[],
             errorCode:null,
-            locationStart:null,
-            locationFinish:null,
 
 
             mapsettings:null,
@@ -348,13 +300,20 @@ export default {
             catch(err){
                 this.is_checkout_data_loaded=1
                 this.errorCode=err?.responseJSON?.messages?.error
-                console.log(this.errorCode)
+                if( this.errorCode =='notfound' || this.errorCode =='forbidden' ){
+                    this.$flash('Заказ не найден')
+                    this.$router.go(-1)
+                }
+                console.log(this.errorCode,err)
                 return false
             }
         },
         async itemCheckoutDataUse(bulkResponse){
             if( !bulkResponse ){
                 return
+            }
+            if( !bulkResponse.Location_distanceGet ){
+                this.errorCode='no_input'
             }
             this.deliveryTime=Utils.deliveryTimeCalculate(bulkResponse.Location_distanceGet,0)
             this.deliveryArriveRange=bulkResponse.deliveryArriveRange
@@ -398,25 +357,6 @@ export default {
                 this.paymentType='use_cash'
             }
         },
-        async locationSelect(){
-            const presEl=document.querySelector('ion-router-outlet');
-            const modal = await modalController.create({
-                component: UserAddressesModal,
-                canDismiss:true,
-                backdropDismiss:true,
-                keyboardClose:true,
-                presentingElement:presEl
-            });
-            modal.present()
-            const { data, role } = await modal.onWillDismiss();
-            return data
-        },
-        async locationStartSelect(){
-            this.locationStart=await this.locationSelect()
-        },
-        async locationFinishSelect(){
-            this.locationFinish=await this.locationSelect()
-        },
         async datetimePick(){
             this.deliveryArriveRange.defaultValue=this.deliveryArriveDatetime??null
             const modal = await modalController.create({
@@ -431,21 +371,6 @@ export default {
                 this.deliveryArriveDatetime=data.data
             }
         },
-        async descriptionPick(){
-            const ship_description=this.ship?.ship_description
-            const modal = await modalController.create({
-                component: ShipDescriptionPicker,
-                initialBreakpoint:'0.5',
-                showBackdrop:true,
-                componentProps:{ship_description},
-            });
-            modal.present()
-            const data=await modal.onDidDismiss()
-            if(data.role=="confirm"){
-                this.ship.ship_description=data.data
-                this.itemCheckoutDataSet()
-            }
-        },
         async customerIpLocationGet(){
             try{
                 const response = await fetch("https://geolocation-db.com/json/");
@@ -457,6 +382,9 @@ export default {
 
 
         async proceed(){
+
+
+
             const shipData={
                 ship_id:this.ship.ship_id,
                 tariff_id:this.tariffRule.tariff_id,
@@ -466,15 +394,14 @@ export default {
                 paymentByCreditStore:this.paymentType=='use_credit_store'?1:0
             }
             try{
-                await jQuery.post(`${this.$heap.state.hostname}Order/itemCheckoutDataSet`,JSON.stringify(shipData))
+                await jQuery.post(`${this.$heap.state.hostname}Shipment/itemCheckoutDataSet`,JSON.stringify(shipData))
             } catch(err){
-                const exception=err?.responseJSON;
-                if(!exception){
+                const exception_code=err?.responseJSON?.messages?.error;
+                if(!exception_code){
                   return false;
                 }
-                const exception_code=exception.messages.error;
                 this.$flash("Не удается оформить заказ, обратитесь на горячую линию")
-                this.$router.go(-1);
+                //this.$router.go(-1);
                 return false
             }
             if(shipData.paymentByCard==1){
@@ -498,14 +425,15 @@ export default {
                 }
             }
             try{
-                await Order.api.itemStageCreate(this.order.order_id,'customer_start');
-                this.$router.replace('/order/order-'+this.order.order_id);
+                const request={
+                    ship_id:this.ship.ship_id,
+                    new_stage:'customer_start'
+                }
+                await jQuery.post(`${this.$heap.state.hostname}Shipment/itemStageCreate`,request)
+                //this.$router.replace('/order/shipment-'+this.order.order_id);
             } catch(err){
                     const exception_code=err?.responseJSON?.messages?.error;
                     switch(exception_code){
-                        case 'order_is_empty':
-                            this.$alert("К сожалению, товара не осталось в наличии &#9785;","Заказ пуст");
-                            break;
                         case 'address_not_set':
                             this.$flash("Необходимо добавить адрес доставки")
                             this.$topic.publish('dismissModal')
@@ -515,49 +443,49 @@ export default {
                     return false
             }
         },
-        async paymentFormOpen( order_data ) {
-            const self=this;
-            const modal = await modalController.create({
-                component: OrderPaymentCardModal,
-                componentProps:{order_data},
-                initialBreakpoint: 0.85,
-                breakpoints: [0, 0.85, 0.95]
-                });
-            const dismissFn=function(){
-                modal.dismiss();
-            };
-            Topic.on('dismissModal',dismissFn);
+        // async paymentFormOpen( order_data ) {
+        //     const self=this;
+        //     const modal = await modalController.create({
+        //         component: OrderPaymentCardModal,
+        //         componentProps:{order_data},
+        //         initialBreakpoint: 0.85,
+        //         breakpoints: [0, 0.85, 0.95]
+        //         });
+        //     const dismissFn=function(){
+        //         modal.dismiss();
+        //     };
+        //     Topic.on('dismissModal',dismissFn);
 
-            modal.onDidDismiss().then(()=>{
-                self.paymentStatusCheck();
-            })
-            return modal.present();
-        },
-        async paymentStatusCheck(){
-            const request={
-                order_id:this.order.order_id
-            };
-            try{
-                const result= await jQuery.post( this.$heap.state.hostname + "CardAcquirer/statusGet", request );
-                if(result=='OK'){
-                    this.$router.replace('/order/order-'+this.order.order_id)
-                }
-            } catch(err){
-                const message=err.responseJSON?.messages?.error;
-                if(message=='wrong_status'){
-                    this.$flash("Данный заказ не может быть оплачен");
-                    this.$router.replace('/order/order-'+this.order.order_id);
-                }
-                if(message=='not_authorized'){
-                    this.$flash("Оплата не удалась, возможно не достаточно средств");
-                    this.$router.replace('/order/order-'+this.order.order_id);
-                }
-                if(message=='waiting'){
-                    this.$flash("Ваш платеж на ожидании");
-                    this.$router.replace('/order/order-'+this.order.order_id);
-                }
-            }
-        },
+        //     modal.onDidDismiss().then(()=>{
+        //         self.paymentStatusCheck();
+        //     })
+        //     return modal.present();
+        // },
+        // async paymentStatusCheck(){
+        //     const request={
+        //         order_id:this.order.order_id
+        //     };
+        //     try{
+        //         const result= await jQuery.post( this.$heap.state.hostname + "CardAcquirer/statusGet", request );
+        //         if(result=='OK'){
+        //             this.$router.replace('/order/order-'+this.order.order_id)
+        //         }
+        //     } catch(err){
+        //         const message=err.responseJSON?.messages?.error;
+        //         if(message=='wrong_status'){
+        //             this.$flash("Данный заказ не может быть оплачен");
+        //             this.$router.replace('/order/order-'+this.order.order_id);
+        //         }
+        //         if(message=='not_authorized'){
+        //             this.$flash("Оплата не удалась, возможно не достаточно средств");
+        //             this.$router.replace('/order/order-'+this.order.order_id);
+        //         }
+        //         if(message=='waiting'){
+        //             this.$flash("Ваш платеж на ожидании");
+        //             this.$router.replace('/order/order-'+this.order.order_id);
+        //         }
+        //     }
+        // },
 
 
 
@@ -577,12 +505,12 @@ export default {
     mounted(){
         this.itemLoad()
         let settings=this.$heap.state.settings;
-        if(settings?.location){
-            this.ymapInit(settings.location)
-        }
-        this.$topic.on('settingsGet',async settings=>{
-            this.ymapInit(settings.location)
-        })
+        // if(settings?.location){
+        //     this.ymapInit(settings.location)
+        // }
+        // this.$topic.on('settingsGet',async settings=>{
+        //     this.ymapInit(settings.location)
+        // })
         this.presentingElement = this.$refs.page.$el;
     },
     ionViewDidEnter(){
