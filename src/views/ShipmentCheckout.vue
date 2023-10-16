@@ -20,17 +20,21 @@
 <template>
     <base-layout pageTitle="Оформление вызова курьера" pageDefaultBackLink="/order/order-list" ref="page">
         <ion-list  lines="none">
-            
-
-
+            <ion-item-divider style="margin-top:0px;box-shadow:none;">Детали перевозки</ion-item-divider>
+            <ion-item>
+                Курьер отвезет вашу посылку
+            </ion-item>
+            <ion-item>
+                {{order?.order_description}}
+            </ion-item>
             <ion-item>
                 <ion-segment mode="ios" value="atonce">
                     <ion-segment-button value="atonce">
-                        <ion-label>Как можно скорее</ion-label>
-                        <span>отвезти сразу</span>
+                        <ion-label>Отвезти сразу</ion-label>
+                        <span>как можно скорее</span>
                     </ion-segment-button>
                     <ion-segment-button value="schedule" @click="datetimePick()">
-                        <ion-label><b>Ко времени</b></ion-label>
+                        <ion-label><b>Запланировать</b></ion-label>
                         <span v-if="deliveryArriveDatetimeLoc">{{deliveryArriveDatetimeLoc}}</span>
                         <span v-else>выберите день и время</span>
                     </ion-segment-button>
@@ -48,61 +52,64 @@
         
 
 
-
+            <ion-radio-group v-model="paymentType">
             <ion-item button detail="false" @click="paymentType='use_credit_store'" v-if="tariffRule.paymentByCreditStore==1">
                 <ion-icon :icon="businessOutline" slot="start" color="medium"></ion-icon>
-                <label for="use_credit_store">
+                <ion-radio value="use_credit_store">
                     Со счета предприятия
-                    <div style="font-size:0.7em;color:var(--ion-color-medium)">{{tariffRule.storeCreditName}} {{tariffRule.storeCreditBalance}}{{$heap.state.currencySign}}</div>
-                </label>
-                <div slot="end">
-                    <input type="radio" name="paymentType" id="payment_credit_store" value="cash" :checked="paymentType == 'use_credit_store'">
-                </div>
+                    <div style="font-size:0.7em;color:var(--ion-color-medium)">{{tariffRule.storeCreditName}} {{tariffRule.storeCreditBalance}}{{$heap.state.currencySign}}</div>                        
+                </ion-radio>
             </ion-item>
             <ion-item button detail="false" @click="paymentType='use_cash'" v-if="tariffRule.paymentByCash==1">
                 <ion-icon :icon="cashOutline" slot="start" color="medium"></ion-icon>
-                <label for="payment_cash">Оплата наличными</label>
-                <div slot="end">
-                    <input type="radio" name="paymentType" id="payment_cash" value="cash" :checked="paymentType == 'use_cash'">
-                </div>
+                <ion-radio value="use_cash">
+                    Оплата наличными
+                </ion-radio>
             </ion-item>
 
             <div v-if="tariffRule.paymentByCard==1">
                 <ion-item detail="false" button @click="paymentType='use_card'">
                     <ion-icon :icon="cardOutline" slot="start" color="medium"></ion-icon>
-                    <label for="payment_card">Оплата картой без привязки</label>
-                    <div slot="end">
-                        <input type="radio" name="paymentType" id="payment_card" value="card"  :checked="paymentType == 'use_card'">
-                    </div>
+                    <ion-radio value="use_card">
+                        Оплата картой
+                    </ion-radio>
                 </ion-item>
                 <ion-item v-if="bankCard?.card_type" button detail="false" @click="paymentType='use_card_recurrent'">
                     <ion-img v-if="bankCard.card_type=='mir'" class="card_type" :src="`/img/icons/card-${bankCard.card_type}.svg`" slot="start"/>
                     <ion-img v-else-if="bankCard.card_type=='visa'" class="card_type" :src="`/img/icons/card-${bankCard.card_type}.svg`" slot="start"/>
                     <ion-img v-else-if="bankCard.card_type=='mastercard'" class="card_type" :src="`/img/icons/card-${bankCard.card_type}.svg`" slot="start"/>
                     <ion-icon v-else :src="cardOutline" slot="start" color="medium"/>
-                    
-                    <label for="use_card_recurrent">Оплата картой {{bankCard?.card_mask}}</label>
-                    <div slot="end">
-                        <input type="radio" name="paymentType" id="use_card_recurrent" value="registered_card"  :checked="paymentType == 'use_card_recurrent'">
-                    </div>
+                    <ion-radio value="use_card_recurrent">
+                        Оплата картой
+                    </ion-radio>
                 </ion-item>
                 <ion-item v-if="recurrentPaymentAllow" button detail @click="$go('/user/user-cards')">
                     <ion-label v-if="bankCard?.card_type" color="medium">Выбрать другую карту</ion-label>
                     <ion-label v-else color="medium">Привязать карту</ion-label>
                 </ion-item>
             </div>
+            </ion-radio-group>
 
             <ion-item-divider>Итог</ion-item-divider>
-            <!-- <ion-item >
-                <ion-label><h1>Итог</h1></ion-label>
-            </ion-item> -->
-
-            <ion-item v-if="ship_sum_total>0">
-                <ion-icon :icon="walletOutline" slot="start" color="medium"></ion-icon>
-                Итого к оплате
-                <ion-text slot="end"><b>{{ship_sum_total}}</b>{{$heap.state.currencySign}}</ion-text> 
-            </ion-item>
-
+            <ion-accordion-group>
+                <ion-accordion>
+                    <ion-item slot="header">
+                        <ion-icon :icon="walletOutline" slot="start" color="medium"></ion-icon>
+                        <ion-text color="medium">Итого: </ion-text>
+                        <ion-label slot="end" color="primary">{{ tariffRule.deliverySum }}{{$heap.state.currencySign}}</ion-label>
+                    </ion-item>
+                    <ion-list slot="content">
+                        <ion-item lines="none">
+                            <ion-text color="medium">Вызов курьера</ion-text>
+                            <ion-label slot="end" color="primary">{{ tariffRule.deliveryCost }}{{$heap.state.currencySign}}</ion-label>
+                        </ion-item>
+                        <ion-item lines="none">
+                            <ion-text color="medium">Расстояние по карте {{ routeStats.distance }}км</ion-text>
+                            <ion-label slot="end" color="primary">{{ deliveryFeeTotal }}{{$heap.state.currencySign}}</ion-label>
+                        </ion-item>
+                    </ion-list>
+                </ion-accordion>
+            </ion-accordion-group>
 
             <ion-item>
                 <ion-text style="font-size:0.9em">
@@ -155,6 +162,10 @@ import {
     IonButton,
     IonCheckbox,
     IonItemDivider,
+    IonRadioGroup,
+    IonRadio,
+    IonAccordion,
+    IonAccordionGroup,
 }                               from '@ionic/vue'
 import {
     cubeOutline,
@@ -195,6 +206,10 @@ export default {
     IonButton,
     IonCheckbox,
     IonItemDivider,
+    IonRadioGroup,
+    IonRadio,
+    IonAccordion,
+    IonAccordionGroup,
     },
     setup(){
         return {
@@ -219,16 +234,16 @@ export default {
             deliveryArriveRangeHours:[],
             deliveryArriveDatetime:null,
 
-            ship_id:this.$route.params.id,
-            ship:null,
+            order_id:this.$route.params.id,
+            order:null,
             shipAutoloadClock:null,
-            ship_sum_delivery:0,
             termsAccepted:1,
 
             iplocation:null,
             paymentType:'use_card',
             bankCard:null,
             recurrentPaymentAllow:this.$heap.state.settings?.other?.recurrentPaymentAllow==1?1:0,
+            routeStats:{},
             tariffRule:{},
             tariffRuleList:[],
             errorCode:null,
@@ -258,6 +273,9 @@ export default {
 
             return event.toLocaleDateString(undefined, options);
         },
+        deliveryFeeTotal(){
+            return Math.round(this.tariffRule.deliveryFee*this.routeStats.distance)
+        },
         checkoutError(){
             if( this.errorCode=='no_input' ){
                 return "Выберите адрес забора и доставки посылки"
@@ -276,9 +294,6 @@ export default {
             }
             return true
         },
-        ship_sum_total(){
-            return this.ship_sum_delivery
-        },
     },
     methods:{
         deliveryTimeAllowed( dateString ){
@@ -291,49 +306,37 @@ export default {
         },
         async itemCheckoutDataGet(){
             try{
-                let bulkResponse=await Utils.prePost(`${this.$heap.state.hostname}Shipment/itemCheckoutDataGet`,{ship_id:this.ship_id})
-                this.itemCheckoutDataUse(bulkResponse)
-                bulkResponse=await Utils.post(`${this.$heap.state.hostname}Shipment/itemCheckoutDataGet`,{ship_id:this.ship_id})
-                this.ship=bulkResponse.ship
-                this.itemCheckoutDataUse(bulkResponse)
+                const bulkResponse=await Utils.post(`${this.$heap.state.hostname}Shipment/itemCheckoutDataGet`,{order_id:this.order_id})
+
+                if( !bulkResponse ){
+                    return
+                }
+                this.order=bulkResponse.order
+                this.routeStats=bulkResponse.Shipment_routeStats
+                this.deliveryArriveRange=bulkResponse.deliveryArriveRange
+                this.tariffRuleList=bulkResponse.Shipment_deliveryOptions
+
+
+                this.tariffRuleSet(this.tariffRuleList?.[0]||{})
+                this.bankCard=bulkResponse?.bankCard;
+                //this.customerIpLocationGet()
             }
             catch(err){
-                this.is_checkout_data_loaded=1
                 this.errorCode=err?.responseJSON?.messages?.error
                 if( this.errorCode =='notfound' || this.errorCode =='forbidden' ){
                     this.$flash('Заказ не найден')
                     this.$router.go(-1)
                 }
-                console.log(this.errorCode,err)
                 return false
             }
         },
-        async itemCheckoutDataUse(bulkResponse){
-            if( !bulkResponse ){
-                return
-            }
-            if( !bulkResponse.Location_distanceGet ){
-                this.errorCode='no_input'
-            }
-            this.deliveryTime=Utils.deliveryTimeCalculate(bulkResponse.Location_distanceGet,0)
-            this.deliveryArriveRange=bulkResponse.deliveryArriveRange
-
-            this.locationStart=bulkResponse.Ship_locationStart
-            this.locationFinish=bulkResponse.Ship_locationFinish
-            this.bankCard=bulkResponse?.bankCard;
-            this.tariffRuleList=bulkResponse.Ship_deliveryOptions
-            this.tariffRuleSet(this.tariffRuleList?.[0]||{})
-            this.is_checkout_data_loaded=1
-
-            //this.customerIpLocationGet()
-        },
         async itemCheckoutDataSet(){
             const shipData={
-                ship_id:this.ship_id,
-                ship_start_location_id:this.locationStart?.location_id,
-                ship_finish_location_id:this.locationFinish?.location_id,
-                ship_arrive_time:this.deliveryArriveDatetime,
-                ship_description:this.ship.ship_description,
+                order_id:this.order_id,
+                // order_start_location_id:this.locationStart?.location_id,
+                // order_finish_location_id:this.locationFinish?.location_id,
+                order_arrive_time:this.deliveryArriveDatetime,
+                // order_description:this.order.order_description,
             }
             try{
                 const response=await jQuery.post(`${this.$heap.state.hostname}Shipment/itemCheckoutDataSet`,JSON.stringify(shipData))
@@ -342,10 +345,7 @@ export default {
             }
         },
         tariffRuleSet( tariffRule ){
-            
             this.tariffRule=tariffRule
-
-            this.ship_sum_delivery=tariffRule.ship_sum_delivery
             this.paymentType='use_card'
             if(this.bankCard?.card_type){
                 this.paymentType='use_card_recurrent'
@@ -361,7 +361,7 @@ export default {
             this.deliveryArriveRange.defaultValue=this.deliveryArriveDatetime??null
             const modal = await modalController.create({
                 component: DateRangePicker,
-                initialBreakpoint:'0.5',
+                initialBreakpoint:'0.7',
                 showBackdrop:true,
                 componentProps:{dateRange:this.deliveryArriveRange},
             });
@@ -382,11 +382,8 @@ export default {
 
 
         async proceed(){
-
-
-
             const shipData={
-                ship_id:this.ship.ship_id,
+                order_id:this.order.order_id,
                 tariff_id:this.tariffRule.tariff_id,
                 paymentByCard:this.paymentType=='use_card'?1:0,
                 paymentByCardRecurrent:this.paymentType=='use_card_recurrent'?1:0,
@@ -406,15 +403,15 @@ export default {
             }
             if(shipData.paymentByCard==1){
                 this.paymentFormOpen({
-                    ship_id:this.ship.ship_id,
-                    ship_sum_total:this.ship_sum_total,
-                    user_id:this.ship.owner_id
+                    order_id:this.order_id,
+                    order_sum_total:this.tariffRule.deliverySum,
+                    user_id:this.order.owner_id
                 });
                 return;
             }
             if(shipData.paymentByCardRecurrent==1){
                 const request={
-                    ship_id:this.ship.ship_id,
+                    order_id:this.order.order_id,
                     card_id:this.bankCard.card_id
                 }
                 try{
@@ -426,7 +423,7 @@ export default {
             }
             try{
                 const request={
-                    ship_id:this.ship.ship_id,
+                    order_id:this.order.order_id,
                     new_stage:'customer_start'
                 }
                 await jQuery.post(`${this.$heap.state.hostname}Shipment/itemStageCreate`,request)

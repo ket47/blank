@@ -77,31 +77,37 @@
                     
                 </div>
             </ion-item>
-            <ion-item lines="none">
-                <ion-icon :icon="cubeOutline" slot="start" color="medium"></ion-icon>
-                <ion-text color="medium">Стоимость заказа: </ion-text>
-                <ion-label slot="end" color="primary">{{ orderTotal }}{{$heap.state.currencySign}}</ion-label>
-            </ion-item>
-            <ion-item lines="none" v-if="orderData.order_sum_delivery>0">
-                <ion-icon :icon="rocketOutline" slot="start" color="medium"></ion-icon>
-                <ion-text color="medium">Доставка: </ion-text>
-                <ion-label slot="end" color="primary">{{ orderData.order_sum_delivery }}{{$heap.state.currencySign}}</ion-label>
-            </ion-item>
-            <ion-item lines="none" v-if="orderData.order_sum_promo>0">
-                <ion-icon :icon="giftOutline" slot="start" color="medium"></ion-icon>
-                <ion-text color="medium">Скидка: </ion-text>
-                <ion-label slot="end" color="primary">{{ orderData.order_sum_promo }}{{$heap.state.currencySign}}</ion-label>
-            </ion-item>
-            <ion-item lines="none" v-if="orderData.order_sum_total>0">
-                <ion-icon :icon="walletOutline" slot="start" color="medium"></ion-icon>
-                <ion-text color="medium">Итого: </ion-text>
-                <ion-label slot="end" color="primary"><b>{{ orderData.order_sum_total }}{{$heap.state.currencySign}}</b></ion-label>
-            </ion-item>
-            <ion-item lines="none" v-if="orderData?.info?.payment_card_fixate_sum>0">
-                <ion-icon :icon="cardOutline" slot="start" color="medium"></ion-icon>
-                <ion-text color="medium">Предоплата: </ion-text>
-                <ion-label slot="end" color="medium"><b>{{ orderData?.info?.payment_card_fixate_sum }}{{$heap.state.currencySign}}</b></ion-label>
-            </ion-item>
+            <ion-accordion-group>
+                <ion-accordion>
+                    <ion-item slot="header">
+                        <ion-icon :icon="walletOutline" slot="start" color="medium"></ion-icon>
+                        <ion-text color="medium">Итого: </ion-text>
+                        <ion-label slot="end" color="primary"><b>{{ orderData.order_sum_total }}{{$heap.state.currencySign}}</b></ion-label>
+                    </ion-item>
+                    <ion-list slot="content">
+                        <ion-item lines="none">
+                            <ion-icon :icon="cubeOutline" slot="start" color="medium"></ion-icon>
+                            <ion-text color="medium">Стоимость заказа: </ion-text>
+                            <ion-label slot="end" color="medium">{{ orderTotal }}{{$heap.state.currencySign}}</ion-label>
+                        </ion-item>
+                        <ion-item lines="none" v-if="orderData.order_sum_delivery>0">
+                            <ion-icon :icon="rocketOutline" slot="start" color="medium"></ion-icon>
+                            <ion-text color="medium">Доставка: </ion-text>
+                            <ion-label slot="end" color="medium">{{ orderData.order_sum_delivery }}{{$heap.state.currencySign}}</ion-label>
+                        </ion-item>
+                        <ion-item lines="none" v-if="orderData.order_sum_promo>0">
+                            <ion-icon :icon="giftOutline" slot="start" color="medium"></ion-icon>
+                            <ion-text color="medium">Скидка: </ion-text>
+                            <ion-label slot="end" color="medium">{{ orderData.order_sum_promo }}{{$heap.state.currencySign}}</ion-label>
+                        </ion-item>
+                        <ion-item lines="none" v-if="orderData?.info?.payment_card_fixate_sum>0">
+                            <ion-icon :icon="cardOutline" slot="start" color="medium"></ion-icon>
+                            <ion-text color="medium">Предоплата: </ion-text>
+                            <ion-label slot="end" color="medium"><b>{{ orderData?.info?.payment_card_fixate_sum }}{{$heap.state.currencySign}}</b></ion-label>
+                        </ion-item>
+                    </ion-list>
+                </ion-accordion>
+            </ion-accordion-group>
         </ion-list>
 
         <ion-card v-if="orderData?.stage_current=='supplier_start' && ['supplier','admin'].includes(orderData?.user_role)" color="medium">
@@ -193,6 +199,8 @@ import {
     IonCardContent,
     IonCardTitle,
     IonAvatar,
+    IonAccordionGroup,
+    IonAccordion,
 }                       from '@ionic/vue';
 import { 
     add,
@@ -235,6 +243,8 @@ export default({
     IonCardContent,
     IonCardTitle,
     IonAvatar,
+    IonAccordionGroup,
+    IonAccordion,
     },
     setup() {
         return { 

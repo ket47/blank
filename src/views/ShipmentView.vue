@@ -1,7 +1,7 @@
 <template>
-    <base-layout :pageTitle="`Вызов курьера #${ship_id} ${ship?.deleted_at?'(Удален)':''}` " pageDefaultBackLink="/order/order-list">
+    <base-layout :pageTitle="`Вызов курьера #${order_id} ${order?.deleted_at?'(Удален)':''}` " pageDefaultBackLink="/order/order-list">
 
-            <div v-if="ship=='notfound'" style="display:flex;align-items:center;justify-content:center;height:100%">
+            <div v-if="order=='notfound'" style="display:flex;align-items:center;justify-content:center;height:100%">
                 <div style="width:max-content;text-align:center">
                     <ion-icon :icon="sparklesOutline" size="large"></ion-icon>
                     <ion-label>Заказ не найден</ion-label><br>
@@ -9,15 +9,15 @@
                 </div>
             </div>
 
-            <ship-comp :ship="ship" @stageCreate="onStageCreate" @orderRefresh="itemGet"/>
+            <ship-comp :order="order" @stageCreate="onStageCreate" @orderRefresh="itemGet"/>
 
 
             <!--
             <order-tracking-comp :orderData="order"/>
             <order-info-comp :orderData="order"/>
-            <image-tile-comp v-if="order?.images" :images="order?.images" :image_holder_id="order?.ship_id" controller="Order" ref="shipImgs"/>
+            <image-tile-comp v-if="order?.images" :images="order?.images" :image_holder_id="order?.order_id" controller="Order" ref="orderImgs"/>
             <order-history-comp :orderData="order"/>
-            <order-meta-comp :orderId="ship_id" v-if="order?.stage_current=='system_finish'"/>
+            <order-meta-comp :orderId="order_id" v-if="order?.stage_current=='system_finish'"/>
             -->
 
             <ion-popover :is-open="isOpenDeliveryRejectionPopover" @didDismiss="isOpenDeliveryRejectionPopover=false">
@@ -92,56 +92,56 @@ export default({
     },
     data(){
         return {
-            ship_id:this.$route.params.id,
-            ship:null,
-            shipAutoloadClock:null,
+            order_id:this.$route.params.id,
+            order:null,
+            orderAutoloadClock:null,
             isOpenDeliveryRejectionPopover:false,
         }
     },
     methods:{
         async itemGet(){
             try{
-                this.ship = await Utils.prePost(`${this.$heap.state.hostname}Shipment/itemGet`,{ship_id:this.ship_id})
-                this.ship = await Utils.post(`${this.$heap.state.hostname}Shipment/itemGet`,{ship_id:this.ship_id})
+                this.order = await Utils.prePost(`${this.$heap.state.hostname}Shipment/itemGet`,{order_id:this.order_id})
+                this.order = await Utils.post(`${this.$heap.state.hostname}Shipment/itemGet`,{order_id:this.order_id})
                 this.itemAutoReload()
             } catch(err) {
                 switch(err.status){
                     case 404:
                         this.$flash("Заказ не найден");
-                        this.ship='notfound';
+                        this.order='notfound';
                         this.$go('/order/order-list');
                         break;
                 }
             }
         },
         itemAutoReload(){
-            clearTimeout(this.shipAutoloadClock)
-            this.shipAutoloadClock=setTimeout(()=>{
+            clearTimeout(this.orderAutoloadClock)
+            this.orderAutoloadClock=setTimeout(()=>{
                 //this.itemGet()
             },60*1000)
         },
-        async onStageCreate(ship_id, ship_stage_code){
-            if( ship_stage_code.includes('action') ){
-                ship_stage_code=ship_stage_code.split('_').splice(1).join('_');
+        async onStageCreate(order_id, order_stage_code){
+            if( order_stage_code.includes('action') ){
+                order_stage_code=order_stage_code.split('_').splice(1).join('_');
                 try{
-                    this[ship_stage_code](ship_id);
+                    this[order_stage_code](order_id);
                 }catch{
-                    console.log('stage handler not found'+ship_stage_code)
+                    console.log('stage handler not found'+order_stage_code)
                 }
                 return;
             }
             try{
                 const request={
-                    ship_id:this.ship_id,
-                    new_stage:ship_stage_code
+                    order_id:this.order_id,
+                    new_stage:order_stage_code
                 }
                 const stateChangeResult=await jQuery.post(`${this.$heap.state.hostname}Shipment/itemStageCreate`,request);
                 if(stateChangeResult=='ok'){
-                    if( ship_stage_code=='customer_purged' || ship_stage_code=='customer_deleted' ){
+                    if( order_stage_code=='customer_purged' || order_stage_code=='customer_deleted' ){
                         this.$flash("Заказ удален");
-                        this.ship=null;
+                        this.order=null;
                         this.$go('/order/order-list');
-                        //Order.cart.itemDelete(ship_id)//if there is a copy of order in the cart
+                        //Order.cart.itemDelete(order_id)//if there is a copy of order in the cart
                         return;
                     }
                     await this.itemGet();
@@ -154,7 +154,7 @@ export default({
                     case 'wrong_courier_status':
                         this.$flash("Смена курьера не открыта");
                         break;
-                    case 'ship_is_empty':
+                    case 'order_is_empty':
                         this.$alert("К сожалению, товара не осталось в наличии &#9785;","Заказ пуст");
                         break;
                     case 'photos_must_be_made':
@@ -165,10 +165,10 @@ export default({
                         this.$flash("Необходимо добавить адрес доставки")
                         this.$go('/modal/user-addresses');
                         break;
-                    case 'ship_sum_exceeded':
+                    case 'order_sum_exceeded':
                         this.$flash("Сумма заказа должна быть меньше предоплаты")
                         break;
-                    case 'ship_sum_zero':
+                    case 'order_sum_zero':
                         this.$flash("Нельзя завершить пустой заказ, от него можно отказаться.")
                         break;
                     case 'forbidden_bycustomer':
@@ -185,7 +185,7 @@ export default({
             }
         },
         async action_checkout(){
-            this.$go(`/modal/shipment-checkout-${this.ship_id}`);
+            this.$go(`/modal/orderment-checkout-${this.order_id}`);
         },
         async action_objection(){
             const modal = await modalController.create({
@@ -199,12 +199,12 @@ export default({
             if(objection.data){
                 const message=`ВОЗРАЖЕНИЕ ПОКУПАТЕЛЯ: ${objection.data}`;
                 const request={
-                    ship_id:this.ship_id,
-                    ship_objection:message
+                    order_id:this.order_id,
+                    order_objection:message
                 }
                 const result=await jQuery.post(`${this.$heap.state.hostname}Shipment/itemUpdate`,request)
                 if( result=='ok' ){
-                    const is_disputed=await this.onStageCreate(this.ship_id, 'customer_disputed');
+                    const is_disputed=await this.onStageCreate(this.order_id, 'customer_disputed');
                     if( is_disputed ){
                         this.$flash("Ваше возражение принято и будет рассмотрено администратором.")
                         alert("Необходимо сфотографировать заказ")
@@ -219,17 +219,17 @@ export default({
         async action_rejected_reason(reason){
             this.isOpenDeliveryRejectionPopover=false;
             const request={
-                    ship_id:this.ship_id,
-                    ship_objection:reason
+                    order_id:this.order_id,
+                    order_objection:reason
                 }
             try{
                 const result=await jQuery.post(`${this.$heap.state.hostname}Shipment/itemUpdate`,request)
-                await this.onStageCreate(this.ship_id, 'delivery_rejected');
+                await this.onStageCreate(this.order_id, 'delivery_rejected');
                 this.$flash("Вы отказались от доставки")
             }catch{/** */}
         },
         action_take_photo(){
-            this.$refs.shipImgs.take_photo();
+            this.$refs.orderImgs.take_photo();
         },
         async action_courier_assign(){
             const itemType='courier'
@@ -253,7 +253,7 @@ export default({
             }
             try{
                 const request={
-                    ship_id:this.ship_id,
+                    order_id:this.order_id,
                     courier_id:item.data.courier_id
                 }
                 await jQuery.post(`${this.$heap.state.hostname}Courier/itemAssign`,request)
@@ -268,15 +268,15 @@ export default({
         this.itemGet();
     },
     ionViewDidLeave(){
-        //this.ship=null;
-        clearTimeout(this.shipAutoloadClock)
+        //this.order=null;
+        clearTimeout(this.orderAutoloadClock)
     },
     created(){
         this.itemGet();
         this.$topic.on('orderSumChanged',()=>this.itemGet('skipCaching'))
         
         this.$topic.on('pushStageChanged',data=>{
-            if( this.ship?.ship_id==data?.ship_id && this.ship.stage_current!=data.stage ){
+            if( this.order?.order_id==data?.order_id && this.order.stage_current!=data.stage ){
                 this.itemGet();
             }
         })

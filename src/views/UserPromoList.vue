@@ -196,7 +196,7 @@ export default {
                 const targetTitle=this.$heap.state.settings.app_title
                 const targetText='Присоединяйтесь и получите 5 сертификатов по 200руб'
                 const canshare=await Share.canShare()
-                const fullUrl=`${this.$heap.getters.settings.app.frontendUrl}?inviter_user_id=${this.$heap.state.user.user_id}`
+                const fullUrl=`${this.$heap.getters.settings.app.frontendUrl}invitation.html?inviter_user_id=${this.$heap.state.user.user_id}`
                 if(canshare){
                     await Share.share({
                         title: targetTitle,
