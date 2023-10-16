@@ -69,7 +69,9 @@ class Catalog{
         
         $CatalogModel=new \Models\CatalogModel();
         $product=$CatalogModel->productItemGet($product_id);
-
+        if(empty($product)){
+            return redirect('/');
+        }
         $locations = $CatalogModel->locationGetList('store', $product->store_id);
         $product_cities = [];
         if(!empty($locations)){
@@ -93,6 +95,9 @@ class Catalog{
         $category_id=(int)func_get_arg(0);
         $CatalogModel=new \Models\CatalogModel();
         $category=$CatalogModel->categoryItemGet($category_id);
+        if(empty($category)){
+            return redirect('/');
+        }
         $category_cities = [];
         $store_name = "";
         $store_id=$_REQUEST['store_id']??null;
