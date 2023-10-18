@@ -124,9 +124,11 @@ class Sitemap{
             $xml->writeElement('currencyId','RUR');
             
             $xml->writeElement('picture',getenv('app.backendURL')."image/get.php/{$product->image_hash}.500.500.jpg");
+            if(!empty($product->product_description)){
                 $xml->startElement('description');
                 $xml->writeCdata($product->product_description);
                 $xml->endElement();
+            }
             $xml->endElement();
         }
     }
