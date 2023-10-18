@@ -27,15 +27,37 @@
             <ion-item>
                 {{order?.order_description}}
             </ion-item>
+
+            <ion-card v-if="deliveryScheduleDowntime" color="light">
+                <ion-card-header>
+                    <ion-card-title>
+                        Запланировать заказ
+                    </ion-card-title>
+                </ion-card-header>
+                <ion-card-content>
+                    <p>Доставка сегодня попадает за пределы рабочего времени.</p>
+                </ion-card-content>
+            </ion-card>
+            <ion-card v-else-if="deliveryScheduleHeavyload" color="light">
+                <ion-card-header>
+                    <ion-card-title>
+                        Запланировать заказ
+                    </ion-card-title>
+                </ion-card-header>
+                <ion-card-content>
+                    <p>Высокая загруженность курьеров.</p>
+                </ion-card-content>
+            </ion-card>
+
             <ion-item>
-                <ion-segment mode="ios" value="atonce">
-                    <ion-segment-button value="atonce">
+                <ion-segment mode="ios" :value="deliveryArrivalDatetime?'schedule':'atonce'">
+                    <ion-segment-button value="atonce" :disabled="!deliveryScheduleReady">
                         <ion-label>Отвезти сразу</ion-label>
                         <span>как можно скорее</span>
                     </ion-segment-button>
                     <ion-segment-button value="schedule" @click="datetimePick()">
                         <ion-label><b>Запланировать</b></ion-label>
-                        <span v-if="deliveryArriveDatetimeLoc">{{deliveryArriveDatetimeLoc}}</span>
+                        <span v-if="deliveryArrivalDatetimeLoc">{{deliveryArrivalDatetimeLoc}}</span>
                         <span v-else>выберите день и время</span>
                     </ion-segment-button>
                 </ion-segment>
@@ -159,6 +181,8 @@ import {
     IonImg,
     IonCard,
     IonCardContent,
+    IonCardHeader,
+    IonCardTitle,
     IonButton,
     IonCheckbox,
     IonItemDivider,
@@ -203,6 +227,8 @@ export default {
     IonImg,
     IonCard,
     IonCardContent,
+    IonCardHeader,
+    IonCardTitle,
     IonButton,
     IonCheckbox,
     IonItemDivider,
@@ -230,9 +256,8 @@ export default {
         return {
             presentingElement: null,
             isDatePickerOpen:false,
-            deliveryArriveRange:{},
-            deliveryArriveRangeHours:[],
-            deliveryArriveDatetime:null,
+            deliveryScheduleStats:null,
+            deliveryArrivalDatetime:null,
 
             order_id:this.$route.params.id,
             order:null,
@@ -264,12 +289,34 @@ export default {
         }
     },
     computed:{
-        deliveryArriveDatetimeLoc(){
-            if(!this.deliveryArriveDatetime){
+        deliveryScheduleReady(){
+            if(this.deliveryScheduleStats?.deliveryStatus?.includes('ready')){
+                return true;
+            }
+            return false;
+        },
+        deliveryScheduleDowntime(){
+
+
+
+            console.log(this.deliveryScheduleStats?.deliveryStatus)
+            if(this.deliveryScheduleStats?.deliveryStatus?.includes('downtime')){
+                return true;
+            }
+            return false;
+        },
+        deliveryScheduleHeavyload(){
+            if(this.deliveryScheduleStats?.deliveryStatus?.includes('heavyload')){
+                return true;
+            }
+            return false;
+        },
+        deliveryArrivalDatetimeLoc(){
+            if(!this.deliveryArrivalDatetime){
                 return null
             }
-            const event = new Date(Date.parse(this.deliveryArriveDatetime));
-            const options = { month: 'short', day: 'numeric',hour:'numeric',minute:'numeric' };
+            const event = new Date(Date.parse(this.deliveryArrivalDatetime));
+            const options = { month: 'short', day: 'numeric', hour:'numeric', minute:'numeric' };
 
             return event.toLocaleDateString(undefined, options);
         },
@@ -313,7 +360,16 @@ export default {
                 }
                 this.order=bulkResponse.order
                 this.routeStats=bulkResponse.Shipment_routeStats
-                this.deliveryArriveRange=bulkResponse.deliveryArriveRange
+                this.deliveryScheduleStats=bulkResponse.deliveryScheduleStats
+
+                if( this.deliveryScheduleDowntime || this.deliveryScheduleHeavyload ){
+                    this.deliveryArrivalDatetime=this.deliveryScheduleStats.deliveryArrivalNearest
+                }
+
+
+
+
+
                 this.tariffRuleList=bulkResponse.Shipment_deliveryOptions
 
 
@@ -335,7 +391,7 @@ export default {
                 order_id:this.order_id,
                 // order_start_location_id:this.locationStart?.location_id,
                 // order_finish_location_id:this.locationFinish?.location_id,
-                order_arrive_time:this.deliveryArriveDatetime,
+                order_arrive_time:this.deliveryArrivalDatetime,
                 // order_description:this.order.order_description,
             }
             try{
@@ -358,17 +414,16 @@ export default {
             }
         },
         async datetimePick(){
-            this.deliveryArriveRange.defaultValue=this.deliveryArriveDatetime??null
             const modal = await modalController.create({
                 component: DateRangePicker,
                 initialBreakpoint:'0.7',
                 showBackdrop:true,
-                componentProps:{dateRange:this.deliveryArriveRange},
+                componentProps:{dateRange:this.deliveryScheduleStats.deliveryArrivalRange,defaultDatetime:this.deliveryScheduleStats?.deliveryArrivalNearest},
             });
             modal.present()
             const data=await modal.onDidDismiss()
             if(data.role=="confirm"){
-                this.deliveryArriveDatetime=data.data
+                this.deliveryArrivalDatetime=data.data
             }
         },
         async customerIpLocationGet(){

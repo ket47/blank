@@ -34,7 +34,7 @@
                 :min="dateRange?.dayFirst"
                 :max="dateRange?.dayLast"
                 :hour-values="hourValues"
-                :minute-values="[0,30]"
+                :minute-values="minuteValues"
             />
             <ion-button color="primary" @click="confirm()" expand="block">Ок</ion-button>
             <ion-button color="light" @click="cancel()" expand="block">Закрыть</ion-button>
@@ -61,7 +61,7 @@ import {
   closeOutline,
 }                         from 'ionicons/icons';
 export default {
-    props:['dateRange'],
+    props:['dateRange','defaultDatetime'],
     components:{
         IonTitle,
         IonDatetime,
@@ -80,23 +80,31 @@ export default {
         return {closeOutline}
     },
     data(){
-        const hour=this.dateRange.dayHours[this.dateRange.dayFirst][0]
-        let dt=`${this.dateRange.dayFirst}T${hour}:00:00`
-        if(this.dateRange?.defaultValue){
-            dt=this.dateRange.defaultValue
-        }
+        const dtime=this.defaultDatetime?.replace(' ','T')
         return {
-            datetime:dt
+            datetime:dtime
         }
     },
     computed:{
         hourValues(){
             if(this.dateRange && this.dateRange.dayHours && this.datetime){
                 const [pickedDate]=this.datetime.split('T')
-                return this.dateRange.dayHours[pickedDate]
+                let dayHour=[]
+                for(let h in this.dateRange.dayHours[pickedDate]){
+                    const hour=h.split('_')[1]
+                    dayHour.push(hour)
+                }
+                return dayHour
             }
             return null
         },
+        minuteValues(){
+            const [pickedDate,pickedTime]=this.datetime.split('T')
+            const [hour,minute,second]=pickedTime.split(':')
+            let minutes=null
+            //console.log(pickedDate,hour,minute,second,this.dateRange.dayHours[pickedDate][`h_${hour}`])
+            return this.dateRange.dayHours[pickedDate]?.[`h_${hour}`]
+        }
     },
     methods:{
         confirm(){
