@@ -104,14 +104,19 @@ class CatalogModel{
             SELECT
                 pl.product_id,
                 CONCAT(COALESCE(pl_parent.product_name,pl.product_name),' ',COALESCE(pl.product_option,'')) product_name,
-                COALESCE(pl_parent.product_description,pl.product_description) product_description,
+                COALESCE(pl_parent.product_description,pl. product_description) product_description,
                 pl.product_barcode,
                 pl.store_id,
                 store_name,
                 pl.product_price,
+                pl.product_weight,
                 ROUND(IF(IFNULL(`pl`.`product_promo_price`,0)>0 AND `pl`.`product_price`>`pl`.`product_promo_price` AND `pl`.`product_promo_start` < NOW() AND `pl`.`product_promo_finish` > NOW(),`pl`.`product_promo_price`,`pl`.`product_price`)) product_final_price,
+                pl.product_promo_start,
+                pl.product_promo_finish,
                 image_hash,
-                pl.updated_at
+                pl.updated_at,
+                group_id,
+                group_name
             FROM
                 product_list pl
                     LEFT JOIN
@@ -120,9 +125,16 @@ class CatalogModel{
                 store_list ON store_list.store_id=pl.store_id
                     LEFT JOIN
                 image_list ON image_holder='product' AND image_holder_id=COALESCE(pl_parent.product_id,pl.product_id) AND image_list.is_main=1
+                    LEFT JOIN
+                product_group_member_list ON pl.product_id=member_id
+                    LEFT JOIN
+                product_group_list USING(group_id)
             WHERE
                 pl.is_disabled=0
                 AND pl.deleted_at IS NULL
+                AND store_list.is_disabled=0
+                AND store_list.deleted_at IS NULL
+                AND image_hash IS NOT NULL
                 $store_case
                 $category_case
             ORDER BY pl.updated_at DESC
@@ -253,6 +265,17 @@ class CatalogModel{
                 $parent_only_case
             ORDER BY pgl.updated_at DESC
             LIMIT $limit OFFSET $offset
+        ";
+        return $this->db->query($sql)->rows();        
+    }
+    public function categoryListAllGet(){
+        $sql="
+        SELECT
+            group_id,
+            group_parent_id,
+            group_name
+        FROM
+            product_group_list
         ";
         return $this->db->query($sql)->rows();        
     }
