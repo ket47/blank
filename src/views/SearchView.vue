@@ -8,9 +8,8 @@
   <base-layout page-title="Поиск" hideBackLink="true">
     <ion-searchbar class="search-container" v-model="query" debounce="400" @ionInput="listGet()" @ionClear="listGet()" placeholder="начните искать"></ion-searchbar>
     <div v-if="found?.product_matches?.length>0">
-      <ion-title>Найденные товары</ion-title>
-      <ion-card v-for="store in found.product_matches" :key="store.store_id">
-        <ion-card-header>
+      <h2 class="ion-padding">Результат поиска</h2>
+      <div v-for="store in found.product_matches" :key="store.store_id" class="ion-padding-top">
           <ion-item detail button @click="$go(`/search/store-${store.store_id}`)" lines="full">
             <ion-thumbnail slot="start">
               <ion-img style="border-radius:10px" :src="`${$heap.state.hostname}image/get.php/${store.image_hash}.150.150.webp`"/>
@@ -18,23 +17,21 @@
             <p style="font-size:1.1em">{{store?.store_name}}</p>
             <ion-note slot="helperText">{{store.store_description}}</ion-note>
           </ion-item>
-        </ion-card-header>
-        <ion-card-content>
+
           <div>
             <store-opened-indicator :storeItem="store"/>
           </div>
-          <div style="display:grid;grid-template-columns:repeat(auto-fit, 150px)">
+          <div style="display:grid;grid-template-columns:repeat(auto-fit, 180px);padding:10px">
             <div v-for="productItem in store.matches" :key="productItem.product_id">                
               <product-item :productItem="productItem" :storeName="store.store_name"/>
             </div>
           </div>
-        </ion-card-content>
-      </ion-card>
+      </div>
+
     </div>
     <div v-else-if="found==null">
-      <ion-title>Найденные товары</ion-title>
-      <ion-card>
-        <ion-card-header>
+      <ion-title>Результат поиска</ion-title>
+
           <ion-item detail lines="full">
             <ion-thumbnail slot="start">
               <ion-skeleton-text style="width:50px;height:50px" animated></ion-skeleton-text>
@@ -42,8 +39,7 @@
             <ion-skeleton-text style="width:300px;height:30px" animated></ion-skeleton-text>
             <ion-note slot="helperText"><ion-skeleton-text style="width:300px"></ion-skeleton-text></ion-note>
           </ion-item>
-        </ion-card-header>
-        <ion-card-content>
+
           <ion-chip>
             <ion-skeleton-text style="width:100px"></ion-skeleton-text>
           </ion-chip>
@@ -53,8 +49,7 @@
               <ion-skeleton-text style="width:120px;height:30px" animated></ion-skeleton-text>
             </div>
           </div>          
-        </ion-card-content>
-      </ion-card>
+
     </div>
     <div v-else>
       <ion-card color="light">

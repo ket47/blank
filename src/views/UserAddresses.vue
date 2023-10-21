@@ -31,7 +31,12 @@
         <ion-list v-if="locationList.length" lines="full">
           <ion-item v-for="(location,i) in locationList" :key="location.location_id">
               <ion-img slot="start" alt="location icon" :src="`${$heap.state.hostname}/image/get.php/${location.image_hash}.60.60.png`" style="height:24px" />
-              <ion-label @click="locationSetMain(`${location.location_id}`,`${i}`)" style="white-space:normal;cursor:pointer;"  :class="location.is_main==1?'is_main':''">{{ location.location_address }}</ion-label>
+              <div>
+                <ion-label @click="locationSetMain(`${location.location_id}`,`${i}`)" style="white-space:normal;cursor:pointer;"  :class="location.is_main==1?'is_main':''">
+                  {{ location.location_address }}
+                </ion-label>
+                <div style="color:var(--ion-color-medium)">{{ location.location_comment }}</div>
+              </div>
               <ion-icon slot="end" :icon="trashOutline" @click="locationDelete(`${location.location_id}`,`${i}`)"></ion-icon>
           </ion-item>
         </ion-list>
@@ -155,7 +160,8 @@ export default{
         location_group_id:group_id,
         location_address:location.location_address,
         location_latitude:location.location_latitude,
-        location_longitude:location.location_longitude
+        location_longitude:location.location_longitude,
+        location_comment:location.location_comment
       };
       try{
         await jQuery.post(heap.state.hostname + "User/locationCreate",request)

@@ -296,10 +296,6 @@ export default {
             return false;
         },
         deliveryScheduleDowntime(){
-
-
-
-            console.log(this.deliveryScheduleStats?.deliveryStatus)
             if(this.deliveryScheduleStats?.deliveryStatus?.includes('downtime')){
                 return true;
             }
@@ -386,20 +382,6 @@ export default {
                 return false
             }
         },
-        async itemCheckoutDataSet(){
-            const shipData={
-                order_id:this.order_id,
-                // order_start_location_id:this.locationStart?.location_id,
-                // order_finish_location_id:this.locationFinish?.location_id,
-                order_arrive_time:this.deliveryArrivalDatetime,
-                // order_description:this.order.order_description,
-            }
-            try{
-                const response=await jQuery.post(`${this.$heap.state.hostname}Shipment/itemCheckoutDataSet`,JSON.stringify(shipData))
-            } catch(err){
-                console.log(err)
-            }
-        },
         tariffRuleSet( tariffRule ){
             this.tariffRule=tariffRule
             this.paymentType='use_card'
@@ -433,13 +415,11 @@ export default {
             }catch{/** */}
         },
 
-
-
-
         async proceed(){
             const shipData={
                 order_id:this.order.order_id,
                 tariff_id:this.tariffRule.tariff_id,
+                deliveryArrivalDatetime:this.deliveryArrivalDatetime,
                 paymentByCard:this.paymentType=='use_card'?1:0,
                 paymentByCardRecurrent:this.paymentType=='use_card_recurrent'?1:0,
                 paymentByCash:this.paymentType=='use_cash'?1:0,
@@ -451,6 +431,11 @@ export default {
                 const exception_code=err?.responseJSON?.messages?.error;
                 if(!exception_code){
                   return false;
+                }
+                switch(exception_code){
+                    case 'not_in_schedule':
+                        this.$flash("Не удается оформить заказ, обратитесь на горячую линию")
+                        break;
                 }
                 this.$flash("Не удается оформить заказ, обратитесь на горячую линию")
                 //this.$router.go(-1);

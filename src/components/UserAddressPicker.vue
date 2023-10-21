@@ -9,7 +9,7 @@
             <ymap-marker :coords="coords" marker-id="1" :properties="placemarkProperties"/>
         </yandex-map>
         <div style="position: absolute;top: 0px;width:100%;--ion-item-background: #ffffffdd;border-radius:10px;">
-            <ion-searchbar debounce="500" v-model="addressSearchQuery" @ionInput="suggestionsGet()" placeholder="поиск адреса" style="margin:0px;padding-bottom:0px"/>
+            <ion-searchbar debounce="500" v-model="addressSearchQuery" @ionInput="suggestionsGet()" placeholder="поиск по адресу" color="light"/>
             <ion-item v-for="(row,i) in suggestions" :key="i" @click="suggestionSelect(`${row.subtitle.text}, ${row.title.text}`,row.uri)" style="margin-right:10px;margin-left:10px">
                 {{row.subtitle.text}} {{row.title.text}} 
                 <span slot="end" style="color:#666">{{row.distance.text}}</span>
@@ -17,7 +17,7 @@
         </div>
     </ion-content>
     <ion-toolbar>
-
+        <ion-textarea label="комментарий к адресу" label-placement="floating" v-model="addressComment"></ion-textarea>
         <ion-button :strong="true" @click="pickAddress()" color="primary" expand="block">
             <ion-icon :src="checkmark" slot="start"/>
             Ок
@@ -34,10 +34,12 @@ import {
     IonSearchbar,
     IonIcon,
     IonItem,
+    IonTextarea,
     modalController
 }                           from "@ionic/vue";
 import { yandexMap,ymapMarker,loadYmap }         from "vue-yandex-maps";
 import { locationOutline,closeOutline,checkmark }  from 'ionicons/icons';
+import User from '@/scripts/User.js'
 
 export default({
     components: {
@@ -47,6 +49,7 @@ export default({
     IonSearchbar,
     IonIcon,
     IonItem,
+    IonTextarea,
     yandexMap,
     ymapMarker,
     },
@@ -82,7 +85,8 @@ export default({
             selectedPlacemark:0,
             selectedAddress:'',
             selectedCoords:[],
-            coords: mapCenter
+            coords: mapCenter,
+            addressComment:''
         };
     },
     methods:{
@@ -99,6 +103,7 @@ export default({
                 location_address:this.filterAddress(this.selectedAddress),
                 location_latitude:this.coords[0],
                 location_longitude:this.coords[1],
+                location_comment:this.addressComment
             };
             modalController.dismiss(location);
         },
@@ -157,11 +162,15 @@ export default({
     async mounted(){
         await loadYmap();
         let ymaps=window.ymaps
-        this.$flash("Получаем местоположение устройства")
-        ymaps.geolocation.get().then(res => {
-            this.coords = res.geoObjects.position;
+
+        const lastStoredPosition=User.geo.lastStoredGet()
+        if( lastStoredPosition?.location_latitude ){
+            this.coords=[lastStoredPosition.location_latitude,lastStoredPosition.location_longitude]
+        } else {
+            const {coords}=await User.geo.get()
+            this.coords=[coords.latitude,coords.longitude]
             this.$flash("На карте отмечено ваше местоположение")
-        });
+        }
     }
 });
 </script>
