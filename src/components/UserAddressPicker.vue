@@ -8,7 +8,7 @@
         >
             <ymap-marker :coords="coords" marker-id="1" :properties="placemarkProperties"/>
         </yandex-map>
-        <div style="position: absolute;top: 30px;width:100%;--ion-item-background: #ffffffdd;border-radius:10px;">
+        <div style="position: absolute;top: 3px;width:100%;--ion-item-background: #ffffffdd;border-radius:10px;">
             <ion-searchbar debounce="500" v-model="addressSearchQuery" @ionInput="suggestionsGet()" placeholder="поиск по адресу" color="light"/>
             <ion-item v-for="(row,i) in suggestions" :key="i" @click="suggestionSelect(`${row.subtitle.text}, ${row.title.text}`,row.uri)" style="margin-right:10px;margin-left:10px">
                 {{row.subtitle.text}} {{row.title.text}} 
