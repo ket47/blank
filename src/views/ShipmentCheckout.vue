@@ -205,8 +205,8 @@ import {
     alertCircleOutline,
 }                               from 'ionicons/icons';
 import {
-    yandexMap,
-    ymapMarker,
+    // yandexMap,
+    // ymapMarker,
     loadYmap 
 }                               from "vue-yandex-maps";
 import Utils                    from '@/scripts/Utils'
@@ -215,8 +215,8 @@ import DateRangePicker          from '@/components/DateRangePicker.vue'
 
 export default {
     components:{
-    yandexMap,
-    ymapMarker,
+    // yandexMap,
+    // ymapMarker,
     IonText,
     IonList,
     IonItem,
