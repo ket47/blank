@@ -10,18 +10,26 @@
     <div v-if="found?.product_matches?.length>0">
       <h2 class="ion-padding">Результат поиска</h2>
       <div v-for="store in found.product_matches" :key="store.store_id" class="ion-padding-top">
-          <ion-item detail button @click="$go(`/search/store-${store.store_id}`)" lines="full">
+          <ion-item detail button @click="$go(`/search/store-${store.store_id}`)" lines="none">
             <ion-thumbnail slot="start">
               <ion-img style="border-radius:10px" :src="`${$heap.state.hostname}image/get.php/${store.image_hash}.150.150.webp`"/>
             </ion-thumbnail>
             <p style="font-size:1.1em">{{store?.store_name}}</p>
             <ion-note slot="helperText">{{store.store_description}}</ion-note>
           </ion-item>
-
-          <div>
+          <ion-item lines="full">
             <store-opened-indicator :storeItem="store"/>
-          </div>
-          <div style="display:grid;grid-template-columns:repeat(auto-fit, 160px);padding:10px">
+            <ion-chip color="medium">
+            {{store.deliveryTime.timeMin}}-{{store.deliveryTime.timeMax}}мин
+            </ion-chip>
+            <div>
+              <ion-note v-if="store.is_foodstore">#магазин</ion-note>
+              <ion-note v-if="store.is_halal">#элял</ion-note>
+              <ion-note v-if="store.is_fastfood">#фастфуд</ion-note>
+              <ion-note v-if="store.is_restaurant">#ресторан</ion-note>
+            </div>
+          </ion-item>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit, 160px);padding:10px;gap:10px">
             <div v-for="productItem in store.matches" :key="productItem.product_id">                
               <product-item :productItem="productItem" :storeName="store.store_name"/>
             </div>
@@ -137,6 +145,10 @@ export default  {
       }
       for(let i in found.product_matches){
         found.product_matches[i].deliveryTime=Utils.deliveryTimeCalculate(found.product_matches[i].distance,found.product_matches[i].store_time_preparation)
+        let groups=found.product_matches[i].member_of_groups.split(',')
+        for(let g of groups ){
+          found.product_matches[i][`is_${g}`]=1
+        }
       }
       return found
     },
