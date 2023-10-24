@@ -21,7 +21,7 @@
           <div>
             <store-opened-indicator :storeItem="store"/>
           </div>
-          <div style="display:grid;grid-template-columns:repeat(auto-fit, 180px);padding:10px">
+          <div style="display:grid;grid-template-columns:repeat(auto-fit, 160px);padding:10px">
             <div v-for="productItem in store.matches" :key="productItem.product_id">                
               <product-item :productItem="productItem" :storeName="store.store_name"/>
             </div>
