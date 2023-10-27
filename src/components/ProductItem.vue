@@ -60,7 +60,7 @@
             <div style="color:black;height:3em;font-size:1em;overflow:hidden;line-height:1.4em; font-weight: bold;" @click="$go(`/catalog/product-${productItem.product_id}`)">
                 {{ productItem.product_name }}
             </div>
-            <span v-if="productItem.product_price!=productItem.product_final_price" style="color:var(--ion-color-danger)">
+            <span v-if="productItem.product_price*1>productItem.product_final_price*1" style="color:var(--ion-color-danger)">
                 <s>{{product_price}}{{$heap.state.currencySign}}</s>&nbsp;&nbsp;
             </span>
             <span style="color:var(--ion-color-primary)">

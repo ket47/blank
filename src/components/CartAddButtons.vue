@@ -70,7 +70,7 @@ import {
   IonIcon,
   IonButton,
   IonLabel,
-
+  actionSheetController ,
 }                           from '@ionic/vue';
 import { 
   add,
@@ -98,7 +98,9 @@ export default{
   data() {
     return { 
       order_store_id:0,
-      productData:null
+      productData:null,
+      isOptionSelectorOpen:0,
+      optionSelectorList:[],
     };
   },
   mounted(){
@@ -133,8 +135,50 @@ export default{
         product_list_item.classList.remove("incart");
       }
     },
-    addToOrder(step){
-      let newQuantity=parseFloat(this.currentQuantity)+parseFloat(step);
+    async checkForOptions(){
+      let options = this.productItem?.options
+      if( !options ){
+        return false
+      }
+      let i=1
+      let optionSelectorList=[]
+      for(let option of options){
+        optionSelectorList.push({
+          text: `${option.product_option} по цене ${option.product_final_price}${this.$heap.state.currencySign}`,
+          data: option
+        })
+      }
+      optionSelectorList.push({
+        text: `Закрыть`,
+        role: 'cancel',
+      })
+
+      const actionSheet = await actionSheetController.create({
+        header: this.productData.product_name,
+        subHeader:'выберите вариант',
+        buttons: optionSelectorList
+      });
+
+      actionSheet.present();
+
+      const {data} = await actionSheet.onDidDismiss()
+      if(data?.product_id){
+        this.productData.product_id=data.product_id
+        this.productData.product_option=data.product_option
+        this.productData.product_final_price=data.product_final_price
+        return false
+      }
+      return true
+    },
+    async addToOrder(step){
+      let currentQuantity=parseFloat(this.currentQuantity)
+      let newQuantity=currentQuantity+parseFloat(step);
+      if( !currentQuantity ){
+        const is_option_canceled=await this.checkForOptions()
+        if(is_option_canceled){
+          return
+        }
+      }
       if( !this.productItem && !this.entry ){
         return;//haven't loaded yet or qty is negative
       }
