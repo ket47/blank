@@ -224,7 +224,7 @@ class Sitemap{
             $xml->writeAttribute('xmlns:turbo','http://turbo.yandex.ru');
             $xml->writeAttribute('version','2.0');
                 $xml->startElement('channel');
-                    $xml->writeElement('title',getenv('app.title')." ".getenv('app.turboHeader.'.$scope)." (".(($page)*1000)."-".(($page+1)*1000).")");
+                    $xml->writeElement('title',getenv('app.title')." ".$scope." (".(($page)*1000)."-".(($page+1)*1000).")");
                     $xml->writeElement('description',getenv('app.description'));
                     $xml->writeElement('link',getenv('app.frontendURL'));
                     $xml->endElement();
