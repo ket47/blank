@@ -27,8 +27,8 @@ class Catalog{
         view('aboutUs',$context);
     }
 
-    public function store(){
-        $store_id=(int)func_get_arg(0);
+    public function store($store_id = null){
+        $store_id ?? (int)func_get_arg(0);
         
         $CatalogModel=new \Models\CatalogModel();
         $store=$CatalogModel->storeItemGet($store_id);
@@ -64,9 +64,8 @@ class Catalog{
         view('store',$context);
     }
 
-    public function product(){
-        $product_id=(int)func_get_arg(0);
-        
+    public function product($product_id = null){
+        $product_id ?? (int)func_get_arg(0);
         $CatalogModel=new \Models\CatalogModel();
         $product=$CatalogModel->productItemGet($product_id);
         if(empty($product)){
@@ -91,8 +90,8 @@ class Catalog{
         $context['product']=$product;
         view('product',$context);
     }
-    public function category(){
-        $category_id=(int)func_get_arg(0);
+    public function category($category_id = null){
+        $category_id ?? (int)func_get_arg(0);
         $CatalogModel=new \Models\CatalogModel();
         $category=$CatalogModel->categoryItemGet($category_id);
         if(empty($category)){
@@ -114,7 +113,7 @@ class Catalog{
                 }
             }
         }
-        $category->cities = count($category_cities)>0?implode(', ', $category_cities):getenv('app.location');
+        $category->cities = count($category_cities)>0? implode(', ', $category_cities) : getenv('app.location');
 
         $category->subcategories=$CatalogModel->categoryListGet([
             'group_parent_id'=>$category_id
