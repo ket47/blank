@@ -54,18 +54,17 @@ import {
     IonItem,
     IonList,
     IonPopover,
-    IonItemDivider,
 }                           from '@ionic/vue';
 
 
 
 import ShipComp             from '@/components/ShipmentComp.vue';
-import OrderHistoryComp     from '@/components/OrderHistoryComp.vue';
-import OrderInfoComp        from '@/components/OrderInfoComp.vue';
-import OrderMetaComp        from '@/components/OrderMetaComp.vue';
-import OrderTrackingComp    from '@/components/OrderTrackingComp.vue'
+//import OrderHistoryComp     from '@/components/OrderHistoryComp.vue';
+//import OrderInfoComp        from '@/components/OrderInfoComp.vue';
+//import OrderMetaComp        from '@/components/OrderMetaComp.vue';
+//import OrderTrackingComp    from '@/components/OrderTrackingComp.vue'
 import OrderObjectionModal  from '@/components/OrderObjectionModal.vue'
-import ImageTileComp        from '@/components/ImageTileComp.vue'
+//import ImageTileComp        from '@/components/ImageTileComp.vue'
 import ItemPicker           from '@/components/ItemPicker.vue'
 
 import Utils               from '@/scripts/Utils'
@@ -74,18 +73,17 @@ import jQuery               from 'jquery'
 export default({
     components: { 
         ShipComp,
-        OrderHistoryComp,
-        OrderMetaComp,
-        OrderInfoComp,
-        OrderTrackingComp,
-        ImageTileComp,
+        // OrderHistoryComp,
+        // OrderMetaComp,
+        // OrderInfoComp,
+        // OrderTrackingComp,
+        // ImageTileComp,
         IonLabel,
         IonIcon,
         IonContent,
         IonItem,
         IonList,
         IonPopover,
-        IonItemDivider,
     },
     setup(){
         return {sparklesOutline,  chatboxOutline,};

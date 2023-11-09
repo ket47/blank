@@ -6,16 +6,13 @@
     </base-layout>
 </template>
 <script>
-import {
-    IonButton
-}                       from '@ionic/vue'
+
 import jQuery           from "jquery";
 import ShipComp          from '@/components/ShipmentComp.vue';
 
 export default {
     components:{
         ShipComp,
-        IonButton,
     },
     data(){
         return{

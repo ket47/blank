@@ -222,7 +222,6 @@ import {
     IonLabel,
     IonItem,
     IonList,
-    IonChip,
     IonImg,
     IonThumbnail,
     IonNote,
@@ -235,10 +234,8 @@ import {
     IonCardHeader,
     IonCardContent,
     IonCardTitle,
-    IonAvatar,
     IonItemDivider,
     IonTextarea,
-    IonCheckbox,
     IonInput,
     IonAccordion,
     IonAccordionGroup,
@@ -276,7 +273,6 @@ import {
 }                       from "vue-yandex-maps";
 
 
-import ShipDescriptionPicker    from '@/components/ShipDescriptionPicker.vue'
 import UserAddressesModal       from '@/components/UserAddressesModal.vue';
 
 
@@ -291,7 +287,6 @@ export default({
         IonLabel,
         IonItem,
         IonList,
-        IonChip,
         IonImg,
         IonThumbnail,
         IonNote,
@@ -304,10 +299,8 @@ export default({
         IonCardHeader,
         IonCardContent,
         IonCardTitle,
-        IonAvatar,
         IonItemDivider,
         IonTextarea,
-        IonCheckbox,
         IonInput,
         IonAccordion,
         IonAccordionGroup,
