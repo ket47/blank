@@ -199,7 +199,6 @@ async function startApp(){
 
   const sessionId = await Utils.pref.get('sessionId')
   if(sessionId){
-    console.log(sessionId)
     await User.sessionIdUse(sessionId);
   }
 

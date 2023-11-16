@@ -9,16 +9,14 @@
                 </div>
             </div>
 
-            <ship-comp :order="order" @stageCreate="onStageCreate" @orderRefresh="itemGet"/>
+            <shipment-comp :orderData="order" @stageCreate="onStageCreate" @orderRefresh="itemGet"/>
 
 
-            <!--
             <order-tracking-comp :orderData="order"/>
             <order-info-comp :orderData="order"/>
             <image-tile-comp v-if="order?.images" :images="order?.images" :image_holder_id="order?.order_id" controller="Order" ref="orderImgs"/>
             <order-history-comp :orderData="order"/>
             <order-meta-comp :orderId="order_id" v-if="order?.stage_current=='system_finish'"/>
-            -->
 
             <ion-popover :is-open="isOpenDeliveryRejectionPopover" @didDismiss="isOpenDeliveryRejectionPopover=false">
                 <ion-content>
@@ -56,15 +54,13 @@ import {
     IonPopover,
 }                           from '@ionic/vue';
 
-
-
-import ShipComp             from '@/components/ShipmentComp.vue';
-//import OrderHistoryComp     from '@/components/OrderHistoryComp.vue';
-//import OrderInfoComp        from '@/components/OrderInfoComp.vue';
-//import OrderMetaComp        from '@/components/OrderMetaComp.vue';
-//import OrderTrackingComp    from '@/components/OrderTrackingComp.vue'
+import ShipmentComp         from '@/components/ShipmentComp.vue';
+import OrderHistoryComp     from '@/components/OrderHistoryComp.vue';
+import OrderInfoComp        from '@/components/OrderInfoComp.vue';
+import OrderMetaComp        from '@/components/OrderMetaComp.vue';
+import OrderTrackingComp    from '@/components/OrderTrackingComp.vue'
 import OrderObjectionModal  from '@/components/OrderObjectionModal.vue'
-//import ImageTileComp        from '@/components/ImageTileComp.vue'
+import ImageTileComp        from '@/components/ImageTileComp.vue'
 import ItemPicker           from '@/components/ItemPicker.vue'
 
 import Utils               from '@/scripts/Utils'
@@ -72,12 +68,12 @@ import jQuery               from 'jquery'
 
 export default({
     components: { 
-        ShipComp,
-        // OrderHistoryComp,
-        // OrderMetaComp,
-        // OrderInfoComp,
-        // OrderTrackingComp,
-        // ImageTileComp,
+        ShipmentComp,
+        OrderHistoryComp,
+        OrderMetaComp,
+        OrderInfoComp,
+        OrderTrackingComp,
+        ImageTileComp,
         IonLabel,
         IonIcon,
         IonContent,
@@ -106,7 +102,7 @@ export default({
                 switch(err.status){
                     case 404:
                         this.$flash("Заказ не найден");
-                        this.order='notfound';
+                        this.order=null;
                         this.$go('/order/order-list');
                         break;
                 }
@@ -260,7 +256,25 @@ export default({
             } catch{
                 this.$flash("Не удалось назначить курьера")
             }
-        }
+        },
+        async action_customer_start(){
+            this.onStageCreate(this.order_id, 'customer_start')
+        },
+        async itemUpdate( orderUpdate ){
+            this.order.deliveryCalculation=await this.itemTotalEstimate()
+        },
+        async itemTotalEstimate(start_location_id,finish_location_id){
+            if(!start_location_id || !finish_location_id){
+                return
+            }
+            const request={
+                start_location_id,finish_location_id
+            }
+            try{
+                return await jQuery.post(`${this.$heap.state.hostname}Shipment/itemDeliverySumEstimate`,request)
+            } catch(err){/** */}
+        },
+
     },
     ionViewDidEnter() {
         this.itemGet();

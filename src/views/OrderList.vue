@@ -15,7 +15,8 @@
             <div v-for="order in orderListComputed" :key="order.order_id" @click="itemClick(order)">
                 <ion-item lines="none">
                     <ion-text slot="start">#{{order.order_id}}</ion-text>
-                    <ion-label>{{order.store_name}}</ion-label>
+                    <ion-label v-if="order.is_shipment==1">Вызов курьера 🛵 {{order.store_name}}</ion-label>
+                    <ion-label v-else>{{order.store_name}}</ion-label>
                     <ion-text slot="end">{{order.date}}</ion-text>
                 </ion-item>
                 <ion-item lines="full">
@@ -39,7 +40,8 @@
             <div v-for="order in jobListComputed" :key="order.order_id" @click="itemClick(order)">
 
             <ion-item lines="none">
-                <ion-label>{{order.store_name}}</ion-label>
+                <ion-label v-if="order.is_shipment==1">Вызов курьера 🛵 {{order.store_name}}</ion-label>
+                <ion-label v-else>{{order.store_name}}</ion-label>
                 <ion-text slot="end">{{order.date_time}}</ion-text>
             </ion-item>
             <ion-item lines="full">
@@ -309,10 +311,14 @@ export default {
                 Topic.on('dismissModal',dismissFn);
                 return modal.present();
             }
-            this.itemOpen(order.order_id);
+            this.itemOpen(order.order_id,order.is_shipment);
         },
-        itemOpen(order_id){
-            this.$go(`/order/order-${order_id}`);
+        itemOpen(order_id,is_shipment){
+            if(is_shipment==1){
+                this.$go(`/order/shipment-${order_id}`);
+            } else {
+                this.$go(`/order/order-${order_id}`);
+            }
         }
     }
 }

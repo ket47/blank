@@ -15,7 +15,7 @@
             </ion-toolbar>
         </ion-header>
         <ion-content class="ion-padding">
-            <ion-card color="light">
+            <!-- <ion-card color="light">
                 <ion-card-header>
                     <ion-card-title style="font-size:0.9em">
                         Время доставки может отличаться
@@ -24,7 +24,7 @@
                 <ion-card-content style="font-size:0.7em">
                     Погода, время приготовления, загруженость дорог и другие факторы могут ускорить или замедлить доставку.
                 </ion-card-content>
-            </ion-card>
+            </ion-card> -->
             <ion-datetime 
                 style="max-width:100%;border-radius:10px"
                 presentation="date-time" 

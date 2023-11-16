@@ -136,7 +136,10 @@
 
             <ion-item v-if="order_sum_delivery>0">
                 <ion-icon :icon="rocketOutline" slot="start" color="medium"></ion-icon>
-                Доставка 
+                <div>
+                    Доставка
+                    <div v-if="tariffRule.deliveryHeavyBonus" style="font-size:0.75em">(непогода, праздники или высокая загруженность)</div>
+                </div>
                 <ion-text slot="end">{{order_sum_delivery??0}}{{$heap.state.currencySign}}</ion-text>
             </ion-item>
             <ion-item v-if="order_sum_total>0">
