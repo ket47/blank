@@ -1,5 +1,6 @@
 <?php
 namespace Controllers;
+use \Library\SiteMapService;
 
 
 class Sitemap{
@@ -164,7 +165,6 @@ class Sitemap{
         $products=$CatalogModel->productListGet([
             'limit'=>5000,
         ]);
-        
         $xml=new \XMLWriter();
         $xml->openMemory();
         $xml->setIndent(true);
@@ -207,303 +207,59 @@ class Sitemap{
         $xml->endDocument();
         echo $xml->flush();
     }
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-use XMLWriter;
-
-/**
- * SiteMap
- *
- * This class used for generating Google Sitemap files
- * Cycle: Schema added for validation, time format changed to ISO
- *
- * @package SiteMap
- * @author Cycle
- * @copyright 2018 Cycle
- * @license Cycle License
- */
-class SiteMapService{
-
-    /**
-     *
-     * @var XMLWriter
-     */
-    private $writer;
-
-    private $domain;
-
-    private $path;
-
-    private $filename = 'sitemap';
-
-    private $current_item = 0;
-
-    private $current_sitemap = 0;
-
-    const EXT = '.xml';
-
-    const SCHEMA = 'http://www.sitemaps.org/schemas/sitemap/0.9';
-
-    const DEFAULT_PRIORITY = 0.5;
-
-    const ITEM_PER_SITEMAP = 50000;
-
-    const SEPERATOR = '-';
-
-    const INDEX_SUFFIX = 'index';
-
-    /**
-     *
-     * @param string $domain
-     */
-    public function __construct($domain)
-    {
-        $this->setDomain($domain);
-    }
-
-    /**
-     * Sets root path of the website, starting with http:// or https://
-     *
-     * @param string $domain
-     */
-    public function setDomain($domain)
-    {
-        $this->domain = $domain;
-        return $this;
-    }
-
-    /**
-     * Returns root path of the website
-     *
-     * @return string
-     */
-    private function getDomain()
-    {
-        return $this->domain;
-    }
-
-    /**
-     * Returns XMLWriter object instance
-     *
-     * @return XMLWriter
-     */
-    private function getWriter()
-    {
-        return $this->writer;
-    }
-
-    /**
-     * Assigns XMLWriter object instance
-     *
-     * @param XMLWriter $writer
-     */
-    private function setWriter(XMLWriter $writer)
-    {
-        $this->writer = $writer;
-    }
-
-    /**
-     * Returns the path of sitemaps
-     *
-     * @return string
-     */
-    private function getPath()
-    {
-        return $this->path;
-    }
-
-    /**
-     * Sets paths of sitemaps
-     *
-     * @param string $path
-     * @return Sitemap
-     */
-    public function setPath($path)
-    {
-        $this->path = $path;
-        return $this;
-    }
-
-    /**
-     * Returns the filename of the sitemap file
-     *
-     * @return string
-     */
-    private function getFilename()
-    {
-        return $this->filename;
-    }
-
-    /**
-     * Sets filename of sitemap file
-     *
-     * @param string $filename
-     * @return Sitemap
-     */
-    public function setFilename($filename)
-    {
-        $this->filename = $filename;
-        return $this;
-    }
-
-    /**
-     * Returns current item count
-     *
-     * @return int
-     */
-    private function getCurrentItem()
-    {
-        return $this->current_item;
-    }
-
-    /**
-     * Increases item counter
-     */
-    private function incCurrentItem()
-    {
-        $this->current_item = $this->current_item + 1;
-    }
-
-    /**
-     * Returns current sitemap file count
-     *
-     * @return int
-     */
-    private function getCurrentSitemap()
-    {
-        return $this->current_sitemap;
-    }
-
-    /**
-     * Increases sitemap file count
-     */
-    private function incCurrentSitemap()
-    {
-        $this->current_sitemap = $this->current_sitemap + 1;
-    }
-
-    /**
-     * Prepares sitemap XML document
-     */
-    private function startSitemap()
-    {
-        $this->setWriter(new XMLWriter());
-        if ($this->getCurrentSitemap()) {
-            $this->getWriter()->openURI($this->getPath() . $this->getFilename() . self::SEPERATOR . $this->getCurrentSitemap() . self::EXT);
-        } else {
-            $this->getWriter()->openURI($this->getPath() . $this->getFilename() . self::EXT);
+    public function turboRSSXml($scope = 'store', $page = 0){
+        if(!isset($_GET['scope']) || !isset($_GET['page'])){
+            return;
         }
-        $this->getWriter()->startDocument('1.0', 'UTF-8');
-        $this->getWriter()->setIndent(true);
-        $this->getWriter()->startElement('urlset');
-        $this->getWriter()->writeAttribute('xmlns:xsi', "http://www.w3.org/2001/XMLSchema-instance");
-        $this->getWriter()->writeAttribute('xsi:schemaLocation', "http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd");
-        $this->getWriter()->writeAttribute('xmlns', self::SCHEMA);
+        $scope = $_GET['scope'];
+        $page = $_GET['page'];
+        header("Content-Type:text/xml");
+        $xml=new \XMLWriter();
+        $xml->openMemory();
+        $xml->setIndent(true);
+        $xml->startDocument('1.0', 'UTF-8');
+            $xml->startElement('rss');
+            $xml->writeAttribute('xmlns:yandex','http://news.yandex.ru');
+            $xml->writeAttribute('xmlns:media','http://search.yahoo.com/mrss/');
+            $xml->writeAttribute('xmlns:turbo','http://turbo.yandex.ru');
+            $xml->writeAttribute('version','2.0');
+                $xml->startElement('channel');
+                    $xml->writeElement('title',getenv('app.title')." ".$scope." (".(($page)*1000)."-".(($page+1)*1000).")");
+                    $xml->writeElement('description',getenv('app.description'));
+                    $xml->writeElement('link',getenv('app.frontendURL'));
+                    $xml->endElement();
+                    $xml = $this->addTurboItemsXml($scope, $xml, $page);
+                    if(!$xml){
+                        return false;
+                    }
+                $xml->endElement();
+            $xml->endElement();
+        $xml->endDocument();
+        echo $xml->flush();
+    }
+    public function addTurboItemsXml($scope, $xml, $page){
+        $Catalog = new \Controllers\Catalog();
+        $CatalogModel  =new \Models\CatalogModel();
+        $items = $CatalogModel->{$scope.'ListGet'}(['limit' => 1000, 'page' => $page]);  
+        if(empty($items)){
+            return false;
+        }
+        foreach($items as $item){
+            $xml->startElement('item');
+            $xml->writeAttribute('turbo', 'true');
+                $xml->writeElement('link', 'https://'.getenv('app.frontendURL').'/catalog/'.$scope.'-'.$item->{$scope.'_id'});
+                $xml->writeElement('author', getenv('app.company'));
+                $xml->writeElement('pubDate', $item->updated_at);
+                isset($item->group_name) ?? $xml->writeElement('category', $item->group_name);
+                $xml->startElement('turbo:content');
+                    ob_start();
+                    $Catalog->{$scope}($item->{$scope.'_id'});
+                    $page_rendered = ob_get_clean();
+                    $xml->writeCData($page_rendered);
+                $xml->endElement();
+            $xml->endElement();
+        }
+        return $xml;
     }
 
-    /**
-     * Adds an item to the sitemap
-     *
-     * @param string $loc
-     *            URL of the page. This value must be less than 2,048 characters.
-     * @param string $priority
-     *            The priority of this URL relative to other URLs on your SiteMapService. Valid values range from 0.0 to 1.0.
-     * @param string $changefreq
-     *            How frequently the page is likely to change. Valid values are always, hourly, daily, weekly, monthly, yearly and never.
-     * @param string|int $lastmod
-     *            The date of last modification of URL. Unix timestamp or any English textual DateTime description.
-     * @return Sitemap
-     */
-    public function addItem($loc, $priority = self::DEFAULT_PRIORITY, $changefreq = NULL, $lastmod = NULL)
-    {
-        if (($this->getCurrentItem() % self::ITEM_PER_SITEMAP) == 0) {
-            if ($this->getWriter() instanceof XMLWriter) {
-                $this->endSitemap();
-            }
-            $this->startSitemap();
-            $this->incCurrentSitemap();
-        }
-        $this->incCurrentItem();
-        $this->getWriter()->startElement('url');
-        $this->getWriter()->writeElement('loc', $this->getDomain() . $loc);
-        if ($lastmod)
-            $this->getWriter()->writeElement('lastmod', $this->getLastModifiedDate($lastmod));
-        if ($changefreq)
-            $this->getWriter()->writeElement('changefreq', $changefreq);
-        if ($priority)
-            $this->getWriter()->writeElement('priority', $priority);
-        $this->getWriter()->endElement();
-        return $this;
-    }
-
-    /**
-     * Prepares given a date for sitemap
-     *
-     * @param string $date
-     *            Unix timestamp or any English textual datetime description
-     * @return ISO8601 format.
-     */
-    private function getLastModifiedDate($date)
-    {
-        if (ctype_digit($date)) {
-            return date('c', $date);
-        } else {
-            $date = strtotime($date);
-            return date('c', $date);
-        }
-    }
-
-    /**
-     * Finalizes tags of sitemap XML document.
-     */
-    private function endSitemap()
-    {
-        if (! $this->getWriter()) {
-            $this->startSitemap();
-        }
-        $this->getWriter()->endElement();
-        $this->getWriter()->endDocument();
-    }
-
-    /**
-     * Writes Google sitemap index for generated sitemap files
-     *
-     * @param string $loc
-     *            Accessible URL path of sitemaps
-     * @param string|int $lastmod
-     *            The date of last modification of sitemap. Unix timestamp or any English textual datetime description.
-     */
-    public function createSitemapIndex($loc, $lastmod = 'Today')
-    {
-        $this->endSitemap();
-        $indexwriter = new XMLWriter();
-        $indexwriter->openURI($this->getPath() . $this->getFilename() . self::SEPERATOR . self::INDEX_SUFFIX . self::EXT);
-        $indexwriter->startDocument('1.0', 'UTF-8');
-        $indexwriter->setIndent(true);
-        $indexwriter->startElement('sitemapindex');
-        $indexwriter->writeAttribute('xmlns', self::SCHEMA);
-        for ($index = 0; $index < $this->getCurrentSitemap(); $index ++) {
-            $indexwriter->startElement('sitemap');
-            $indexwriter->writeElement('loc', $loc . $this->getFilename() . ($index ? self::SEPERATOR . $index : '') . self::EXT);
-            $indexwriter->writeElement('lastmod', $this->getLastModifiedDate($lastmod));
-            $indexwriter->endElement();
-        }
-        $indexwriter->endElement();
-        $indexwriter->endDocument();
-    }
 }

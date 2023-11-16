@@ -9,8 +9,8 @@ class CatalogModel{
     }
 
 
-    public function storeListGet($filter){
-        $limit = $filter['limit'] ? $this->db->esc($filter['limit']) : 12;
+    public function storeListGet($filter = []){
+        $limit = isset($filter['limit']) ? $this->db->esc($filter['limit']) : 12;
 
         $offset = ( $filter['page'] ?? 0 ) * $limit;
 
@@ -92,9 +92,9 @@ class CatalogModel{
 
 
 
-    public function productListGet($filter){
-        $limit=$filter['limit']?$this->db->esc($filter['limit']):12;
-        $offset=($filter['page']??0)*$limit;
+    public function productListGet($filter = []){
+        $limit = isset($filter['limit']) ? $this->db->esc($filter['limit']) : 12;
+        $offset = ($filter['page'] ?? 0) * $limit;
         
         $store_case=!empty($filter['store_id'])?"AND pl.store_id='{$filter['store_id']}'":'';
         
@@ -241,7 +241,7 @@ class CatalogModel{
         return $this->db->query($sql)->row();        
     }
     
-    public function categoryListGet( $filter ){
+    public function categoryListGet($filter = []){
         $limit= isset($filter['limit'])?$this->db->esc($filter['limit']):12;
         $offset=($filter['page']??0)*$limit;
 
@@ -252,6 +252,7 @@ class CatalogModel{
         $sql="
             SELECT
                 pgl.*,
+                pgl.group_id as category_id,
                 image_hash
             FROM
                 product_group_list pgl
