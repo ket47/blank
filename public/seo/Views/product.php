@@ -15,10 +15,11 @@
         <?php endif ?>
         <p><i data-color="gray"><?=$product->product_description?></i></p>
         <button
-            data-background-color="#eee"
+            data-background-color="#0099FF"
             data-color="white"
             data-turbo="false"
             data-primary="true"
+            formaction="/"
             onmouseover="document.cookie = 'skipto=site;'; window.location.reload();"
             >
             Купить

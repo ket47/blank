@@ -110,6 +110,7 @@ class CatalogModel{
                 store_name,
                 pl.product_price,
                 pl.product_weight,
+                pl.product_unit,
                 ROUND(IF(IFNULL(`pl`.`product_promo_price`,0)>0 AND `pl`.`product_price`>`pl`.`product_promo_price` AND `pl`.`product_promo_start` < NOW() AND `pl`.`product_promo_finish` > NOW(),`pl`.`product_promo_price`,`pl`.`product_price`)) product_final_price,
                 pl.product_promo_start,
                 pl.product_promo_finish,
