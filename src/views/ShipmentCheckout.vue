@@ -113,19 +113,21 @@
             </ion-radio-group>
 
             <ion-item-divider>Итог</ion-item-divider>
-            <ion-accordion-group>
-                <ion-accordion>
-                    <ion-item slot="header">
+            <ion-accordion-group value="total">
+                <ion-accordion value="total">
+                    <ion-item slot="header" >
                         <ion-icon :icon="walletOutline" slot="start" color="medium"></ion-icon>
                         <ion-text color="medium">Итого: </ion-text>
                         <ion-label slot="end" color="primary">{{ tariffRule.deliverySum }}{{$heap.state.currencySign}}</ion-label>
                     </ion-item>
                     <ion-list slot="content">
                         <ion-item lines="none">
+                            <ion-icon :icon="rocketOutline" slot="start" color="medium"></ion-icon>
                             <ion-text color="medium">Вызов курьера</ion-text>
                             <ion-label slot="end" color="medium">{{ tariffRule.deliveryCost }}{{$heap.state.currencySign}}</ion-label>
                         </ion-item>
                         <ion-item lines="none">
+                            <ion-icon :icon="mapOutline" slot="start" color="medium"></ion-icon>
                             <ion-text color="medium">Расстояние по карте {{ deliveryDistanceKm }}км</ion-text>
                             <ion-label slot="end" color="medium">{{ deliveryFeeTotal }}{{$heap.state.currencySign}}</ion-label>
                         </ion-item>
@@ -187,6 +189,8 @@ import {
     businessOutline,
     walletOutline,
     alertCircleOutline,
+    mapOutline,
+    rocketOutline
 }                               from 'ionicons/icons';
 import Utils                    from '@/scripts/Utils'
 import jQuery                   from 'jquery'
@@ -230,6 +234,8 @@ export default {
             businessOutline,
             walletOutline,
             alertCircleOutline,
+            mapOutline,
+            rocketOutline,
         };
     },
     data(){
@@ -266,10 +272,10 @@ export default {
             return ['downtime','inqueue'].includes(this.routePlan.deliveryDelay)
         },
         deliveryFeeTotal(){
-            return Math.round(this.tariffRule.deliveryFee*this.deliveryDistanceKm)
+            return Math.round(this.tariffRule.deliveryFee*this.deliveryDistanceKm) || 0
         },
         deliveryDistanceKm(){
-            return Math.round(this.routePlan.deliveryDistance/100)/10
+            return Math.round(this.routePlan.deliveryDistance/100)/10 || 0
         },
         checkoutError(){
             if( this.errorCode=='no_input' ){

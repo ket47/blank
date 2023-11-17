@@ -1,6 +1,6 @@
 <template>
   <base-layout page-title="Заказы" hideBackLink="true">
-        <ion-segment swipe-gesture="true" v-model="orderType" @ionChange="listTypeChanged($event)">
+        <ion-segment swipe-gesture="true" v-model="orderType" @ionChange="listTypeChanged($event)" :scrollable="true">
             <ion-segment-button value="jobs" v-if="courierJobsInclude">
                 Задания
             </ion-segment-button>
@@ -40,18 +40,31 @@
             <div v-for="order in jobListComputed" :key="order.order_id" @click="itemClick(order)">
 
             <ion-item lines="none">
+                <ion-icon slot="start" :icon="rocketOutline" color="primary"/>
                 <ion-label v-if="order.is_shipment==1">Вызов курьера 🛵 {{order.store_name}}</ion-label>
                 <ion-label v-else>{{order.store_name}}</ion-label>
                 <ion-text slot="end">{{order.date_time}}</ion-text>
             </ion-item>
             <ion-item lines="full">
-                <ion-icon slot="start" :icon="rocketOutline" color="primary"/>
                 <ion-text>
-                    <ion-label>
-                        <ion-chip color="medium">{{order.order_sum_total}}{{$heap.state.currencySign}}</ion-chip>
-                        <ion-chip color="primary" v-if="order.distance_km">{{order.distance_km}}</ion-chip>
-                    </ion-label>
-                    <ion-note>{{order.location_address}}</ion-note>
+                    <div style="padding:5px">
+                        {{order.location_address}}
+                        <ion-note v-if="order.location_comment">
+                            {{order.location_comment}}
+                        </ion-note>
+                    </div>
+                    <div style="padding:5px" v-if="order.finish_location_address">
+                        <b>Доставить:</b> {{order.finish_location_address}}
+                        <ion-note v-if="order.finish_location_comment">
+                            {{order.finish_location_comment}}
+                        </ion-note>
+                    </div>
+                    <div style="padding:5px" v-if="order.order_description">
+                        Комментарий к заказу: 
+                        <ion-note>
+                            {{order.order_description}}
+                        </ion-note>
+                    </div>
                 </ion-text>
             </ion-item>
             </div>
@@ -180,7 +193,6 @@ export default {
                 if( !order.location_address ){
                     order.location_address='';
                 }
-                //order.location_address=order.location_address.split(',').reverse().join(',');
                 if( order.distance ){
                     order.distance_km=Math.round(order.distance/1000)+'км';
                 } else {
@@ -215,11 +227,7 @@ export default {
             return event.toLocaleDateString(undefined, options);
         },
         courierReadinessCheck(){
-            const courierJobsInclude=User.courier.status=='ready'?1:0;
-            if(this.courierJobsInclude===courierJobsInclude){
-                return
-            }
-            this.courierJobsInclude=courierJobsInclude
+            this.courierJobsInclude=User.courier.isCourier()
             if(this.courierJobsInclude==0){
                 this.orderType='active';
             } else {
@@ -247,6 +255,7 @@ export default {
                 request.limit=10
             }
             let orderList=await Order.api.listLoad(request);
+            this.orderType=listType//to prevent sticking on wrong tab
             if( mode=='append' ){
                 this.orderList??=[]
                 orderList=this.orderList.concat(orderList)

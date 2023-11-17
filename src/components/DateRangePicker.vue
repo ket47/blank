@@ -52,10 +52,6 @@ import {
         IonIcon,
         IonItem,
         IonButton,
-        IonCard,
-        IonCardHeader,
-        IonCardTitle,
-        IonCardContent,
 }               from '@ionic/vue'
 import {
   closeOutline,
@@ -71,10 +67,6 @@ export default {
         IonIcon,
         IonItem,
         IonButton,
-        IonCard,
-        IonCardHeader,
-        IonCardTitle,
-        IonCardContent,
     },
     setup(){
         return {closeOutline}

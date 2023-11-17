@@ -205,6 +205,15 @@ async function startApp(){
 
 
   app.mount('#app');
+  /**
+   * opens deeplinking urls in this app
+   */
+  App.addListener('appUrlOpen', function (event: URLOpenListenerEvent) {
+    const slug = event.url.split('.com').pop();
+    if (slug) {
+      go(slug)
+    }
+  });
   await User.autoSignIn();
 
 
@@ -215,14 +224,5 @@ async function startApp(){
 
 
 
-  /**
-   * opens deeplinking urls in this app
-   */
-  App.addListener('appUrlOpen', function (event: URLOpenListenerEvent) {
-    const slug = event.url.split('.com').pop();
-    if (slug) {
-      go(slug)
-    }
-  });
 }
 startApp();

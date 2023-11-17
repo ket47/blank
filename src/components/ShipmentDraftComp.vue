@@ -220,9 +220,7 @@ import {
     IonGrid,
     IonSkeletonText,
     IonCard,
-    IonCardHeader,
     IonCardContent,
-    IonCardTitle,
     IonItemDivider,
     IonTextarea,
     IonInput,
@@ -285,9 +283,7 @@ export default({
         IonGrid,
         IonSkeletonText,
         IonCard,
-        IonCardHeader,
         IonCardContent,
-        IonCardTitle,
         IonItemDivider,
         IonTextarea,
         IonInput,
@@ -344,10 +340,13 @@ export default({
                 const max_distance_km=Math.round(this.orderLocal.deliveryCalculation?.max_distance/100)/10
                 return `Расстояние по карте между адресами ${this.deliveryDistanceKm}км, больше максимального в ${max_distance_km}км`
             }
+            if( !this.deliveryFeeTotal ){
+                return "Тариф доставки не установлен"
+            }
             return null
         },
         deliveryDistanceKm(){
-            return Math.round(this.orderLocal.deliveryCalculation?.deliveryDistance/100)/10
+            return Math.round(this.orderLocal.deliveryCalculation?.deliveryDistance/100)/10 || 0
         },
         deliveryFeeTotal(){
             const fee=this.orderLocal.deliveryCalculation?.fee??0

@@ -10,23 +10,23 @@
     <div v-if="found?.product_matches?.length>0">
       <h2 class="ion-padding">Результат поиска</h2>
       <div v-for="store in found.product_matches" :key="store.store_id" class="ion-padding-top">
-          <ion-item detail button @click="$go(`/search/store-${store.store_id}`)" lines="none">
+          <ion-item detail button @click="$go(`/search/store-${store.store_id}`)" lines="none" color="light">
             <ion-thumbnail slot="start">
               <ion-img style="border-radius:10px" :src="`${$heap.state.hostname}image/get.php/${store.image_hash}.150.150.webp`"/>
             </ion-thumbnail>
             <p style="font-size:1.1em">{{store?.store_name}}</p>
             <ion-note slot="helperText">{{store.store_description}}</ion-note>
           </ion-item>
-          <ion-item lines="full">
-            <store-opened-indicator :storeItem="store"/>
-            <ion-chip color="medium">
-            {{store.deliveryTime.timeMin}}-{{store.deliveryTime.timeMax}}мин
-            </ion-chip>
-            <div>
-              <ion-note v-if="store.is_foodstore">#магазин</ion-note>
-              <ion-note v-if="store.is_halal">#элял</ion-note>
-              <ion-note v-if="store.is_fastfood">#фастфуд</ion-note>
-              <ion-note v-if="store.is_restaurant">#ресторан</ion-note>
+          <ion-item lines="none">
+              <div class="horizontalScroller" style="padding:6px">
+                <store-opened-indicator :storeItem="store"/>
+                <ion-chip color="medium">
+                {{store.deliveryTime.timeMin}}-{{store.deliveryTime.timeMax}}мин
+                </ion-chip>
+                <ion-note v-if="store.is_foodstore"> #магазин</ion-note>
+                <ion-note v-if="store.is_halal"> #элял</ion-note>
+                <ion-note v-if="store.is_fastfood"> #фастфуд</ion-note>
+                <ion-note v-if="store.is_restaurant"> #ресторан</ion-note>
             </div>
           </ion-item>
           <div style="display:grid;grid-template-columns:repeat(auto-fit, 160px);padding:10px;gap:10px">
@@ -38,25 +38,30 @@
 
     </div>
     <div v-else-if="found==null">
-      <ion-title>Результат поиска</ion-title>
-
-          <ion-item detail lines="full">
-            <ion-thumbnail slot="start">
-              <ion-skeleton-text style="width:50px;height:50px" animated></ion-skeleton-text>
-            </ion-thumbnail>
-            <ion-skeleton-text style="width:300px;height:30px" animated></ion-skeleton-text>
-            <ion-note slot="helperText"><ion-skeleton-text style="width:300px"></ion-skeleton-text></ion-note>
-          </ion-item>
-
-          <ion-chip>
+      <h2 class="ion-padding">Результат поиска</h2>
+      <ion-item detail lines="full" color="light">
+        <ion-thumbnail slot="start">
+          <ion-skeleton-text style="width:50px;height:50px;border-radius:10px;margin-top:3px;" animated></ion-skeleton-text>
+        </ion-thumbnail>
+        <ion-skeleton-text style="width:300px;height:30px;border-radius:10px" animated></ion-skeleton-text>
+        <ion-note slot="helperText"><ion-skeleton-text style="width:300px"></ion-skeleton-text></ion-note>
+      </ion-item>
+      <ion-item lines="none">
+        <div class="horizontalScroller" style="padding:6px">
+          <ion-chip color="medium">
             <ion-skeleton-text style="width:100px"></ion-skeleton-text>
           </ion-chip>
-          <div style="display:grid;grid-template-columns:repeat(auto-fit, 150px)">
-            <div v-for="i in [1,2,3,4]" :key="i">                
-              <ion-skeleton-text style="width:120px;height:120px" animated></ion-skeleton-text>
-              <ion-skeleton-text style="width:120px;height:30px" animated></ion-skeleton-text>
-            </div>
-          </div>          
+          <ion-chip color="medium">
+            <ion-skeleton-text style="width:100px"></ion-skeleton-text>
+          </ion-chip>
+        </div>
+      </ion-item>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit, 160px);padding:10px;gap:10px">
+        <div v-for="i in [1,2,3,4]" :key="i">                
+          <ion-skeleton-text style="width:150px;height:150px;border-radius:10px" animated></ion-skeleton-text>
+          <ion-skeleton-text style="width:150px;height:30px;border-radius:10px" animated></ion-skeleton-text>
+        </div>
+      </div>          
 
     </div>
     <div v-else>

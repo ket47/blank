@@ -15,6 +15,7 @@ const User = {
     init(){
         //this.geo.switch();
         this.firebase.init()
+        this.courier.init()
     },
     async settingsGet(){
         const settings=await jQuery.get( heap.state.hostname + "User/itemSettingsGet")
@@ -176,6 +177,14 @@ const User = {
     courier:{
         data:null,
         status:'notcourier',
+        init(){
+            if(localStorage.courierData){
+                User.courier.data=JSON.parse(localStorage.courierData)
+            }
+        },
+        isCourier(){
+            return User.courier.data?.courier_id || 0
+        },
         async get(){
             try{
                 const data=await jQuery.post( heap.state.hostname + "Courier/itemGet")
@@ -214,6 +223,7 @@ const User = {
         },
         parseStatus(){
             User.courier.status=User.courier.data?.member_of_groups?.group_types||"notcourier";
+            localStorage.courierData=JSON.stringify(User.courier.data)
             Topic.publish('courierStatusChange',User.courier.status);
         },
         async signOut(){

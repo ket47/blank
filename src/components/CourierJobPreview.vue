@@ -10,7 +10,7 @@
 </style>
 <template>
   <ion-header>
-      <ion-toolbar color="secondary">
+      <ion-toolbar>
         <ion-title>Просмотр задания</ion-title>
         <ion-icon slot="end" @click="close();" :icon="closeOutline" size="large"></ion-icon>
       </ion-toolbar>
@@ -66,7 +66,7 @@
             </ion-avatar>
             <ion-text>
                 <ion-label color="primary">Покупатель</ion-label>
-                <ion-note>{{job.finish_location_address}}</ion-note>
+                <ion-note>{{job.finish_location?.location_address}}{{job.finish_location?.location_comment}}</ion-note>
             </ion-text>           
         </ion-item>
         <ion-item v-else>
@@ -81,7 +81,7 @@
         </ion-item>
 
         <ion-item-group v-if="job">
-            <ion-button @click="deliveryStart()" expand="full">Взять задание</ion-button>
+            <ion-button @click="deliveryStart()" expand="block">Взять задание</ion-button>
         </ion-item-group>
     </ion-list>
   </ion-content>
