@@ -230,8 +230,6 @@ export default {
             this.courierJobsInclude=User.courier.isCourier()
             if(this.courierJobsInclude==0){
                 this.orderType='active';
-            } else {
-                this.orderType='jobs';
             }
         },
         async listLoad(listType,mode='reload'){

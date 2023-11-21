@@ -138,7 +138,7 @@
                 <ion-icon :icon="rocketOutline" slot="start" color="medium"></ion-icon>
                 <div>
                     Доставка
-                    <div v-if="tariffRule.deliveryHeavyBonus" style="font-size:0.75em">(непогода, праздники или высокая загруженность)</div>
+                    <div v-if="tariffRule.deliveryHeavyCost" style="font-size:0.75em;color:#666">{{order_sum_delivery-tariffRule.deliveryHeavyCost}}+{{tariffRule.deliveryHeavyCost}} (непогода или высокая загруженность)</div>
                 </div>
                 <ion-text slot="end">{{order_sum_delivery??0}}{{$heap.state.currencySign}}</ion-text>
             </ion-item>
@@ -309,8 +309,12 @@ export default({
             if( this.tariffRule.deliveryByCourier==1 && (this.tariffRule.deliveryIsReady==0 || this.tariffRule.deliveryIsReady=='idle') ){
                 return `К сожалению, нет доступных курьеров`;
             }
-            if(this.order_sum_total<this.order.order_sum_promo*2){
-                return `Сумма к оплате со скидкой ${this.order.order_sum_promo}${this.$heap.state.currencySign} должна быть больше чем ${this.order.order_sum_promo*2}${this.$heap.state.currencySign}`
+
+
+            const promo_share=this.promo?.promo_share??0;
+            const order_sum_min=this.order_sum_total*(1-promo_share/100);
+            if(this.order_sum_total<order_sum_min){
+                return `Сумма к оплате со скидкой ${this.order.order_sum_promo}${this.$heap.state.currencySign} должна быть больше чем ${order_sum_min}${this.$heap.state.currencySign}`
             }
             if(this.order.order_sum_product*1<this.tariffRule.order_sum_minimal*1){
                 return `Сумма заказа должна быть больше чем ${this.tariffRule.order_sum_minimal}${this.$heap.state.currencySign}`;
@@ -328,7 +332,7 @@ export default({
         },
 
         order_sum_total(){
-            return this.order.order_sum_product-this.order.order_sum_promo+this.order_sum_delivery
+            return Math.round( (this.order.order_sum_product-this.order.order_sum_promo+this.order_sum_delivery)*100 ) / 100
         },
 
         deliveryByCourierRule(){
@@ -360,6 +364,12 @@ export default({
     },
     mounted(){
         this.checkoutDataGet();
+    },
+    created(){
+        this.$topic.on('userMainLocationSet',()=>{
+            this.can_load_at=0
+            this.checkoutDataGet();
+        })        
     },
     ionViewDidEnter(){
         this.checkoutDataGet();
