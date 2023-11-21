@@ -125,7 +125,7 @@ ion-accordion-group .accordion-expanding .product-description{
           <ion-label v-else color="medium">Цена за {{productItem.product_unit}}</ion-label>
 
           <ion-label slot="end" color="primary" style="font-size:1.2em">
-            <span v-if="productItem.product_price!=productItem.product_final_price" style="color:var(--ion-color-danger);font-size:0.75em">
+            <span v-if="productItem.product_price*1>productItem.product_final_price*1" style="color:var(--ion-color-danger);font-size:0.75em">
                 <s>{{product_price}}{{$heap.state.currencySign}}</s>&nbsp;&nbsp;
             </span>
             {{product_final_price}}{{$heap.state.currencySign}}

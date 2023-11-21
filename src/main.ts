@@ -199,13 +199,21 @@ async function startApp(){
 
   const sessionId = await Utils.pref.get('sessionId')
   if(sessionId){
-    console.log(sessionId)
     await User.sessionIdUse(sessionId);
   }
 
 
 
   app.mount('#app');
+  /**
+   * opens deeplinking urls in this app
+   */
+  App.addListener('appUrlOpen', function (event: URLOpenListenerEvent) {
+    const slug = event.url.split('.com').pop();
+    if (slug) {
+      go(slug)
+    }
+  });
   await User.autoSignIn();
 
 
@@ -216,14 +224,5 @@ async function startApp(){
 
 
 
-  /**
-   * opens deeplinking urls in this app
-   */
-  App.addListener('appUrlOpen', function (event: URLOpenListenerEvent) {
-    const slug = event.url.split('.com').pop();
-    if (slug) {
-      go(slug)
-    }
-  });
 }
 startApp();

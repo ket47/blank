@@ -82,7 +82,7 @@
                     <ion-item slot="header">
                         <ion-icon :icon="walletOutline" slot="start" color="medium"></ion-icon>
                         <ion-text color="medium">Итого: </ion-text>
-                        <ion-label slot="end" color="primary"><b>{{ orderData.order_sum_total }}{{$heap.state.currencySign}}</b></ion-label>
+                        <ion-label slot="end" color="primary"><b>{{ orderData.order_sum_total||orderTotal }}{{$heap.state.currencySign}}</b></ion-label>
                     </ion-item>
                     <ion-list slot="content">
                         <ion-item lines="none">

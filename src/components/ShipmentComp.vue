@@ -6,92 +6,48 @@
 <template>
     <div v-if="orderData">
         <ion-list lines="none">
-            <ion-item>
-                <ion-label>
-                    <h1>Ваш заказ</h1>
-                    <p><b>Курьер отвезет вашу посылку</b></p>
+            <ion-item lines="full">
+                <ion-label v-if="orderData.order_id>0" color="medium">
+                Вызов курьера #{{orderData.order_id}}
                 </ion-label>
-            </ion-item>
+                <ion-label v-else color="medium">
+                Корзина
+                </ion-label>
 
-            
-            <ion-item lines="none">
-                <ion-textarea 
-                    ref="description"
-                    v-model="orderLocal.order_description"
-                    rows="5"
-                    label=""
-                    placeholder="напишите, что будем везти"
-                    style="background-color:var(--ion-color-light);border-radius:10px"
-                    @ionInput="itemUpdate()"
-                    debounce="50"
-                ></ion-textarea>
+                <ion-chip color="primary" slot="end" v-if="orderData.stage_current_name">
+                    <ion-icon :icon="checkmarkOutline"></ion-icon>
+                    <ion-label color="dark">{{orderData.stage_current_name}}</ion-label>
+                </ion-chip>
             </ion-item>
-            
-            <!--
-            <ion-item v-if="order?.order_description" detail="" lines="none" @click="descriptionPick()">
+            <ion-item lines="none">
+                Доставка посылки
+            </ion-item>
+            <ion-item lines="none">
                 <ion-icon :src="cubeOutline" slot="start" size="large" color="medium" style="font-size:2em"/>
                 <ion-text color="primary">{{orderData.order_description}}</ion-text>
             </ion-item>
-            <ion-item v-else detail="" lines="none" @click="descriptionPick()">
-                <ion-icon :src="cubeOutline" slot="start" size="large" color="medium" style="font-size:2em"/>
-                <ion-text color="medium">Скажите нам, что нужно перевезти?</ion-text>
-                <ion-icon color="warning" :src="alertCircleOutline" slot="end"/>
-            </ion-item>-->
+
             <ion-item-divider>Детали перевозки</ion-item-divider>
-            <!-- <ion-item >
-                <ion-label><h1>Детали перевозки</h1></ion-label>
-            </ion-item> -->
-
-            <div style="border-radius:10px;margin:10px;overflow: hidden;" v-if="0">
-                <yandex-map 
-                    v-if="placemarkCoords" 
-                    :coords="placemarkCoords" 
-                    :zoom="16" 
-                    :settings="mapsettings"
-                    :controls="['fullscreenControl']"
-                    :behaviors="[]"
-                    style="height:200px;" 
-                >
-                    <ymap-marker :coords="placemarkCoords" :icon="placemarkIcon" marker-id="1" :properties="placemarkProperties"/>
-                </yandex-map>
-            </div>
-            <div v-if="orderLocal.locationStart">
-                <ion-item button @click="locationStartSelect()">
-                    <ion-thumbnail v-if="orderLocal.locationStart?.image_hash" slot="start" style="--size:20px">
-                        <ion-img :src="`${$heap.state.hostname}image/get.php/${orderLocal.locationStart?.image_hash}.150.150.webp`"/>
-                    </ion-thumbnail>
-                    <ion-icon v-else color="primary" :src="locationOutline" slot="start"/>
-                    <ion-text><b>Откуда:</b> <ion-note>{{orderLocal.locationStart.location_address}}</ion-note></ion-text>
-                </ion-item>
-                <ion-item>
-                    <ion-input v-model="orderLocal.locationStart.location_comment" placeholder="комментарий к адресу" label="" debounce="700" @ionInput="locationCommentUpdate(orderLocal.locationStart.location_id,orderLocal.locationStart.location_comment)"/>
-                </ion-item>
-            </div>
-            <ion-item v-else button :detail-icon="addOutline" @click="locationStartSelect()">
-                <ion-icon color="medium" :src="locationOutline" slot="start"/>
-                <ion-text color="medium">Откуда забрать?</ion-text>
-                <ion-icon color="warning" :src="alertCircleOutline" slot="end"/>
+            <ion-item>
+                <ion-thumbnail v-if="orderData.locationStart?.image_hash" slot="start" style="--size:20px">
+                    <ion-img :src="`${$heap.state.hostname}image/get.php/${orderData.locationStart?.image_hash}.150.150.webp`"/>
+                </ion-thumbnail>
+                <ion-icon v-else color="primary" :src="locationOutline" slot="start"/>
+                <ion-text><b>Откуда:</b> <ion-note>{{orderData.locationStart.location_address}}</ion-note></ion-text>
             </ion-item>
-
-
-            <div v-if="orderLocal.locationFinish">
-                <ion-item v-if="orderData.locationFinish" button @click="locationFinishSelect()">
-                    <ion-thumbnail v-if="orderData.locationFinish?.image_hash" slot="start" style="--size:20px">
-                        <ion-img :src="`${$heap.state.hostname}image/get.php/${orderData.locationFinish?.image_hash}.150.150.webp`"/>
-                    </ion-thumbnail>
-                    <ion-icon v-else color="primary" :src="flagOutline" slot="start"/>
-                    <ion-text><b>Куда:</b> <ion-note>{{orderData.locationFinish.location_address}}</ion-note></ion-text>
-                </ion-item>
-                <ion-item>
-                    <ion-input v-model="orderLocal.locationFinish.location_comment"  placeholder="комментарий к адресу" label="" debounce="700" @ionInput="locationCommentUpdate(orderLocal.locationFinish.location_id,orderLocal.locationFinish.location_comment)"/>
-                </ion-item>
-            </div>
-            <ion-item v-else button :detail-icon="addOutline" @click="locationFinishSelect()">
-                <ion-icon color="medium" :src="flagOutline" slot="start"/>
-                <ion-text color="medium">Куда отвезти?</ion-text>
-                <ion-icon color="warning" :src="alertCircleOutline" slot="end"/>
+            <ion-item>
+                <p>{{orderData.locationStart.location_comment}}</p>
             </ion-item>
-
+            <ion-item>
+                <ion-thumbnail v-if="orderData.locationFinish?.image_hash" slot="start" style="--size:20px">
+                    <ion-img :src="`${$heap.state.hostname}image/get.php/${orderData.locationFinish?.image_hash}.150.150.webp`"/>
+                </ion-thumbnail>
+                <ion-icon v-else color="primary" :src="flagOutline" slot="start"/>
+                <ion-text><b>Куда:</b> <ion-note>{{orderData.locationFinish.location_address}}</ion-note></ion-text>
+            </ion-item>
+            <ion-item>
+                <p>{{orderData.locationFinish.location_comment}}</p>
+            </ion-item>            
 
             <ion-item-divider>Итог</ion-item-divider>
             <ion-accordion-group>
@@ -99,41 +55,22 @@
                     <ion-item slot="header">
                         <ion-icon :icon="walletOutline" slot="start" color="medium"></ion-icon>
                         <ion-text color="medium">Итого: </ion-text>
-                        <ion-label slot="end" color="primary">{{ orderLocal.deliveryCalculation.sum }}{{$heap.state.currencySign}}</ion-label>
+                        <ion-label slot="end" color="primary">{{ orderData.order_sum_total }}{{$heap.state.currencySign}}</ion-label>
                     </ion-item>
                     <ion-list slot="content">
                         <ion-item lines="none">
-                            <ion-text color="medium">Вызов курьера</ion-text>
-                            <ion-label slot="end" color="primary">{{ orderLocal.deliveryCalculation.cost }}{{$heap.state.currencySign}}</ion-label>
-                        </ion-item>
-                        <ion-item lines="none">
-                            <ion-text color="medium">Расстояние по карте {{ orderLocal.deliveryCalculation.distance }}км</ion-text>
-                            <ion-label slot="end" color="primary">{{ deliveryFeeTotal }}{{$heap.state.currencySign}}</ion-label>
+                            <ion-text color="medium">Доставка</ion-text>
+                            <ion-label slot="end" color="primary">{{ orderData.order_sum_delivery }}{{$heap.state.currencySign}}</ion-label>
                         </ion-item>
                     </ion-list>
                 </ion-accordion>
             </ion-accordion-group>
-
-
-            <!--
-            <ion-item >
-                <ion-label><h1>Условия перевозки</h1></ion-label>
-            </ion-item>
-            <ion-item>
-                <ion-icon :src="helpCircleOutline" slot="start" @click="$router.push('/page/rules-customer#dimentions')"/>
-                <ion-checkbox v-model="isDimentionValid">Посылка меньше 40см и легче 10кг</ion-checkbox>
-            </ion-item>
-            <ion-item>
-                <ion-icon :src="helpCircleOutline" slot="start" @click="$router.push('/page/rules-customer#contents')"/>
-                <ion-checkbox v-model="isContentValid">Посылка без запрещенных вещей</ion-checkbox>
-            </ion-item>
-            -->
         </ion-list>
 
 
         <ion-card color="primary"  v-if="0 && orderData.order_description">
             <ion-card-header>
-                <ion-card-title>Комментарий</ion-card-title>
+                <ion-card-title>Посылка</ion-card-title>
             </ion-card-header>
             <ion-card-content>{{orderData.order_description}}</ion-card-content>
         </ion-card>
@@ -149,7 +86,7 @@
 
 
 
-        <ion-grid v-if="isReadyToCheckout">
+        <ion-grid>
             <ion-row>
                 <ion-col  v-for="(stage_title, order_stage_code) in nextStageButtons" :key="order_stage_code" >
                     <ion-button 
@@ -165,25 +102,6 @@
                 </ion-col>
             </ion-row>
         </ion-grid>
-        <ion-grid v-else>
-            <ion-row>
-                <ion-col>
-                    <ion-button v-if="!orderData.order_description" @click="$refs.description.$el.setFocus()" expand="block" color="light"> 
-                        Заполнить описание
-                    </ion-button>
-                    <ion-button v-else-if="!orderData.locationStart" @click="locationStartSelect()" expand="block" color="light"> 
-                        Откуда забрать
-                    </ion-button>
-                    <ion-button v-else-if="!orderData.locationFinish" @click="locationFinishSelect()" expand="block" color="light"> 
-                        Куда отвезти
-                    </ion-button>
-                    <ion-button v-else-if="!isContentValid || !isDimentionValid" @click="isContentValid=isDimentionValid=1" expand="block" color="light"> 
-                        Согласиться с условиями
-                    </ion-button>
-                </ion-col>
-            </ion-row>
-        </ion-grid>
-        
     </div>
     <div v-else>
         <ion-item detail button lines="none">
@@ -216,7 +134,6 @@
 
 <script>
 import {
-    modalController,
     IonIcon,
     IonText,
     IonLabel,
@@ -235,10 +152,9 @@ import {
     IonCardContent,
     IonCardTitle,
     IonItemDivider,
-    IonTextarea,
-    IonInput,
     IonAccordion,
     IonAccordionGroup,
+    IonChip,
 }                       from '@ionic/vue';
 import { 
     add,
@@ -265,23 +181,9 @@ import {
     helpCircleOutline,
 }                        from 'ionicons/icons';
 
-
-import {
-    yandexMap,
-    ymapMarker,
-    loadYmap 
-}                       from "vue-yandex-maps";
-
-
-import UserAddressesModal       from '@/components/UserAddressesModal.vue';
-
-
-import jQuery           from "jquery"
 export default({
     props:['orderData'],
     components: {
-        yandexMap,
-        ymapMarker,
         IonIcon,
         IonText,
         IonLabel,
@@ -300,10 +202,9 @@ export default({
         IonCardContent,
         IonCardTitle,
         IonItemDivider,
-        IonTextarea,
-        IonInput,
         IonAccordion,
         IonAccordionGroup,
+        IonChip,
     },
     setup() {
         return { 
@@ -331,42 +232,7 @@ export default({
             helpCircleOutline,
         };
     },
-    data(){
-        return {
-            isDimentionValid:1,
-            isContentValid:1,
-
-            orderLocal:{},
-        };
-    },
     computed:{
-        deliveryFeeTotal(){
-            return Math.round(this.orderLocal.deliveryCalculation.fee*this.orderLocal.deliveryCalculation.distance)
-        },
-        isReadyToCheckout(){
-            return this.orderData.order_description && this.orderData.locationStart && this.orderData.locationFinish && this.isContentValid && this.isDimentionValid
-        },
-        isEditable(){
-            return this.atCorrection || this.atCart
-        },
-        atCorrection(){
-            if( 
-                (this.orderData.user_role=='supplier' || this.orderData.user_role=='admin') 
-                && ['supplier_corrected'].includes(this.orderData.stage_current) 
-                ){
-                return true
-            }
-            return false;
-        },
-        atCart(){
-            if(
-                (this.orderData.user_role=='customer' || this.orderData.user_role=='admin')
-                && ['customer_cart'].includes(this.orderData.stage_current) 
-                ){
-                return true
-            }
-            return false
-        },
         nextStageButtons(){
             let buttons={};
             for(let i in this.orderData.stage_next){
@@ -396,63 +262,6 @@ export default({
             }
             this.$emit('stageCreate',order_id, order_stage_code);
         },
-        async itemUpdate(){
-            this.$emit('orderUpdate',this.orderLocal)
-        },
-        async locationSelect(){
-            const presEl=document.querySelector('ion-router-outlet');
-            const modal = await modalController.create({
-                component: UserAddressesModal,
-                canDismiss:true,
-                backdropDismiss:true,
-                keyboardClose:true,
-                presentingElement:presEl
-            });
-            modal.present()
-            const { data, role } = await modal.onWillDismiss();
-            return data
-        },
-        async locationStartSelect(){
-            this.orderLocal.locationStart=await this.locationSelect()
-            this.orderLocal.start_location_id=this.orderLocal.locationStart?.location_id
-            await this.itemTotalEstimate()
-            this.itemUpdate()
-        },
-        async locationFinishSelect(){
-            this.orderLocal.locationFinish=await this.locationSelect()
-            this.orderLocal.finish_location_id=this.orderLocal.locationFinish?.location_id
-            this.orderLocal.deliveryCalculation=await this.itemTotalEstimate(this.orderLocal.start_location_id,this.orderLocal.finish_location_id)
-            this.itemUpdate()
-        },
-        async locationCommentUpdate(location_id,location_comment){
-            const request={
-                location_id,
-                location_comment
-            }
-            try{
-                await jQuery.post(`${this.$heap.state.hostname}Location/itemUpdate`,JSON.stringify(request))
-                this.$flash("сохранено")
-            }catch{/** */}
-        },
-        async itemTotalEstimate(start_location_id,finish_location_id){
-            if(!start_location_id || !finish_location_id){
-                return
-            }
-            const request={
-                start_location_id,finish_location_id
-            }
-            try{
-                return await jQuery.post(`${this.$heap.state.hostname}Shipment/itemDeliverySumEstimate`,request)
-            } catch(err){/** */}
-        },
     },
-    created(){
-        this.orderLocal=this.orderData//for hot reload
-    },
-    watch:{
-        'orderData':function(newval){
-            this.orderLocal=newval
-        },
-    }
 })
 </script>

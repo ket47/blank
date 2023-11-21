@@ -1,23 +1,21 @@
 <template>
     <base-layout page-title="Вызов курьера">
-        <ship-comp :orderData="order" @stageCreate="onStageCreate" @orderUpdate="itemUpdate"/>
-        {{order?.order_sum_delivery}}
-        {{err}}
+        <shipment-draft-comp :orderData="order" @stageCreate="onStageCreate" @orderUpdate="itemUpdate" @locationCommentUpdate="locationCommentUpdate"/>
     </base-layout>
 </template>
 <script>
 
 import jQuery           from "jquery";
-import ShipComp          from '@/components/ShipmentComp.vue';
+import ShipmentDraftComp          from '@/components/ShipmentDraftComp.vue';
 
 export default {
     components:{
-        ShipComp,
+        ShipmentDraftComp,
     },
     data(){
         return{
             order:null,
-            err:''
+            errorCode:null
         }
     },
     methods:{
@@ -41,6 +39,7 @@ export default {
             try{
                 const storedOrder=JSON.parse(localStorage.shipmentDraft)
                 if(storedOrder){
+                    storedOrder.deliveryCalculation=await this.itemTotalEstimate(storedOrder.start_location_id,storedOrder.finish_location_id)
                     this.order=storedOrder
                     //this.itemTotalEstimate()
                     return
@@ -53,10 +52,29 @@ export default {
             localStorage.shipmentDraft=JSON.stringify(order)
         },
         async itemUpdate( orderUpdate ){
-            //orderUpdate.deliveryCalculation=await this.itemTotalEstimate()
+            console.log(orderUpdate.mode)
+            if( orderUpdate.mode=='refreshTotalEstimates' ){
+                orderUpdate.deliveryCalculation=await this.itemTotalEstimate( orderUpdate.start_location_id, orderUpdate.finish_location_id )
+            }
             this.itemSave(Object.assign({},this.order,orderUpdate))
         },
-
+        async locationCommentUpdate(locationUpdate){
+            try{
+                await jQuery.post(`${this.$heap.state.hostname}Location/itemUpdate`,JSON.stringify(locationUpdate))
+                this.$flash("сохранено")
+            }catch{/** */}
+        },
+        async itemTotalEstimate(start_location_id,finish_location_id){
+            if(!start_location_id || !finish_location_id){
+                return
+            }
+            const request={
+                start_location_id,finish_location_id
+            }
+            try{
+                return await jQuery.post(`${this.$heap.state.hostname}Shipment/itemDeliverySumEstimate`,request)
+            } catch(err){/** */}
+        },
         async onStageCreate(order_id, order_stage_code){
             if(order_stage_code=='customer_purged' || order_stage_code=='customer_deleted' ){
                 localStorage.removeItem('shipmentDraft');

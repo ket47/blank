@@ -7,5 +7,9 @@
     "PushNotifications": {
       "presentationOptions": ["badge", "sound", "alert"]
     }
+  },
+  "server": {
+    "hostname": "tezkel.com",
+    "androidScheme": "https"
   }
 }
