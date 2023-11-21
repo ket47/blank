@@ -93,7 +93,7 @@ class Catalog{
     public function category($category_id = null){
         $category_id ?? (int)func_get_arg(0);
         $CatalogModel=new \Models\CatalogModel();
-        $category=$CatalogModel->categoryItemGet($category_id);
+        $category=$CatalogModel->categoryItemGet((int) $category_id);
         if(empty($category)){
             return redirect('/');
         }

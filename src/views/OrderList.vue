@@ -161,7 +161,7 @@ export default {
         return {
             jobList:null,
             orderList:null,
-            orderType:null,
+            orderType:'active',
             courierJobsInclude:null,
             clock:null
         };
@@ -231,6 +231,11 @@ export default {
             if(this.courierJobsInclude==0){
                 this.orderType='active';
             }
+            //if(this.courierJobsInclude==0){
+            //     this.orderType='active';
+            // } else {
+            //     this.orderType='jobs';
+            // }
         },
         async listLoad(listType,mode='reload'){
             if( listType=='jobs' ){

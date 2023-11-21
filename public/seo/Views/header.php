@@ -33,7 +33,7 @@
 
 <body>
     <header>
-        <div  class="t-list-horizontal t-align-center t-justify-between t-header-content">
+        <div class="t-list-horizontal t-align-center t-justify-between t-header-content">
             <a class="t-text-large t-hidden t-visible-sm" href="javascript:history.back()">←</a>
             <div class="main-logo">
                 <a href="/">
@@ -93,4 +93,5 @@
                 </li>
             </ul>
         </div>
+        <h1><?=$title?></h1>
     </header>

@@ -159,6 +159,16 @@ class Sitemap{
         }
         fclose($out);
     }
+
+    private $googleBlackList = [
+        'stores' => [
+            99, //Farmer
+            53, //Dobry kuhar
+            82, //Elsel Flowers
+            121 //Eto vsyo cveto4ki
+        ],
+        'products' => [2235,2485,2492,2496,2667,2758,3287,4633,6697,6698,6764,7101,7123,8178]
+    ];
     public function googleFeedXml(){
         header("Content-Type:text/xml");
         $CatalogModel=new \Models\CatalogModel();
@@ -180,6 +190,9 @@ class Sitemap{
         
         
         foreach($products as $prod){
+            if(in_array($prod->product_id, $this->googleBlackList['products']) || in_array($prod->store_id, $this->googleBlackList['stores']) ){
+                continue;
+            }
             $xml->startElement('item');
             $xml->writeElement('g:id',$prod->product_id);
             $xml->writeElement('g:title',$prod->product_name);
@@ -227,7 +240,6 @@ class Sitemap{
                     $xml->writeElement('title',getenv('app.title')." ".$scope." (".(($page)*1000)."-".(($page+1)*1000).")");
                     $xml->writeElement('description',getenv('app.description'));
                     $xml->writeElement('link',getenv('app.frontendURL'));
-                    $xml->endElement();
                     $xml = $this->addTurboItemsXml($scope, $xml, $page);
                     if(!$xml){
                         return false;
@@ -247,7 +259,7 @@ class Sitemap{
         foreach($items as $item){
             $xml->startElement('item');
             $xml->writeAttribute('turbo', 'true');
-                $xml->writeElement('link', 'https://'.getenv('app.frontendURL').'/catalog/'.$scope.'-'.$item->{$scope.'_id'});
+                $xml->writeElement('link', getenv('app.frontendURL').'/catalog/'.$scope.'-'.$item->{$scope.'_id'});
                 $xml->writeElement('author', getenv('app.company'));
                 $xml->writeElement('pubDate', $item->updated_at);
                 isset($item->group_name) ?? $xml->writeElement('category', $item->group_name);

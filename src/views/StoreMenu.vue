@@ -96,7 +96,6 @@
   min-height: 80vh;
 }
 .store-menu-page .product-container{
-  margin-bottom: 2em;
   z-index: 100;
   contain: content;
   position: relative;
@@ -104,7 +103,6 @@
 .store-menu-page .product-item {
   visibility: visible;
   user-select: none;
-  background-color: white;
   padding: 10px;
   border-radius: 15px;
   margin: 15px 0;
@@ -112,25 +110,32 @@
 }
 
 .store-menu-page .product-title{
-  color: black;
+  color: white;
   font-size: 1.2em;
   font-weight: bold;
+  margin-top: 0;
+  margin-bottom: 0;
 }
 .store-menu-page .product-item .product-data{
   justify-content: center;
   display: flex;
   flex-direction: column;
   height: 100%;
-  padding: 20px 0;
+  padding: 0 0 20px;
 }
 .store-menu-page .product-item .product-description{
-  color: #666;
+  color: #ddd;
   font-size: 0.75em;
   font-weight: normal;
-  padding-top: 5px;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .store-menu-page .product-price{
   padding: 10px 10px 5px;
+  color: #fdc203;
   width: 100%;
   text-align: right;
   position: absolute;
@@ -187,18 +192,16 @@
 .store-menu-page .product_list_widget_grid {
     font-size: 0.8em;
 }
+
 .store-menu-page .product-item{
   display: grid;
-  align-items: center;
-  justify-content: center;
-  grid-template-columns: 80px 65%;
+  grid-template-columns: 100px 55%;
   grid-column-gap: 5%;
 }
 .store-menu-page .product-item .product_list_item_img{
     border-radius: 10px;
-    border: 2px solid var(--ion-color-light);
-    width: 80px;
-    height: 80px;
+    width: 100px;
+    height: 100px;
     overflow:hidden;
     align-items: center;
     justify-content: center;
@@ -221,7 +224,7 @@
   padding: 2em;
   border-top-left-radius: 15px;
   border-top-right-radius: 15px;
-  margin-top: -15px;
+  margin-top: -30px;
   position: relative;
   z-index: 205;
 }
@@ -233,7 +236,7 @@
     <ion-content  :class="'store-menu-page'" :scrollEvents="true" @ionScroll="onScroll"> 
       <ion-toolbar>
         <ion-icon  v-if="mainLogo" class="toolbar_svg_logo" style="color: white"  :icon="mainLogo"/>
-      </ion-toolbar>  
+      </ion-toolbar>
       <div style="background-color: #1380c1; padding-bottom: 15px;"> 
         <div class="store-info-container">
           <div class="store-image-slider-container">
@@ -275,6 +278,7 @@
           :slidesPerView="1.1"
           :pagination="false"
           :centeredSlides="false" 
+          ref="productListSlider"
           class="product-list-slider" @slideChange="groupSliderChanged($event)" :style="`max-height: ${sliderMaxHeight}`">
             {{storeGroups}}
             <swiper-slide v-for="parent_group_item in storeGroups" :key="parent_group_item.group_id">
@@ -297,27 +301,30 @@
                                 <ion-img :src="`${$heap.state.hostname}image/get.php/${productItem.image_hash}.200.200.webp`"/>
                             </div>
                             <div class="product-data">
-                                <div  class="product-title">
-                                    {{ productItem.product_name }} 
-                                    <span v-if="productItem.product_unit=='порция'" style="color:var(--ion-color-medium)">
-                                        ({{productItem.weight_in_gramms}}г)
-                                    </span>
-                                    <span v-else style="color:var(--ion-color-medium)">
-                                        ({{productItem.product_unit}})
-                                    </span>
-                                    <div class="product-description">{{productItem.product_description}}</div>
-                                    <div v-if="productItem.options">
-                                      <ion-chip v-for="option in productItem.options" :key="option.product_id" color="primary">
-                                        <ion-label>{{option.product_option}}</ion-label>&nbsp;<ion-label v-if="option.product_final_price>0">{{option.product_final_price}}{{$heap.state.currencySign}}</ion-label>
-                                      </ion-chip>
-                                    </div>
+                                <h4 class="product-title">{{ productItem.product_name }}</h4>
+                                <p class="product-description">{{productItem.product_description}}</p>
+                                <div v-if="productItem.options">
+                                  <ion-chip v-for="option in productItem.options" :key="option.product_id" color="primary">
+                                    <ion-label>{{option.product_option}}</ion-label>&nbsp;<ion-label v-if="option.product_final_price>0">{{option.product_final_price}}{{$heap.state.currencySign}}</ion-label>
+                                  </ion-chip>
                                 </div>
                                 <div class="product-price">
-                                  <span style="color:var(--ion-color-primary)">
+                                  <span>
                                       <b v-if="productItem.product_net_price>0" style="font-weight: bold; margin: 5px; font-size: 1.8em">{{productItem.product_net_price}}</b>
                                       <b v-else style="font-weight: bold; margin: 5px; font-size: 1.8em">{{productItem.product_final_price}}</b>
                                       <b style="font-weight: bold; margin: 0; font-size: 1.5em">{{$heap.state.currencySign}}</b>
                                   </span>
+                                  
+                                  <span v-if="productItem.product_unit=='порция'" style="color:var(--ion-color-light)">
+                                        /{{productItem.weight_in_gramms}}г
+                                    </span>
+                                    <span v-else style="color:var(--ion-color-light)">
+                                      /
+                                      <span v-if="productItem.product_unit=='порция'" >{{productItem.weight_in_gramms}}г</span>
+                                      <span v-else-if="productItem.product_unit=='порция мл'" >{{productItem.weight_in_gramms}}мл</span>
+                                      <span v-else-if="productItem.product_unit=='кг' && productItem.product_quantity_min<1" >{{productItem.unit_in_gramms}}г</span>
+                                      <span v-else>{{productItem.product_unit}}</span>
+                                    </span>
                               </div>
                             </div>
                         </div>
@@ -430,6 +437,15 @@ export default{
       can_reload_at:0
     };
   },
+  
+  computed:{
+      weight_in_gramms(){
+          return this.productItem.product_weight*1000
+      },
+      unit_in_gramms(){
+          return Math.round(this.productItem.product_quantity_min*1000)
+      },
+  },
   methods: {
     async itemGet() {
       const now=Date.now()
@@ -506,26 +522,11 @@ export default{
           product.item_class = 'absent'
         }
         product.weight_in_gramms = product.product_weight*1000
+        product.unit_in_gramms = Math.round(product.product_quantity_min*1000)
+
         this.storeProducts[product.group_id??0].push(product);
       }
     },
-    async productItemCreate(){
-      try{
-        const request={
-          store_id:this.storeId,
-          product_name:"Новый товар",
-          product_price:1000,
-          product_promo_price:1000
-        }
-        const product_id=await jQuery.post(`${heap.state.hostname}Product/itemCreate`,request)
-        this.$go(`/catalog/product-edit-${product_id}`)
-        this.$flash("Добавлен 'Новый товар' в категорию 'Другое'")
-      }catch{
-        this.$flash("Не удалось создать товар")
-      }
-    },
-
-
 
 
     async groupTreeGet(filter) {
@@ -558,7 +559,10 @@ export default{
         })
       }
     },
-    groupSelect(){
+    groupSelect(){//if there is parameter in route then scrollto category
+      if(this.groupSelectedParentId>-1){
+        return//group was set previously
+      }
       let parent_group_id=this.query.parent_group_id
       let sub_group_id=this.query.sub_group_id
       if( sub_group_id ){
@@ -572,38 +576,38 @@ export default{
         }
       }
       if( !parent_group_id ){
-        parent_group_id = Object.keys(this.storeGroups)[0]
+        parent_group_id = this.storeGroups[0]?.group_id
       }
-      
-      this.groupSelectParent(parent_group_id)
-      if(sub_group_id){
-        const self=this
-      }
+      const selectFirstChip=false;//sub_group_id?false:true
+      this.groupSelectParent(parent_group_id,selectFirstChip)
     },
     groupSelectParent(parent_group_id){
       if(this.groupSelectedParentId == parent_group_id){
         return
       }
       this.groupSelectedParentId = parent_group_id;
-      const swiper = document.querySelector('.product-list-slider').swiper;
-      const slide_index = Object.keys(this.storeGroups).indexOf(this.groupSelectedParentId);
-      swiper.slideTo(slide_index,100,false);
-      this.groupSliderAdjustHeight()
+      if(this.$refs.productListSlider==undefined){//no products prevent error
+        return
+      }
+      const swiper = this.$refs.productListSlider.$el.swiper
+      const slide_index =this.storeGroups.findIndex(group=>group.group_id==parent_group_id)
+      if(slide_index>=0){
+        swiper.slideTo(slide_index,100,false)
+        this.groupSliderAdjustHeight()
+      }
     },
     groupSliderChanged(event) {
       const slideIndex=event.activeIndex
-      const parent_groud_id = Object.keys(this.storeGroups)[slideIndex];
-      //const sub_group_id =  Object.keys(this.storeGroups[parent_groud_id].children)[0];
-      this.groupSelectParent(parent_groud_id,1);
+      const parent_groud_id = this.storeGroups[slideIndex].group_id;
+      this.groupSelectParent(parent_groud_id,1)
     },
-
     groupSliderAdjustHeight(){
-      const sliderContentHeight=document.querySelector('.product-list-slider .swiper-slide.swiper-slide-active')?.scrollHeight
-      if(sliderContentHeight>0){
-        document.querySelector('.product-list-slider.swiper').style.maxHeight=sliderContentHeight+'px'
-      } else {
-        document.querySelector('.product-list-slider.swiper').style.maxHeight=''
-      }
+        const sliderContentHeight=this.$refs.productListSlider.$el.querySelector('.swiper-slide-active')?.scrollHeight
+        if(sliderContentHeight>0){
+          this.$refs.productListSlider.$el.style.maxHeight=sliderContentHeight+'px'
+        } else {
+          this.$refs.productListSlider.$el.style.maxHeight=''
+        }
     },
 
     onScroll(event) {

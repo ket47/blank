@@ -38,6 +38,9 @@
 
 </html>
 <style>
+        header h1{
+            display: none
+        }
     .toolbar{
         position: absolute;
         width: 100%;
