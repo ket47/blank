@@ -161,15 +161,17 @@ export default({
     },
     async mounted(){
         await loadYmap();
-        let ymaps=window.ymaps
-
+        
         const lastStoredPosition=User.geo.lastStoredGet()
         if( lastStoredPosition?.location_latitude ){
             this.coords=[lastStoredPosition.location_latitude,lastStoredPosition.location_longitude]
         } else {
-            const {coords}=await User.geo.get()
-            this.coords=[coords.latitude,coords.longitude]
-            this.$flash("На карте отмечено ваше местоположение")
+            const geo=await User.geo.get()
+            if(geo){
+                const {coords}=geo
+                this.coords=[coords.latitude,coords.longitude]
+                this.$flash("На карте отмечено ваше местоположение")
+            }
         }
     }
 });
