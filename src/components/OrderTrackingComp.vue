@@ -49,8 +49,8 @@
                 style="height:200px" 
                 :class="mapclass"
             >
-                <ymap-marker v-if="finishCoords" :coords="finishCoords" :icon="finishIcon" marker-id="3" :properties="finishProperties"/>
-                <ymap-marker v-if="startCoords" :coords="startCoords" :icon="startIcon" marker-id="2" :properties="startProperties"/>
+                <ymap-marker v-if="finishCoords" :coords="finishCoords" marker-id="3" :properties="finishProperties"/>
+                <ymap-marker v-if="startCoords" :coords="startCoords" marker-id="2" :properties="startProperties"/>
                 <ymap-marker :coords="coords" :icon="placemarkIcon" marker-id="1" :properties="placemarkProperties"/>
             </yandex-map>
         </ion-list>
@@ -125,29 +125,22 @@ export default({
                 imageOffset:[-25, -50]
             },
 
-            finishProperties:{},
+            finishProperties:{
+                preset: 'islands#glyphCircleIcon', 
+                iconGlyph: 'home',
+                iconGlyphColor: 'green',
+                iconCaption:`финиш`
+            },
             finishCoords:null,
-            finishIcon:{
-                layout:'default#imageWithContent',
-                content: '',
-                contentLayout: ``,
-                contentOffset: [45, 10],
-                imageHref:``,
-                imageSize:[30, 30],
-                imageOffset:[-15, -15]
+            startProperties:{
+                preset: 'islands#glyphCircleIcon', 
+                iconGlyph: 'home',
+                iconGlyphColor: 'blue',
+                iconCaption:`старт`
             },
-            startProperties:{},
             startCoords:null,
-            startIcon:{
-                layout:'default#imageWithContent',
-                content: '',
-                contentLayout: `<div class="placemarkBaloon" style="min-width:$[properties.width];">$[properties.iconContent]</div>`,
-                contentOffset: [45, 10],
-                imageHref:``,
-                imageSize:[30, 30],
-                imageOffset:[-15, -15]
-            },
         };
+
     },
     computed:{
         courier_finish_distance_km(){
@@ -206,8 +199,12 @@ export default({
                 if(this.job?.location_latitude){
                     this.coords=[this.job.location_latitude,this.job.location_longitude]
                     if( this.orderData.stage_current=='delivery_start' ){
+                        let label=`${this.courier_finish_distance_km} (${this.courier_finish_time_min})`
+                        if(this.courier_finish_distance_km<0.1){
+                            label=`на месте`
+                        }
                         this.placemarkProperties.width=`140px`
-                        this.placemarkProperties.iconContent=`${this.courier_finish_distance_km} (${this.courier_finish_time_min})`
+                        this.placemarkProperties.iconContent=label
                     }
                     this.mapclass=''
                 }
@@ -218,16 +215,16 @@ export default({
                 if(this.job?.start_location){
                     const loc=this.job.start_location
                     this.startCoords=[loc.location_latitude,loc.location_longitude]
-                    this.startIcon.imageHref=`${this.$heap.state.hostname}/image/get.php/${loc.image_hash}.100.100.webp`
                     if(this.orderData?.store?.store_name){
-                        this.startProperties.width=`140px`
-                        this.startProperties.iconContent=`${this.courier_finish_distance_km} (${this.courier_finish_time_min})`
+                        this.startProperties.iconCaption=`${this.orderData?.store?.store_name}`
                     }
                 }
                 if(this.job?.finish_location){
                     const loc=this.job.finish_location
                     this.finishCoords=[loc.location_latitude,loc.location_longitude]
-                    this.finishIcon.imageHref=`${this.$heap.state.hostname}/image/get.php/${loc.image_hash}.100.100.webp`
+                    if(this.orderData?.customer?.user_name){
+                        this.finishProperties.iconCaption=`${this.orderData?.customer?.user_name}`
+                    }
                 }
                 clearTimeout(this.clock)
                 this.clock=setTimeout(()=>{this.jobGet()},this.refreshInterval)

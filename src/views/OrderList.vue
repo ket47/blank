@@ -46,7 +46,8 @@
                 <ion-text slot="end">{{order.date_time}}</ion-text>
             </ion-item>
             <ion-item lines="full">
-                <ion-text>
+                <b slot="start"><b style="color:var(--ion-color-primary)">{{order.distance_km}}</b> </b>
+                <ion-text style="margin-bottom:3px;">
                     <div style="padding:5px">
                         {{order.location_address}}
                         <ion-note v-if="order.location_comment">
@@ -59,11 +60,8 @@
                             {{order.finish_location_comment}}
                         </ion-note>
                     </div>
-                    <div style="padding:5px" v-if="order.order_description">
-                        Комментарий к заказу: 
-                        <ion-note>
+                    <div style="padding:10px;background-color:#f5f5f5;color:#333;border-radius:10px" v-if="order.order_description">
                             {{order.order_description}}
-                        </ion-note>
                     </div>
                 </ion-text>
             </ion-item>

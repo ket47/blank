@@ -78,7 +78,6 @@
 <script>
 import {
   IonSearchbar,
-  IonTitle,
   IonImg,
   IonThumbnail,
   IonNote,
@@ -90,7 +89,6 @@ import {
   IonSkeletonText,
   IonChip,
 }                       from '@ionic/vue'
-import jQuery           from 'jquery'
 import Utils            from '@/scripts/Utils.js'
 import ProductItem      from '@/components/ProductItem.vue'
 import StoreOpenedIndicator from '@/components/StoreOpenedIndicator.vue';
@@ -99,7 +97,6 @@ export default  {
   components:{
   StoreOpenedIndicator,
   IonSearchbar,
-  IonTitle,
   IonImg,
   IonThumbnail,
   IonNote,
