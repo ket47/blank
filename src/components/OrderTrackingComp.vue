@@ -4,9 +4,7 @@
         width: 100%;
     }
     .placemarkBaloon{
-        min-width:140px;
         border-radius: 5px;
-        border:var(--ion-color-shade) 1px solid;
         background-color: #fffd;
         padding:3px;
         color:var(--ion-color-primary);
@@ -51,6 +49,8 @@
                 style="height:200px" 
                 :class="mapclass"
             >
+                <ymap-marker v-if="finishCoords" :coords="finishCoords" marker-id="3" :properties="finishProperties"/>
+                <ymap-marker v-if="startCoords" :coords="startCoords" marker-id="2" :properties="startProperties"/>
                 <ymap-marker :coords="coords" :icon="placemarkIcon" marker-id="1" :properties="placemarkProperties"/>
             </yandex-map>
         </ion-list>
@@ -76,9 +76,8 @@ import {
     flagOutline,
     callOutline,
     }               from 'ionicons/icons';
-import Order        from '@/scripts/Order.js';
 import Utils        from '@/scripts/Utils.js';
-import User        from '@/scripts/User.js';
+import User         from '@/scripts/User.js';
 
 import { yandexMap,ymapMarker,loadYmap }         from "vue-yandex-maps";
 
@@ -112,20 +111,36 @@ export default({
             refreshInterval:1000*60,
             clock:null,
 
+            coords: null,
             mapclass:'',
             mapsettings:null,
             placemarkProperties:{},
             placemarkIcon:{
                 layout:'default#imageWithContent',
-                content: 'some content here',
-                contentLayout: '<div class="placemarkBaloon">$[properties.iconContent]</div>',
+                content: '',
+                contentLayout: '<div class="placemarkBaloon" style="min-width:$[properties.width];">$[properties.iconContent]</div>',
                 contentOffset: [45, 10],
                 imageHref:`/img/tezkel-placemark.png`,
                 imageSize:[50, 50],
                 imageOffset:[-25, -50]
             },
-            coords: null,
+
+            finishProperties:{
+                preset: 'islands#glyphCircleIcon', 
+                iconGlyph: 'home',
+                iconGlyphColor: 'green',
+                iconCaption:`финиш`
+            },
+            finishCoords:null,
+            startProperties:{
+                preset: 'islands#glyphCircleIcon', 
+                iconGlyph: 'home',
+                iconGlyphColor: 'blue',
+                iconCaption:`старт`
+            },
+            startCoords:null,
         };
+
     },
     computed:{
         courier_finish_distance_km(){
@@ -177,19 +192,39 @@ export default({
                 return
             }
             try{
-                this.job=await Order.api.itemJobTrack(this.orderData.order_id);
+                this.job=await Utils.post(`${this.$heap.state.hostname}Courier/itemJobTrack`, {order_id:this.orderData.order_id})//to use debounce
                 this.placemarkProperties.iconContent=``
+                this.placemarkProperties.width=`0px`
                 const max_location_age=3*60//3min
                 if(this.job?.location_latitude){
                     this.coords=[this.job.location_latitude,this.job.location_longitude]
                     if( this.orderData.stage_current=='delivery_start' ){
-                        this.placemarkProperties.iconContent=`${this.courier_finish_distance_km} (${this.courier_finish_time_min})`
+                        let label=`${this.courier_finish_distance_km} (${this.courier_finish_time_min})`
+                        if(this.courier_finish_distance_km<0.1){
+                            label=`на месте`
+                        }
+                        this.placemarkProperties.width=`140px`
+                        this.placemarkProperties.iconContent=label
                     }
                     this.mapclass=''
                 }
                 if(this.job?.location_age>max_location_age){
                     //this.coords=null//hide map
                     this.mapclass='disabled'
+                }
+                if(this.job?.start_location){
+                    const loc=this.job.start_location
+                    this.startCoords=[loc.location_latitude,loc.location_longitude]
+                    if(this.orderData?.store?.store_name){
+                        this.startProperties.iconCaption=`${this.orderData?.store?.store_name}`
+                    }
+                }
+                if(this.job?.finish_location){
+                    const loc=this.job.finish_location
+                    this.finishCoords=[loc.location_latitude,loc.location_longitude]
+                    if(this.orderData?.customer?.user_name){
+                        this.finishProperties.iconCaption=`${this.orderData?.customer?.user_name}`
+                    }
                 }
                 clearTimeout(this.clock)
                 this.clock=setTimeout(()=>{this.jobGet()},this.refreshInterval)

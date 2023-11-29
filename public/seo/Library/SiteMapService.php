@@ -88,7 +88,7 @@ class SiteMapService{
      *
      * @param XMLWriter $writer
      */
-    private function setWriter(XMLWriter $writer)
+    private function setWriter(\XMLWriter $writer)
     {
         $this->writer = $writer;
     }
@@ -178,7 +178,7 @@ class SiteMapService{
      */
     private function startSitemap()
     {
-        $this->setWriter(new XMLWriter());
+        $this->setWriter(new \XMLWriter());
         if ($this->getCurrentSitemap()) {
             $this->getWriter()->openURI($this->getPath() . $this->getFilename() . self::SEPERATOR . $this->getCurrentSitemap() . self::EXT);
         } else {
@@ -208,7 +208,7 @@ class SiteMapService{
     public function addItem($loc, $priority = self::DEFAULT_PRIORITY, $changefreq = NULL, $lastmod = NULL)
     {
         if (($this->getCurrentItem() % self::ITEM_PER_SITEMAP) == 0) {
-            if ($this->getWriter() instanceof XMLWriter) {
+            if ($this->getWriter() instanceof \XMLWriter) {
                 $this->endSitemap();
             }
             $this->startSitemap();
@@ -267,7 +267,7 @@ class SiteMapService{
     public function createSitemapIndex($loc, $lastmod = 'Today')
     {
         $this->endSitemap();
-        $indexwriter = new XMLWriter();
+        $indexwriter = new \XMLWriter();
         $indexwriter->openURI($this->getPath() . $this->getFilename() . self::SEPERATOR . self::INDEX_SUFFIX . self::EXT);
         $indexwriter->startDocument('1.0', 'UTF-8');
         $indexwriter->setIndent(true);

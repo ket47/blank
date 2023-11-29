@@ -25,7 +25,7 @@
                         <ion-label>Отказ клиента</ion-label>
                     </ion-item>
                     <ion-item :button="true" :detail="false" @click="action_rejected_reason('ОТКАЗ КУРЬЕРА: Заказ не готов/не соответствует')">
-                        <ion-label>Заказ не готов/не соответствует</ion-label>
+                        <ion-label>Заказ не готов</ion-label>
                     </ion-item>
                     <ion-item :button="true" :detail="false" @click="action_rejected_reason('ОТКАЗ КУРЬЕРА: Поломка в пути')">
                         <ion-label>Поломка в пути</ion-label>
@@ -217,7 +217,7 @@ export default({
                     order_objection:reason
                 }
             try{
-                const result=await jQuery.post(`${this.$heap.state.hostname}Shipment/itemUpdate`,request)
+                const result=await jQuery.post(`${this.$heap.state.hostname}Shipment/itemUpdate`,JSON.stringify(request))
                 await this.onStageCreate(this.order_id, 'delivery_rejected');
                 this.$flash("Вы отказались от доставки")
             }catch{/** */}

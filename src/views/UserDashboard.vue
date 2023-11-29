@@ -100,6 +100,9 @@ ion-icon{
               <ion-icon :icon="chatboxEllipsesOutline" slot="start" color="primary"></ion-icon>
               <ion-label>Рассылка</ion-label>
           </ion-item>
+          <ion-item @click="$go('/order/shipment-draft')" lines="full" button detail>
+              <ion-label>Вызов курьера</ion-label>
+          </ion-item>
         </ion-item-group>
       </ion-item-group>
 

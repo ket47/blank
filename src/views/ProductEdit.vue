@@ -265,6 +265,15 @@
       </ion-item>
     </ion-list>
 
+    <ion-list v-if="productItem && productItem.updated_user">
+      <ion-item-divider>
+          <ion-label></ion-label>
+      </ion-item-divider>
+      <ion-item lines="none">
+        Изменен {{productItem.updated_at}}
+        <a slot="end" :href="`tel:+${productItem.updated_user.user_phone}`">{{productItem.updated_user.user_name}}</a>
+      </ion-item>
+    </ion-list>
   </base-layout>
 </template>
 

@@ -309,12 +309,16 @@ export default({
             if( this.tariffRule.deliveryByCourier==1 && (this.tariffRule.deliveryIsReady==0 || this.tariffRule.deliveryIsReady=='idle') ){
                 return `К сожалению, нет доступных курьеров`;
             }
+            if(this.promo){
+                const promo_share=this.promo?.promo_share??0;
+                const promo_value=this.promo?.promo_value??0;
+                const order_sum_total_wo_promo=this.order_sum_total*1+promo_value*1
 
-
-            const promo_share=this.promo?.promo_share??0;
-            const order_sum_min=this.order_sum_total*(1-promo_share/100);
-            if(this.order_sum_total<order_sum_min){
-                return `Сумма к оплате со скидкой ${this.order.order_sum_promo}${this.$heap.state.currencySign} должна быть больше чем ${order_sum_min}${this.$heap.state.currencySign}`
+                console.log(promo_value/order_sum_total_wo_promo,promo_share/100)
+                if( promo_value/order_sum_total_wo_promo > promo_share/100 ){
+                    const order_sum_min=Math.round(promo_value*(100/promo_share-1))
+                    return `Сумма к оплате со скидкой ${this.order.order_sum_promo}${this.$heap.state.currencySign} должна быть больше чем ${order_sum_min}${this.$heap.state.currencySign}`
+                }
             }
             if(this.order.order_sum_product*1<this.tariffRule.order_sum_minimal*1){
                 return `Сумма заказа должна быть больше чем ${this.tariffRule.order_sum_minimal}${this.$heap.state.currencySign}`;
