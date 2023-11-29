@@ -38,9 +38,9 @@
 
 </html>
 <style>
-        header h1{
-            display: none
-        }
+    header h1{
+        display: none
+    }
     .toolbar{
         position: absolute;
         width: 100%;
@@ -121,5 +121,70 @@
         .benefits-list {
             grid-template-columns: 1fr;
         }
+    }
+    /*=========================*/
+    /*==========STORE==========*/
+    /*=========================*/
+
+    .store-item{
+        min-height: 60%;
+        width: 60%;
+        margin: 20% auto;
+        background-color: white;
+        border-radius: 10px;
+        overflow: hidden;
+        font-size: 14px;
+        display: grid;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+    }
+    .store-item .store-left{
+        
+    }
+    .store-item .store-left .image{
+        overflow: hidden;
+    }
+    .store-item .store-left .image img{
+        min-height: 150px;
+        width: auto;
+        border-radius: 10px;
+    }
+    .store-item .store-right{
+        padding: 0.5em;
+    }
+    .store-item .store-right .store-name{
+        display: inline-block;
+        padding: 7px 10px;
+        background-color: #eefcf4;
+        border-radius: 22px;
+        color: rgb(40, 186, 98);
+        min-height: 1em;
+    }
+    .store-item .store-right .name a{
+        margin: 5px 0;
+        min-height: 2.4em;
+        height: 2.4em;
+        font-size: 1em;
+        overflow: hidden;
+        line-height: 1.2em;
+        margin: 5px 0;
+        text-overflow: ellipsis;
+        font-weight: 900;
+        text-decoration: none;
+        color: #009dcd;
+    }
+    .store-item .store-right .description{
+        color: gray;
+        min-height: 2.4em;
+        height: 2.4em;
+        font-size: 1em;
+        overflow: hidden;
+        line-height: 1.2em;
+        margin: 5px 0;
+        text-overflow: ellipsis;
+    }
+    .store-item .store-right .address{
+        font-size: 12px;
     }
 </style>

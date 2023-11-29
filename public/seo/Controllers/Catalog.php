@@ -22,24 +22,28 @@ class Catalog{
             'parent_only' => true,
             'limit'=>48
         ]);
-
-        
         view('aboutUs',$context);
     }
 
     public function store($store_id = null){
         $store_id ?? (int)func_get_arg(0);
-        
+        $context = $this->storeDataGet($store_id);
+        if(!$context){
+            return redirect('/');
+        }
+        view('store',$context);
+    }
+    
+    public function storeDataGet($store_id){
         $CatalogModel=new \Models\CatalogModel();
         $store=$CatalogModel->storeItemGet($store_id);
         if(empty($store)){
-            return redirect('/');
+            return false;
         }
         $store->categories=$CatalogModel->categoryListGet([
             'store_id'=>$store_id,
             'parent_only' => true
         ]);
-
         $locations = $CatalogModel->locationGetList('store', $store->store_id);
         $store_cities = [];
         if(!empty($locations)){
@@ -61,15 +65,22 @@ class Catalog{
             'limit'=>150,
             'store_id'=>$store_id
         ]);
-        view('store',$context);
+        return $context;
     }
 
     public function product($product_id = null){
         $product_id ?? (int)func_get_arg(0);
+        $context = $this->productDataGet($product_id);
+        if(!$context){
+            return redirect('/');
+        }
+        view('product',$context);
+    }
+    public function productDataGet($product_id){
         $CatalogModel=new \Models\CatalogModel();
         $product=$CatalogModel->productItemGet($product_id);
         if(empty($product)){
-            return redirect('/');
+            return false;
         }
         $locations = $CatalogModel->locationGetList('store', $product->store_id);
         $product_cities = [];
@@ -88,14 +99,21 @@ class Catalog{
         $context['title']="{$product->product_name} из {$product->store_name} на Тезкель в {$product->cities}";
         $context['description']="{$product->product_description} из {$product->store_name} Вы можете заказать через Тезкель  в {$product->cities}.";
         $context['product']=$product;
-        view('product',$context);
+        return $context;
     }
     public function category($category_id = null){
         $category_id ?? (int)func_get_arg(0);
+        $context=$this->categoryDataGet($category_id);
+        if(empty($context)){
+            return redirect('/');
+        }
+        view('category',$context);
+    }
+    public function categoryDataGet($category_id = null){
         $CatalogModel=new \Models\CatalogModel();
         $category=$CatalogModel->categoryItemGet((int) $category_id);
         if(empty($category)){
-            return redirect('/');
+            return false;
         }
         $category_cities = [];
         $store_name = "";
@@ -128,6 +146,6 @@ class Catalog{
             'store_id'=>$store_id,
             'category_id'=>$category_id
         ]);
-        view('category',$context);
+        return $context;
     }
 }
