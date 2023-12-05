@@ -179,7 +179,9 @@ const User = {
         status:'notcourier',
         init(){
             if(localStorage.courierData){
-                User.courier.data=JSON.parse(localStorage.courierData)
+                try{
+                    User.courier.data=JSON.parse(localStorage.courierData)
+                }catch{/** */}
             }
         },
         isCourier(){

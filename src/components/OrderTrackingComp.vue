@@ -26,14 +26,14 @@
             </ion-thumbnail>
             <ion-label>Курьер <b>{{orderData?.info?.courier_name}}</b></ion-label>
         </ion-item>
-        <ion-item v-if="has_delivery_finish && !has_system_finish" slot="content" lines="none">
+        <ion-item v-if="orderData.stage_current=='delivery_finish'" slot="content" lines="none">
             <p>Заказ доставлен за <ion-chip color="medium"><b style="color:var(--ion-color-primary)">⏱️ {{delivery_time}}</b></ion-chip>.<br/>
             Вы можете отблагодарить курьера чаевыми☕, если он доставил заказ быстро и качественно.
             <a :href="`tel:${orderData?.info?.courier_phone}`">{{orderData?.info?.courier_phone}}</a>
             </p>
         </ion-item>
 
-        <ion-list v-else slot="content">
+        <ion-list v-if="!has_delivery_finish" slot="content">
             <ion-chip color="primary" v-if="orderData?.info?.courier_phone" slot="end">
                 <ion-icon :src="callOutline"/>
                 <a :href="`tel:${orderData?.info?.courier_phone}`">{{orderData?.info?.courier_phone}}</a>
@@ -177,13 +177,13 @@ export default({
             return this.has_delivery_found && !this.has_delivery_finish
         },
         has_system_finish(){
-            return this.orderData?.stages.find(stage=>stage.group_type=='system_finish')
+            return this.orderData?.stages?.find(stage=>stage.group_type=='system_finish')
         },
         has_delivery_finish(){
-            return this.orderData?.stages.find(stage=>stage.group_type=='delivery_finish')
+            return this.orderData?.stages?.find(stage=>stage.group_type=='delivery_finish')
         },
         has_delivery_found(){
-            return this.orderData?.stages.find(stage=>stage.group_type=='delivery_found')
+            return this.orderData?.stages?.find(stage=>stage.group_type=='delivery_found')
         }
     },
     methods:{
