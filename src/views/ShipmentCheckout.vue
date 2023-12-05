@@ -293,6 +293,9 @@ export default {
             if( this.termsAccepted==0 ){
                 return `К сожалению, мы не можем доставить вам заказ, без согласия с условиями`
             }
+            if( this.paymentType=='use_credit_store' && this.tariffRule.storeCreditBalance<this.tariffRule.deliverySum ){
+                return `На счету предприятия не достаточно средств`
+            }
             return null
         },
         isVPNon(){
@@ -344,7 +347,7 @@ export default {
             if(this.bankCard?.card_type){
                 this.paymentType='use_card_recurrent'
             }
-            if(tariffRule.paymentByCreditStore==1){
+            if( tariffRule.paymentByCreditStore==1 && this.tariffRule.storeCreditBalance>=this.tariffRule.deliverySum ){
                 this.paymentType='use_credit_store'
             } else
             if(tariffRule.paymentByCash==1){
@@ -400,6 +403,9 @@ export default {
                         this.$flash("Уже оплачен")
                         this.$go(`/order/shipment-${this.order.order_id}`)
                         return
+                    case 'credit_balance_low':
+                        this.$flash("Не достаточно средств на счету")
+                        return
                 }
                 this.$flash("Не удается оформить заказ, обратитесь на горячую линию")
                 //this.$router.go(-1);
@@ -431,7 +437,7 @@ export default {
                     new_stage:'customer_start'
                 }
                 await jQuery.post(`${this.$heap.state.hostname}Shipment/itemStageCreate`,request)
-                //this.$router.replace('/order/shipment-'+this.order.order_id);
+                this.$router.replace('/order/shipment-'+this.order.order_id);
             } catch(err){
                     const exception_code=err?.responseJSON?.messages?.error;
                     switch(exception_code){

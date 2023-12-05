@@ -200,7 +200,7 @@ export default({
                     this.coords=[this.job.location_latitude,this.job.location_longitude]
                     if( this.orderData.stage_current=='delivery_start' ){
                         let label=`${this.courier_finish_distance_km} (${this.courier_finish_time_min})`
-                        if(this.courier_finish_distance_km<0.1){
+                        if(this.job?.courier_finish_distance<200){
                             label=`на месте`
                         }
                         this.placemarkProperties.width=`140px`
