@@ -83,6 +83,7 @@
                     <a href="./#products">
                         <b>Товары</b>
                     </a>
+                    </a>
                 </li>
 
                 

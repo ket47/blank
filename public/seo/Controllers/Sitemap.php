@@ -265,7 +265,9 @@ class Sitemap{
                 isset($item->group_name) ?? $xml->writeElement('category', $item->group_name);
                 $xml->startElement('turbo:content');
                     ob_start();
-                    $Catalog->{$scope}($item->{$scope.'_id'});
+                    $data = $Catalog->{$scope.'DataGet'}($item->{$scope.'_id'});
+                    extract($data);
+                    include "Views/turbo/{$scope}.php";
                     $page_rendered = ob_get_clean();
                     $xml->writeCData($page_rendered);
                 $xml->endElement();
