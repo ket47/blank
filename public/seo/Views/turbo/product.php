@@ -4,7 +4,7 @@
 <div class="t-container t-pa-sm">
     <div class="t-card t-card-compact t-pa-sm" data-block="card">
         <figure  class="t-figure-md t-rounded-border">
-            <img src="<?=$image_host?>/<?=$product->image_hash?>.600.600.webp"/>
+            <img src="<?=$image_host?><?=$product->image_hash?>.600.600.webp"/>
             <figcaption><?=$product->product_name?></figcaption>
         </figure>
         <h3>

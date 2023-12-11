@@ -220,6 +220,7 @@ class Sitemap{
         $xml->endDocument();
         echo $xml->flush();
     }
+    
     public function turboRSSXml($scope = 'store', $page = 0){
         if(!isset($_GET['scope']) || !isset($_GET['page'])){
             return;
@@ -237,7 +238,7 @@ class Sitemap{
             $xml->writeAttribute('xmlns:turbo','http://turbo.yandex.ru');
             $xml->writeAttribute('version','2.0');
                 $xml->startElement('channel');
-                    $xml->writeElement('title',getenv('app.title')." ".$scope." (".(($page)*1000)."-".(($page+1)*1000).")");
+                    $xml->writeElement('title',getenv('app.title')." ".$scope." (".(($page)*300)."-".(($page+1)*300).")");
                     $xml->writeElement('description',getenv('app.description'));
                     $xml->writeElement('link',getenv('app.frontendURL'));
                     $xml = $this->addTurboItemsXml($scope, $xml, $page);
@@ -252,7 +253,7 @@ class Sitemap{
     public function addTurboItemsXml($scope, $xml, $page){
         $Catalog = new \Controllers\Catalog();
         $CatalogModel  =new \Models\CatalogModel();
-        $items = $CatalogModel->{$scope.'ListGet'}(['limit' => 1000, 'page' => $page]);  
+        $items = $CatalogModel->{$scope.'ListGet'}(['limit' => 300, 'page' => $page]);  
         if(empty($items)){
             return false;
         }

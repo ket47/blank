@@ -4,7 +4,7 @@
 <div class="t-container t-pa-sm">
     <div class="t-card t-pa-sm" data-block="card">
         <figure class="t-figure-md  t-rounded-border">
-            <img src="<?=$image_host?>/<?=$store->image_hash?>.750.750.webp"/>
+            <img src="<?=$image_host?><?=$store->image_hash?>.750.750.webp"/>
             <figcaption><?=$store->store_name?></figcaption>
         </figure>
         <h1><?=$store->store_name?></h1>
@@ -23,7 +23,7 @@
         <div class="t-card t-pa-sm t-text-center t-card-rounded"  data-block="card">
             <a href="/catalog/category-<?=$category->group_id ?>&store_id=<?=$store->store_id ?>">
                 <figure class="t-rounded-border  t-figure-sm">
-                    <img src="<?=$image_host?>/<?=$category->image_hash?>.750.750.webp"/>
+                    <img src="<?=$image_host?><?=$category->image_hash?>.750.750.webp"/>
                     <figcaption><?=$category->group_name?></figcaption>
                 </figure>
             </a>

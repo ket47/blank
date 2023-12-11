@@ -6,7 +6,7 @@
         <?php if(!empty($category->image_hash)): ?>
         <div class="t-card t-pa-sm" data-block="card">
             <figure class="t-figure-full  t-rounded-border">
-                <img src="<?=$image_host?>/<?=$category->image_hash?>.750.750.webp"/>
+                <img src="<?=$image_host?><?=$category->image_hash?>.750.750.webp"/>
                 <figcaption><?=$title?></figcaption>
             </figure>
         </div>
@@ -36,7 +36,7 @@
         <?php foreach($productList as $product): ?>
         <div class="t-card t-pa-sm"  data-block="card">
             <figure class="t-rounded-border">
-                <img src="<?=$image_host?>/<?=$product->image_hash?>.500.500.webp"/>
+                <img src="<?=$image_host?><?=$product->image_hash?>.500.500.webp"/>
                 <figcaption><?=$product->product_name?></figcaption>
             </figure>
             <h6  class="t-my-sm">

@@ -228,6 +228,21 @@
   position: relative;
   z-index: 205;
 }
+.absent{
+  filter:grayscale(1);
+}
+
+#product-modal {
+  --height: fit-content;
+}
+#product-modal::part(content) {
+  background: none;
+  box-shadow: none;
+}
+#product-modal::part(backdrop) {
+  --backdrop-opacity: 0.5;
+}
+
 </style>
 
 <template>
@@ -249,7 +264,6 @@
           <div v-else>
             <h2>{{storeItem.store_name}}</h2>
           </div>
-
           <div v-if="storeGroups" class="group-fixed-block hidden-block">
             <ion-segment v-model="groupSelectedParentId" scrollable  class="groups-container">
               <ion-segment-button
@@ -294,7 +308,7 @@
                   </ion-col>
                   <ion-col  size="12">
                     <div class="product_list_widget_grid">
-                      <div v-for="productItem in storeProducts[group_item.group_id]" :key="productItem.product_id">
+                      <div v-for="productItem in storeProducts[group_item.group_id]" :key="productItem.product_id" @click="showProductModal(productItem)">
                         <div :class="productItem.item_class + ' product-item'" :id="`product_list_item${productItem.product_id}`">
                             <div class="product_list_item_img">
                                 <img class="blur-image" :src="`${$heap.state.hostname}image/get.php/${productItem.image_hash}.200.200.webp`"/>
@@ -316,16 +330,16 @@
                                   </span>
                                   
                                   <span v-if="productItem.product_unit=='порция'" style="color:var(--ion-color-light)">
-                                        /{{productItem.weight_in_gramms}}г
-                                    </span>
-                                    <span v-else style="color:var(--ion-color-light)">
-                                      /
-                                      <span v-if="productItem.product_unit=='порция'" >{{productItem.weight_in_gramms}}г</span>
-                                      <span v-else-if="productItem.product_unit=='порция мл'" >{{productItem.weight_in_gramms}}мл</span>
-                                      <span v-else-if="productItem.product_unit=='кг' && productItem.product_quantity_min<1" >{{productItem.unit_in_gramms}}г</span>
-                                      <span v-else>{{productItem.product_unit}}</span>
-                                    </span>
-                              </div>
+                                      /{{productItem.weight_in_gramms}}г
+                                  </span>
+                                  <span v-else style="color:var(--ion-color-light)">
+                                    /
+                                    <span v-if="productItem.product_unit=='порция'" >{{productItem.weight_in_gramms}}г</span>
+                                    <span v-else-if="productItem.product_unit=='порция мл'" >{{productItem.weight_in_gramms}}мл</span>
+                                    <span v-else-if="productItem.product_unit=='кг' && productItem.product_quantity_min<1" >{{productItem.unit_in_gramms}}г</span>
+                                    <span v-else>{{productItem.product_unit}}</span>
+                                  </span>
+                            </div>
                             </div>
                         </div>
                       </div>
@@ -368,6 +382,7 @@ import {
   IonSegment,
   IonButton,
   IonChip,
+  modalController
 }                         from "@ionic/vue";
 import { 
   Autoplay
@@ -388,6 +403,7 @@ import GroupList          from "@/components/GroupList.vue";
 import jQuery             from "jquery";
 import heap               from "@/heap";
 import Utils              from "@/scripts/Utils.js";
+import ProductItemModal   from '@/components/ProductItemModal.vue'
 
 
 
@@ -518,7 +534,7 @@ export default{
         if(product.is_disabled==1){
           product.item_class = 'disabled'
         }
-        if(product.is_counted==1 && (product.product_quantity-product.product_quantity_reserved)<1){
+        if(product.is_counted==1 && !( (product.product_quantity-product.product_quantity_reserved) > 0 ) ){
           product.item_class = 'absent'
         }
         product.weight_in_gramms = product.product_weight*1000
@@ -627,6 +643,19 @@ export default{
           break;
         }
       }
+    },
+    async showProductModal(productItem){
+      const modal = await modalController.create({
+          component: ProductItemModal,
+          id: 'product-modal',
+          componentProps:{productItem},
+          handleBehavior:"cycle",
+          canDissmiss:true,
+      });
+      modal.present()
+      this.$topic.on('dismissModal',()=>modal.dismiss())
+      const target=await modal.onDidDismiss()
+      this.$emit('react',target.data)
     },
   },
   mounted(){
