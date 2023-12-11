@@ -165,13 +165,12 @@ export default({
         const lastStoredPosition=User.geo.lastStoredGet()
         if( lastStoredPosition?.location_latitude ){
             this.coords=[lastStoredPosition.location_latitude,lastStoredPosition.location_longitude]
-        } else {
-            const geo=await User.geo.get()
-            if(geo){
-                const {coords}=geo
-                this.coords=[coords.latitude,coords.longitude]
-                this.$flash("На карте отмечено ваше местоположение")
-            }
+        }
+        const geo=await User.geo.get()
+        if(geo){
+            const {coords}=geo
+            this.coords=[coords.latitude,coords.longitude]
+            this.$flash("На карте отмечено ваше местоположение")
         }
     }
 });

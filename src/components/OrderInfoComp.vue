@@ -24,6 +24,10 @@
                         <ion-icon :src="mailOutline"/>
                         <a :href="`mailto:${orderData.info.customer_email}`">{{orderData.info.customer_email}}</a>
                     </ion-chip>
+                    <ion-chip color="primary" @click="customerPushSend()">
+                        <ion-icon :src="chatboxEllipsesOutline"/>
+                        <ion-label>Написать сообщение</ion-label>
+                    </ion-chip>
                     <div v-if="orderData.info.customer_location_address">
                         <ion-icon :src="locationOutline" color="primary"/>
                         <a :href="`https://yandex.ru/maps/?pt=${orderData.info.customer_location_longitude},${orderData.info.customer_location_latitude}&z=19&l=map,trf`" target="_new">
@@ -85,8 +89,9 @@ import {
     locationOutline,
     callOutline,
     mailOutline,
+    chatboxEllipsesOutline,
 }                       from 'ionicons/icons';
-//import jQuery           from 'jquery'
+import jQuery           from 'jquery'
 
 export default({
     props:['orderData'],
@@ -106,6 +111,7 @@ export default({
             locationOutline,
             callOutline,
             mailOutline,
+            chatboxEllipsesOutline,
         };
     },
     data(){
@@ -137,6 +143,23 @@ export default({
         //         this.gotInfo=false
         //     }
         // }
+        async customerPushSend(){
+            const message=prompt('Сообщение для покупателя','Курьер прибыл')
+            if(!message){
+                return
+            }
+            const request={
+                order_id:this.orderData?.order_id,
+                reciever:'customer',
+                body:message
+            }
+            try{
+                await jQuery.post(`${this.$heap.state.hostname}Talk/orderChatSend`,request)
+                this.$flash("Сообщение отправлено")
+            }catch{
+                this.$flash("Не удалось отправить сообщение")
+            }
+        }
     },
 })
 </script>

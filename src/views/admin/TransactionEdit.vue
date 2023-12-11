@@ -110,16 +110,16 @@ const transTypes=[
         'trans_description':'Стоимость товара, отгруженного Покупателю. Заказ №{{order_id}}',
     },
     {
+        'trans_role':'supplier->site.',
+        'holder':['store'],
+        'trans_name':'Продавец Получение аванса',
+        'trans_description':'Аванс за услуги сайта',
+    },
+    {
         'trans_role':'profit->supplier',
         'holder':['order','store'],
         'trans_name':'Продавец Комиссия сайта',
         'trans_description':'Комиссия сайта за предоставленные услуги. Заказ №{{order_id}}',
-    },
-    {
-        'trans_role':'supplier->site',
-        'holder':['store'],
-        'trans_name':'Продавец Получение аванса',
-        'trans_description':'Аванс за услуги сайта',
     },
     {
         'trans_role':'supplier->profit',

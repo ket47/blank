@@ -96,7 +96,7 @@
             <ion-item-divider>Итог</ion-item-divider>
             <ion-accordion-group>
                 <ion-accordion>
-                    <ion-item slot="header">
+                    <ion-item slot="header" lines="none">
                         <ion-icon :icon="walletOutline" slot="start" color="medium"></ion-icon>
                         <ion-text color="medium">Итого: </ion-text>
                         <ion-label slot="end" color="primary">{{ orderLocal.deliveryCalculation?.sum??0 }}{{$heap.state.currencySign}}</ion-label>
