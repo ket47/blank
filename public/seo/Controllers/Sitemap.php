@@ -162,9 +162,17 @@ class Sitemap{
 
     private $googleBlackList = [
         'stores' => [
+            61, //4eburekMi
+            63, //Simfero
+            82, //Elsel Flowers
             99, //Farmer
             53, //Dobry kuhar
-            82, //Elsel Flowers
+            115,//Dobry kuhar Cankoy
+            116,//Dobry kuhar Orqapi
+            117,//Dobry kuhar Armyansk
+            113,//Gusto Dolina
+            142,//Sushi Mafia
+            146,//Sady Edema
             121 //Eto vsyo cveto4ki
         ],
         'products' => [2235,2485,2492,2496,2667,2758,3287,4633,6697,6698,6764,7101,7123,8178]

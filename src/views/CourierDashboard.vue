@@ -21,15 +21,99 @@ ion-text{
   border: 4px solid #999;
   filter: grayscale(0.5);
 }
+.courier-grid{
+  min-height: 350px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position-x: right;
+  background-position-y: bottom;
+}
 </style>
 <template>
   <base-layout page-title="Анкета курьера"  pageDefaultBackLink="/user">
-    <div v-if="!courier">
-      <ion-card color="light">
+    <div v-if="!courier" style="background: linear-gradient(to top, #009dcd, #79c8e2);">
+      <ion-grid class="courier-grid" style="background-image: url('/img/courier_tezkel.png')">
+        <ion-row class="ion-align-items-center" >
+          <ion-col size-md="6" size-xs="12" size-sm="12" class="ion-padding" style="color: var(--ion-color-primary-contrast)">
+            <h3><b>Хотите стать нашим курьером?</b></h3>
+            <h6><b>Заполняйте анкету и присоединяйтесь к нашей дружной команде!</b></h6>
+          </ion-col>
+          <ion-col size-md="6" size-xs="12" size-sm="12" style="min-height: 350px;">
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+      <ion-card color="light" style="margin: 0;">
         <ion-card-header>
-          <ion-card-title>Пока вы не курьер</ion-card-title>
+          <ion-card-title class="ion-text-center">Мы предлагаем</ion-card-title>
         </ion-card-header>
         <ion-card-content>
+          <ion-grid>
+            <ion-row>
+              <ion-col size-xs="12" size-md="4">
+                <ion-card color="primary">
+                  <ion-card-header>
+                    <ion-card-title>1. Без стажировки</ion-card-title>
+                  </ion-card-header>
+                  <ion-card-content>
+                    Никаких испытательных сроков, вы с первого дня погружаетесь в работу
+                  </ion-card-content>
+                </ion-card>
+              </ion-col>
+              <ion-col size-xs="12" size-md="4">
+                <ion-card color="primary">
+                  <ion-card-header>
+                    <ion-card-title>2. Гибкий график</ion-card-title>
+                  </ion-card-header>
+                  <ion-card-content>
+                    Можно подгонять и совмещать рабочее время так, как удобно именно Вам.
+                  </ion-card-content>
+                </ion-card>
+              </ion-col>
+              <ion-col size-xs="12" size-md="4">
+                <ion-card color="primary">
+                  <ion-card-header>
+                    <ion-card-title>3. Трудовой договор</ion-card-title>
+                  </ion-card-header>
+                  <ion-card-content>
+                    Есть возможность официально оформить трудовые отношения.
+                  </ion-card-content>
+                </ion-card>
+              </ion-col>
+            </ion-row>
+            
+            <ion-row>
+              <ion-col size-xs="12" size-md="4">
+                <ion-card color="primary">
+                  <ion-card-header>
+                    <ion-card-title>4. Автоматизация</ion-card-title>
+                  </ion-card-header>
+                  <ion-card-content>
+                    Работа автоматизирована с помощью приложения. Нет работы с наличными.
+                  </ion-card-content>
+                </ion-card>
+              </ion-col>
+              <ion-col size-xs="12" size-md="4">
+                <ion-card color="primary">
+                  <ion-card-header>
+                    <ion-card-title>5. Компенсация</ion-card-title>
+                  </ion-card-header>
+                  <ion-card-content>
+                    Мы выплачеваем компенсацию затрат на топливо, затраченное в рабочее время
+                  </ion-card-content>
+                </ion-card>
+              </ion-col>
+              <ion-col size-xs="12" size-md="4">
+                <ion-card color="primary">
+                  <ion-card-header>
+                    <ion-card-title>6. Рабочий отдых</ion-card-title>
+                  </ion-card-header>
+                  <ion-card-content>
+                    Вы можете отдохнуть в нашей комнате отдыха для персонала
+                  </ion-card-content>
+                </ion-card>
+              </ion-col>
+            </ion-row>
+          </ion-grid>
           <ion-item lines="none">
             <ion-text>
               Подавая заявку вы даете согласие на условия 
@@ -37,12 +121,12 @@ ion-text{
             </ion-text>
             <ion-checkbox slot="end" v-model="contractAccepted"/>
           </ion-item>
-        <ion-button expand="block" @click="itemCreate()" :disabled="!contractAccepted">Стать курьером</ion-button>
+        <ion-button expand="block" @click="itemCreate()" :disabled="!contractAccepted">Подать заявку</ion-button>
         </ion-card-content>
       </ion-card>
     </div>
 
-    <div v-if="courier">
+    <div  v-if="courier">
       <ion-card lines="none" v-if="message">
         <ion-card-content :class="messageClass">
           {{message}}
@@ -119,7 +203,9 @@ import {
   IonCardHeader,
   IonCardTitle,
   IonCardContent,
-
+  IonGrid,
+  IonRow,
+  IonCol,
   IonLabel,
   IonItem,
   IonButton,
@@ -150,7 +236,9 @@ export default  {
   IonCardHeader,
   IonCardTitle,
   IonCardContent,
-
+  IonGrid,
+  IonRow,
+  IonCol,
   IonLabel,
   IonItem,
   IonButton,
@@ -172,7 +260,7 @@ export default  {
   data(){
     return {
       other_courier_id:this.$route?.query?.courier_id,
-      courier:null,
+      courier: null,
       isAdmin:User.isAdmin(),
       contractAccepted:0,
       is_deleted:0,
@@ -191,19 +279,19 @@ export default  {
   },
   computed:{
     message(){
-      if(this.courier.deleted_at){
+      if(this.courier?.deleted_at){
         return "Анкета не активна и будет удалена. Вы можете еще отменить удаление";
       }
-      if(this.courier.is_disabled==1){
+      if(this.courier?.is_disabled==1){
         return "Анкета не активна и находится на рассмотрении у администратора";
       }
       return null;
     },
     messageClass(){
-      if(this.courier.deleted_at){
+      if(this.courier?.deleted_at){
         return "deleted";
       }
-      if(this.courier.is_disabled==1){
+      if(this.courier?.is_disabled==1){
         return "disabled";
       }
       return null;
