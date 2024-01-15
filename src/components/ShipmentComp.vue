@@ -6,48 +6,80 @@
 <template>
     <div v-if="orderData">
         <ion-list lines="none">
-            <ion-item lines="full">
-                <ion-label v-if="orderData.order_id>0" color="medium">
-                Вызов курьера #{{orderData.order_id}}
-                </ion-label>
-                <ion-label v-else color="medium">
-                Корзина
-                </ion-label>
-
+            <ion-item>
                 <ion-chip color="primary" slot="end" v-if="orderData.stage_current_name">
                     <ion-icon :icon="checkmarkOutline"></ion-icon>
                     <ion-label color="dark">{{orderData.stage_current_name}}</ion-label>
                 </ion-chip>
             </ion-item>
-            <ion-item lines="none">
+            <ion-item>
                 Доставка посылки
             </ion-item>
-            <ion-item lines="none">
+            <ion-item>
                 <ion-icon :src="cubeOutline" slot="start" size="large" color="medium" style="font-size:2em"/>
-                <ion-text color="primary">{{orderData.order_description}}</ion-text>
+                <ion-text color="dark"><b>{{orderData.order_description}}</b></ion-text>
             </ion-item>
 
             <ion-item-divider>Детали перевозки</ion-item-divider>
+            <ion-item>
+                <ion-icon color="medium" :src="locationOutline" slot="start"/>
+                Откуда
+                <ion-chip slot="end" color="medium" v-if="orderData?.deliveryJob?.start_plan_date" @click="timePlanInfo()">
+                    <ion-label><b>{{orderData.deliveryJob.start_plan_date}}</b></ion-label>
+                    <ion-icon :src="alertCircleOutline"/>
+                </ion-chip>
+            </ion-item>
             <ion-item>
                 <ion-thumbnail v-if="orderData.locationStart?.image_hash" slot="start" style="--size:20px">
                     <ion-img :src="`${$heap.state.hostname}image/get.php/${orderData.locationStart?.image_hash}.150.150.webp`"/>
                 </ion-thumbnail>
                 <ion-icon v-else color="primary" :src="locationOutline" slot="start"/>
-                <ion-text><b>Откуда:</b> <ion-note>{{orderData.locationStart.location_address}}</ion-note></ion-text>
+                <ion-text>
+                    <a :href="`https://yandex.ru/maps/?pt=${orderData.locationStart.location_longitude},${orderData.locationStart.location_latitude}&z=19&l=map,trf`" target="_new">
+                        {{orderData.locationStart.location_address}} 
+                    </a>
+                </ion-text>
             </ion-item>
+            <ion-item v-if="orderData.locationStart.location_comment || orderData.locationStart.location_phone>0">
+                <div>
+                    <div v-if="orderData.locationStart.location_comment" style="padding:10px;background-color:#fafafa;color:#333;border-radius:10px;display:inline-block">
+                        {{orderData.locationStart.location_comment}}
+                    </div>
+                    <ion-chip v-if="orderData.locationStart.location_phone>0" color="light">
+                        <ion-icon :src="callOutline"/><a :href="`tel:+`+orderData.locationStart.location_phone">+{{orderData.locationStart.location_phone}}</a>
+                    </ion-chip>
+                </div>
+            </ion-item>
+
             <ion-item>
-                <p>{{orderData.locationStart.location_comment}}</p>
+                <ion-icon color="medium" :src="flagOutline" slot="start"/>
+                Куда
+                <ion-chip slot="end" color="medium" v-if="orderData.finish_plan_scheduled" @click="timePlanInfo()">
+                    <ion-label><b>{{orderData.finish_plan_scheduled}}</b></ion-label>
+                    <ion-icon :src="alertCircleOutline"/>
+                </ion-chip>
             </ion-item>
             <ion-item>
                 <ion-thumbnail v-if="orderData.locationFinish?.image_hash" slot="start" style="--size:20px">
                     <ion-img :src="`${$heap.state.hostname}image/get.php/${orderData.locationFinish?.image_hash}.150.150.webp`"/>
                 </ion-thumbnail>
                 <ion-icon v-else color="primary" :src="flagOutline" slot="start"/>
-                <ion-text><b>Куда:</b> <ion-note>{{orderData.locationFinish.location_address}}</ion-note></ion-text>
+                <ion-text>
+                    <a :href="`https://yandex.ru/maps/?pt=${orderData.locationFinish.location_longitude},${orderData.locationFinish.location_latitude}&z=19&l=map,trf`" target="_new">
+                        {{orderData.locationFinish.location_address}} 
+                    </a>
+                </ion-text>
             </ion-item>
-            <ion-item>
-                <p>{{orderData.locationFinish.location_comment}}</p>
-            </ion-item>            
+            <ion-item v-if="orderData.locationFinish.location_comment || orderData.locationFinish.location_phone>0">
+                <div>
+                    <div v-if="orderData.locationFinish.location_comment" style="padding:10px;background-color:var(--ion-color-light);color:#333;border-radius:10px;display:inline-block">
+                        {{orderData.locationFinish.location_comment}}
+                    </div>
+                    <ion-chip v-if="orderData.locationFinish.location_phone>0" color="primary">
+                        <ion-icon :src="callOutline"/><a :href="`tel:+`+orderData.locationFinish.location_phone">+{{orderData.locationFinish.location_phone}}</a>
+                    </ion-chip>
+                </div>
+            </ion-item>      
 
             <ion-item-divider>Итог</ion-item-divider>
             <ion-accordion-group>
@@ -155,6 +187,7 @@ import {
     IonAccordion,
     IonAccordionGroup,
     IonChip,
+    alertController,
 }                       from '@ionic/vue';
 import { 
     add,
@@ -179,6 +212,7 @@ import {
     businessOutline,
     alertCircleOutline,
     helpCircleOutline,
+    callOutline,
 }                        from 'ionicons/icons';
 
 export default({
@@ -230,6 +264,7 @@ export default({
             businessOutline,
             alertCircleOutline,
             helpCircleOutline,
+            callOutline,
         };
     },
     computed:{
@@ -262,6 +297,25 @@ export default({
             }
             this.$emit('stageCreate',order_id, order_stage_code);
         },
+        async timePlanInfo(){
+            const alert = await alertController.create({
+                header: 'Время доставки',
+                message:'Указано приблизительное время. На него влияют длительность приготовления заказа, пробки и другие факторы.',
+                buttons: [
+                  {
+                    text: 'Ок',
+                    role: 'confirm',
+                  },
+                ],
+            });
+            await alert.present();
+            const { role } = await alert.onDidDismiss();
+            if( role=='confirm' ){
+                return true
+            }
+            return false
+        },
+
     },
 })
 </script>

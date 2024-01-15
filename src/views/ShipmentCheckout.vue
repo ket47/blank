@@ -29,51 +29,34 @@
             </ion-item>
 
 
-            <ion-card v-if="routePlan.deliveryDelay=='downtime'" color="light">
+            <ion-card v-if="routePlan.plan_mode=='scheduled'" color="light">
                 <ion-card-header>
                     <ion-card-title>
                         Запланировать заказ
                     </ion-card-title>
                 </ion-card-header>
                 <ion-card-content>
-                    <p>Доставка сегодня попадает за пределы рабочего времени курьерской службы</p>
-                </ion-card-content>
-            </ion-card>
-            <ion-card v-else-if="routePlan.deliveryDelay=='inqueue'" color="light">
-                <ion-card-header>
-                    <ion-card-title>
-                        Высокая загруженность курьеров
-                    </ion-card-title>
-                </ion-card-header>
-                <ion-card-content>
-                    <p>Исполним ваш заказ, как только освободятся курьеры</p>
+                    <p>Сегодня доставить уже не сможем</p>
                 </ion-card-content>
             </ion-card>
             <ion-item>
-                <ion-segment mode="ios" v-model="deliveryStartMode">
-                    <ion-segment-button value="atonce" :disabled="isAtonceDisabled" @click="deliveryStartScheduled=null">
+                <ion-segment mode="ios" v-model="deliveryPlanMode">
+                    <ion-segment-button v-if="isAtonceEnabled" value="inited" @click="deliveryFinishScheduled=null">
                         <ion-label>Отвезти сразу</ion-label>
                         <span>как можно скорее</span>
                     </ion-segment-button>
-                    <ion-segment-button value="schedule" @click="datetimePick()">
+                    <ion-segment-button v-else value="awaited" @click="deliveryFinishScheduled=null">
+                        <ion-label>Подождать</ion-label>
+                        <span>заказ в очереди</span>
+                    </ion-segment-button>
+                    <ion-segment-button value="scheduled" @click="datetimePick()">
                         <ion-label><b>Запланировать</b></ion-label>
-                        <span v-if="deliveryStartLocal">{{deliveryStartLocal}}</span>
+                        <span v-if="deliveryFinishLocal">{{deliveryFinishLocal}}</span>
                         <span v-else>выберите день и время</span>
                     </ion-segment-button>
                 </ion-segment>
             </ion-item>
-
-
-
-
-            
             <ion-item-divider>Способы оплаты</ion-item-divider>
-            <!-- <ion-item>
-                <ion-label><h1>Способы оплаты</h1></ion-label>
-            </ion-item> -->
-        
-
-
             <ion-radio-group v-model="paymentType">
             <ion-item button detail="false" @click="paymentType='use_credit_store'" v-if="tariffRule.paymentByCreditStore==1">
                 <ion-icon :icon="businessOutline" slot="start" color="medium"></ion-icon>
@@ -147,6 +130,12 @@
         <ion-card v-if="checkoutError" color="warning">
             <ion-card-content>{{checkoutError}}</ion-card-content>
         </ion-card>
+        <ion-card v-else-if="deliveryPlanMode=='awaited'" color="light" @click="heavyLoadInfo()">
+            <ion-card-content>
+                <p v-if="deliveryPlanMode=='awaited'">Высокая загруженность</p>
+                 Планируемое время доставки {{deliveryFinishRange}} <ion-icon :src="alertCircleOutline" color="warning"/>.
+            </ion-card-content>
+        </ion-card>
         <ion-card v-if="isVPNon && (paymentType=='use_card' || paymentType=='use_card_recurrent')" color="light">
             <ion-card-content>Возможно включен VPN. Банк часто блокирует платежи через VPN.</ion-card-content>
         </ion-card>
@@ -156,6 +145,7 @@
 </template>
 <script>
 import {
+    alertController,
     modalController,
     IonText,
     IonList,
@@ -242,9 +232,11 @@ export default {
         return {
             order_id:this.$route.params.id,
             order:null,
-            arrivalRange:null,
+            finishPlanSchedule:null,
             bankCard:null,
-            routePlan:{},
+            routePlan:{
+                start_plan_mode:'inited'
+            },
             tariffRule:{},
             tariffRuleList:[],
             errorCode:null,
@@ -255,21 +247,35 @@ export default {
             iplocation:null,
             recurrentPaymentAllow:0,
 
-            deliveryStartScheduled:null,
-            deliveryStartMode:'atonce'
+            deliveryFinishScheduled:null,
+            deliveryPlanMode:'inited'
         }
     },
     computed:{
-        deliveryStartLocal(){
-            if(!this.deliveryStartScheduled){
+        deliveryFinishLocal(){
+            if(!this.deliveryFinishScheduled){
                 return null
             }
             const options = { month: 'short', day: 'numeric', hour:'numeric', minute:'numeric' };
-            const d = new Date(Date.parse(this.deliveryStartScheduled));
+            const d = new Date(Date.parse(this.deliveryFinishScheduled));
             return d.toLocaleDateString(undefined, options);
         },
-        isAtonceDisabled(){
-            return ['downtime','inqueue'].includes(this.routePlan.deliveryDelay)
+        deliveryFinishRange(){
+            const finish_plan=this.routePlan.start_plan*1+this.routePlan.finish_arrival*1
+            if( !finish_plan ){
+                return null
+            }
+            const finish_plan_from=Math.floor(finish_plan/900)*900//round to 15 minutes
+            const finish_plan_to=finish_plan_from+900
+            const from = new Date(finish_plan_from*1000);
+            const to   = new Date(finish_plan_to*1000);
+            try{
+                return `${from.getHours()}:${String(from.getMinutes()).padStart(2, '0')}-${to.getHours()}:${String(to.getMinutes()).padStart(2, '0')}`
+            } catch{/***/}
+            return null
+        },
+        isAtonceEnabled(){
+            return ['inited'].includes(this.routePlan.start_plan_mode)
         },
         deliveryFeeTotal(){
             return Math.round(this.tariffRule.deliveryFee*this.deliveryDistanceKm) || 0
@@ -278,6 +284,9 @@ export default {
             return Math.round(this.routePlan.deliveryDistance/100)/10 || 0
         },
         checkoutError(){
+            if( this.routePlan.start_plan_mode=='nocourier' ){
+                return `К сожалению, нет доступных курьеров`;
+            }
             if( this.errorCode=='no_input' ){
                 return "Выберите адрес забора и доставки посылки"
             }
@@ -319,18 +328,24 @@ export default {
                 if( !bulkResponse ){
                     return
                 }
+                if( bulkResponse.order.stage_current!=='customer_confirmed' ){
+                    this.$go(`/order/shipment-${this.order.order_id}`)
+                }
                 this.order=bulkResponse.order
                 this.routePlan=bulkResponse.routePlan
-                this.arrivalRange=bulkResponse.arrivalRange??null
                 this.bankCard=bulkResponse?.bankCard;
                 this.tariffRuleList=bulkResponse.deliveryOptions
                 this.tariffRuleSet(this.tariffRuleList?.[0]||{})
-                //this.customerIpLocationGet()
+                this.deliveryPlanMode=this.routePlan.start_plan_mode
 
-                if( ['downtime','inqueue'].includes(this.routePlan.deliveryDelay) ){
-                    this.deliveryStartMode='schedule'
-                    this.deliveryStartScheduled=this.arrivalRange.nearest
+                if( bulkResponse.finishPlanSchedule ){
+                    this.finishPlanSchedule=bulkResponse.finishPlanSchedule
+                    this.deliveryFinishScheduled=bulkResponse.finishPlanSchedule.nearest
+                } else {
+                    this.finishPlanSchedule=null
+                    this.deliveryFinishScheduled=null
                 }
+                this.customerIpLocationGet()
             }
             catch(err){
                 this.errorCode=err?.responseJSON?.messages?.error
@@ -338,6 +353,7 @@ export default {
                     this.$flash('Заказ не найден')
                     this.$router.go(-1)
                 }
+                console.log(err)
                 return false
             }
         },
@@ -355,23 +371,24 @@ export default {
             }
         },
         async datetimePick(){
-            this.deliveryStartMode='schedule'
-            if( !this.arrivalRange ){
+            if( !this.finishPlanSchedule ){
                 await this.itemCheckoutDataGet(1)
             }
             const modal = await modalController.create({
                 component: DateRangePicker,
                 presentingElement:this.$refs.page.$el,
-                initialBreakpoint:'0.5',
+                initialBreakpoint:'0.6',
                 showBackdrop:true,
-                componentProps:{dateRange:this.arrivalRange.range,defaultDatetime:this.arrivalRange.nearest},
+                componentProps:{dateRange:this.finishPlanSchedule.range,defaultDatetime:this.finishPlanSchedule.nearest},
             });
             modal.present()
+            this.deliveryPlanMode='scheduled'
             const data=await modal.onDidDismiss()
             if(data.role=="confirm"){
-                this.deliveryStartScheduled=data.data
+                this.deliveryFinishScheduled=data.data
             } else {
-                this.deliveryStartMode='atonce'
+                this.deliveryFinishScheduled=null
+                this.deliveryPlanMode=this.routePlan.start_plan_mode
             }
         },
         async customerIpLocationGet(){
@@ -385,7 +402,7 @@ export default {
             const shipData={
                 order_id:this.order.order_id,
                 tariff_id:this.tariffRule.tariff_id,
-                deliveryStartScheduled:this.deliveryStartScheduled,
+                deliveryFinishScheduled:this.deliveryFinishScheduled,
                 paymentByCard:this.paymentType=='use_card'?1:0,
                 paymentByCardRecurrent:this.paymentType=='use_card_recurrent'?1:0,
                 paymentByCash:this.paymentType=='use_cash'?1:0,
@@ -413,9 +430,7 @@ export default {
             }
             if(shipData.paymentByCard==1){
                 this.paymentFormOpen({
-                    order_id:`${this.order_id}-s`,
-                    order_sum_total:this.tariffRule.deliverySum,
-                    user_id:this.order.owner_id
+                    order_id:`${this.order_id}`
                 });
                 return;
             }
@@ -431,24 +446,27 @@ export default {
                     return false
                 }
             }
-            try{
-                const request={
-                    order_id:this.order.order_id,
-                    new_stage:'customer_start'
-                }
-                await jQuery.post(`${this.$heap.state.hostname}Shipment/itemStageCreate`,request)
+            if(shipData.paymentByCreditStore==1){
                 this.$router.replace('/order/shipment-'+this.order.order_id);
-            } catch(err){
-                    const exception_code=err?.responseJSON?.messages?.error;
-                    switch(exception_code){
-                        case 'address_not_set':
-                            this.$flash("Необходимо добавить адрес доставки")
-                            this.$topic.publish('dismissModal')
-                            this.$go('/modal/user-addresses')
-                            break;
-                    }
-                    return false
             }
+        },
+        async heavyLoadInfo(){
+            const alert = await alertController.create({
+                //header: 'Высокая загруженность',
+                message:'Готовность заказа, пробки и другие факторы могут повлиять на планируемое время доставки',
+                buttons: [
+                  {
+                    text: 'Ок',
+                    role: 'confirm',
+                  },
+                ],
+            });
+            await alert.present();
+            const { role } = await alert.onDidDismiss();
+            if( role=='confirm' ){
+                return true
+            }
+            return false
         },
         async paymentFormOpen( order_data ) {
             const modal = await modalController.create({
@@ -458,7 +476,7 @@ export default {
                 breakpoints: [0, 0.85, 0.95]
             });
             this.$topic.on('dismissModal',()=>{
-                modal.dismiss();
+                modal && modal.dismiss();
             });
             modal.present()
             await modal.onDidDismiss()
@@ -466,7 +484,7 @@ export default {
         },
         async paymentStatusCheck(){
             const request={
-                order_id:`${this.order.order_id}-s`
+                order_id:`${this.order.order_id}`
             };
             try{
                 const result= await jQuery.post( this.$heap.state.hostname + "CardAcquirer/statusGet", request );
@@ -478,14 +496,16 @@ export default {
                 if(message=='wrong_status'){
                     this.$flash("Данный заказ не может быть оплачен");
                     this.$router.replace('/order/shipment-'+this.order.order_id);
-                }
+                } else
                 if(message=='not_authorized'){
                     this.$flash("Оплата не удалась, возможно не достаточно средств");
                     this.$router.replace('/order/shipment-'+this.order.order_id);
-                }
+                } else
                 if(message=='waiting'){
                     this.$flash("Ваш платеж на ожидании");
                     this.$router.replace('/order/shipment-'+this.order.order_id);
+                } else {
+                    this.$flash("Оплата картой не удалась");
                 }
             }
         },

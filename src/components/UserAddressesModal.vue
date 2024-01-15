@@ -91,7 +91,7 @@ export default{
   },
   mounted(){
     this.locationListGet()
-    this.$topic.on('dismissModal',()=>this.modalClose())
+    //this.$topic.on('dismissModal',()=>this.modalClose())//errors overlay...
   },
   computed:{
     mainAddress(){

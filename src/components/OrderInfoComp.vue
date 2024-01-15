@@ -12,7 +12,7 @@
     <ion-accordion-group>
         <ion-accordion v-if="orderData?.info?.customer_name">
             <ion-item slot="header">
-                <ion-label>Покупатель <b>{{orderData.info.customer_name}}</b></ion-label>
+                <ion-label>Клиент <b>{{orderData.info.customer_name}}</b></ion-label>
             </ion-item>
             <ion-item slot="content">
                 <ion-label class="ion-text-wrap">

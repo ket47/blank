@@ -179,7 +179,7 @@ export default({
             }
         },
         async action_checkout(){
-            this.$go(`/modal/orderment-checkout-${this.order_id}`);
+            this.$go(`/modal/shipment-checkout-${this.order_id}`);
         },
         async action_objection(){
             const modal = await modalController.create({

@@ -190,7 +190,7 @@
 import Order    from '@/scripts/Order.js';
 import Utils    from '@/scripts/Utils.js';
 import Topic    from '@/scripts/Topic.js';
-import router   from '@/router';
+//import router   from '@/router';
 import jQuery   from 'jquery';
 
 import ordersIcon   from "@/assets/icons/orders.svg";
@@ -579,9 +579,7 @@ export default({
             }
             if(orderData.paymentByCard==1){
                 this.paymentFormOpen({
-                    order_id:this.order.order_id,
-                    order_sum_total:this.order_sum_total,
-                    user_id:this.order.owner_id
+                    order_id:this.order.order_id
                 });
                 return;
             }

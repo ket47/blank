@@ -42,7 +42,7 @@
                 <ion-label><h1>Детали перевозки</h1></ion-label>
             </ion-item> -->
 
-            <div style="border-radius:10px;margin:10px;overflow: hidden;" v-if="0">
+            <!-- <div style="border-radius:10px;margin:10px;overflow: hidden;" v-if="0">
                 <yandex-map 
                     v-if="placemarkCoords" 
                     :coords="placemarkCoords" 
@@ -54,17 +54,33 @@
                 >
                     <ymap-marker :coords="placemarkCoords" :icon="placemarkIcon" marker-id="1" :properties="placemarkProperties"/>
                 </yandex-map>
-            </div>
+            </div> -->
             <div v-if="orderLocal.locationStart">
-                <ion-item button @click="locationStartSelect()">
+                <ion-item>
+                    <ion-icon color="medium" :src="locationOutline" slot="start"/>
+                    Отправитель
+                </ion-item>
+                <ion-item button detail @click="locationStartSelect()">
                     <ion-thumbnail v-if="orderLocal.locationStart?.image_hash" slot="start" style="--size:20px">
                         <ion-img :src="`${$heap.state.hostname}image/get.php/${orderLocal.locationStart?.image_hash}.150.150.webp`"/>
                     </ion-thumbnail>
                     <ion-icon v-else color="primary" :src="locationOutline" slot="start"/>
-                    <ion-text><b>Откуда:</b> <ion-note>{{orderLocal.locationStart.location_address}}</ion-note></ion-text>
+                    <ion-text> {{orderLocal.locationStart.location_address}}</ion-text>
                 </ion-item>
                 <ion-item>
-                    <ion-input v-model="orderLocal.locationStart.location_comment" placeholder="комментарий к адресу отправителя" label="" debounce="700" @ionInput="locationCommentUpdate('locationStart')"/>
+                    <div>
+                        <div v-if="orderLocal.locationStart.location_comment" @click="locationCommentEdit('locationStart')" style="padding:10px;background-color:var(--ion-color-light);color:#666;border-radius:10px;display:inline-block">
+                            {{orderLocal.locationStart.location_comment}}
+                        </div>
+                        <ion-chip color="medium" v-else @click="locationCommentEdit('locationStart')">
+                            <ion-icon :src="addOutline"/><ion-label>комментарий</ion-label>
+                        </ion-chip>
+
+                        <ion-chip v-if="orderLocal.locationStart.location_phone" color="medium" @click="locationPhoneEdit('locationStart')">
+                            <ion-icon :src="callOutline"/><ion-label>{{orderLocal.locationStart.location_phone}}</ion-label>
+                        </ion-chip>
+                        <ion-chip v-else color="medium" @click="locationPhoneEdit('locationStart')"><ion-icon :src="addOutline"/><ion-label>телефон</ion-label></ion-chip>
+                    </div>
                 </ion-item>
             </div>
             <ion-item v-else button :detail-icon="addOutline" @click="locationStartSelect()">
@@ -75,16 +91,33 @@
 
 
             <div v-if="orderLocal.locationFinish">
-                <ion-item v-if="orderData.locationFinish" button @click="locationFinishSelect()">
+                <ion-item>
+                    <ion-icon color="medium" :src="flagOutline" slot="start"/>
+                    Получатель
+                </ion-item>
+                <ion-item button detail @click="locationFinishSelect()">
                     <ion-thumbnail v-if="orderData.locationFinish?.image_hash" slot="start" style="--size:20px">
                         <ion-img :src="`${$heap.state.hostname}image/get.php/${orderData.locationFinish?.image_hash}.150.150.webp`"/>
                     </ion-thumbnail>
                     <ion-icon v-else color="primary" :src="flagOutline" slot="start"/>
-                    <ion-text><b>Куда:</b> <ion-note>{{orderData.locationFinish.location_address}}</ion-note></ion-text>
+                    <ion-text>{{orderData.locationFinish.location_address}}</ion-text>
                 </ion-item>
                 <ion-item>
-                    <ion-input v-model="orderLocal.locationFinish.location_comment"  placeholder="комментарий к адресу получателя" label="" debounce="700" @ionInput="locationCommentUpdate('locationFinish')"/>
+                    <div>
+                        <div v-if="orderLocal.locationFinish.location_comment" @click="locationCommentEdit('locationFinish')" style="padding:10px;background-color:var(--ion-color-light);color:#666;border-radius:10px;display:inline-block">
+                            {{orderLocal.locationFinish.location_comment}}
+                        </div>
+                        <ion-chip color="medium" v-else @click="locationCommentEdit('locationFinish')">
+                            <ion-icon :src="addOutline"/><ion-label>комментарий</ion-label>
+                        </ion-chip>
+
+                        <ion-chip v-if="orderLocal.locationFinish.location_phone" color="medium" @click="locationPhoneEdit('locationFinish')">
+                            <ion-icon :src="callOutline"/><ion-label>{{orderLocal.locationFinish.location_phone}}</ion-label>
+                        </ion-chip>
+                        <ion-chip v-else color="medium" @click="locationPhoneEdit('locationFinish')"><ion-icon :src="addOutline"/><ion-label>телефон</ion-label></ion-chip>
+                    </div>
                 </ion-item>
+
             </div>
             <ion-item v-else button :detail-icon="addOutline" @click="locationFinishSelect()">
                 <ion-icon color="medium" :src="flagOutline" slot="start"/>
@@ -226,6 +259,8 @@ import {
     IonInput,
     IonAccordion,
     IonAccordionGroup,
+    IonChip,
+    alertController,
 }                       from '@ionic/vue';
 import { 
     add,
@@ -250,25 +285,13 @@ import {
     businessOutline,
     alertCircleOutline,
     helpCircleOutline,
+    callOutline,
 }                        from 'ionicons/icons';
-
-
-import {
-    yandexMap,
-    ymapMarker,
-    loadYmap 
-}                       from "vue-yandex-maps";
-
-
 import UserAddressesModal       from '@/components/UserAddressesModal.vue';
 
-
-import jQuery           from "jquery"
 export default({
     props:['orderData'],
     components: {
-        yandexMap,
-        ymapMarker,
         IonIcon,
         IonText,
         IonLabel,
@@ -289,6 +312,7 @@ export default({
         IonInput,
         IonAccordion,
         IonAccordionGroup,
+        IonChip,
     },
     setup() {
         return { 
@@ -314,6 +338,7 @@ export default({
             businessOutline,
             alertCircleOutline,
             helpCircleOutline,
+            callOutline,
         };
     },
     data(){
@@ -327,20 +352,20 @@ export default({
     computed:{
         checkoutError(){
             const errorCode=this.orderLocal.deliveryCalculation?.error??null
-            if( errorCode=='no_input' ){
-                return "Выберите адрес забора и доставки посылки"
+            if( errorCode=='no_input' || !this.orderData.locationStart || !this.orderData.locationFinish){
+                return "Выберите адрес отправителя и получателя"
             }
             if( errorCode=='start_center_toofar' ){
-                return "Адрес получения посылки слишком удален"
+                return "Адрес отправителя посылки слишком удален"
             }
             if( errorCode=='finish_center_toofar' ){
-                return "Адрес доставки посылки слишком удален"
+                return "Адрес получателя посылки слишком удален"
             }
             if( errorCode=='start_finish_toofar' ){
                 const max_distance_km=Math.round(this.orderLocal.deliveryCalculation?.max_distance/100)/10
                 return `Расстояние по карте между адресами ${this.deliveryDistanceKm}км, больше максимального в ${max_distance_km}км`
             }
-            if( !this.deliveryFeeTotal ){
+            if( !(this.orderLocal.deliveryCalculation?.fee??0) ){
                 return "Тариф доставки не установлен"
             }
             return null
@@ -390,17 +415,19 @@ export default({
             this.$emit('orderUpdate',orderUpdate)
         },
         async locationSelect(){
-            const presEl=document.querySelector('ion-router-outlet');
-            const modal = await modalController.create({
-                component: UserAddressesModal,
-                canDismiss:true,
-                backdropDismiss:true,
-                keyboardClose:true,
-                presentingElement:presEl
-            });
-            modal.present()
-            const { data, role } = await modal.onWillDismiss();
-            return data
+            try{
+                const presEl=document.querySelector('ion-router-outlet');
+                const modal = await modalController.create({
+                    component: UserAddressesModal,
+                    canDismiss:true,
+                    backdropDismiss:true,
+                    keyboardClose:true,
+                    presentingElement:presEl
+                });
+                modal.present()
+                const { data, role } = await modal.onWillDismiss();
+                return data
+            } catch{/** */}
         },
         async locationStartSelect(){
             this.orderLocal.locationStart=await this.locationSelect()
@@ -412,14 +439,96 @@ export default({
             this.orderLocal.finish_location_id=this.orderLocal.locationFinish?.location_id
             this.itemUpdate('refreshTotalEstimates')
         },
-        async locationCommentUpdate(type){
-            const loc=this.orderLocal[type]
-            const locationUpdate={
-                location_id:loc.location_id,
-                location_comment:loc.location_comment
+        async locationPhoneEdit( type ){
+            let phone=this.orderLocal[type].location_phone??''
+            const alert = await alertController.create({
+                header: 'Напишите номер телефона',
+                buttons: [
+                    {
+                        text: 'Удалить',
+                        role: 'cancel'
+                    },
+                    {
+                        text: 'OK',
+                        role: 'confirm'
+                    },
+                ],
+                inputs: [
+                    {
+                        name:'phone',
+                        placeholder: '+7 xxxxxxxxxx',
+                        value:phone
+                    },
+                ],
+            });
+            try{
+                await alert.present();
+                const {data,role}=await alert.onDidDismiss()
+                if(role=='confirm'){
+                    phone=data.values.phone.replace(/\D/g,'').replace(/^7/,'')
+                    if(phone){
+                        if(phone.length!=10){
+                            this.$flash("Проверьте правильность телефона")
+                        }
+                        phone='+7'+phone
+                    }
+                }
+                if(role=='cancel'){
+                    phone=''
+                }
+                this.orderLocal[type].location_phone=phone
+                const loc=this.orderLocal[type]
+                const locationUpdate={
+                    location_id:loc.location_id,
+                    location_phone:phone
+                }
+                this.$emit('locationUpdate',locationUpdate)
+                this.itemUpdate()
+            } catch(err){
+                console.log(err)
             }
-            this.$emit('locationCommentUpdate',locationUpdate)
-            this.itemUpdate()
+        },
+        async locationCommentEdit( type ){
+            let comment=this.orderLocal[type].location_comment??''
+            const alert = await alertController.create({
+                header: 'Комментарий к адресу',
+                buttons: [
+                    {
+                        text: 'Удалить',
+                        role: 'cancel'
+                    },
+                    {
+                        text: 'OK',
+                        role: 'confirm'
+                    },
+                ],
+                inputs: [
+                    {
+                        type:'textarea',
+                        name:'comment',
+                        placeholder: 'напишите комментарий',
+                        value:comment
+                    },
+                ],
+            });
+            try{
+                await alert.present();
+                const {data,role}=await alert.onDidDismiss()
+                comment=data.values.comment
+                if(role=='cancel'){
+                    comment=''
+                }
+                this.orderLocal[type].location_comment=comment
+                const loc=this.orderLocal[type]
+                const locationUpdate={
+                    location_id:loc.location_id,
+                    location_comment:comment
+                }
+                this.$emit('locationUpdate',locationUpdate)
+                this.itemUpdate()
+            } catch(err){
+                console.log(err)
+            }
         },
     },
     async created(){

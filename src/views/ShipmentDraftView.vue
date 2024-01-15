@@ -1,6 +1,6 @@
 <template>
     <base-layout page-title="Вызов курьера">
-        <shipment-draft-comp :orderData="order" @stageCreate="onStageCreate" @orderUpdate="itemUpdate" @locationCommentUpdate="locationCommentUpdate"/>
+        <shipment-draft-comp :orderData="order" @stageCreate="onStageCreate" @orderUpdate="itemUpdate" @locationUpdate="locationUpdate"/>
     </base-layout>
 </template>
 <script>
@@ -58,7 +58,7 @@ export default {
             }
             this.itemSave(Object.assign({},this.order,orderUpdate))
         },
-        async locationCommentUpdate(locationUpdate){
+        async locationUpdate(locationUpdate){
             try{
                 await jQuery.post(`${this.$heap.state.hostname}Location/itemUpdate`,JSON.stringify(locationUpdate))
                 this.$flash("сохранено")
