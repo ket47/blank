@@ -241,6 +241,9 @@ const User = {
         trackingActive:false,
         clock:null,
         async switch(){
+            /**
+             * unfortunately current location is unreliable so for now disable auto detection
+             */
             const location_main=heap.state.user.location_main
             const lastStoredPosition=User.geo.lastStoredGet()
             if( location_main?.group_name && location_main.group_name!='Current' ){//user's real saved main location 
@@ -248,15 +251,15 @@ const User = {
                 Topic.publish('userMainLocationSet',location_main)
                 this.trackingStop()
             } else
-            if( lastStoredPosition ){//load last saved location
-                heap.commit('setUserCurrentLocation', lastStoredPosition)
-                Topic.publish('userCurrentLocationSet',lastStoredPosition)
-                this.trackingStart()
-            } else
+            // if( lastStoredPosition ){//load last saved location
+            //     heap.commit('setUserCurrentLocation', lastStoredPosition)
+            //     Topic.publish('userCurrentLocationSet',lastStoredPosition)
+            //     this.trackingStart()
+            // } else
             if( location_main?.group_name=='Current' ){//load app's default location
                 heap.commit('setUserCurrentLocation', location_main)
                 Topic.publish('userCurrentLocationSet',location_main)
-                this.trackingStart()
+                //this.trackingStart()
             }
         },
         async get(){
