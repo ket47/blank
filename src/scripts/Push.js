@@ -56,7 +56,10 @@ class Push{
     
     await PushNotifications.addListener('pushNotificationActionPerformed', action => {
       if(action?.notification?.data?.link){
-        this.go(action.notification.data.link)
+        const slug = action?.notification?.data?.link.split('.com').pop();
+        if (slug) {
+          this.go(slug)
+        }
       }
       this.dispatchIncoming(action?.notification)
       console.log('pushNotificationActionPerformed: '+ JSON.stringify(action));
