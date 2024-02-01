@@ -8,6 +8,10 @@ import { loadYmap }             from "vue-yandex-maps";
 
 import { initializeApp }        from "firebase/app";
 import { 
+    alertController
+  }                           from '@ionic/vue';
+import router                 from '@/router';
+import { 
     getMessaging, 
     getToken }                  from "firebase/messaging";
 
@@ -251,16 +255,60 @@ const User = {
                 Topic.publish('userMainLocationSet',location_main)
                 this.trackingStop()
             } else
-            // if( lastStoredPosition ){//load last saved location
-            //     heap.commit('setUserCurrentLocation', lastStoredPosition)
-            //     Topic.publish('userCurrentLocationSet',lastStoredPosition)
-            //     this.trackingStart()
-            // } else
+            if( lastStoredPosition ){//load last saved location
+                heap.commit('setUserCurrentLocation', lastStoredPosition)
+                Topic.publish('userCurrentLocationSet',lastStoredPosition)
+                this.trackingStart()
+            } else
             if( location_main?.group_name=='Current' ){//load app's default location
                 heap.commit('setUserCurrentLocation', location_main)
                 Topic.publish('userCurrentLocationSet',location_main)
-                //this.trackingStart()
+                this.trackingStart()
             }
+        },
+        async currentLocationConfirm( address ){
+            const alert = await alertController.create({
+                header: 'Адрес доставки',
+                message:`Правильно ли мы определили ваш адрес: "${address}"?`,
+                buttons: [
+                  {
+                    text: 'Нет',
+                    role: 'cancel',
+                  },
+                  {
+                    text: 'Да, правильно',
+                    role: 'confirm',
+                  },
+                ],
+            });
+            await alert.present();
+            const { role } = await alert.onDidDismiss();
+            if( role=='confirm' ){
+                return true
+            }
+            return false
+        },
+        async addLocationAdvise( address ){
+            const alert = await alertController.create({
+                header: 'Адрес доставки',
+                message:`Рекомендуем зарегистрироваться и установить верный адрес, чтобы видеть продавцов поблизости`,
+                buttons: [
+                  {
+                    text: 'Отмена',
+                    role: 'cancel',
+                  },
+                  {
+                    text: 'Регистрация',
+                    role: 'confirm',
+                  },
+                ],
+            });
+            await alert.present();
+            const { role } = await alert.onDidDismiss();
+            if( role=='confirm' ){
+                return true
+            }
+            return false
         },
         async get(){
             try{
@@ -271,6 +319,10 @@ const User = {
             return null
         },
         async trackingStart(){
+            if(localStorage.trackedPositionExpires>Date.now()){
+                return
+            }
+            localStorage.trackedPositionExpires=(Date.now()*1+5*60*60*1000)//5 hours
             try{
                 User.geo.trackingStop();
                 User.geo.trackingActive=true
@@ -299,9 +351,18 @@ const User = {
                         timestamp:position.timestamp
                     }
                     
-                    if(User.geo.trackingActive){
+                    if(current_address && User.geo.trackingActive){
+                        User.geo.trackingStop()
+                        const confirmed=await User.geo.currentLocationConfirm(current_address)
+                        if( !confirmed ){
+                            const want_register=await User.geo.addLocationAdvise()
+                            if( want_register ){
+                                router.push('/user/sign-up')
+                            }
+                            return 
+                        }
                         User.geo.lastStoredSet(current_location)
-                        heap.commit('setUserCurrentLocation',current_location);
+                        heap.commit('setUserCurrentLocation',current_location)
                         Topic.publish('userCurrentLocationSet',current_location)
                     }
                 });

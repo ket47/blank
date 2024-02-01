@@ -7,16 +7,21 @@
                 </ion-card-title>
             </ion-card-header>
             <ion-card-content>
-                <p>Новый пользователь, зарегистриванный по вашему приглашению, получит 5 скидок по 200руб.</p>
+                <p>Новый пользователь, зарегистриванный <u>на сайте</u> по вашему приглашению, получит 5 скидок по 200руб.</p>
                 <p>В качестве благодарности, мы начислим вам 5 скидок по 100руб.</p>
                 <ion-accordion-group>
                     <ion-accordion>
                         <ion-item slot="header" color="light">
                             <ion-text slot="end" color="medium">подробнее</ion-text>
                         </ion-item>
-                        <p slot="content" style="padding:10px">
-                            После регистрации нового клиента по вашему приглашению, мы начислим вам 5 скидок по 100руб. Эти скидки будут активироваться по мере того, как приглашённый вами друг, будет использовать свои скидки.
-                        </p>
+                        <div slot="content" style="padding:10px">
+                            <p>
+                            После регистрации, на сайте, нового клиента по вашему приглашению, мы начислим вам 5 скидок по 100руб.
+                            </p>
+                            <p>
+                                Эти скидки будут активироваться по мере того, как приглашённый вами друг, будет использовать свои скидки.
+                            </p>
+                        </div>
                     </ion-accordion>
                 </ion-accordion-group>
                 <p>
@@ -44,11 +49,11 @@
             <div v-for="promo in compPromoList" :key="promo.promo_id">
                 <ion-item lines="none">
                     <ion-icon slot="start" :icon="giftOutline" color="primary"/>
-                    <ion-text>{{promo.promo_name}}</ion-text>
+                    <ion-text>
+                        {{promo.promo_name}} 
+                        <p style="color:#999">мин. заказ {{promo.min_order_sum_product}}{{$heap.state.currencySign}}; до {{promo.expiration}}</p>
+                    </ion-text>
                     <ion-text slot="end" color="success"><b>{{promo.promo_value}}{{$heap.state.currencySign}}</b></ion-text>
-                </ion-item>
-                <ion-item>
-                    <ion-text>действительна до: {{promo.exp_date_time}}</ion-text>
                 </ion-item>
             </div>
         </ion-list>

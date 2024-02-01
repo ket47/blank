@@ -24,7 +24,7 @@
                         <ion-icon :src="mailOutline"/>
                         <a :href="`mailto:${orderData.info.customer_email}`">{{orderData.info.customer_email}}</a>
                     </ion-chip>
-                    <ion-chip color="primary" @click="customerPushSend()">
+                    <ion-chip color="primary" @click="orderPushSend('customer','Курьер прибыл')">
                         <ion-icon :src="chatboxEllipsesOutline"/>
                         <ion-label>Написать сообщение</ion-label>
                     </ion-chip>
@@ -34,9 +34,9 @@
                             {{orderData.info.customer_location_address}} 
                         </a>
                     </div>
-                    <ion-note v-if="orderData.info.customer_location_comment">
-                        Комментарий к адресу: {{orderData.info.customer_location_comment}} 
-                    </ion-note>
+                    <div v-if="orderData.info.customer_location_comment" style="padding:10px;background-color:var(--ion-color-light);color:#333;border-radius:10px;display:inline-block">
+                        {{orderData.info.customer_location_comment}}
+                    </div>
                     <ion-text v-if="orderData.info.customer_pickup">
                         Покупатель выбрал самовывоз, как способ получения заказа.
                     </ion-text>
@@ -58,15 +58,19 @@
                         <ion-icon :src="mailOutline"/>
                         <a :href="`mailto:${orderData.info.supplier_email}`">{{orderData.info.supplier_email}}</a>
                     </ion-chip>
+                    <ion-chip color="primary" @click="orderPushSend('store','Начните готовить заказ')">
+                        <ion-icon :src="chatboxEllipsesOutline"/>
+                        <ion-label>Написать сообщение</ion-label>
+                    </ion-chip>
                     <div v-if="orderData.info.supplier_location_address">
                         <ion-icon :src="locationOutline" color="primary"/>
                         <a :href="`https://yandex.ru/maps/?pt=${orderData.info.supplier_location_longitude},${orderData.info.supplier_location_latitude}&z=19&l=map,trf`" target="_new">
                             {{orderData.info.supplier_location_address}}
                         </a>
                     </div>
-                    <ion-note v-if="orderData.info.supplier_location_comment">
-                        Комментарий к адресу: {{orderData.info.supplier_location_comment}} 
-                    </ion-note>
+                    <div v-if="orderData.info.supplier_location_comment" style="padding:10px;background-color:var(--ion-color-light);color:#333;border-radius:10px;display:inline-block">
+                        {{orderData.info.supplier_location_comment}}
+                    </div>
                 </ion-label>
             </ion-item>
         </ion-accordion>
@@ -84,6 +88,7 @@ import {
     IonNote,
     IonList,
     IonText,
+    alertController,
 }                       from '@ionic/vue';
 import { 
     locationOutline,
@@ -118,46 +123,56 @@ export default({
         return {
         };
     },
-    computed:{
-        // contactInfo(){
-        //     let info=null;
-        //     if(this.orderData.customer_public_data){
-        //         info=JSON.parse(JSON.parse(this.orderData.customer_public_data));
-        //     }
-        //     return info;
-        // },
-    },
     methods:{
-        // async infoGet(){
-        //     const request={
-        //         order_id:this.orderData?.order_id
-        //     }
-        //     try{
-        //         if(this.gotInfo || !request.order_id){
-        //             return
-        //         }
-        //         this.gotInfo=true
-        //         this.info=await jQuery.post(`${this.$heap.state.hostname}Order/itemInfoGet`,request)
-        //         console.log(this.info)
-        //     }catch{
-        //         this.gotInfo=false
-        //     }
-        // }
-        async customerPushSend(){
-            const message=prompt('Сообщение для покупателя','Курьер прибыл')
-            if(!message){
+        async orderPushSend( reciever='customer', message=''){
+            const alert = await alertController.create({
+                header: 'Послать сообщение',
+                buttons: [
+                    {
+                        text: 'Отмена',
+                        role: 'cancel'
+                    },
+                    {
+                        text: 'Послать',
+                        role: 'confirm'
+                    },
+                ],
+                inputs: [
+                    {
+                        type:'textarea',
+                        name:'comment',
+                        placeholder: 'напишите сообщение',
+                        value:message
+                    },
+                ],
+            });
+            await alert.present();
+            const {data,role}=await alert.onDidDismiss()
+            if(role=='cancel'){
                 return
             }
+            message=data.values.comment
             const request={
                 order_id:this.orderData?.order_id,
-                reciever:'customer',
+                reciever:reciever,
                 body:message
             }
             try{
                 await jQuery.post(`${this.$heap.state.hostname}Talk/orderChatSend`,request)
                 this.$flash("Сообщение отправлено")
-            }catch{
-                this.$flash("Не удалось отправить сообщение")
+            }catch(err){
+                const exception_code=err?.responseJSON?.messages?.error
+                switch(exception_code){
+                    case 'notsent':
+                        this.$flash("Не удалось отправить сообщение")
+                        break;
+                    case 'unknown_reciever_type':
+                        this.$flash("Не известный вид получателя")
+                        break;
+                    case 'order_is_finished':
+                        this.$flash("Заказ уже завершен")
+                        break;
+                }
             }
         }
     },

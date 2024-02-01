@@ -62,7 +62,7 @@ export default{
     async postToIframe(){
         try{
           if(this.order_data=='card_registering'){
-            this.paymentLink=await jQuery.post(this.$heap.state.hostname+'CardAcquirer/cardRegisterLinkGet');
+            this.paymentLink=await jQuery.post(this.$heap.state.hostname+'CardAcquirer/cardRegisteredLinkGet');
             return;
           }
           this.paymentLink=await jQuery.post(this.$heap.state.hostname+'CardAcquirer/paymentLinkGet',this.order_data);

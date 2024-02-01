@@ -61,7 +61,7 @@ class Push{
           this.go(slug)
         }
       }
-      this.dispatchIncoming(action?.notification)
+      //this.dispatchIncoming(action?.notification) otherwise it shows alert twice
       console.log('pushNotificationActionPerformed: '+ JSON.stringify(action));
     });
 

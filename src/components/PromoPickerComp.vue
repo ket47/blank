@@ -29,7 +29,10 @@
 
         <ion-item v-for="promo in promoList" :key="promo.promo_id" button @click="promoPick(promo)">
             <ion-icon slot="start" :icon="giftOutline" color="primary"/>
-            <ion-text>{{promo.promo_name}}</ion-text>
+            <ion-text>
+                {{promo.promo_name}} 
+                <p style="color:#999">мин. заказ {{promo.min_order_sum_product}}{{$heap.state.currencySign}}; до {{promo.expiration}}</p>
+            </ion-text>
             <ion-text slot="end" color="success">{{promo.promo_value}}{{$heap.state.currencySign}}</ion-text>
         </ion-item>
         

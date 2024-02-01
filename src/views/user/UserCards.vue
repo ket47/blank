@@ -1,7 +1,7 @@
 <style scoped>
 .is_main{
     font-weight: bold;
-    color:var(--ion-color-primary)
+    color:var(--ion-color-primary);
 }
 .card_type{
     width:48px;
@@ -12,7 +12,7 @@
 
 
 <template>
-    <base-layout pageTitle="Мои банковские карты" pageDefaultBackLink="/user">
+    <base-layout pageTitle="Мои способы оплаты">
         <ion-list v-if="cardList==null">
             <ion-item v-for="i in [1]" :key="i">
                 <ion-icon style="background-color:var(--ion-color-light)" slot="start"></ion-icon>
@@ -21,13 +21,15 @@
             </ion-item>
         </ion-list>
         <ion-list v-else-if="cardList?.length>0">
-            <ion-item v-for="(card,i) in cardList" :key="card.order_id" button>
-                <ion-img v-if="card.card_type=='mir'" class="card_type" :src="`/img/icons/card-${card.card_type}.svg`" slot="start"/>
-                <ion-img v-else-if="card.card_type=='visa'" class="card_type" :src="`/img/icons/card-${card.card_type}.svg`" slot="start"/>
-                <ion-img v-else-if="card.card_type=='mastercard'" class="card_type" :src="`/img/icons/card-${card.card_type}.svg`" slot="start"/>
+            <ion-item v-for="(card,i) in cardList" :key="card.order_id" button @click="i!=0&&itemMainSet(card.card_id)">
+                <ion-img v-if="card.card_type" class="card_type" :src="`/img/icons/card-${card.card_type}.svg`" slot="start"/>
                 <ion-icon v-else :src="cardOutline" slot="start" color="primary"/>
-                <ion-label @click="i!=0&&itemMainSet(card.card_id)" :class="i==0?'is_main':''">{{card.card_mask}}</ion-label>
-                <ion-icon :icon="trashOutline" slot="end" @click="itemDelete(card.card_id)"></ion-icon>
+                <div v-if="i==0">
+                    <h6 class="is_main">{{card.label}}</h6>
+                    <ion-label>Основной способ</ion-label>
+                </div>
+                <ion-label v-else color="medium">{{card.label}}</ion-label>
+                <ion-icon :icon="trashOutline" slot="end" @click.stop="itemDelete(card.card_id)"></ion-icon>
             </ion-item>
         </ion-list>
         <ion-list v-else>
@@ -88,7 +90,13 @@ export default {
     methods:{
         async listGet(){
             try{
-                this.cardList=await jQuery.post(this.$heap.state.hostname+'UserCards/listGet')
+                let cards=await jQuery.post(this.$heap.state.hostname+'UserCards/listGet')
+                if(cards && cards.length>0){
+                    for(let i in cards){
+                        cards[i].label=`${cards[i].card_type.toUpperCase()} - ${cards[i].card_mask.split('*').pop()}`
+                    }
+                }
+                this.cardList=cards
             } catch{/** */}
         },
         async itemMainSet(card_id){
@@ -97,6 +105,7 @@ export default {
             };
             try{
                 await jQuery.post(`${this.$heap.state.hostname}UserCards/itemMainSet`,request)
+                this.$topic.publish('userMainPaymentMethodSet')
                 this.listGet()
             } catch{/** */}
         },
@@ -135,9 +144,9 @@ export default {
         },
         async cardRegistrationCheck(){
             try{
-                const result= await jQuery.post( this.$heap.state.hostname + "CardAcquirer/cardRegisterActivate" );
+                const result= await jQuery.post( this.$heap.state.hostname + "CardAcquirer/cardRegisteredActivate" );
                 if(result=='ok'){
-                    this.$flash("Карта успешно привязана");
+                    //this.$flash("Карта успешно привязана");
                     this.listGet()
                 }
             } catch(err){

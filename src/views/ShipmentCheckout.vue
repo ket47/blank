@@ -76,21 +76,22 @@
                 <ion-item detail="false" button @click="paymentType='use_card'">
                     <ion-icon :icon="cardOutline" slot="start" color="medium"></ion-icon>
                     <ion-radio value="use_card">
-                        Оплата картой
+                        Карта без привязки
                     </ion-radio>
                 </ion-item>
-                <ion-item v-if="bankCard?.card_type" button detail="false" @click="paymentType='use_card_recurrent'">
-                    <ion-img v-if="bankCard.card_type=='mir'" class="card_type" :src="`/img/icons/card-${bankCard.card_type}.svg`" slot="start"/>
-                    <ion-img v-else-if="bankCard.card_type=='visa'" class="card_type" :src="`/img/icons/card-${bankCard.card_type}.svg`" slot="start"/>
-                    <ion-img v-else-if="bankCard.card_type=='mastercard'" class="card_type" :src="`/img/icons/card-${bankCard.card_type}.svg`" slot="start"/>
+                <ion-item v-if="bankCardCalc?.card_type" button detail="false" @click="paymentType='use_card_recurrent'">
+                    <ion-img v-if="bankCardCalc.card_type" style="width:25px;height: auto;" :src="`/img/icons/card-${bankCardCalc.card_type}.svg`" slot="start"/>
                     <ion-icon v-else :src="cardOutline" slot="start" color="medium"/>
                     <ion-radio value="use_card_recurrent">
-                        Оплата картой
+                        Привязанная карта {{bankCardCalc.label}}
                     </ion-radio>
                 </ion-item>
-                <ion-item v-if="recurrentPaymentAllow" button detail @click="$go('/user/user-cards')">
-                    <ion-label v-if="bankCard?.card_type" color="medium">Выбрать другую карту</ion-label>
-                    <ion-label v-else color="medium">Привязать карту</ion-label>
+                <ion-item v-if="bankCardCalc?.card_type" button detail @click="$go('/user/user-cards')">
+                    <ion-label color="medium">Выбрать другую карту</ion-label>
+                </ion-item>
+                <ion-item v-else button detail @click="$go('/user/user-cards')">
+                    <ion-icon :icon="addOutline" slot="start" color="medium"></ion-icon>
+                    <ion-label>Привязать карту</ion-label>
                 </ion-item>
             </div>
             </ion-radio-group>
@@ -313,6 +314,13 @@ export default {
             }
             return true
         },
+        bankCardCalc(){
+            let card=this.bankCard;
+            if( card && card.card_type ){
+                card.label=`${card.card_type.toUpperCase()} (**** ${card.card_mask.split('*').pop()})`
+            }
+            return card;
+        }
     },
     methods:{
         async itemLoad(){
@@ -334,6 +342,8 @@ export default {
                 this.order=bulkResponse.order
                 this.routePlan=bulkResponse.routePlan
                 this.bankCard=bulkResponse?.bankCard;
+
+
                 this.tariffRuleList=bulkResponse.deliveryOptions
                 this.tariffRuleSet(this.tariffRuleList?.[0]||{})
                 this.deliveryPlanMode=this.routePlan.start_plan_mode
@@ -440,7 +450,9 @@ export default {
                     card_id:this.bankCard.card_id
                 }
                 try{
+                    this.$flash("Оплачиваем привязанной картой...")
                     await jQuery.post(`${this.$heap.state.hostname}CardAcquirer/paymentDo`,request)
+                    this.paymentStatusCheck()
                 } catch(err){
                     this.$flash("Оплата привязанной картой не удалась")
                     return false
