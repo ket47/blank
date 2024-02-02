@@ -43,6 +43,10 @@ const routes = [
         component: HomeMain
       },
       {
+        path: '/catalog/store-edit-products-:id',
+        component: () => import('@/views/StoreEditProducts.vue')
+      },
+      {
         path: '/catalog/store-edit-:id',
         component: () => import('@/views/StoreEdit.vue')
       },

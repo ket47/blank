@@ -4,38 +4,47 @@
 }
 </style>
 <template>
-    <base-layout pageDefaultBackLink="/user" page-title="Элементы">
-        <ion-segment :scrollable="true" v-model="moderationType" @ionChange="listTypeChanged($event)">
-            <ion-segment-button value="images">
-                Картинки
-            </ion-segment-button>
+    <base-layout :pageDefaultBackLink="`/catalog/store-edit-${storeId}`" page-title="Управление товарами">
+        <!-- <ion-segment :scrollable="true" v-model="moderationType" @ionChange="listTypeChanged($event)">
             <ion-segment-button value="products">
                 Товары
             </ion-segment-button>
-            <ion-segment-button value="stores">
-                Магазины
-            </ion-segment-button>
-            <ion-segment-button value="couriers">
-                Курьеры
-            </ion-segment-button>
-        </ion-segment>
+        </ion-segment> -->
         <div>
-            <ion-item>
-                <ion-select v-model="item_type" value="disabled" label="Тип элементов" label-placement="stacked" @ionChange="listReload()">
+            <!-- <ion-item>
+                <ion-select v-model="item_type" value="active" label="Тип элементов" label-placement="stacked" @ionChange="listReload()">
                     <ion-select-option value="active">активные</ion-select-option>
                     <ion-select-option value="disabled">выключенные</ion-select-option>
                     <ion-select-option value="deleted">удаленные</ion-select-option>
                 </ion-select>
-            </ion-item>
-            <ion-searchbar v-if="moderationType=='stores' || moderationType=='products' || moderationType=='couriers'" placeholder="Фильтр" v-model="filter"/>
+            </ion-item> -->
+            <ion-searchbar placeholder="Фильтр" v-model="filter"/>
             <ion-list v-if="listComputed.length>0">
-                <ion-item v-for="item in listComputed" :key="item.item_id" button detail @click="itemEdit(item)">
-                    <ion-thumbnail slot="start" :class="item.class">
-                        <ion-img :src="`${$heap.state.hostname}image/get.php/${item.image_hash}.150.150.webp`"/>
+
+
+
+                <div v-for="item in listComputed" :key="item.item_id">
+                <ion-item lines="none">
+                    <ion-thumbnail slot="start" :class="item.class" @click="itemEdit(item)">
+                        <ion-img :src="`${$heap.state.hostname}image/get.php/${item.image_hash}.150.150.webp`" style="border-radius:10px"/>
                     </ion-thumbnail>
                     <ion-text>{{item.item_name}}</ion-text>
-                    <ion-label slot="end">{{item.date_time}}</ion-label>
                 </ion-item>
+                <ion-item lines="full">
+                    <ion-chip color="medium">
+                        <ion-icon :src="calculatorOutline"/>
+                        <ion-checkbox label-placement="start" :checked="item.is_counted" @ionChange="itemUpdate(item.product_id,{is_counted:$event.target.checked})">учет</ion-checkbox>&nbsp;
+                    </ion-chip>
+                    <ion-chip v-if="item.is_counted==0" color="medium">
+                        <ion-icon :src="infiniteOutline"/>
+                    </ion-chip>
+                    <ion-chip v-else :color="item.product_quantity>0?'success':'medium'" @click="itemPrompt(item,'product_quantity','введите остаток')">
+                        {{item.product_quantity}}{{item.product_unit}}
+                    </ion-chip>
+
+                    <ion-chip color="primary" @click="itemPrompt(item,'product_price','введите цену')">{{item.product_price}}{{$heap.state.currencySign}}</ion-chip>                    
+                </ion-item>
+                </div>
             </ion-list>
             <ion-list v-else-if="is_loading==1">
                 <ion-item v-for="item in [1,2,3]" :key="item" button detail>
@@ -65,6 +74,7 @@ import {
   IonSegment,
   IonImg,
   modalController,
+  alertController,
   IonThumbnail,
   IonText,
   IonSkeletonText,
@@ -73,10 +83,16 @@ import {
   IonSearchbar,
   IonSelect,
   IonSelectOption,
+  IonChip,
+  IonCheckbox,
+  IonIcon,
  }                          from '@ionic/vue';
 import jquery               from 'jquery'
 import ImagePreviewModal    from '@/components/ImagePreviewModal'
-
+import { 
+  infiniteOutline,
+  calculatorOutline
+}                         from "ionicons/icons";
 export default {
     components: {
         IonInfiniteScroll, 
@@ -93,16 +109,23 @@ export default {
         IonCard,
         IonCardContent,
         IonSearchbar,
-  IonSelect,
-  IonSelectOption,
+        IonSelect,
+        IonSelectOption,
+        IonChip,
+        IonCheckbox,
+        IonIcon,
+    },
+    setup(){
+        return {infiniteOutline,calculatorOutline}
     },
     data(){
         return{
+            storeId: this.$route.params.id,
             items:[],
-            item_type:'disabled',
+            item_type:'active',
             filter:'',
             is_loading:0,
-            moderationType:'images',
+            moderationType:'products',
             holders:{
                 'store':'Поставщик',
                 'courier':'Курьер',
@@ -144,29 +167,17 @@ export default {
                 name_query:this.filter,
                 offset:this.items.length,
                 limit:15,
-                order:'updated_at'
+                order:'group_id'
             }
             try{
                 this.is_loading=1
                 let items
-                if(this.moderationType=='images'){
-                    items=await jquery.post(`${this.$heap.state.hostname}Image/listGet`,request)
-                } else 
                 if(this.moderationType=='products'){
                     request.name_query_fields='product_name,product_description,product_barcode,product_code'
                     request.reverse='validity'
+                    request.store_id=this.storeId
                     const products=await jquery.post(`${this.$heap.state.hostname}Product/listGet`,request)
                     items=products.product_list
-                } else
-                if(this.moderationType=='stores'){
-                    request.name_query_fields='store_name,store_description'
-                    request.reverse='validity'
-                    items=await jquery.post(`${this.$heap.state.hostname}Store/listGet`,request)
-                } else 
-                if(this.moderationType=='couriers'){
-                    request.name_query_fields='courier_vehicle,user_phone,user_name'
-                    request.order='courier_list.updated_at'
-                    items=await jquery.post(`${this.$heap.state.hostname}Courier/listGet`,request)
                 }
                 this.is_loading=0
                 this.items=this.items.concat(items)
@@ -196,6 +207,60 @@ export default {
             const options = { month: 'short', day: 'numeric',hour:'numeric',minute:'numeric' };
 
             return event.toLocaleDateString(undefined, options);
+        },
+        itemUpdate(item){
+            console.log(item)
+        },
+        async itemPrompt( item, property, label ){
+            const val=item[property]
+            const alert = await alertController.create({
+                header: label,
+                buttons: [
+                    {
+                        text: 'Отмена',
+                        role: 'cancel'
+                    },
+                    {
+                        text: 'Ок',
+                        role: 'confirm'
+                    },
+                ],
+                inputs: [
+                    {
+                        type:'input',
+                        name:'comment',
+                        placeholder: label,
+                        value:val
+                    },
+                ],
+            });
+            await alert.present();
+            const {data,role}=await alert.onDidDismiss()
+            if(role=='cancel'){
+                return
+            }
+            const request={
+                product_id:item.product_id,
+                [property]:data.values.comment
+            }
+            try{
+                await jquery.post(`${this.$heap.state.hostname}Product/itemUpdate`,request)
+                this.$flash("Сохранено")
+            }catch(err){
+                this.$flash("Не сохранено")
+                // const exception_code=err?.responseJSON?.messages?.error
+                // switch(exception_code){
+                //     case 'notsent':
+                //         this.$flash("Не удалось отправить сообщение")
+                //         break;
+                //     case 'unknown_reciever_type':
+                //         this.$flash("Не известный вид получателя")
+                //         break;
+                //     case 'order_is_finished':
+                //         this.$flash("Заказ уже завершен")
+                //         break;
+                // }
+            }
         },
         itemEdit(item){
             if( this.moderationType=='images' ){

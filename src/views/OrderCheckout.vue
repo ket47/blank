@@ -64,7 +64,7 @@
                         </ion-radio>
                     </ion-item>
                     <ion-item v-if="bankCardCalc?.card_type" button detail="false">
-                        <ion-img v-if="bankCardCalc.card_type" style="width:25px;height: auto;" :src="`/img/icons/card-${bankCardCalc.card_type}.svg`" slot="start"/>
+                        <ion-img v-if="bankCardCalc.card_type" style="width:25px;height: auto;" :src="`/img/icons/card-${bankCardCalc.card_type.toLowerCase()}.svg`" slot="start"/>
                         <ion-icon v-else :src="cardOutline" slot="start" color="medium"/>
                         <ion-radio value="use_card_recurrent">
                             Привязанная карта {{bankCardCalc.label}}
@@ -370,6 +370,10 @@ export default({
             this.can_load_at=0
             this.checkoutDataGet();
         })        
+        this.$topic.on('settingsGet',(settings)=>{
+            this.can_load_at=0
+            this.recurrentPaymentAllow=settings?.other?.recurrentPaymentAllow
+        })        
     },
     ionViewDidEnter(){
         this.checkoutDataGet();
@@ -378,7 +382,6 @@ export default({
         async itemLoad(){
             try{
                 this.order=await jQuery.post(`${this.$heap.state.hostname}Order/itemGet`,{order_id:this.order_id})
-                console.log('checkout order get')
                 if( this.order_sum_delivery==0 ){
                     this.order_sum_delivery==this.order.order_sum_delivery
                 }

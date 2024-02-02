@@ -651,7 +651,7 @@ export default{
       const request={
         store_id:this.storeId,
         is_active:1,
-        limit:200,
+        limit:500,
         grouptree_include:1
       }
       try{

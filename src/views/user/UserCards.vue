@@ -120,7 +120,7 @@ export default {
                 await jQuery.post(`${this.$heap.state.hostname}UserCards/itemDelete`,request)
                 this.listGet()
             } catch{
-                this.flash("Не удалось открепить карту")
+                this.$flash("Не удалось открепить карту")
             }
         },
         async cardRegistrationOpen() {
