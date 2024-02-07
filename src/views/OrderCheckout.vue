@@ -60,14 +60,14 @@
                     <ion-item detail="false" button>
                         <ion-icon :icon="cardOutline" slot="start" color="medium"></ion-icon>
                         <ion-radio value="use_card">
-                            Карта без привязки
+                            Банковская карта
                         </ion-radio>
                     </ion-item>
                     <ion-item v-if="bankCardCalc?.card_type" button detail="false">
-                        <ion-img v-if="bankCardCalc.card_type" style="width:25px;height: auto;" :src="`/img/icons/card-${bankCardCalc.card_type.toLowerCase()}.svg`" slot="start"/>
+                        <ion-img v-if="bankCardCalc.card_type" style="width:22px;height: auto;" :src="`/img/icons/card-${bankCardCalc.card_type.toLowerCase()}.svg`" slot="start"/>
                         <ion-icon v-else :src="cardOutline" slot="start" color="medium"/>
                         <ion-radio value="use_card_recurrent">
-                            Привязанная карта {{bankCardCalc.label}}
+                            Сохраненная карта {{bankCardCalc.label}}
                         </ion-radio>
                     </ion-item>
                     <ion-item v-if="bankCardCalc?.card_type" button detail @click="$go('/user/user-cards')">
@@ -75,7 +75,7 @@
                     </ion-item>
                     <ion-item v-else-if="recurrentPaymentAllow" button detail @click="$go('/user/user-cards')">
                         <ion-icon :icon="addOutline" slot="start" color="medium"></ion-icon>
-                        <ion-label>Привязать карту</ion-label>
+                        <ion-label color="medium">Добавить карту</ion-label>
                     </ion-item>
                 </div>
             </ion-radio-group>
@@ -654,12 +654,12 @@ export default({
             this.$router.replace('/order/order-'+this.order.order_id);
         },
         async paymentFormOpen( order_data ) {
+            const presEl=document.querySelector('ion-router-outlet');
             const self=this;
             const modal = await modalController.create({
                 component: OrderPaymentCardModal,
                 componentProps:{order_data},
-                initialBreakpoint: 0.85,
-                breakpoints: [0, 0.85, 0.95]
+                presentingElement:presEl,
                 });
             const dismissFn=function(){
                 modal.dismiss();
@@ -691,7 +691,6 @@ export default({
                 if(message=='waiting'){
                     this.$flash("Ваш платеж на ожидании");
                 }
-                this.$alert("Вы можете оплатить привязанной картой, что удобнее и надежнее.","Привязка карты");
                 this.$router.replace('/order/order-'+this.order.order_id);
             }
         },

@@ -4,14 +4,14 @@
       <ion-toolbar>
         <ion-item lines="none">
           <ion-icon :icon="cardOutline" slot="start"></ion-icon>
-          <ion-title v-if="this.order_data=='card_registering'">Привязка новой карты</ion-title>
+          <ion-title v-if="this.order_data=='card_registering'">Добавление карты</ion-title>
           <ion-title v-else>Оплата картой</ion-title>
           <ion-icon :icon="closeOutline" @click="closeModal();" slot="end" size="large"></ion-icon>
         </ion-item>
       </ion-toolbar>
   </ion-header>
   <ion-content>
-    <iframe :src="paymentLink" id="paymentFrame1" style="width: 100%; height: calc( 100% - 5px );border:none" @load="onLoad()"></iframe>
+    <iframe :src="paymentLink" id="paymentFrame1" style="width: 100%; height: calc( 100% - 20px );border:none;scrollbar-width: none;" @load="onLoad()"></iframe>
     <div v-if="loadAnimation" style="position:fixed;top:200px;left:calc( 50% - 50px )">
       <img :src="loading"/>
     </div>
@@ -28,7 +28,10 @@ import {
   IonContent,
   IonItem,
 }                           from "@ionic/vue";
-import {closeOutline,cardOutline}       from 'ionicons/icons';
+import {
+  closeOutline,
+  cardOutline
+  }                         from 'ionicons/icons';
 import loading              from '@/assets/icons/loading.svg';
 import jQuery               from 'jquery';
 
@@ -51,7 +54,7 @@ export default{
   data(){
     return {
       paymentLink:null,
-      loadAnimation:1
+      loadAnimation:1,
     };
   },
   mounted(){
@@ -62,15 +65,18 @@ export default{
     async postToIframe(){
         try{
           if(this.order_data=='card_registering'){
-            this.paymentLink=await jQuery.post(this.$heap.state.hostname+'CardAcquirer/cardRegisteredLinkGet');
-            return;
+            this.paymentLink=await jQuery.post(this.$heap.state.hostname+'CardAcquirer/cardRegisteredLinkGet')
+            return
           }
-          this.paymentLink=await jQuery.post(this.$heap.state.hostname+'CardAcquirer/paymentLinkGet',this.order_data);
+          const request={
+            order_id:this.order_data.order_id,
+            enable_auto_cof:(localStorage.disable_auto_cof?0:1)
+          }
+          this.paymentLink=await jQuery.post(this.$heap.state.hostname+'CardAcquirer/paymentLinkGet',request)
         } catch(err){
             const exception_code = err?.responseJSON?.messages?.error;
             if(exception_code =='order_notvalid'){
-              this.$flash("Оформление немного затянулось... Попробуйте еще раз");
-              //this.$router.replace('/order/order-'+this.order_data.order_id);
+              this.$flash("Попробуйте еще раз");
             } else 
             if(exception_code =='nocardid'){
               this.$flash("Не удалось добавить карту");

@@ -13,15 +13,23 @@
 
 <template>
     <base-layout pageTitle="Мои способы оплаты">
+        <ion-list>
+            <ion-item lines="none">
+                <ion-icon :src="cardOutline" slot="start"/>
+                <ion-toggle v-model="enable_auto_cof" @ionChange="saveAutoCof()">
+                    Автоматически сохранять карты
+                </ion-toggle>
+            </ion-item>
+        </ion-list>
         <ion-list v-if="cardList==null">
-            <ion-item v-for="i in [1]" :key="i">
+            <ion-item v-for="i in [1,2]" :key="i">
                 <ion-icon style="background-color:var(--ion-color-light)" slot="start"></ion-icon>
                 <ion-skeleton-text animated style="width: 100%"></ion-skeleton-text>
                 <ion-icon style="background-color:var(--ion-color-light)" slot="end"></ion-icon>
             </ion-item>
         </ion-list>
         <ion-list v-else-if="cardList?.length>0">
-            <ion-item v-for="(card,i) in cardList" :key="card.order_id" button @click="i!=0&&itemMainSet(card.card_id)">
+            <ion-item v-for="(card,i) in cardList" :key="card.order_id" button detail-icon="" @click="i!=0&&itemMainSet(card.card_id)">
                 <ion-img v-if="card.card_type" class="card_type" :src="`/img/icons/card-${card.card_type}.svg`" slot="start"/>
                 <ion-icon v-else :src="cardOutline" slot="start" color="primary"/>
                 <div v-if="i==0">
@@ -34,13 +42,18 @@
         </ion-list>
         <ion-list v-else>
             <ion-item>
-                <ion-label color="medium">Привязанных карт нет</ion-label>
+                <ion-label color="medium">Сохраненных карт нет</ion-label>
             </ion-item>
         </ion-list>
-        <ion-item button @click="cardRegistrationOpen()">
+        <ion-item lines="none" @click="cardRegistrationOpen()" button detail-icon="">
             <ion-icon :icon="addOutline" slot="start"></ion-icon>
-            Добавить новую карту
+            Добавить карту
         </ion-item>
+        <ion-fab slot="fixed" vertical="bottom" horizontal="end">
+            <ion-button color="light" @click="cardRegistrationCheck()">
+                <ion-icon :icon="refreshOutline" slot="start"></ion-icon> обновить
+            </ion-button>
+        </ion-fab>
     </base-layout>
 </template>
 
@@ -53,11 +66,16 @@ import {
     IonIcon,
     modalController,
     IonImg,
+    IonFab,
+    IonButton,
+    IonToggle,
 }                               from '@ionic/vue';
 import {
       cardOutline,
       addOutline,
       trashOutline,
+      refreshOutline,
+      saveOutline,
 }                               from "ionicons/icons";
 import OrderPaymentCardModal    from '@/components/OrderPaymentCardModal.vue';
 import Topic                    from '@/scripts/Topic.js';
@@ -71,20 +89,24 @@ export default {
     IonLabel,
     IonIcon,
     IonImg,
-
+    IonFab,
+    IonButton,
+    IonToggle,
     },
     setup(){
         return {
             cardOutline,
             addOutline,
             trashOutline,
+            refreshOutline,
+            saveOutline,
         }
     },
     data(){
         return {
             cardList:null,
             isOpen:false,
-            billLink:''
+            enable_auto_cof:localStorage.disable_auto_cof?0:1
         }
     },
     methods:{
@@ -123,14 +145,17 @@ export default {
                 this.$flash("Не удалось открепить карту")
             }
         },
+        saveAutoCof(){
+            localStorage.disable_auto_cof=this.enable_auto_cof?0:1
+        },
         async cardRegistrationOpen() {
+            const presEl=document.querySelector('ion-router-outlet');
             const order_data='card_registering';
             const self=this;
             const modal = await modalController.create({
                 component: OrderPaymentCardModal,
                 componentProps:{order_data},
-                initialBreakpoint: 0.85,
-                breakpoints: [0, 0.85, 0.95]
+                presentingElement:presEl,
                 });
             const dismissFn=function(){
                 modal.dismiss();
@@ -144,13 +169,14 @@ export default {
         },
         async cardRegistrationCheck(){
             try{
-                const result= await jQuery.post( this.$heap.state.hostname + "CardAcquirer/cardRegisteredActivate" );
+                const result= await jQuery.post( this.$heap.state.hostname + "CardAcquirer/cardRegisteredSync" );
                 if(result=='ok'){
                     //this.$flash("Карта успешно привязана");
                     this.listGet()
+                    this.$topic.publish('userMainPaymentMethodSet')
                 }
             } catch(err){
-                this.$flash("Не удалось привязать карту");
+                //this.$flash("Не удалось привязать карту");
             }
         },
     },

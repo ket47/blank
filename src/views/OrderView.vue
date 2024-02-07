@@ -182,6 +182,7 @@ export default({
                         this.$flash("Не удалось изменить статус заказа")
                         break;
                 }
+                await this.itemGet();
                 return false
             }
         },

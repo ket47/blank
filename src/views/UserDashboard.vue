@@ -54,10 +54,6 @@ ion-icon{
               <ion-icon :icon="locationOutline" slot="start" color="primary"></ion-icon>
               <ion-label>Мои адреса</ion-label>
           </ion-item>
-          <ion-item lines="full" button detail @click="$go('/order')">
-              <ion-icon :icon="cartOutline" slot="start" color="primary"></ion-icon>
-              <ion-label>Мои заказы</ion-label>
-          </ion-item>
           <ion-item lines="full" button detail @click="$go('/user/user-promo')">
               <ion-icon :icon="giftOutline" slot="start" color="primary"></ion-icon>
               <ion-label>Мои скидки</ion-label>
@@ -69,10 +65,6 @@ ion-icon{
           <ion-item @click="$go('/user/user-cards')" lines="full" button detail>
               <ion-icon :icon="cardOutline" slot="start" color="primary"></ion-icon>
               <ion-label>Мои способы оплаты</ion-label>
-          </ion-item>
-          <ion-item lines="full" button detail href="https://t.me/tezkelbot" target="_new">
-              <ion-icon :icon="chatboxEllipsesOutline" slot="start" color="primary"></ion-icon>
-              <ion-label>Телеграм бот <a href="https://t.me/tezkelbot" target="_new">@tezkelbot</a></ion-label>
           </ion-item>
         </div>
 
@@ -252,9 +244,9 @@ ion-icon{
             <ion-icon :icon="informationCircleOutline" slot="start" color="primary"></ion-icon>
             <ion-text>Политика конфиденциальности</ion-text>
         </ion-item>
-        <ion-item lines="none">
-            <ion-icon :icon="informationCircleOutline" slot="start" color="primary"></ion-icon>
-            <ion-text>Версия приложения {{version}}</ion-text>
+        <ion-item lines="full" button detail href="https://t.me/tezkelbot" target="_new">
+            <ion-icon :icon="chatboxEllipsesOutline" slot="start" color="primary"></ion-icon>
+            <ion-label>Телеграм бот <a href="https://t.me/tezkelbot" target="_new">@tezkelbot</a></ion-label>
         </ion-item>
       </ion-item-group>
 
