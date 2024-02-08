@@ -2,6 +2,12 @@
 .deleted{
     border: 3px red solid;
 }
+.disabled{
+    border: 3px gray solid;
+}
+.absent{
+    filter: grayscale(1);
+}
 </style>
 <template>
     <base-layout :pageDefaultBackLink="`/catalog/store-edit-${storeId}`" page-title="Управление товарами">
@@ -19,27 +25,39 @@
                 </ion-select>
             </ion-item> -->
             <ion-searchbar placeholder="Фильтр" v-model="filter"/>
+
+
+
+            <ion-popover :is-open="editor_opened" @didDismiss="editor_opened = 0">
+                <ion-content style="--ion-padding">
+                <ion-item>
+                    <ion-input :placeholder="editor_placeholder" v-model="editor_value" style="--border-width:1px;--border-radius:10px" />
+                    <ion-button slot="end">OK</ion-button>
+                </ion-item>
+                </ion-content>
+            </ion-popover>
+
             <ion-list v-if="listComputed.length>0">
-
-
-
                 <div v-for="item in listComputed" :key="item.item_id">
-                <ion-item lines="none">
-                    <ion-thumbnail slot="start" :class="item.class" @click="itemEdit(item)">
-                        <ion-img :src="`${$heap.state.hostname}image/get.php/${item.image_hash}.150.150.webp`" style="border-radius:10px"/>
+                <ion-item lines="none"  @click="itemEdit(item)" button detail="">
+                    <ion-thumbnail slot="start" :class="item.class" style="border-radius:10px">
+                        <ion-img :src="`${$heap.state.hostname}image/get.php/${item.image_hash}.150.150.webp`"/>
                     </ion-thumbnail>
-                    <ion-text>{{item.item_name}}</ion-text>
+                    <ion-text>
+                        {{item.item_name}}
+                        <span v-if="item.is_counted==1 && item.product_quantity*1==0"> (нет в наличии)</span>
+                    </ion-text>
                 </ion-item>
                 <ion-item lines="full">
                     <ion-chip color="medium">
                         <ion-icon :src="calculatorOutline"/>
-                        <ion-checkbox label-placement="start" :checked="item.is_counted" @ionChange="itemUpdate(item.product_id,{is_counted:$event.target.checked})">учет</ion-checkbox>&nbsp;
+                        <ion-checkbox label-placement="start" :checked="item.is_counted==1" @ionChange="itemUpdate(item.product_id,'is_counted',$event.target.checked?1:0)">учет</ion-checkbox>&nbsp;
                     </ion-chip>
                     <ion-chip v-if="item.is_counted==0" color="medium">
-                        <ion-icon :src="infiniteOutline"/>
+                        <ion-icon :src="infiniteOutline"/>&nbsp;&nbsp;
                     </ion-chip>
-                    <ion-chip v-else :color="item.product_quantity>0?'success':'medium'" @click="itemPrompt(item,'product_quantity','введите остаток')">
-                        {{item.product_quantity}}{{item.product_unit}}
+                    <ion-chip v-else :color="item.product_quantity>0?'success':'danger'" @click="itemPrompt(item,'product_quantity','введите остаток')">
+                        {{item.product_quantity||0}}{{item.product_unit}}
                     </ion-chip>
 
                     <ion-chip color="primary" @click="itemPrompt(item,'product_price','введите цену')">{{item.product_price}}{{$heap.state.currencySign}}</ion-chip>                    
@@ -86,6 +104,11 @@ import {
   IonChip,
   IonCheckbox,
   IonIcon,
+
+  IonPopover,
+  IonContent,
+  IonInput,
+  IonButton,
  }                          from '@ionic/vue';
 import jquery               from 'jquery'
 import ImagePreviewModal    from '@/components/ImagePreviewModal'
@@ -114,6 +137,10 @@ export default {
         IonChip,
         IonCheckbox,
         IonIcon,
+        IonPopover,
+        IonContent,
+  IonInput,
+  IonButton,
     },
     setup(){
         return {infiniteOutline,calculatorOutline}
@@ -135,7 +162,11 @@ export default {
                 'location_group_list':'Категория местоп.',
                 'store_group_list':'Категория поставщ.',
                 'user_group_list':'Категория пользователя',
-            }
+            },
+
+            editor_opened:0,
+            editor_value:null,
+            editor_placeholder:''
         }
     },
     computed:{
@@ -145,7 +176,10 @@ export default {
                 item.item_id=item.image_id||item.store_id||item.courier_id||item.product_id
                 item.item_name=this.holders[item.image_holder]||(item.store_name??item.store_name_new)||item.user_name||item.product_name
                 item.date_time=this.toLocDateTime(item.updated_at)
-                item.class=item.deleted_at?'deleted':''
+                item.class=''
+                item.class+=(item.deleted_at)?'deleted ':''
+                item.class+=(item.is_disabled==1)?'disabled ':''
+                item.class+=(item.is_counted==1 && item.product_quantity==0)?'absent ':''
             }
             return this.items
         }
@@ -167,14 +201,14 @@ export default {
                 name_query:this.filter,
                 offset:this.items.length,
                 limit:15,
-                order:'group_id'
+                //order:'group_id'
             }
             try{
                 this.is_loading=1
                 let items
                 if(this.moderationType=='products'){
-                    request.name_query_fields='product_name,product_description,product_barcode,product_code'
-                    request.reverse='validity'
+                    request.name_query_fields='product_name'
+                    request.reverse='updated_at'
                     request.store_id=this.storeId
                     const products=await jquery.post(`${this.$heap.state.hostname}Product/listGet`,request)
                     items=products.product_list
@@ -208,9 +242,6 @@ export default {
 
             return event.toLocaleDateString(undefined, options);
         },
-        itemUpdate(item){
-            console.log(item)
-        },
         async itemPrompt( item, property, label ){
             const val=item[property]
             const alert = await alertController.create({
@@ -239,27 +270,30 @@ export default {
             if(role=='cancel'){
                 return
             }
-            const request={
-                product_id:item.product_id,
-                [property]:data.values.comment
-            }
+            this.itemUpdate( item.product_id, property, data.values.comment )
+        },
+        async itemUpdate( product_id, property, value ){
             try{
-                await jquery.post(`${this.$heap.state.hostname}Product/itemUpdate`,request)
-                this.$flash("Сохранено")
+                const update={
+                    product_id:product_id,
+                    [property]:value
+                }
+                await jquery.post(`${this.$heap.state.hostname}Product/itemUpdate`,JSON.stringify(update))
+                this.itemAlter( product_id, property, value )
+                this.$flash("💾 Сохранено")
             }catch(err){
+                const exception_code=err?.responseJSON?.messages?.error;
+                if(exception_code=='idle'){
+                    return
+                }
                 this.$flash("Не сохранено")
-                // const exception_code=err?.responseJSON?.messages?.error
-                // switch(exception_code){
-                //     case 'notsent':
-                //         this.$flash("Не удалось отправить сообщение")
-                //         break;
-                //     case 'unknown_reciever_type':
-                //         this.$flash("Не известный вид получателя")
-                //         break;
-                //     case 'order_is_finished':
-                //         this.$flash("Заказ уже завершен")
-                //         break;
-                // }
+            }
+        },
+        itemAlter( product_id, property, value ){
+            for( let i in this.items ){
+                if(this.items[i].product_id==product_id){
+                    this.items[i][property]=value
+                }
             }
         },
         itemEdit(item){

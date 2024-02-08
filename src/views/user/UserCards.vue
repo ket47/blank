@@ -38,7 +38,7 @@
             </ion-item>
         </ion-list>
         <ion-list v-else-if="cardList?.length>0">
-            <ion-item v-for="(card,i) in cardList" :key="card.order_id" button detail-icon="" @click="i!=0&&itemMainSet(card.card_id)">
+            <ion-item v-for="(card,i) in cardList" :key="card.order_id" button detail-icon="" @click="itemMainSet(card.card_id)">
                 <ion-img v-if="card.card_type" class="card_type" :src="`/img/icons/card-${card.card_type}.svg`" slot="start"/>
                 <ion-icon v-else :src="cardOutline" slot="start" color="primary"/>
                 <div v-if="i==0">
@@ -138,7 +138,8 @@ export default {
             try{
                 await jQuery.post(`${this.$heap.state.hostname}UserCards/itemMainSet`,request)
                 this.$topic.publish('userMainPaymentMethodSet')
-                this.listGet()
+                this.$router.go(-1)
+                //this.listGet()
             } catch{/** */}
         },
         async itemDelete(card_id){

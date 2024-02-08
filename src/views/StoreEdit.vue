@@ -72,6 +72,10 @@
         <ion-icon :src="chevronBack" slot="start"/>
         Показать {{storeItem.store_name}}
       </ion-item>
+      <ion-item @click="$go(`/catalog/store-edit-products-${storeId}`)" button>
+        <ion-icon :src="chevronBack" slot="start"/>
+        Быстрое управление товарами
+      </ion-item>
       <ion-item @click="productItemCreate()" button>
         <ion-icon :src="addOutline" slot="start"/>
         Добавить товар в {{storeItem.store_name}}
