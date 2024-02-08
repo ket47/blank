@@ -70,7 +70,7 @@ export default{
           }
           const request={
             order_id:this.order_data.order_id,
-            enable_auto_cof:(localStorage.disable_auto_cof?0:1)
+            enable_auto_cof:(localStorage.disable_auto_cof==1?0:1)
           }
           this.paymentLink=await jQuery.post(this.$heap.state.hostname+'CardAcquirer/paymentLinkGet',request)
         } catch(err){

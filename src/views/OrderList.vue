@@ -15,7 +15,7 @@
             <div v-for="order in orderListComputed" :key="order.order_id" @click="itemClick(order)">
                 <ion-item lines="none">
                     <ion-text slot="start">#{{order.order_id}}</ion-text>
-                    <ion-label v-if="order.is_shipment==1">Вызов курьера 🛵 {{order.store_name}}</ion-label>
+                    <ion-label v-if="order.is_shipment==1">Вызов курьера {{order.store_name}}</ion-label>
                     <ion-label v-else>{{order.store_name}}</ion-label>
                     <ion-text slot="end">{{order.date}}</ion-text>
                 </ion-item>
@@ -25,7 +25,8 @@
                         <ion-label>
                             <ion-chip color="medium">{{order.order_sum_total}}{{$heap.state.currencySign}}</ion-chip>
                             <ion-chip :color="order.stage_color" v-if="order.stage_current_name">
-                                <ion-icon :icon="checkmarkOutline"></ion-icon>
+                                <ion-icon v-if="order.is_canceled==1" :icon="banOutline"></ion-icon>
+                                <ion-icon v-else :icon="checkmarkOutline"></ion-icon>
                                 <ion-label color="dark">{{order.stage_current_name}}</ion-label>
                             </ion-chip>
                         </ion-label>
@@ -41,7 +42,7 @@
 
             <ion-item lines="none">
                 <ion-icon slot="start" :icon="rocketOutline" color="primary"/>
-                <ion-label v-if="order.is_shipment==1">Вызов курьера 🛵 {{order.store_name}}</ion-label>
+                <ion-label v-if="order.is_shipment==1">Вызов курьера {{order.store_name}}</ion-label>
                 <ion-label v-else>{{order.store_name}}</ion-label>
                 <ion-text slot="end">{{order.date_time}}</ion-text>
             </ion-item>
@@ -128,6 +129,7 @@ import {
     rocketOutline,
     ribbonOutline,
     checkmarkOutline,
+    banOutline,
 }                   from 'ionicons/icons';
 import ordersIcon   from "@/assets/icons/orders.svg";
 import Order        from '@/scripts/Order.js';
@@ -153,7 +155,7 @@ export default {
     IonSkeletonText,
     },
     setup() {
-      return { sparklesOutline,storefrontOutline,timeOutline,ordersIcon,rocketOutline,ribbonOutline,checkmarkOutline,informationOutline };
+      return { sparklesOutline,storefrontOutline,timeOutline,ordersIcon,rocketOutline,ribbonOutline,checkmarkOutline,informationOutline,banOutline,};
     },
     data(){
         return {
@@ -183,6 +185,7 @@ export default {
                 }
                 order.date=this.toLocDate(order.created_at)
                 order.stage_color=order.stage_current=='customer_cart'?'light':'primary'
+                order.stage_color=order.is_canceled=='1'?'danger':order.stage_color
             }
             return this.orderList;
         },

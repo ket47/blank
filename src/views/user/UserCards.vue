@@ -14,12 +14,21 @@
 <template>
     <base-layout pageTitle="Мои способы оплаты">
         <ion-list>
+            <ion-item-divider style="margin-top:0px;box-shadow:none;">
+                <ion-label>Настройки</ion-label>
+            </ion-item-divider>
+            <ion-item lines="none">
+                <ion-label>Сохранение карты при оплате заказа</ion-label>
+            </ion-item>
             <ion-item lines="none">
                 <ion-icon :src="cardOutline" slot="start"/>
                 <ion-toggle v-model="enable_auto_cof" @ionChange="saveAutoCof()">
-                    Автоматически сохранять карты
+                    Автоматически сохранять
                 </ion-toggle>
             </ion-item>
+            <ion-item-divider>
+                <ion-label>Сохраненные карты</ion-label>
+            </ion-item-divider>
         </ion-list>
         <ion-list v-if="cardList==null">
             <ion-item v-for="i in [1,2]" :key="i">
@@ -40,20 +49,21 @@
                 <ion-icon :icon="trashOutline" slot="end" @click.stop="itemDelete(card.card_id)"></ion-icon>
             </ion-item>
         </ion-list>
-        <ion-list v-else>
+        <ion-list v-else lines="none">
             <ion-item>
                 <ion-label color="medium">Сохраненных карт нет</ion-label>
             </ion-item>
         </ion-list>
-        <ion-item lines="none" @click="cardRegistrationOpen()" button detail-icon="">
-            <ion-icon :icon="addOutline" slot="start"></ion-icon>
-            Добавить карту
+        <ion-item lines="none" button detail-icon="">
+            <ion-chip color="primary" @click="cardRegistrationOpen()">
+                <ion-icon :icon="addOutline"></ion-icon>
+                <ion-label>Добавить карту</ion-label>
+            </ion-chip>
+            <ion-chip color="medium" @click="cardRegistrationCheck()">
+                <ion-icon :icon="refreshOutline"></ion-icon>
+                <ion-label>обновить</ion-label>
+            </ion-chip>
         </ion-item>
-        <ion-fab slot="fixed" vertical="bottom" horizontal="end">
-            <ion-button color="light" @click="cardRegistrationCheck()">
-                <ion-icon :icon="refreshOutline" slot="start"></ion-icon> обновить
-            </ion-button>
-        </ion-fab>
     </base-layout>
 </template>
 
@@ -66,9 +76,9 @@ import {
     IonIcon,
     modalController,
     IonImg,
-    IonFab,
-    IonButton,
     IonToggle,
+    IonChip,
+    IonItemDivider,
 }                               from '@ionic/vue';
 import {
       cardOutline,
@@ -89,9 +99,9 @@ export default {
     IonLabel,
     IonIcon,
     IonImg,
-    IonFab,
-    IonButton,
     IonToggle,
+    IonChip,
+    IonItemDivider,
     },
     setup(){
         return {
@@ -106,7 +116,7 @@ export default {
         return {
             cardList:null,
             isOpen:false,
-            enable_auto_cof:localStorage.disable_auto_cof?0:1
+            enable_auto_cof:(localStorage.disable_auto_cof==1?0:1)
         }
     },
     methods:{
