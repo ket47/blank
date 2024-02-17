@@ -36,10 +36,12 @@ import BaseLayoutDesktop    from '@/components/BaseLayoutDesktop.vue';
 import jQuery               from "jquery";
 import Topic                from '@/scripts/Topic.js';
 import User                 from '@/scripts/User.js'
-import Utils                 from '@/scripts/Utils.js'
+import Utils                from '@/scripts/Utils.js'
 import Order                from '@/scripts/Order.js'
 import Metrics              from '@/scripts/Metrics.js'
 import Push                 from '@/scripts/Push.js'
+import Capgo                from '@/scripts/Capgo.js'
+
 import './registerServiceWorker';
 import { 
   toastController,
@@ -213,7 +215,7 @@ async function startApp(){
     if (slug) {
       go(slug)
     }
-  });
+  })
   await User.autoSignIn();
 
 
@@ -222,7 +224,7 @@ async function startApp(){
   Push.setAlertHandler(alert)
   Push.setGoHandler(go)
 
-
+  Capgo.init(App,flash)
 
 }
 startApp();

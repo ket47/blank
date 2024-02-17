@@ -8,6 +8,10 @@
 		"classpath": "com.capacitorjs.plugins.app.AppPlugin"
 	},
 	{
+		"pkg": "@capacitor/camera",
+		"classpath": "com.capacitorjs.plugins.camera.CameraPlugin"
+	},
+	{
 		"pkg": "@capacitor/device",
 		"classpath": "com.capacitorjs.plugins.device.DevicePlugin"
 	},
@@ -42,5 +46,9 @@
 	{
 		"pkg": "@capacitor/status-bar",
 		"classpath": "com.capacitorjs.plugins.statusbar.StatusBarPlugin"
+	},
+	{
+		"pkg": "@capgo/capacitor-updater",
+		"classpath": "ee.forgr.capacitor_updater.CapacitorUpdaterPlugin"
 	}
 ]

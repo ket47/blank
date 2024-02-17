@@ -78,10 +78,11 @@ import ImagePreviewModal        from '@/components/ImagePreviewModal.vue'
 import jQuery                   from 'jquery'
 import Topic                    from '@/scripts/Topic.js'
 import User                     from '@/scripts/User.js'
-// import {
-//   isPlatform,
-// }                             from "@ionic/vue";
-// import { Camera, CameraResultType } from '@capacitor/camera';
+//import { isPlatform }           from "@ionic/vue";
+// import { 
+//     Camera, 
+//     CameraResultType 
+// }                               from '@capacitor/camera';
 
 export default {
     props:['images','image_holder','image_holder_id','controller','title','hide_if_empty'],
@@ -201,12 +202,13 @@ export default {
                 data.append("files[]", event.target.files[0]); 
             }
             if( imagedata ){
-                data.append("files[]", imagedata); 
+                //data.append("files[]", imagedata); 
             }
             data.set("image_holder_id", this.image_holder_id);
             if(this.image_holder){
                 data.set("image_holder", this.image_holder);
             }
+                console.log('CAMCAM',JSON.stringify(data))
             const request={
                 url : this.$heap.state.hostname + this.controller + "/fileUpload",
                 type: "POST",
@@ -229,25 +231,20 @@ export default {
                 this.$flash("Не удалось загрузить фото");
             }
         },
-        // async useCamera(){
-        //     const imageBase64 = await Camera.getPhoto({
-        //         quality: 90,
-        //         allowEditing: false,
-        //         resultType: CameraResultType.Base64
-        //     });
-
-        //     alert(imageBase64.base64String)
-
-
-        //     await this.uploadImage(null,imageBase64.base64String)
-        //     console.log(imageBase64)
-        // },
+        async useCamera(){
+            const imageBase64 = await Camera.getPhoto({
+                quality: 10,
+                allowEditing: false,
+                resultType: CameraResultType.Base64
+            });
+            await this.uploadImage(null,imageBase64.base64String)
+        },
         take_photo(){
             // if( isPlatform('capacitor') ){
-            //     this.useCamera();
+            //      this.useCamera();
             // } else {
                 jQuery(`#${this.fileUploaderId}`).trigger('click');
-            // }
+//            }
             this.editMode=true
         },
     }

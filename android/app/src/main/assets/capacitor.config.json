@@ -1,5 +1,5 @@
 {
-	"appId": "com.tezkel.twa",
+	"appId": "com.tezkel.app",
 	"appName": "Tezkel доставка",
 	"webDir": "../pwa/www",
 	"bundledWebRuntime": false,
@@ -10,9 +10,15 @@
 				"sound",
 				"alert"
 			]
+		},
+		"CapacitorUpdater": {
+			"autoUpdate": false,
+			"updateUrl": "https://tezkel.com/yani.php?bundle=check_new",
+			"statsUrl": ""
 		}
 	},
 	"server": {
+		"url": "http://192.168.0.104:8100",
 		"hostname": "tezkel.com",
 		"androidScheme": "https"
 	}

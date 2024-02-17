@@ -24,6 +24,12 @@
 	<true/>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Ваше местоположение позволяет видеть продавцов в радиусе доставки</string>
+	<key>NSCameraUsageDescription</key>
+	<string>С помошью камеры вы сможете легко добавлять фото заказа</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Сохранять сделаные фото</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Добавлять фото товаров из галереи</string>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen.storyboard</string>
 	<key>UIMainStoryboardFile</key>

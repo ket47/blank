@@ -6,6 +6,11 @@
   "plugins": {
     "PushNotifications": {
       "presentationOptions": ["badge", "sound", "alert"]
+    },
+    "CapacitorUpdater": {
+      "autoUpdate": false,
+      "updateUrl": "https://tezkel.com/yani.php?bundle=check_new",
+      "statsUrl": ""
     }
   },
   "server": {

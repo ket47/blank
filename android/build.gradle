@@ -3,10 +3,9 @@
 buildscript {
     
     repositories {
-        google()
         jcenter()
         mavenCentral()
-
+        google()
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:8.0.2'
@@ -21,6 +20,7 @@ apply from: "variables.gradle"
 
 allprojects {
     repositories {
+        jcenter()
         google()
         mavenCentral()
     }
