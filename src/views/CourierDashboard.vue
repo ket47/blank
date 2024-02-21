@@ -31,7 +31,7 @@ ion-text{
 </style>
 <template>
   <base-layout page-title="Анкета курьера"  pageDefaultBackLink="/user">
-    <div v-if="!courier" style="background: linear-gradient(to top, #009dcd, #79c8e2);">
+    <div v-if="courier!=null && !courier.courier_id" style="background: linear-gradient(to top, #009dcd, #79c8e2);">
       <ion-grid class="courier-grid" style="background-image: url('/img/courier_tezkel.png')">
         <ion-row class="ion-align-items-center" >
           <ion-col size-md="6" size-xs="12" size-sm="12" class="ion-padding" style="color: var(--ion-color-primary-contrast)">
@@ -177,7 +177,7 @@ ion-text{
           <ion-label>Ваше фото</ion-label>
         </ion-item-divider>
         <image-tile-comp :images="courier.images" :image_holder_id="courier.courier_id" controller="Courier" ref="courierImgs"></image-tile-comp>
-        <ion-button @click="$refs.courierImgs.take_photo()" size="small" expand="full" color="medium">
+        <ion-button @click="$refs.courierImgs.take_photo()" expand="block" color="light">
           <ion-icon :src="cameraOutline"/> Добавить
         </ion-button>
       </ion-list>

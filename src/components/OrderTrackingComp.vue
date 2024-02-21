@@ -45,6 +45,7 @@
                 :zoom="16" 
                 :settings="mapsettings"
                 :controls="['fullscreenControl']"
+                :detailed-controls='{"fullscreenControl":{"position":{"top":"80px","right":"10px"}}}' 
                 :behaviors="[]"
                 style="height:200px" 
                 :class="mapclass"

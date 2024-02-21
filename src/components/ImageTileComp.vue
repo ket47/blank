@@ -78,14 +78,14 @@ import ImagePreviewModal        from '@/components/ImagePreviewModal.vue'
 import jQuery                   from 'jquery'
 import Topic                    from '@/scripts/Topic.js'
 import User                     from '@/scripts/User.js'
-//import { isPlatform }           from "@ionic/vue";
-// import { 
-//     Camera, 
-//     CameraResultType 
-// }                               from '@capacitor/camera';
+import { isPlatform }           from "@ionic/vue";
+import { 
+    Camera, 
+    CameraResultType 
+}                               from '@capacitor/camera';
 
 export default {
-    props:['images','image_holder','image_holder_id','controller','title','hide_if_empty'],
+    props:['images','image_holder','image_holder_id','controller','title','hide_if_empty','source'],
     components:{
     IonLabel,
     IonIcon,
@@ -197,18 +197,35 @@ export default {
             return modal.present();
         },
         async uploadImage(event=null, imagedata=null) {
+            function b64toBlob(b64Data, contentType, sliceSize) {
+                contentType = contentType || '';
+                sliceSize = sliceSize || 512;
+                let byteCharacters = atob(b64Data);
+                let byteArrays = [];
+                for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+                    let slice = byteCharacters.slice(offset, offset + sliceSize);
+                    let byteNumbers = new Array(slice.length);
+                    for (let i = 0; i < slice.length; i++) {
+                        byteNumbers[i] = slice.charCodeAt(i);
+                    }
+                    let byteArray = new Uint8Array(byteNumbers);
+                    byteArrays.push(byteArray);
+                }
+                return new Blob(byteArrays, {type: contentType});
+            }
+
             let data = new FormData();
             if( event ){
                 data.append("files[]", event.target.files[0]); 
             }
             if( imagedata ){
-                //data.append("files[]", imagedata); 
+                let blob = b64toBlob(imagedata, 'image/jpeg');
+                data.append("files[]", blob, 'img.jpg'); // Here you can set the filename
             }
             data.set("image_holder_id", this.image_holder_id);
             if(this.image_holder){
                 data.set("image_holder", this.image_holder);
             }
-                console.log('CAMCAM',JSON.stringify(data))
             const request={
                 url : this.$heap.state.hostname + this.controller + "/fileUpload",
                 type: "POST",
@@ -232,19 +249,34 @@ export default {
             }
         },
         async useCamera(){
-            const imageBase64 = await Camera.getPhoto({
-                quality: 10,
-                allowEditing: false,
-                resultType: CameraResultType.Base64
-            });
-            await this.uploadImage(null,imageBase64.base64String)
+            const src=this.source||'PROMPT'
+            try{
+                const conf={
+                    allowEditing: false,
+                    promptLabelPhoto:'Галерея',
+                    promptLabelPicture:'Камера',
+                    promptLabelCancel:'Отмена',
+                    promptLabelHeader:'Где получить фото?',
+                    resultType: CameraResultType.Base64,
+                    source:src
+                }
+                if( src==='CAMERA' ){
+                    conf.quality=90
+                    conf.width=1080
+                    conf.height=1920
+                }
+                const imageBase64 = await Camera.getPhoto(conf);
+                await this.uploadImage(null,imageBase64.base64String)                
+            } catch{
+                //
+            }
         },
         take_photo(){
-            // if( isPlatform('capacitor') ){
-            //      this.useCamera();
-            // } else {
+            if( isPlatform('capacitor') ){
+                 this.useCamera();
+            } else {
                 jQuery(`#${this.fileUploaderId}`).trigger('click');
-//            }
+           }
             this.editMode=true
         },
     }

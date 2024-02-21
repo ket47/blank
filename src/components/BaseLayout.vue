@@ -24,7 +24,7 @@
 
 
       <div v-if="iosInstallPromptShow" class="installPrompt">
-        <div style="padding-top:30px;">
+        <!-- <div style="padding-top:30px;">
           <small>Установите приложение Tezkel из AppStore<br/></small> 
           <a href="https://apps.apple.com/tr/app/tezkel-%D0%B1%D1%8B%D1%81%D1%82%D1%80%D0%B0%D1%8F-%D0%B4%D0%BE%D1%81%D1%82%D0%B0%D0%B2%D0%BA%D0%B0/id6449783821" target="_new">
             <ion-button expand="block">
@@ -32,13 +32,18 @@
               Установить
             </ion-button>
           </a>
+        </div> -->
+        <div>
+          Установите на iPhone: <br/> 
+          - нажмите <ion-icon :src="shareOutline" color="primary" size="large" /> и потом <br/> 
+          - На экран «Домой» <ion-icon :src="addCircleOutline" size="large" color="light" />
         </div>
         <div>
           <ion-icon :src="closeOutline" style="float:right" size="large" color="light" @click="iosInstallPromptDismiss()" />
         </div>
       </div>
 
-      <div v-if="androidInstallPromptShow" class="installPrompt">
+      <!-- <div v-if="androidInstallPromptShow" class="installPrompt">
         <div style="padding-top:30px;">
           <small>Установите приложение Tezkel из GooglePlay<br/></small> 
           <a href="https://play.google.com/store/apps/details?id=com.tezkel.twa" target="_new">
@@ -51,7 +56,7 @@
         <div>
           <ion-icon :src="closeOutline" style="float:right" size="large" color="light" @click="androidInstallPromptDismiss()" />
         </div>
-      </div>
+      </div> -->
 
 
       <div style="height:30px"><!--spacer for bottom main tabs--></div>

@@ -12,7 +12,7 @@
             <order-comp :orderData="order" @stageCreate="onStageCreate" @orderRefresh="itemGet"/>
             <order-tracking-comp :orderData="order"/>
             <order-info-comp :orderData="order"/>
-            <image-tile-comp v-if="order?.images" :images="order?.images" :image_holder_id="order?.order_id" controller="Order" ref="orderImgs"/>
+            <image-tile-comp v-if="order?.images" :images="order?.images" :image_holder_id="order?.order_id" controller="Order" ref="orderImgs" source="CAMERA"/>
             <order-history-comp :orderData="order"/>
             <msg-subscription-comp/>
             <order-meta-comp :orderId="order_id" v-if="order?.stage_current=='system_finish'"/>
