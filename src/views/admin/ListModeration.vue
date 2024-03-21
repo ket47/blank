@@ -143,13 +143,13 @@ export default {
                 is_deleted: this.item_type=='deleted'?1:0,
                 name_query:this.filter,
                 offset:this.items.length,
-                limit:15,
-                order:'updated_at'
+                limit:15
             }
             try{
                 this.is_loading=1
                 let items
                 if(this.moderationType=='images'){
+                    request.order='updated_at'
                     items=await jquery.post(`${this.$heap.state.hostname}Image/listGet`,request)
                 } else 
                 if(this.moderationType=='products'){

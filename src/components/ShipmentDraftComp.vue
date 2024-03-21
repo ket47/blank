@@ -58,7 +58,7 @@
             <div v-if="orderLocal.locationStart">
                 <ion-item>
                     <ion-icon color="medium" :src="locationOutline" slot="start"/>
-                    Отправитель
+                    Откуда
                 </ion-item>
                 <ion-item button detail @click="locationStartSelect()">
                     <ion-thumbnail v-if="orderLocal.locationStart?.image_hash" slot="start" style="--size:20px">
@@ -93,7 +93,7 @@
             <div v-if="orderLocal.locationFinish">
                 <ion-item>
                     <ion-icon color="medium" :src="flagOutline" slot="start"/>
-                    Получатель
+                    Куда
                 </ion-item>
                 <ion-item button detail @click="locationFinishSelect()">
                     <ion-thumbnail v-if="orderData.locationFinish?.image_hash" slot="start" style="--size:20px">
@@ -148,20 +148,32 @@
             </ion-accordion-group>
 
 
-            <!--
-            <ion-item >
-                <ion-label><h1>Условия перевозки</h1></ion-label>
-            </ion-item>
-            <ion-item>
-                <ion-icon :src="helpCircleOutline" slot="start" @click="$router.push('/page/rules-customer#dimentions')"/>
-                <ion-checkbox v-model="isDimentionValid">Посылка меньше 40см и легче 10кг</ion-checkbox>
-            </ion-item>
-            <ion-item>
-                <ion-icon :src="helpCircleOutline" slot="start" @click="$router.push('/page/rules-customer#contents')"/>
-                <ion-checkbox v-model="isContentValid">Посылка без запрещенных вещей</ion-checkbox>
-            </ion-item>
-            -->
-        </ion-list>
+            <ion-accordion-group>
+                <ion-accordion toggle-icon-slot="start">
+                    <ion-item slot="header" lines="none">
+                        <ion-checkbox :checked="isValidAll" @ionChange="toggleValid($event.target.checked)">Посылка отвечает условиям</ion-checkbox>
+                    </ion-item>
+                    <ion-list slot="content">
+                        <ion-item>
+                            <ion-icon :src="helpCircleOutline" slot="start" @click="$router.push('/page/rules-customer#dimentions')"/>
+                            <ion-checkbox v-model="isValidDimention">Меньше 40 × 40 × 25 см</ion-checkbox>
+                        </ion-item>
+                        <ion-item>
+                            <ion-icon :src="helpCircleOutline" slot="start" @click="$router.push('/page/rules-customer#dimentions')"/>
+                            <ion-checkbox v-model="isValidDimention">Легче 8кг</ion-checkbox>
+                        </ion-item>
+                        <ion-item>
+                            <ion-icon :src="helpCircleOutline" slot="start" @click="$router.push('/page/rules-customer#contents')"/>
+                            <ion-checkbox v-model="isValidContent">Без запрещенных вещей</ion-checkbox>
+                        </ion-item>
+                        <ion-item>
+                            <ion-icon :src="helpCircleOutline" slot="start" @click="$router.push('/page/rules-customer#contents')"/>
+                            <ion-checkbox v-model="isValidReadyness">Уже готова к перевозке</ion-checkbox>
+                        </ion-item>
+                    </ion-list>
+                </ion-accordion>
+            </ion-accordion-group>
+       </ion-list>
 
 
 
@@ -199,7 +211,7 @@
                     <ion-button v-else-if="!orderData.locationFinish" @click="locationFinishSelect()" expand="block" color="light"> 
                         Куда отвезти
                     </ion-button>
-                    <ion-button v-else-if="!isContentValid || !isDimentionValid" @click="isContentValid=isDimentionValid=1" expand="block" color="light"> 
+                    <ion-button v-else-if="!isValidAll" @click="toggleValid( 1 )" expand="block" color="light"> 
                         Согласиться с условиями
                     </ion-button>
                 </ion-col>
@@ -258,6 +270,7 @@ import {
     IonAccordion,
     IonAccordionGroup,
     IonChip,
+    IonCheckbox,
     alertController,
 }                       from '@ionic/vue';
 import { 
@@ -309,6 +322,7 @@ export default({
         IonAccordion,
         IonAccordionGroup,
         IonChip,
+    IonCheckbox,
     },
     setup() {
         return { 
@@ -339,8 +353,10 @@ export default({
     },
     data(){
         return {
-            isDimentionValid:1,
-            isContentValid:1,
+            isValidReadyness:1,
+            isValidDimention:1,
+            isValidWeight:1,
+            isValidContent:1,
 
             orderLocal:{},
         };
@@ -364,6 +380,9 @@ export default({
             if( !(this.orderLocal.deliveryCalculation?.fee??0) ){
                 return "Тариф доставки не установлен"
             }
+            if( !(this.orderLocal.deliveryCalculation?.deliveryDistance??0) ){
+                return "Отправитель и получатель в одной точке"
+            }
             return null
         },
         deliveryDistanceKm(){
@@ -374,7 +393,10 @@ export default({
             return Math.round(fee*this.deliveryDistanceKm)
         },
         isReadyToCheckout(){
-            return this.orderData.order_description && this.orderData.locationStart && this.orderData.locationFinish && !this.checkoutError
+            return this.orderData.order_description && this.orderData.locationStart && this.orderData.locationFinish && !this.checkoutError && this.isValidAll
+        },
+        isValidAll(){
+            return this.isValidContent&&this.isValidDimention&&this.isValidReadyness&&this.isValidWeight
         },
         nextStageButtons(){
             let buttons={};
@@ -526,6 +548,9 @@ export default({
                 console.log(err)
             }
         },
+        toggleValid( checked ){
+            this.isValidContent=this.isValidDimention=this.isValidWeight=this.isValidReadyness=checked
+        }
     },
     async created(){
         this.orderLocal=this.orderData//for hot reload

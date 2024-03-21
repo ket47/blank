@@ -138,6 +138,7 @@ export default  {
         found=await Utils.post(`${this.$heap.state.hostname}Search/listGet`,request)
         this.found=this.storeListCalculate(found)
       }catch(err){
+        console.log(err)
         this.found=null
       }
     },
@@ -147,9 +148,11 @@ export default  {
       }
       for(let i in found.product_matches){
         found.product_matches[i].deliveryTime=Utils.deliveryTimeCalculate(found.product_matches[i].distance,found.product_matches[i].store_time_preparation)
-        let groups=found.product_matches[i].member_of_groups.split(',')
-        for(let g of groups ){
-          found.product_matches[i][`is_${g}`]=1
+        if(found.product_matches[i].member_of_groups){
+          let groups=found.product_matches[i].member_of_groups.split(',')
+          for(let g of groups ){
+            found.product_matches[i][`is_${g}`]=1
+          }          
         }
       }
       return found

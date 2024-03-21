@@ -73,25 +73,25 @@
             </ion-item>
 
             <div v-if="tariffRule.paymentByCard==1">
-                <ion-item detail="false" button @click="paymentType='use_card'">
+                <ion-item detail="false" button>
                     <ion-icon :icon="cardOutline" slot="start" color="medium"></ion-icon>
                     <ion-radio value="use_card">
-                        Карта без привязки
+                        Банковская карта
                     </ion-radio>
                 </ion-item>
-                <ion-item v-if="bankCardCalc?.card_type" button detail="false" @click="paymentType='use_card_recurrent'">
-                    <ion-img v-if="bankCardCalc.card_type" style="width:25px;height: auto;" :src="`/img/icons/card-${bankCardCalc.card_type}.svg`" slot="start"/>
+                <ion-item v-if="bankCardCalc?.card_type" button detail="false">
+                    <ion-img v-if="bankCardCalc.card_type" style="width:22px;height: auto;" :src="`/img/icons/card-${bankCardCalc.card_type.toLowerCase()}.svg`" slot="start"/>
                     <ion-icon v-else :src="cardOutline" slot="start" color="medium"/>
                     <ion-radio value="use_card_recurrent">
-                        Привязанная карта {{bankCardCalc.label}}
+                        Сохраненная карта {{bankCardCalc.label}}
                     </ion-radio>
                 </ion-item>
                 <ion-item v-if="bankCardCalc?.card_type" button detail @click="$go('/user/user-cards')">
                     <ion-label color="medium">Выбрать другую карту</ion-label>
                 </ion-item>
-                <ion-item v-else button detail @click="$go('/user/user-cards')">
+                <ion-item v-else-if="recurrentPaymentAllow" button detail @click="$go('/user/user-cards')">
                     <ion-icon :icon="addOutline" slot="start" color="medium"></ion-icon>
-                    <ion-label>Привязать карту</ion-label>
+                    <ion-label color="medium">Добавить карту</ion-label>
                 </ion-item>
             </div>
             </ion-radio-group>
@@ -246,7 +246,7 @@ export default {
             shipAutoloadClock:null,
             termsAccepted:1,
             iplocation:null,
-            recurrentPaymentAllow:0,
+            recurrentPaymentAllow:this.$heap.state.settings?.other?.recurrentPaymentAllow==1?1:0,
 
             deliveryFinishScheduled:null,
             deliveryPlanMode:'inited'
@@ -527,6 +527,16 @@ export default {
     },
     ionViewDidEnter(){
         this.itemLoad()
-    }
+    },
+    created(){
+        this.$topic.on('userMainPaymentMethodSet',()=>{
+            this.can_load_at=0
+            this.itemLoad()
+        })        
+        this.$topic.on('settingsGet',(settings)=>{
+            this.can_load_at=0
+            this.recurrentPaymentAllow=settings?.other?.recurrentPaymentAllow
+        })        
+    },
 }
 </script>

@@ -21,13 +21,20 @@
             </ion-item>
 
             <ion-item-divider>Детали перевозки</ion-item-divider>
+
+
+            <ion-card color="primary"  v-if="orderData?.finish_plan_scheduled" @click="timePlanInfo()">
+                <ion-card-content>
+                    <small>Запланированое время доставки</small> <b>{{orderData?.finish_plan_scheduled}}</b>
+                </ion-card-content>
+            </ion-card>
             <ion-item>
                 <ion-icon color="medium" :src="locationOutline" slot="start"/>
                 Откуда
-                <ion-chip slot="end" color="medium" v-if="orderData?.deliveryJob?.start_plan_date" @click="timePlanInfo()">
+                <!-- <ion-chip slot="end" color="medium" v-if="orderData?.deliveryJob?.start_plan_date" @click="timePlanInfo()">
                     <ion-label><b>{{orderData.deliveryJob.start_plan_date}}</b></ion-label>
                     <ion-icon :src="alertCircleOutline"/>
-                </ion-chip>
+                </ion-chip> -->
             </ion-item>
             <ion-item>
                 <ion-thumbnail v-if="orderData.locationStart?.image_hash" slot="start" style="--size:20px">
@@ -42,10 +49,10 @@
             </ion-item>
             <ion-item v-if="orderData.locationStart.location_comment || orderData.locationStart.location_phone>0">
                 <div>
-                    <div v-if="orderData.locationStart.location_comment" style="padding:10px;background-color:#fafafa;color:#333;border-radius:10px;display:inline-block">
+                    <div v-if="orderData.locationStart.location_comment" style="padding:10px;background-color:var(--ion-color-light);color:#666;border-radius:10px;display:inline-block">
                         {{orderData.locationStart.location_comment}}
                     </div>
-                    <ion-chip v-if="orderData.locationStart.location_phone>0" color="light">
+                    <ion-chip v-if="orderData.locationStart.location_phone>0" color="medium">
                         <ion-icon :src="callOutline"/><a :href="`tel:+`+orderData.locationStart.location_phone">+{{orderData.locationStart.location_phone}}</a>
                     </ion-chip>
                 </div>
@@ -54,10 +61,10 @@
             <ion-item>
                 <ion-icon color="medium" :src="flagOutline" slot="start"/>
                 Куда
-                <ion-chip slot="end" color="medium" v-if="orderData.finish_plan_scheduled" @click="timePlanInfo()">
+                <!-- <ion-chip slot="end" color="medium" v-if="orderData.finish_plan_scheduled" @click="timePlanInfo()">
                     <ion-label><b>{{orderData.finish_plan_scheduled}}</b></ion-label>
                     <ion-icon :src="alertCircleOutline"/>
-                </ion-chip>
+                </ion-chip> -->
             </ion-item>
             <ion-item>
                 <ion-thumbnail v-if="orderData.locationFinish?.image_hash" slot="start" style="--size:20px">
@@ -75,7 +82,7 @@
                     <div v-if="orderData.locationFinish.location_comment" style="padding:10px;background-color:var(--ion-color-light);color:#333;border-radius:10px;display:inline-block">
                         {{orderData.locationFinish.location_comment}}
                     </div>
-                    <ion-chip v-if="orderData.locationFinish.location_phone>0" color="primary">
+                    <ion-chip v-if="orderData.locationFinish.location_phone>0" color="medium">
                         <ion-icon :src="callOutline"/><a :href="`tel:+`+orderData.locationFinish.location_phone">+{{orderData.locationFinish.location_phone}}</a>
                     </ion-chip>
                 </div>

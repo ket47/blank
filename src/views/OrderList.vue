@@ -39,33 +39,53 @@
         </ion-list>
         <ion-list v-if="jobList">
             <div v-for="order in jobListComputed" :key="order.order_id" @click="itemClick(order)">
-
-            <ion-item lines="none">
-                <ion-icon slot="start" :icon="rocketOutline" color="primary"/>
-                <ion-label v-if="order.is_shipment==1">Вызов курьера {{order.store_name}}</ion-label>
-                <ion-label v-else>{{order.store_name}}</ion-label>
-                <ion-text slot="end">{{order.date_time}}</ion-text>
-            </ion-item>
-            <ion-item lines="full">
-                <b slot="start"><b style="color:var(--ion-color-primary)">{{order.distance_km}}</b> </b>
-                <ion-text style="margin-bottom:3px;">
-                    <div style="padding:5px">
-                        {{order.location_address}}
-                        <ion-note v-if="order.location_comment">
-                            {{order.location_comment}}
-                        </ion-note>
+                <ion-item lines="none">
+                    <ion-icon slot="start" :icon="rocketOutline" color="primary"/>
+                    <ion-label v-if="order.is_shipment==1">Вызов курьера {{order.store_name}}</ion-label>
+                    <ion-label v-else>{{order.store_name}}</ion-label>
+                    <ion-text slot="end">{{order.date_time}}</ion-text>
+                </ion-item>
+                <ion-item lines="full">
+                    <b slot="start"><b style="color:var(--ion-color-primary)">{{order.distance_km}}</b> </b>
+                    <ion-text style="margin-bottom:3px;">
+                        <div style="padding:5px">
+                            {{order.location_address}}
+                            <ion-note v-if="order.location_comment">
+                                {{order.location_comment}}
+                            </ion-note>
+                        </div>
+                        <div style="padding:5px" v-if="order.finish_location_address">
+                            <b>Доставить:</b> {{order.finish_location_address}}
+                            <ion-note v-if="order.finish_location_comment">
+                                {{order.finish_location_comment}}
+                            </ion-note>
+                        </div>
+                        <div style="padding:10px;background-color:#f5f5f5;color:#333;border-radius:10px" v-if="order.order_description">
+                                {{order.order_description}}
+                        </div>
+                    </ion-text>
+                </ion-item>
+            </div>
+            <div v-for="job in routeListComputed" :key="job.job_id">
+                <ion-item lines="none" style="--inner-padding-bottom:0px" @click="itemClick(job)">
+                    <ion-label>
+                        {{job.job_name}}
+                    </ion-label>
+                    <ion-chip slot="end" color="light">
+                        <ion-icon :icon="checkmarkOutline"></ion-icon>
+                        <ion-label color="dark"><small>{{job.stage_label}}</small></ion-label>
+                    </ion-chip>
+                </ion-item>
+                <ion-item lines="full" @click="itemClick(job)">
+                    <div style="display:grid;grid-template-columns:40px auto 20px;width:100%">
+                        <div style="padding:3px"><b>{{job.start_plan_date}}</b></div>
+                        <div style="padding:3px"><small>{{job.start_address}}</small></div>
+                        <div><ion-icon :icon="square" :style="`color:${job.start_color}`"/></div>
+                        <div style="padding:3px;color:#999">{{job.finish_plan_date}}</div>
+                        <div style="padding:3px"><small>{{job.finish_address}}</small></div>
+                        <div><ion-icon :icon="square" :style="`color:${job.finish_color}`"/></div>
                     </div>
-                    <div style="padding:5px" v-if="order.finish_location_address">
-                        <b>Доставить:</b> {{order.finish_location_address}}
-                        <ion-note v-if="order.finish_location_comment">
-                            {{order.finish_location_comment}}
-                        </ion-note>
-                    </div>
-                    <div style="padding:10px;background-color:#f5f5f5;color:#333;border-radius:10px" v-if="order.order_description">
-                            {{order.order_description}}
-                    </div>
-                </ion-text>
-            </ion-item>
+                </ion-item>
             </div>
         </ion-list>
         <ion-list v-if="['active','done'].includes(orderType) && orderList==null">
@@ -86,7 +106,7 @@
             </ion-item>
             </div>
         </ion-list>
-        <div v-else-if="(!orderList || orderList?.length==0) && (!jobList || jobList?.length==0)" style="display:flex;align-items:center;justify-content:center;height:70vh">
+        <div v-else-if="(!orderList || orderList?.length==0) && (!jobList || jobList?.length==0) && (!routeList || routeList?.length==0)" style="display:flex;align-items:center;justify-content:center;height:70vh">
             <div v-if="$heap.getters.userIsLogged" style="width:max-content;text-align:center">
                 <ion-icon :icon="sparklesOutline" size="large"></ion-icon>
                 <ion-label>Заказов нет</ion-label><br>
@@ -130,12 +150,14 @@ import {
     ribbonOutline,
     checkmarkOutline,
     banOutline,
+    square,
 }                   from 'ionicons/icons';
 import ordersIcon   from "@/assets/icons/orders.svg";
 import Order        from '@/scripts/Order.js';
 import User         from '@/scripts/User.js';
 import Topic        from '@/scripts/Topic.js';
 import CourierJobPreview    from '@/components/CourierJobPreview.vue';
+import jQuery               from 'jquery'
 
 export default {
     components: {
@@ -155,11 +177,12 @@ export default {
     IonSkeletonText,
     },
     setup() {
-      return { sparklesOutline,storefrontOutline,timeOutline,ordersIcon,rocketOutline,ribbonOutline,checkmarkOutline,informationOutline,banOutline,};
+      return { sparklesOutline,storefrontOutline,timeOutline,ordersIcon,rocketOutline,ribbonOutline,checkmarkOutline,informationOutline,banOutline,square,};
     },
     data(){
         return {
             jobList:null,
+            routeList:null,
             orderList:null,
             orderType:'active',
             courierJobsInclude:null,
@@ -202,7 +225,28 @@ export default {
                 order.date_time=this.toLocDateTime(order.created_at)
             }
             return this.jobList;
-        }
+        },
+        routeListComputed(){
+            if(!this.routeList){
+                return [];
+            }
+            const stageDict={
+                'scheduled':'Отложен',
+                'awaited':'Очередь',
+                'inited':'Собирается',
+                'assigned':'Назначен',
+                'started':'В пути'
+            }
+            for(let job of this.routeList){
+                const finish_plan=new Date((job.start_plan*1+job.finish_arrival_time*1)*1000)
+                const start_plan = new Date(job.start_plan*1000)
+                job.start_plan_date=start_plan.toLocaleTimeString(undefined, { hour:'numeric',minute:'numeric' })
+                job.finish_plan_date=finish_plan.toLocaleTimeString(undefined, { hour:'numeric',minute:'numeric' })
+                job.stage_label=stageDict[job.stage]||'-'
+                job.is_courier_job=1
+            }
+            return this.routeList;
+        },
     },
     created(){
         let self=this;
@@ -281,12 +325,21 @@ export default {
                 const courier_id=User.courier?.data?.courier_id;
                 this.jobList=await Order.api.listJobGet(courier_id);
                 this.orderList=null;
+                this.listRouteLoad()
             } catch(err){
                 const message=err.responseJSON?.messages?.error;
                 if(message=='notready'){
                     User.courier.status='notready';
                     this.courierReadinessCheck();
                 }
+            }
+        },
+        async listRouteLoad(){
+            try{
+                const request={}
+                this.routeList=await jQuery.post(`${this.$heap.state.hostname}DeliveryJob/listGet`,request)
+            } catch(err){
+                const message=err.responseJSON?.messages?.error;
             }
         },
         autoReload(listType){
