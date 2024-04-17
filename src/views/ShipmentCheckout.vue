@@ -18,7 +18,7 @@
 </style>
 
 <template>
-    <base-layout pageTitle="Оформление вызова курьера" :pageDefaultBackLink="`/order/shipment-draft`" ref="page">
+    <base-layout pageTitle="Оформление доставки посылки" :pageDefaultBackLink="`/order/shipment-${order_id}`" ref="page">
         <ion-list  lines="none">
             <ion-item-divider style="margin-top:0px;box-shadow:none;">Детали перевозки</ion-item-divider>
             <ion-item>
@@ -137,9 +137,9 @@
                  Планируемое время доставки {{deliveryFinishRange}} <ion-icon :src="alertCircleOutline" color="warning"/>.
             </ion-card-content>
         </ion-card>
-        <ion-card v-if="isVPNon && (paymentType=='use_card' || paymentType=='use_card_recurrent')" color="light">
+        <!-- <ion-card v-if="isVPNon && (paymentType=='use_card' || paymentType=='use_card_recurrent')" color="light">
             <ion-card-content>Возможно включен VPN. Банк часто блокирует платежи через VPN.</ion-card-content>
-        </ion-card>
+        </ion-card> -->
         <ion-button v-if="paymentType=='use_card' || paymentType=='use_card_recurrent'" expand="block" @click="proceed()" :disabled="checkoutError">Оплатить картой</ion-button>
         <ion-button v-else expand="block" @click="proceed()" :disabled="checkoutError">Вызвать курьера</ion-button>
     </base-layout>
@@ -266,8 +266,9 @@ export default {
             if( !finish_plan ){
                 return null
             }
-            const finish_plan_from=Math.floor(finish_plan/900)*900//round to 15 minutes
-            const finish_plan_to=finish_plan_from+900
+            const delta=900//round to 15 minutes
+            const finish_plan_from=Math.floor(finish_plan/delta)*delta
+            const finish_plan_to=finish_plan_from+delta
             const from = new Date(finish_plan_from*1000);
             const to   = new Date(finish_plan_to*1000);
             try{
@@ -337,7 +338,7 @@ export default {
                     return
                 }
                 if( bulkResponse.order.stage_current!=='customer_confirmed' ){
-                    this.$go(`/order/shipment-${this.order.order_id}`)
+                    this.$go(`/order/shipment-${this.order_id}`)
                 }
                 this.order=bulkResponse.order
                 this.routePlan=bulkResponse.routePlan
@@ -355,7 +356,7 @@ export default {
                     this.finishPlanSchedule=null
                     this.deliveryFinishScheduled=null
                 }
-                this.customerIpLocationGet()
+                //this.customerIpLocationGet()
             }
             catch(err){
                 this.errorCode=err?.responseJSON?.messages?.error
@@ -401,12 +402,12 @@ export default {
                 this.deliveryPlanMode=this.routePlan.start_plan_mode
             }
         },
-        async customerIpLocationGet(){
-            try{
-                const response = await fetch("https://geolocation-db.com/json/");
-                this.iplocation = await response.json();
-            }catch{/** */}
-        },
+        // async customerIpLocationGet(){
+        //     try{
+        //         const response = await fetch("https://geolocation-db.com/json/");
+        //         this.iplocation = await response.json();
+        //     }catch{/** */}
+        // },
 
         async proceed(){
             const shipData={
@@ -465,7 +466,7 @@ export default {
         async heavyLoadInfo(){
             const alert = await alertController.create({
                 //header: 'Высокая загруженность',
-                message:'Готовность заказа, пробки и другие факторы могут повлиять на планируемое время доставки',
+                message:'Время приблизительное. Готовность заказа, погода, пробки могут задержать доставку.',
                 buttons: [
                   {
                     text: 'Ок',

@@ -37,52 +37,64 @@
                 </ion-item>
             </div>
         </ion-list>
-        <ion-list v-if="jobList">
-            <div v-for="order in jobListComputed" :key="order.order_id" @click="itemClick(order)">
-                <ion-item lines="none">
-                    <ion-icon slot="start" :icon="rocketOutline" color="primary"/>
-                    <ion-label v-if="order.is_shipment==1">Вызов курьера {{order.store_name}}</ion-label>
-                    <ion-label v-else>{{order.store_name}}</ion-label>
-                    <ion-text slot="end">{{order.date_time}}</ion-text>
+
+
+
+
+        <ion-accordion-group v-if="orderType=='jobs' && jobList?.length>0">
+            <ion-accordion value="oldjobs">
+                <ion-item slot="header" color="light">
+                    <ion-label>Задания</ion-label>
                 </ion-item>
-                <ion-item lines="full">
-                    <b slot="start"><b style="color:var(--ion-color-primary)">{{order.distance_km}}</b> </b>
-                    <ion-text style="margin-bottom:3px;">
-                        <div style="padding:5px">
-                            {{order.location_address}}
-                            <ion-note v-if="order.location_comment">
-                                {{order.location_comment}}
-                            </ion-note>
-                        </div>
-                        <div style="padding:5px" v-if="order.finish_location_address">
-                            <b>Доставить:</b> {{order.finish_location_address}}
-                            <ion-note v-if="order.finish_location_comment">
-                                {{order.finish_location_comment}}
-                            </ion-note>
-                        </div>
-                        <div style="padding:10px;background-color:#f5f5f5;color:#333;border-radius:10px" v-if="order.order_description">
-                                {{order.order_description}}
-                        </div>
-                    </ion-text>
-                </ion-item>
-            </div>
+                <div slot="content" v-for="order in jobListComputed" :key="order.order_id" @click="itemClick(order)">
+                    <ion-item lines="none" color="light">
+                        <ion-icon slot="start" :icon="rocketOutline" color="primary"/>
+                        <ion-label v-if="order.is_shipment==1">Вызов курьера {{order.store_name}}</ion-label>
+                        <ion-label v-else>{{order.store_name}}</ion-label>
+                        <ion-text slot="end">{{order.date_time}}</ion-text>
+                    </ion-item>
+                    <ion-item lines="full" color="light">
+                        <b slot="start"><b style="color:var(--ion-color-primary)">{{order.distance_km}}</b> </b>
+                        <ion-text style="margin-bottom:3px;">
+                            <div style="padding:5px">
+                                {{order.location_address}}
+                                <ion-note v-if="order.location_comment">
+                                    {{order.location_comment}}
+                                </ion-note>
+                            </div>
+                            <div style="padding:5px" v-if="order.finish_location_address">
+                                <b>Доставить:</b> {{order.finish_location_address}}
+                                <ion-note v-if="order.finish_location_comment">
+                                    {{order.finish_location_comment}}
+                                </ion-note>
+                            </div>
+                            <div style="padding:10px;background-color:#eee;color:#333;border-radius:10px" v-if="order.order_description">
+                                    {{order.order_description}}
+                            </div>
+                        </ion-text>
+                    </ion-item>
+                </div>
+            </ion-accordion>
+        </ion-accordion-group>
+        <ion-list v-if="orderType=='jobs' && routeList?.length>0">
+            <ion-list-header>Маршрут</ion-list-header>
             <div v-for="job in routeListComputed" :key="job.job_id">
-                <ion-item lines="none" style="--inner-padding-bottom:0px" @click="itemClick(job)">
-                    <ion-label>
-                        {{job.job_name}}
-                    </ion-label>
-                    <ion-chip slot="end" color="light">
+                <ion-item lines="none" style="--inner-padding-bottom:0px" @click="itemClickConfirm(job)">
+                    <ion-text>
+                        {{job.job_name}} ({{job.courier_name||'-'}})
+                    </ion-text>
+                    <ion-chip slot="end" :color="job.stage_color">
                         <ion-icon :icon="checkmarkOutline"></ion-icon>
                         <ion-label color="dark"><small>{{job.stage_label}}</small></ion-label>
                     </ion-chip>
                 </ion-item>
-                <ion-item lines="full" @click="itemClick(job)">
+                <ion-item lines="full" @click="itemClickConfirm(job)">
                     <div style="display:grid;grid-template-columns:40px auto 20px;width:100%">
-                        <div style="padding:3px"><b>{{job.start_plan_date}}</b></div>
-                        <div style="padding:3px"><small>{{job.start_address}}</small></div>
+                        <div style="padding:3px;color:var(--ion-color-primary)"><b>{{job.start_plan_date}}</b></div>
+                        <div style="padding:3px;color:#333"><small>{{job.start_address}}</small></div>
                         <div><ion-icon :icon="square" :style="`color:${job.start_color}`"/></div>
                         <div style="padding:3px;color:#999">{{job.finish_plan_date}}</div>
-                        <div style="padding:3px"><small>{{job.finish_address}}</small></div>
+                        <div style="padding:3px;color:#333"><small>{{job.finish_address}}</small></div>
                         <div><ion-icon :icon="square" :style="`color:${job.finish_color}`"/></div>
                     </div>
                 </ion-item>
@@ -140,6 +152,8 @@ import {
     IonInfiniteScroll,
     IonInfiniteScrollContent,
     IonSkeletonText,
+    IonAccordionGroup,
+    IonAccordion,
 }                   from '@ionic/vue';
 import {
     storefrontOutline,
@@ -156,8 +170,9 @@ import ordersIcon   from "@/assets/icons/orders.svg";
 import Order        from '@/scripts/Order.js';
 import User         from '@/scripts/User.js';
 import Topic        from '@/scripts/Topic.js';
-import CourierJobPreview    from '@/components/CourierJobPreview.vue';
-import jQuery               from 'jquery'
+import CourierJobPreview        from '@/components/CourierJobPreview.vue';
+import DeliveryJobPreview        from '@/components/DeliveryJobPreview.vue';
+import jQuery                   from 'jquery'
 
 export default {
     components: {
@@ -175,6 +190,8 @@ export default {
     IonInfiniteScroll,
     IonInfiniteScrollContent,
     IonSkeletonText,
+    IonAccordionGroup,
+    IonAccordion,
     },
     setup() {
       return { sparklesOutline,storefrontOutline,timeOutline,ordersIcon,rocketOutline,ribbonOutline,checkmarkOutline,informationOutline,banOutline,square,};
@@ -231,7 +248,7 @@ export default {
                 return [];
             }
             const stageDict={
-                'scheduled':'Отложен',
+                'scheduled':'Запланирован',
                 'awaited':'Очередь',
                 'inited':'Собирается',
                 'assigned':'Назначен',
@@ -243,12 +260,13 @@ export default {
                 job.start_plan_date=start_plan.toLocaleTimeString(undefined, { hour:'numeric',minute:'numeric' })
                 job.finish_plan_date=finish_plan.toLocaleTimeString(undefined, { hour:'numeric',minute:'numeric' })
                 job.stage_label=stageDict[job.stage]||'-'
+                job.stage_color=['scheduled','awaited'].includes(job.stage)?'light':'primary'
                 job.is_courier_job=1
             }
             return this.routeList;
         },
     },
-    created(){
+    mounted(){
         let self=this;
         this.$topic.on('courierStatusChange',()=>{
             this.courierReadinessCheck();
@@ -363,6 +381,25 @@ export default {
         ionViewDidLeave() {
             clearTimeout(this.clock);
         },
+        async itemClickConfirm(job){
+            const modal = await modalController.create({
+                component: DeliveryJobPreview,
+                componentProps:{job},
+                initialBreakpoint: 0.5,
+                breakpoints: [0.5]
+                });
+            this.$topic.on('dismissModal',()=>{
+                modal.dismiss()
+            })
+            await modal.present();
+            const {data,role}=await modal.onDidDismiss()
+            if(role=='confirm'){
+                this.itemOpen(job.order_id,job.is_shipment)
+            }
+        },
+        /**
+         * deprecated
+         */
         async itemClick(order){
             if( order.is_courier_job ){
                 const modal = await modalController.create({

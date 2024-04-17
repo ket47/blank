@@ -119,8 +119,8 @@ export default({
                 order_stage_code=order_stage_code.split('_').splice(1).join('_');
                 try{
                     this[order_stage_code](order_id);
-                }catch{
-                    console.log('stage handler not found'+order_stage_code)
+                }catch(err){
+                    console.log('stage handler not found '+order_stage_code+': ',err)
                 }
                 return;
             }
@@ -176,6 +176,12 @@ export default({
                         break;
                 }
                 return false
+            }
+        },
+        async action_confirm(order_id){
+            const result=await this.onStageCreate(order_id, 'customer_confirmed');
+            if( result ){
+                this.action_checkout()
             }
         },
         async action_checkout(){
@@ -250,7 +256,7 @@ export default({
                     order_id:this.order_id,
                     courier_id:item.data.courier_id
                 }
-                await jQuery.post(`${this.$heap.state.hostname}Courier/itemAssign`,request)
+                await jQuery.post(`${this.$heap.state.hostname}DeliveryJob/itemAssign`,request)
                 await this.itemGet()
                 this.$flash("Курьер назначен")
             } catch{

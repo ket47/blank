@@ -171,7 +171,7 @@ export default({
                     return
                 }
                 if(message=='notready'){
-                    this.$flash("Смена курьера не открыта");
+                    this.$flash("Вы заняты или не открыли смену");
                     return
                 }
             }
@@ -180,8 +180,11 @@ export default({
             const courier_id=User.courier?.data?.courier_id;
             try{
                 await Order.api.itemJobStart(this.orderData.order_id,courier_id);
-                this.$go('/order/order-'+this.orderData.order_id);
-
+                if(this.job.is_shipment==1){
+                    this.$go('/order/shipment-'+this.orderData.order_id);
+                } else {
+                    this.$go('/order/order-'+this.orderData.order_id);
+                }
             } catch(err){
                 const message=err.responseJSON?.messages?.error;
                 if(message=='notfound'){

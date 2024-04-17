@@ -6,25 +6,8 @@
 </style>
 <template>
     <div style="height:100%;">
-        <ion-header >
-            <ion-toolbar>
-                <ion-item lines="none">
-                    <ion-title>Выбрать день и время</ion-title>
-                    <ion-icon slot="end" @click="cancel();" :icon="closeOutline" size="large"></ion-icon>   
-                </ion-item>
-            </ion-toolbar>
-        </ion-header>
         <ion-content class="ion-padding">
-            <!-- <ion-card color="light">
-                <ion-card-header>
-                    <ion-card-title style="font-size:0.9em">
-                        Время доставки может отличаться
-                    </ion-card-title>
-                </ion-card-header>
-                <ion-card-content style="font-size:0.7em">
-                    Погода, время приготовления, загруженость дорог и другие факторы могут ускорить или замедлить доставку.
-                </ion-card-content>
-            </ion-card> -->
+            <h3 style="color:#999">Выбрать день и время</h3>
             <ion-datetime 
                 style="max-width:100%;border-radius:10px"
                 presentation="date-time" 
@@ -44,13 +27,8 @@
 <script>
 import {
         modalController,
-        IonTitle,
         IonDatetime,
-        IonToolbar,
         IonContent,
-        IonHeader,
-        IonIcon,
-        IonItem,
         IonButton,
 }               from '@ionic/vue'
 import {
@@ -59,13 +37,8 @@ import {
 export default {
     props:['dateRange','defaultDatetime'],
     components:{
-        IonTitle,
         IonDatetime,
-        IonToolbar,
         IonContent,
-        IonHeader,
-        IonIcon,
-        IonItem,
         IonButton,
     },
     setup(){

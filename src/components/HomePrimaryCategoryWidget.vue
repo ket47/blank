@@ -133,6 +133,8 @@ import {
  }                  from 'ionicons/icons'
 import { defineComponent } from 'vue';
 
+import { getPlatforms } from '@ionic/vue';
+
 export default defineComponent({
   components:{
     IonImg,
@@ -181,7 +183,12 @@ export default defineComponent({
         }
         this.old_location_id=this.main_location_id
         try{
-          const primaryStore = await jQuery.get(heap.state.hostname + "Store/primaryNearGet",{location_id:this.main_location_id})
+          const request={
+            location_id:this.main_location_id,
+            platform:getPlatforms(),
+            version:'2.0.5'
+          }
+          const primaryStore = await jQuery.post(heap.state.hostname + "Store/primaryNearGet",request)
           this.productGroupList = Object.entries(primaryStore.category_list).slice(0, this.categoryLimit).map(entry => entry[1])
           this.deliveryTime = Utils.deliveryTimeCalculate(primaryStore.distance,primaryStore.store_time_preparation)
           this.primaryStoreData = primaryStore

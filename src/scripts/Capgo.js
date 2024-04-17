@@ -27,6 +27,7 @@ const Capgo={
                 }
             }
         })
+        return await CapacitorUpdater.current()
     },
     /**
      * check for latest update bundle on server

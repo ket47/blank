@@ -71,11 +71,11 @@
             <ion-button expand="block" @click="suggestFormSend()" color="light">отправить</ion-button>
           </ion-card-content>
         </ion-card>  
-        <ion-item lines="none" v-if="hiddenCount>0" style="margin-top: 30px; color:#ddd">
+        <!-- <ion-item lines="none" v-if="hiddenCount>0" style="margin-top: 30px; color:#ddd">
           <ion-note>
             Количество продавцов, находящихся за пределами радиуса доставки, скрытых из результатов <b>{{hiddenCount}}</b>
           </ion-note>
-        </ion-item>
+        </ion-item> -->
       </div>
   </base-layout>
 </template>
@@ -105,6 +105,8 @@ import {
   IonButton,
   IonNote,
 }                   from "@ionic/vue";
+
+import { getPlatforms } from '@ionic/vue';
 
 export default {
   setup() {
@@ -162,6 +164,8 @@ export default {
           location_id:loc.location_id,
           location_latitude:loc.location_latitude,
           location_longitude:loc.location_longitude,
+          platform:getPlatforms(),
+          version:'2.0.5'
         }
         let response
         response=await Utils.prePost(`${this.$heap.state.hostname}Store/listNearGet`, location)

@@ -90,6 +90,7 @@ export default {
                     order_description:this.order.order_description,
                     order_start_location_id:this.order.start_location_id,
                     order_finish_location_id:this.order.finish_location_id,
+                    order_sum_delivery:this.order.deliveryCalculation.sum
                 }
                 const order_id = await jQuery.post(`${this.$heap.state.hostname}Shipment/itemSync`,JSON.stringify(request))
                 if( order_id>0 ){

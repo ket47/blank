@@ -590,7 +590,7 @@ export default({
             if( this.tariffRule.deliveryIsReady=='busy' && !await this.heavyLoadConfirm() ){
                 return false
             }
-            if( !await this.deliveryAddressConfirm() ){
+            if( this.deliveryByCourierRuleChecked && !await this.deliveryAddressConfirm() ){
                 return false
             }
             this.tariffSplit()

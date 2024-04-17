@@ -273,7 +273,7 @@ export default({
                     order_id:this.order_id,
                     courier_id:item.data.courier_id
                 }
-                await jQuery.post(`${this.$heap.state.hostname}Courier/itemAssign`,request)
+                await jQuery.post(`${this.$heap.state.hostname}DeliveryJob/itemAssign`,request)
                 await this.itemGet()
                 this.$flash("Курьер назначен")
             } catch{
