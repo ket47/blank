@@ -1,7 +1,7 @@
 {
   "images" : [
     {
-      "filename" : "AppIcon-20x20@1x 1.png",
+      "filename" : "AppIcon-512@2x.png",
       "idiom" : "universal",
       "platform" : "ios",
       "size" : "1024x1024"
@@ -55,7 +55,6 @@
       "size" : "60x60"
     },
     {
-      "filename" : "AppIcon-20x20@1x.png",
       "idiom" : "ipad",
       "scale" : "1x",
       "size" : "20x20"
@@ -109,7 +108,6 @@
       "size" : "83.5x83.5"
     },
     {
-      "filename" : "AppIcon-512@2x.png",
       "idiom" : "ios-marketing",
       "scale" : "1x",
       "size" : "1024x1024"
