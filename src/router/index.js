@@ -47,6 +47,10 @@ const routes = [
         component: () => import('@/views/StoreEditProducts.vue')
       },
       {
+        path: '/catalog/store-edit-dmethods-:id',
+        component: () => import('@/views/StoreEditDeliveryMethods.vue')
+      },
+      {
         path: '/catalog/store-edit-:id',
         component: () => import('@/views/StoreEdit.vue')
       },

@@ -2,6 +2,18 @@
   <base-layout :pageLogo="mainLogo" hideBackLink="true">
       <home-slider/>
       <user-address-widget :deliveryTime="primaryDeliveryTime"/>
+      <div class="ion-padding ion-align-items-center" style="display: flex; color: white; background: linear-gradient(to top, rgb(0, 156, 205), rgb(42, 175, 217))">
+        <div class="ion-padding">
+          <img src="/img/delivery_box.png" width="80"/>
+        </div>
+        <div class="ion-padding-start">
+          <b>ВЫЗВАТЬ КУРЬЕРА</b>
+          <p style="font-size: 13px; margin-top: 5px;">Доставим всё, что Вам нужно</p>
+          <router-link to="/order/shipment-draft">
+            <ion-button  color="light">Вызвать</ion-button>
+          </router-link>
+        </div>
+      </div>
       <!-- <home-primary-category-widget @deliveryTimeGet="deliveryTime=>{primaryDeliveryTime=deliveryTime}"/> -->
       <!-- STORES ARE LOADING -->
       <div v-if="!storeList" class="store-list" >
@@ -103,7 +115,6 @@ import {
   IonSkeletonText,
   IonInput,
   IonButton,
-  IonNote,
 }                   from "@ionic/vue";
 
 import { getPlatforms } from '@ionic/vue';
@@ -127,7 +138,6 @@ export default {
     IonSkeletonText,
     IonInput,
     IonButton,
-    IonNote,
     HomeSlider,
     HomePrimaryCategoryWidget,
     HomePromoProductSlider,

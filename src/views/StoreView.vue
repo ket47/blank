@@ -278,9 +278,9 @@ ion-chip .active-chip {
                 <ion-label color="medium">ИНН</ion-label>
                 <ion-text color="dark">{{storeItem.store_tax_num}}</ion-text>
               </ion-item>
-              <ion-item lines="none" v-if="storeItem.store_phone&&0">
+              <ion-item lines="none" v-if="storeItem.store_phone">
                 <ion-label color="medium">Телефон</ion-label>
-                <ion-text color="dark">{{storeItem.store_phone}}</ion-text>
+                <ion-text><a :href="`tel:${storeItem.store_phone}`">{{storeItem.store_phone}}</a></ion-text>
               </ion-item>
               <ion-item lines="none" v-if="storeItem.locations?.length>0">
                 <ion-text color="dark">{{storeItem.locations?.[0].location_address}}</ion-text>

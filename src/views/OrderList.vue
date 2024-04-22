@@ -290,7 +290,7 @@ export default {
             return event.toLocaleDateString(undefined, options);
         },
         courierReadinessCheck(){
-            this.courierJobsInclude=User.courier.isCourier()
+            this.courierJobsInclude=localStorage.user_is_courier || localStorage.user_is_admin
             if(this.courierJobsInclude==0){
                 this.orderType='active';
             }
@@ -385,7 +385,7 @@ export default {
             const modal = await modalController.create({
                 component: DeliveryJobPreview,
                 componentProps:{job},
-                initialBreakpoint: 0.5,
+                initialBreakpoint: 0.75,
                 breakpoints: [0.5]
                 });
             this.$topic.on('dismissModal',()=>{
@@ -405,8 +405,8 @@ export default {
                 const modal = await modalController.create({
                     component: CourierJobPreview,
                     componentProps:{orderData:order},
-                    initialBreakpoint: 0.6,
-                    breakpoints: [0, 0.6, 0.75]
+                    initialBreakpoint: 0.75,
+                    breakpoints: [0.5]
                     });
                 const dismissFn=function(){
                     modal.dismiss();

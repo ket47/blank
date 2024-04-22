@@ -34,7 +34,6 @@
                 {{job.finish_address}}
             </a>
         </ion-item>
-        <ion-item></ion-item>
     </ion-list>
     <ion-button v-if="job.stage=='awaited'" @click="jobTake()" expand="block" color="success">Взять задание</ion-button>
     <ion-button v-else @click="itemOpen()" expand="block">Открыть заказ</ion-button>

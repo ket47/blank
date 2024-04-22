@@ -127,21 +127,40 @@
           <div class="tarif-list">
             <div class="tarif-item">
               <div class="tarif-left">
-                <h4>Тариф "Свобода"</h4>
-                <p>Почувствуйте вкус свободы с нашим максимальным тарифом</p>
+                <h4>Тариф "Старт"</h4>
+                <p>Вы можете воспользоваться бесплатной версией нашего сервиса.</p>
                 <ul class="tarif-conditions">
                   <li><b class="icon green-icon">✔</b>Размещение на <a href="#qst_1">платформе</a>.</li>
-                  <li><b class="icon green-icon">✔</b><a href="#qst_5">Система</a> управления заказами.</li>
-                  <li><b class="icon green-icon">✔</b>Синхронизация с <a href="#qst_10">системами торгового учёта</a>.</li>
+                  <li><b class="icon green-icon">✔</b><a href="#qst_5">Система</a> управления заказами (до 30 заказов в месяц).</li>
                   <li><b class="icon green-icon">✔</b>Функция "Электронное меню" (доступно для кафе и ресторанов).</li>
-                  <li><b class="icon green-icon">✔</b>Маркетинговая поддержка для проведения рекламных акций.</li>
-                  <li><b class="icon green-icon">✔</b>Приём <a href="#qst_6">онлайн-оплат</a>.</li>
-                  <li><b class="icon green-icon">✔</b>Ускоренные <a href="#qst_9">взаиморасчёты</a>.</li>
-                  <li><b class="icon green-icon">✔</b>Услуги <a href="#qst_11">доставки</a> с помощью наших курьеров.</li>
+                  <li><b class="icon red-icon">✖</b>Синхронизация с <a href="#qst_10">системами торгового учёта</a>.</li>
+                  <li><b class="icon red-icon">✖</b>Маркетинговая поддержка для проведения рекламных акций.</li>
+                  <li><b class="icon red-icon">✖</b>Приём <a href="#qst_6">онлайн-оплат</a>.</li>
+                  <li><b class="icon red-icon">✖</b>Ускоренные <a href="#qst_9">взаиморасчёты</a>.</li>
+                  <li><b class="icon red-icon">✖</b>Услуги <a href="#qst_11">доставки</a> с помощью наших курьеров.</li>
                 </ul>
               </div>
               <div class="tarif-right">
-                <h1>25%</h1>
+                <h3>Бесплатно</h3>
+              </div>
+            </div>
+            <div class="tarif-item">
+              <div class="tarif-left">
+                <h4>Тариф "Маркетплейс"</h4>
+                <p>В случае, когда Вам не нужны ни услуги доставки, ни приём электронных платежей, Вы всё ещё имеете возможность увеличить охват воспользовавшись нашим сервисом.</p>
+                <ul class="tarif-conditions">
+                  <li><b class="icon green-icon">✔</b>Размещение на <a href="#qst_1">платформе</a>.</li>
+                  <li><b class="icon green-icon">✔</b><a href="#qst_5">Система</a> управления заказами.</li>
+                  <li><b class="icon green-icon">✔</b>Функция "Электронное меню" (доступно для кафе и ресторанов).</li>
+                  <li><b class="icon green-icon">✔</b>Синхронизация с <a href="#qst_10">системами торгового учёта</a>.</li>
+                  <li><b class="icon green-icon">✔</b>Маркетинговая поддержка для проведения рекламных акций.</li>
+                  <li><b class="icon red-icon">✖</b>Приём <a href="#qst_6">онлайн-оплат</a>.</li>
+                  <li><b class="icon red-icon">✖</b>Ускоренные <a href="#qst_9">взаиморасчёты</a>.</li>
+                  <li><b class="icon red-icon">✖</b>Услуги <a href="#qst_11">доставки</a> с помощью наших курьеров.</li>
+                </ul>
+              </div>
+              <div class="tarif-right">
+                <h1>7%</h1>
                 <h6>Ставка</h6>
               </div>
             </div>
@@ -152,8 +171,8 @@
                 <ul class="tarif-conditions">
                   <li><b class="icon green-icon">✔</b>Размещение на <a href="#qst_1">платформе</a>.</li>
                   <li><b class="icon green-icon">✔</b><a href="#qst_5">Система</a> управления заказами.</li>
-                  <li><b class="icon green-icon">✔</b>Синхронизация с <a href="#qst_10">системами торгового учёта</a>.</li>
                   <li><b class="icon green-icon">✔</b>Функция "Электронное меню" (доступно для кафе и ресторанов).</li>
+                  <li><b class="icon green-icon">✔</b>Синхронизация с <a href="#qst_10">системами торгового учёта</a>.</li>
                   <li><b class="icon green-icon">✔</b>Маркетинговая поддержка для проведения рекламных акций.</li>
                   <li><b class="icon green-icon">✔</b>Приём <a href="#qst_6">онлайн-оплат</a>.</li>
                   <li><b class="icon green-icon">✔</b>Ускоренные <a href="#qst_9">взаиморасчёты</a>.</li>
@@ -167,21 +186,21 @@
             </div>
             <div class="tarif-item">
               <div class="tarif-left">
-                <h4>Тариф "Маркетплейс"</h4>
-                <p>В случае, когда Вам не нужны ни услуги доставки, ни приём электронных платежей, Вы всё ещё имеете возможность увеличить охват воспользовавшись нашим сервисом.</p>
+                <h4>Тариф "Свобода"</h4>
+                <p>Почувствуйте вкус свободы с нашим максимальным тарифом</p>
                 <ul class="tarif-conditions">
                   <li><b class="icon green-icon">✔</b>Размещение на <a href="#qst_1">платформе</a>.</li>
                   <li><b class="icon green-icon">✔</b><a href="#qst_5">Система</a> управления заказами.</li>
-                  <li><b class="icon green-icon">✔</b>Синхронизация с <a href="#qst_10">системами торгового учёта</a>.</li>
                   <li><b class="icon green-icon">✔</b>Функция "Электронное меню" (доступно для кафе и ресторанов).</li>
+                  <li><b class="icon green-icon">✔</b>Синхронизация с <a href="#qst_10">системами торгового учёта</a>.</li>
                   <li><b class="icon green-icon">✔</b>Маркетинговая поддержка для проведения рекламных акций.</li>
-                  <li><b class="icon red-icon">✖</b>Приём <a href="#qst_6">онлайн-оплат</a>.</li>
-                  <li><b class="icon red-icon">✖</b>Ускоренные <a href="#qst_9">взаиморасчёты</a>.</li>
-                  <li><b class="icon red-icon">✖</b>Услуги <a href="#qst_11">доставки</a> с помощью наших курьеров.</li>
+                  <li><b class="icon green-icon">✔</b>Приём <a href="#qst_6">онлайн-оплат</a>.</li>
+                  <li><b class="icon green-icon">✔</b>Ускоренные <a href="#qst_9">взаиморасчёты</a>.</li>
+                  <li><b class="icon green-icon">✔</b>Услуги <a href="#qst_11">доставки</a> с помощью наших курьеров.</li>
                 </ul>
               </div>
               <div class="tarif-right">
-                <h1>7%</h1>
+                <h1>25%</h1>
                 <h6>Ставка</h6>
               </div>
             </div>

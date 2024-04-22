@@ -49,6 +49,8 @@ const User = {
         if( User.isCourier() ){
             await User.courier.get();
         }
+        localStorage.user_is_courier=User.isCourier()
+        localStorage.user_is_admin=User.isAdmin()
         return user;
     },
     async autoSignIn(){
@@ -125,19 +127,19 @@ const User = {
     isAdmin(){
         const user_types=heap.state?.user?.member_of_groups?.group_types
         if( user_types?.indexOf('admin')>-1 ){
-          return true
+          return 1
         }
-        return false
+        return 0
     },
     isCourier(){
         let user_types="";
         try{
             user_types=heap.state.user.member_of_groups.group_types;
             if( user_types.indexOf('courier')>-1 ){
-                return true;
+                return 1;
             }
         }catch{/** */}
-        return false;
+        return 0;
     },
     isSupplier(){
         return true

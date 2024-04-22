@@ -80,6 +80,7 @@ export default({
             },
             suggestions:[],
             addressSearchQuery:null,
+            markDeviceOnMap:true,
             locationType,
             locSettings,
             selectedPlacemark:0,
@@ -123,11 +124,13 @@ export default({
             if( !e || !e.get ){
                 return
             }
+            this.markDeviceOnMap=false
             this.suggestions=[]
             this.selectedAddress=null
             this.coords=e.get('coords')
         },
         async suggestionsGet(){
+            this.markDeviceOnMap=false
             if( !this.addressSearchQuery ){
                 this.suggestions=[]
                 return
@@ -166,8 +169,11 @@ export default({
         if( lastStoredPosition?.location_latitude ){
             this.coords=[lastStoredPosition.location_latitude,lastStoredPosition.location_longitude]
         }
+        /**
+         * device location got with delay so dont use it if user started search
+         */
         const geo=await User.geo.get()
-        if(geo){
+        if(this.markDeviceOnMap && geo){
             const {coords}=geo
             this.coords=[coords.latitude,coords.longitude]
             this.$flash("На карте отмечено ваше местоположение")

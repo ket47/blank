@@ -328,7 +328,7 @@ export default({
             }
             if(this.promo){
                 const min_order_sum_product=this.promo?.min_order_sum_product??0;
-                if( this.order.order_sum_product<min_order_sum_product ){
+                if( this.order.order_sum_product*1<min_order_sum_product*1 ){
                     return `Сумма заказа со скидкой в ${this.order.order_sum_promo}${this.$heap.state.currencySign} должна быть больше чем ${min_order_sum_product}${this.$heap.state.currencySign}`
                 }
             }
