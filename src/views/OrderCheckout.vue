@@ -43,6 +43,11 @@
                     <ion-radio value="pickup_by_customer">Самовывоз</ion-radio>
                 </ion-item>
             </ion-radio-group>
+            <ion-item  v-if="deliveryType=='delivery_by_store'" detail="" @click="$go(`/modal/store-dmethods-${order?.store?.store_id}`)">
+                <ion-text style="font-size:0.9em">
+                    Условия доставки {{order?.store?.store_name}}
+                </ion-text>
+            </ion-item>
 
 
 
@@ -158,13 +163,18 @@
             <ion-item>
                 <ion-textarea style="background-color:var(--ion-color-light-tint);border-radius:10px" label="" rows="2" placeholder="комментарий к заказу" @change="orderDescriptionChanged()" v-model="order.order_description"></ion-textarea>
             </ion-item>
-            <ion-item>
+            <ion-item v-if="deliveryType=='delivery_by_courier'">
                 <ion-text style="font-size:0.9em">
                     Я согласен(на) с <router-link to="/page/rules-customer">офертой об оказании услуг доставки</router-link>
                 </ion-text>
                 <ion-checkbox slot="end" v-model="termsAccepted" aria-label=""></ion-checkbox>
             </ion-item>
-
+            <ion-item v-else>
+                <ion-text style="font-size:0.9em">
+                    Я согласен(на) с <router-link :to='`/modal/store-dmethods-${order?.store?.store_id}`'>с условиями доставки {{order?.store?.store_name}}</router-link>
+                </ion-text>
+                <ion-checkbox slot="end" v-model="termsAccepted" aria-label=""></ion-checkbox>
+            </ion-item>
         </ion-list>
 
         <ion-card v-if="checkoutError" color="warning">

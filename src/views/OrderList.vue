@@ -76,28 +76,39 @@
                 </div>
             </ion-accordion>
         </ion-accordion-group>
-        <ion-list v-if="orderType=='jobs' && routeList?.length>0">
-            <ion-list-header>Маршрут</ion-list-header>
-            <div v-for="job in routeListComputed" :key="job.job_id">
-                <ion-item lines="none" style="--inner-padding-bottom:0px" @click="itemClickConfirm(job)">
+        <ion-list v-if="orderType=='jobs' && routeListGroupped">
+            <ion-list-header><h3>Маршрут</h3></ion-list-header>
+            <div v-for="route in routeListGroupped" :key="route.courier_id">
+                <ion-item lines="none">
+                    <ion-avatar slot="start" v-if="route.image_hash">
+                        <ion-img style="border-radius:10px;" :src="`${$heap.state.hostname}image/get.php/${route.image_hash}.150.150.webp`"/>
+                    </ion-avatar>
                     <ion-text>
-                        {{job.job_name}} ({{job.courier_name||'-'}})
+                        <b>{{route.courier_name}}</b>
                     </ion-text>
-                    <ion-chip slot="end" :color="job.stage_color">
-                        <ion-icon :icon="checkmarkOutline"></ion-icon>
-                        <ion-label color="dark"><small>{{job.stage_label}}</small></ion-label>
-                    </ion-chip>
+                    <ion-icon slot="end" :icon="square" :style="`color:${route.actual_color}`"/>
                 </ion-item>
-                <ion-item lines="full" @click="itemClickConfirm(job)">
-                    <div style="display:grid;grid-template-columns:40px auto 20px;width:100%">
-                        <div style="padding:3px;color:var(--ion-color-primary)"><b>{{job.start_plan_date}}</b></div>
-                        <div style="padding:3px;color:#333"><small>{{job.start_address}}</small></div>
-                        <div><ion-icon :icon="square" :style="`color:${job.start_color}`"/></div>
-                        <div style="padding:3px;color:#999">{{job.finish_plan_date}}</div>
-                        <div style="padding:3px;color:#333"><small>{{job.finish_address}}</small></div>
-                        <div><ion-icon :icon="square" :style="`color:${job.finish_color}`"/></div>
-                    </div>
-                </ion-item>
+                <div v-for="(job) in route.jobs" :key="job.job_id">
+                    <ion-item lines="none" style="--inner-padding-bottom:0px" @click="itemClickConfirm(job)">
+                        <ion-text>
+                            {{job.job_name}} <b style="color:var(--ion-color-primary)">{{job.finish_plan_scheduled_date}}</b>
+                        </ion-text>
+                        <ion-chip slot="end" :color="job.stage_color">
+                            <ion-icon :icon="checkmarkOutline"></ion-icon>
+                            <ion-label color="dark"><small>{{job.stage_label}}</small></ion-label>
+                        </ion-chip>
+                    </ion-item>
+                    <ion-item lines="full" @click="itemClickConfirm(job)">
+                        <div style="display:grid;grid-template-columns:40px auto 20px;width:100%">
+                            <div style="padding:3px;color:var(--ion-color-primary)"><b>{{job.start_plan_date}}</b></div>
+                            <div style="padding:3px;color:#333"><small>{{job.start_address}}</small></div>
+                            <div><ion-icon :icon="square" :style="`color:${job.start_color}`"/></div>
+                            <div style="padding:3px;color:#999">{{job.finish_plan_date}}</div>
+                            <div style="padding:3px;color:#333"><small>{{job.finish_address}}</small></div>
+                            <div><ion-icon :icon="square" :style="`color:${job.finish_color}`"/></div>
+                        </div>
+                    </ion-item>
+                </div>
             </div>
         </ion-list>
         <ion-list v-if="['active','done'].includes(orderType) && orderList==null">
@@ -243,10 +254,18 @@ export default {
             }
             return this.jobList;
         },
-        routeListComputed(){
-            if(!this.routeList){
-                return [];
+        routeListGroupped(){
+            if( !this.routeList ){
+                return null;
             }
+            let routeList={}
+            for(let i in this.routeList.open_shifts){
+                let shift=this.routeList.open_shifts[i]
+                shift.jobs=[] 
+                routeList['route_'+shift.courier_id]=shift
+            }
+            
+
             const stageDict={
                 'scheduled':'Запланирован',
                 'awaited':'Очередь',
@@ -254,7 +273,7 @@ export default {
                 'assigned':'Назначен',
                 'started':'В пути'
             }
-            for(let job of this.routeList){
+            for(let job of this.routeList.delivery_jobs){
                 const finish_plan=new Date((job.start_plan*1+job.finish_arrival_time*1)*1000)
                 const start_plan = new Date(job.start_plan*1000)
                 job.start_plan_date=start_plan.toLocaleTimeString(undefined, { hour:'numeric',minute:'numeric' })
@@ -262,8 +281,19 @@ export default {
                 job.stage_label=stageDict[job.stage]||'-'
                 job.stage_color=['scheduled','awaited'].includes(job.stage)?'light':'primary'
                 job.is_courier_job=1
+                if(job.finish_plan_scheduled>0){
+                    const finish_plan_scheduled = new Date(job.finish_plan_scheduled*1000)
+                    job.finish_plan_scheduled_date=finish_plan_scheduled.toLocaleDateString(undefined, { month: 'numeric', day: 'numeric',hour:'numeric',minute:'numeric' })
+                }
+                if( !job.courier_id ){
+                    job.courier_id=0
+                    if(!routeList['route_0']){
+                        routeList['route_0']={courier_name:'',actual_color:'#fff',jobs:[]}
+                    }
+                }
+                routeList['route_'+job.courier_id].jobs.push(job)
             }
-            return this.routeList;
+            return routeList
         },
     },
     mounted(){
@@ -303,7 +333,7 @@ export default {
         async listLoad(listType,mode='reload'){
             if( listType=='jobs' ){
                 this.autoReload(listType);
-                this.listJobLoad();
+                this.listRouteLoad();
                 return;
             }
             let order_group_type='system_finish';
@@ -338,26 +368,27 @@ export default {
             this.orderList=null
             this.listLoad(listType);
         },
-        async listJobLoad(){
-            try{
-                const courier_id=User.courier?.data?.courier_id;
-                this.jobList=await Order.api.listJobGet(courier_id);
-                this.orderList=null;
-                this.listRouteLoad()
-            } catch(err){
-                const message=err.responseJSON?.messages?.error;
-                if(message=='notready'){
-                    User.courier.status='notready';
-                    this.courierReadinessCheck();
-                }
-            }
-        },
+        // async listJobLoad(){
+        //     try{
+        //         const courier_id=User.courier?.data?.courier_id;
+        //         this.jobList=await Order.api.listJobGet(courier_id);
+        //         this.orderList=null;
+        //         this.listRouteLoad()
+        //     } catch(err){
+        //         const message=err.responseJSON?.messages?.error;
+        //         if(message=='notready'){
+        //             User.courier.status='notready';
+        //             this.courierReadinessCheck();
+        //         }
+        //     }
+        // },
         async listRouteLoad(){
             try{
                 const request={}
-                this.routeList=await jQuery.post(`${this.$heap.state.hostname}DeliveryJob/listGet`,request)
+                this.routeList=await jQuery.post(`${this.$heap.state.hostname}DeliveryJob/routeListGet`,request)
             } catch(err){
-                const message=err.responseJSON?.messages?.error;
+                const message=err.responseJSON?.messages?.error
+                console.log(err)
             }
         },
         autoReload(listType){

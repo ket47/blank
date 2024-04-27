@@ -732,10 +732,10 @@ export default  {
         store_time_closes=0
       }
 
-      if( store_time_opens>=store_time_closes && store_time_closes!=null || store_time_closes==0 ){
-        store_time_closes=store_time_opens+1
-        this.$flash("Время закрытия должно быть позже открытия")
-      }
+      // if( store_time_opens>=store_time_closes && store_time_closes!=null || store_time_closes==0 ){
+      //   store_time_closes=store_time_opens+1
+      //   this.$flash("Время закрытия должно быть позже открытия")
+      // }
       const request={
         store_id:this.storeId,
         ['store_time_opens_'+dayIndex]:store_time_opens,

@@ -247,6 +247,10 @@ const routes = [
   ]
   },
   {
+    path: '/modal/store-dmethods-:id',
+    component: () => import('@/views/StoreDeliveryMethods.vue')
+  },
+  {
     path: '/modal/order-checkout-:id',
     component: OrderCheckout
   },

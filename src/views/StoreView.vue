@@ -312,14 +312,14 @@ ion-chip .active-chip {
               <ion-text v-else>0₽</ion-text>
             </div>
           </div>
-          <div class="delivery-variant" v-if="storeItem.store_delivery_allow==1">
+          <div class="delivery-variant" v-if="storeItem.store_delivery_allow==1" @click="$go(`/modal/store-dmethods-${storeId}`)">
             <div>
-              <ion-text>Доставит {{storeItem.store_name}}</ion-text><br/>
+              <ion-text>
+                Доставит {{storeItem.store_name}}
+                <b style="font-size:10px">Условия доставки </b>
+              </ion-text>
             </div>
-            <div>
-              <ion-text v-if="storeItem.store_delivery_cost > 0">{{storeItem.store_delivery_cost}}₽</ion-text>
-              <ion-text v-else>0₽</ion-text>
-            </div>
+            <div style="padding-left: 15px;"><ion-icon :icon="openOutline"></ion-icon></div>
           </div>
           <div class="delivery-variant" v-if="storeItem.store_pickup_allow==1">
             <div>
@@ -456,6 +456,7 @@ import {
   compassOutline,
   addOutline,
   arrowRedoOutline,
+  openOutline,
 }                         from "ionicons/icons";
 import ImageSliderComp    from "@/components/ImageSliderComp";
 import GroupList          from "@/components/GroupList.vue";
@@ -504,6 +505,7 @@ export default{
       compassOutline,
       addOutline,
       arrowRedoOutline,
+      openOutline,
       slideModules:[Autoplay]
     };
   },
