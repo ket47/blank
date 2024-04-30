@@ -10,6 +10,15 @@
                 <ion-button @click="itemUpdate()" expand="block">Сохранить</ion-button>
             </ion-col>
         </ion-row>
+        <ion-row>
+          <ion-col>
+            <h6>Изображения</h6>
+            <image-tile-comp :images="images" :image_holder="'store_dmethods'" :image_holder_id="store_id" controller="Store" title="Картинка к методам доставки" ref="storeDmethodsImgs"></image-tile-comp>
+            <ion-button @click="$refs.storeDmethodsImgs.take_photo()" color="light" expand="block">
+              <ion-icon :src="cameraOutline" slot="start"/> Добавить изображение 5шт
+            </ion-button>
+          </ion-col>
+        </ion-row>
     </ion-grid>
   </base-layout>
 </template>
@@ -19,15 +28,17 @@ import CKEditor from "@ckeditor/ckeditor5-vue";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 
 import "@ckeditor/ckeditor5-build-classic/build/translations/ru";
-//import SourceEditing from '@ckeditor/ckeditor5-source-editing/src/sourceediting';
-import {documentTextOutline,codeOutline,bookmarkOutline} from 'ionicons/icons';
+import {documentTextOutline,cameraOutline} from 'ionicons/icons';
+
+
+import imageTileComp        from '@/components/ImageTileComp.vue'
 
 import { 
     IonButton,
     IonGrid,
     IonRow,
     IonCol,
-
+    IonIcon,
 }               from '@ionic/vue'
 import jQuery   from "jquery";
 
@@ -37,10 +48,12 @@ export default {
     IonGrid,
     IonRow,
     IonCol,
+    IonIcon,
+    imageTileComp,
     ckeditor: CKEditor.component
   },
   setup() {
-    return { documentTextOutline, codeOutline, bookmarkOutline };
+    return { documentTextOutline, cameraOutline};
   },
   data() {
     return {

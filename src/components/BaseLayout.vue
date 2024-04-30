@@ -20,45 +20,39 @@
       </ion-refresher>
 
       <slot />
-
-
-
-      <div v-if="iosInstallPromptShow" class="installPrompt">
-        <!-- <div style="padding-top:30px;">
-          <small>Установите приложение Tezkel из AppStore<br/></small> 
-          <a href="https://apps.apple.com/tr/app/tezkel-%D0%B1%D1%8B%D1%81%D1%82%D1%80%D0%B0%D1%8F-%D0%B4%D0%BE%D1%81%D1%82%D0%B0%D0%B2%D0%BA%D0%B0/id6449783821" target="_new">
-            <ion-button expand="block">
-              <ion-icon slot="start" :src="logoAppleAppstore"></ion-icon>
-              Установить
-            </ion-button>
-          </a>
-        </div> -->
-        <div>
-          Установите на iPhone: <br/> 
-          - нажмите <ion-icon :src="shareOutline" color="primary" size="large" /> и потом <br/> 
-          - На экран «Домой» <ion-icon :src="addCircleOutline" size="large" color="light" />
-        </div>
-        <div>
-          <ion-icon :src="closeOutline" style="float:right" size="large" color="light" @click="iosInstallPromptDismiss()" />
-        </div>
-      </div>
-
-      <!-- <div v-if="androidInstallPromptShow" class="installPrompt">
-        <div style="padding-top:30px;">
-          <small>Установите приложение Tezkel из GooglePlay<br/></small> 
-          <a href="https://play.google.com/store/apps/details?id=com.tezkel.twa" target="_new">
-            <ion-button expand="block">
-              <ion-icon slot="start" :src="logoGooglePlaystore"></ion-icon>
-              Установить
-            </ion-button>
-          </a>
-        </div>
-        <div>
-          <ion-icon :src="closeOutline" style="float:right" size="large" color="light" @click="androidInstallPromptDismiss()" />
-        </div>
-      </div> -->
-
-
+      <ion-modal :is-open="is_install_popup_open" :initialBreakpoint="0.4" @didDismiss="installPromptDissmiss()">
+        <ion-content class="ion-padding">
+          <h3>Установите приложение</h3>
+          <div v-if="isIos">
+            <ion-list lines="none">
+              <ion-item>
+                <img slot="start" src="/img/icons/Safari_browser_logo.svg" style="width:27px"/>
+                откройте сайт tezkel.com в Safari 
+              </ion-item>
+              <ion-item>
+                 нажмите поделиться 
+                 <ion-icon slot="start" :src="shareOutline" color="primary" size="large"/>
+              </ion-item>
+              <ion-item>
+                 На экран «Домой»
+                 <ion-icon slot="start" :src="addCircleOutline" color="primary" size="large"/>
+              </ion-item>
+            </ion-list>
+          </div>
+          <div v-if="isAndroid">
+            <p style="color:#999;padding:10px 0px 10px 0px">
+              Установите наше приложение, чтобы оно всегда было под рукой
+            </p> 
+            <a href="https://play.google.com/store/apps/details?id=com.tezkel.twa" target="_new">
+              <ion-button expand="block">
+                <ion-icon slot="start" :src="logoGooglePlaystore"></ion-icon>
+                Установить
+              </ion-button>
+            </a>
+          </div>
+          <ion-button expand="block" color="light" @click="installPromptDissmiss()">Закрыть</ion-button>
+        </ion-content>
+      </ion-modal>
       <div style="height:30px"><!--spacer for bottom main tabs--></div>
       <ion-fab v-if="isInteractingWithServer" vertical="bottom" slot="fixed">
         <tezkel-loader/>
@@ -82,6 +76,7 @@ import {
   IonIcon,
   IonButton,
   isPlatform,
+  IonModal,
 }                           from "@ionic/vue";
 import CartHeader           from "@/components/CartHeader";
 import { defineComponent }  from "@vue/runtime-core";
@@ -94,7 +89,7 @@ import {
   shareOutline,
   addCircleOutline, 
   logoAppleAppstore,
-  logoGooglePlaystore,
+  logoGooglePlaystore
 }                           from "ionicons/icons";
 
 export default defineComponent({
@@ -121,7 +116,8 @@ export default defineComponent({
     IonIcon,
     IonButton,
     CartHeader,
-    TezkelLoader
+    TezkelLoader,
+    IonModal,
   },
   setup(){
     return {
@@ -136,8 +132,7 @@ export default defineComponent({
   },
   data(){
     return {
-      isIosPromptDismissed:localStorage.iosInstallAppPromptDismissed?1:0,
-      isAndroidPromptDismissed:localStorage.androidInstallAppPromptDismissed?1:0,
+      is_install_popup_open:0
     }
   },
   computed:{
@@ -156,12 +151,14 @@ export default defineComponent({
     isIos(){
       return isPlatform('ios')
     },
-    iosInstallPromptShow(){
-      return isPlatform('ios') && !isPlatform('capacitor') && !this.isIosPromptDismissed
+    isAndroid(){
+      return isPlatform('android')
     },
-    androidInstallPromptShow(){
-      return isPlatform('android') && !isPlatform('capacitor') && !this.isAndroidPromptDismissed
-    },
+  },
+  mounted(){
+    setTimeout(()=>{
+      this.installPromptInit()
+    },10000)
   },
   methods:{
     reload(){
@@ -173,13 +170,17 @@ export default defineComponent({
       }
       history.back()
     },
-    iosInstallPromptDismiss(){
-      this.isIosPromptDismissed=localStorage.iosInstallAppPromptDismissed=1
+    installPromptInit(){
+        const alreadyDissmissed=localStorage.installPrompDissmissed*1 || localStorage.iosInstallAppPromptDismissed*1 || localStorage.androidInstallAppPromptDismissed*1
+        if( alreadyDissmissed || isPlatform('capacitor') ){
+          return
+        }
+        this.is_install_popup_open=1
     },
-    androidInstallPromptDismiss(){
-      this.isAndroidPromptDismissed=localStorage.androidInstallAppPromptDismissed=1
-    },
-    
+    installPromptDissmiss(){
+      localStorage.installPrompDissmissed=1
+      this.is_install_popup_open=0
+    },    
   },
 })
 </script>

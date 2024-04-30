@@ -98,7 +98,8 @@ import HomePrimaryCategoryWidget  from "@/components/HomePrimaryCategoryWidget";
 import HomePromoProductSlider     from "@/components/HomePromoProductSlider";
 import HomeStoreSlider            from "@/components/HomeStoreSlider";
 import UserAddressWidget          from "@/components/UserAddressWidget";
-import mainLogo                   from "@/assets/icons/tezkel_logo.svg";
+import standartLogo               from "@/assets/icons/tezkel_logo.svg";
+import simpleLogo                 from "@/assets/icons/tezkel_simple_logo.svg";
 
 import Utils        from '@/scripts/Utils.js'
 
@@ -115,12 +116,14 @@ import {
   IonSkeletonText,
   IonInput,
   IonButton,
+  isPlatform,
+  getPlatforms
 }                   from "@ionic/vue";
-
-import { getPlatforms } from '@ionic/vue';
 
 export default {
   setup() {
+    const alter_logo=isPlatform('ios')//isPlatform('capacitor')
+    const mainLogo=isPlatform('ios')?simpleLogo:standartLogo
     return {
       mainLogo
     }
@@ -175,7 +178,7 @@ export default {
           location_latitude:loc.location_latitude,
           location_longitude:loc.location_longitude,
           platform:getPlatforms(),
-          version:'2.0.5'
+          version:'2.0.8'
         }
         let response
         response=await Utils.prePost(`${this.$heap.state.hostname}Store/listNearGet`, location)

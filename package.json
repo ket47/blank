@@ -29,6 +29,7 @@
     "@capacitor/status-bar": "^5.0.6",
     "@capgo/capacitor-updater": "^5.3.48",
     "@ckeditor/ckeditor5-build-classic": "^34.0.0",
+    "@ckeditor/ckeditor5-font": "^41.3.1",
     "@ckeditor/ckeditor5-source-editing": "^34.2.0",
     "@ckeditor/ckeditor5-vue": "^4.0.0",
     "@ionic/core": "^7.0.0",

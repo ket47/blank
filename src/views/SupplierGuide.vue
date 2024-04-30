@@ -25,7 +25,7 @@
       </div>
       <div class="winnings-container main-block">
         <div class="main-block-content">
-          <h2>Что Вы получите, работая именно с Tezkel?</h2>
+          <h2>Что Вы получите, работая именно с Нами?</h2>
           <div class="winnings-grid">
             <div class="winning-item">
               <div class="winning-item-img">
@@ -83,7 +83,7 @@
 
       <div class="benefits-container main-block">
         <div class="main-block-content">
-          <h2>Сделайте всего 3 шага и присоединяйтесь к Tezkel!</h2>
+          <h2>Сделайте всего 3 шага и присоединяйтесь к нам!</h2>
           <div class="benefits-list">
             <div class="benefit-item">
               <div class="benefit-img">

@@ -42,7 +42,7 @@
         </ion-list>
         <ion-grid v-if="transaction">
             <ion-row>
-                <ion-col><ion-button color="medium" @click="itemDelete()" expand="block" fill="outline">Удалить</ion-button></ion-col>
+                <ion-col><ion-button color="danger" @click="itemDelete()" expand="block" fill="clear">Удалить</ion-button></ion-col>
                 <ion-col><ion-button color="primary" @click="itemSave()" expand="block">Сохранить</ion-button></ion-col>
             </ion-row>
         </ion-grid>
@@ -326,7 +326,7 @@ export default {
             this.transaction.trans_description=Utils.render(template,context)
         },
         async itemDelete(){
-            if(!confirm("Вы уверенны?")){
+            if(!confirm("Вы уверены?")){
                 return
             }
             try{

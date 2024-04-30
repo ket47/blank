@@ -246,7 +246,7 @@ ion-icon{
         </ion-item>
         <ion-item lines="full" button detail href="https://t.me/tezkelbot" target="_new">
             <ion-icon :icon="chatboxEllipsesOutline" slot="start" color="primary"></ion-icon>
-            <ion-label>Телеграм бот <a href="https://t.me/tezkelbot" target="_new">@tezkelbot</a></ion-label>
+            <ion-label>Телеграм бот <a href="https://t.me/tezkelbot" target="_new">@telegrambot</a></ion-label>
         </ion-item>
       </ion-item-group>
 

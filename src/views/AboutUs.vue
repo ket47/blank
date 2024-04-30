@@ -16,33 +16,17 @@
       <div class="intro-container main-block">
         <div class="main-block-content">
           <div class="landing-desc-col landing-desc-feature-col">
-            <h2 style="text-align: left;">Сервис курьерской доставки</h2>
+            <h2 style="text-align: left;">Площадка для продавцов по близости к вам</h2>
             <p>Супер быстрая доставка товаров на дом теперь не роскошь, а вполне доступная для каждого услуга. 
-                Экономия времени, разнообразный ассортимент и возможность получить любой товар не выходя за пределы любимого домашнего очага, - все это возможно с Tezkel.
+                Экономия времени, разнообразный ассортимент и возможность получить любой товар не выходя за пределы любимого домашнего очага, - все это возможно с Нами.
             </p>
           </div>
-          <div class="landing-desc-col landing-desc-feature-col image-col" style="text-align: center;">
+          <div class="landing-desc-col landing-desc-feature-col image-col" style="text-align: center;display:none">
               <img src="/img/about_us/tezkel_anasayfa1.png"/>
           </div>
         </div>
       </div>
 
-
-      <div style="padding:10px;margin-top:25px;display:none">
-        <h2 style="text-align: left;">Сайт как приложение</h2>
-        <p>
-          С помощью сайта tezkel.com вы можете делать абсолютно все, потому что сайт сделан как <b>Веб приложение</b>. Вы можете создать ярлык сайта в телефоне и пользоваться полным функционалом сервиса. 
-        </p>
-        <p>
-          Всё же для телефонов на ОС Андроид есть возможность использовать классическое приложение.
-        </p>
-        <a href="https://play.google.com/store/apps/details?id=com.tezkel.twa" target="_new" stlye="text-decoration: none">
-          <ion-button color="primary">
-            <ion-icon :src="logoGooglePlaystore" slot="start" />
-            
-            скачать из google play</ion-button>
-        </a>
-      </div>
 
       <div class="order-stages-container main-block">
         <div class="main-block-content">
@@ -74,7 +58,7 @@
 
       <div class="sign-up-suggest main-block">
         <div class="main-block-content">
-          <h2>Хотите продавать на Tezkel?</h2>
+          <h2>Хотите продавать у нас?</h2>
           <h4>Зарегистрируйтесь и создайте собственный магазин!</h4>
           <div class="actions">
             <router-link to="/user/supplier-dashboard">
@@ -87,7 +71,7 @@
 
       <div class="main-block">
         <div class="benefits-container main-block-content">
-          <h2>Tezkel – ультрасовременный сервис экпресс-доставки</h2>
+          <h2>Ультрасовременный сервис</h2>
           <div class="benefits-list">
             <div class="benefit-item">
               <img src="/img/about_us/tezkel_anasayfa_icon_speed.png"/>
@@ -112,7 +96,7 @@
             <div class="benefit-item">
               <img src="/img/about_us/tezkel_anasayfa_icon_tarif.png"/>
               <h4>Разумные тарифы</h4>
-              <p>Мы предлагаем крайне выгодные цены на экпресс-доставку всего 90 руб. К тому же, мы регулярно предлагаем различные купоны и акции, которые делают стоимость услуг еще приятнее.</p>
+              <p>Мы предлагаем крайне выгодные цены на экпресс-доставку. К тому же, мы регулярно предлагаем различные купоны и акции, которые делают стоимость услуг еще приятнее.</p>
             </div>
             <div class="benefit-item">
               <img src="/img/about_us/tezkel_anasayfa_icon_flex.png"/>
@@ -130,7 +114,9 @@
 <script>
 
 import FooterDesktop  from "@/components/FooterDesktop";
-import mainLogo       from "@/assets/icons/tezkel_logo.svg";
+import standartLogo               from "@/assets/icons/tezkel_logo.svg";
+import simpleLogo                 from "@/assets/icons/tezkel_simple_logo.svg";
+
 import {
   logoGooglePlaystore,
   arrowBackOutline
@@ -141,6 +127,7 @@ import {
   IonContent, 
   IonButton,
   IonIcon,
+  isPlatform,
 } from "@ionic/vue"
 
 export default {
@@ -148,6 +135,7 @@ export default {
     "pageDefaultBackLink"
   ],
   setup() {
+        const mainLogo=isPlatform('ios')?simpleLogo:standartLogo
     return {
       mainLogo,
       logoGooglePlaystore,
@@ -227,10 +215,6 @@ export default {
 }
 
 .intro-container{
-  /*background-image: url("/public/img/about_us/tezkel_anasayfa1.jpg");
-  background-position-y: bottom;
-  background-position-x: right;
-  min-height: 600px;*/
   display: grid;
   background-color: #f2f2f2;
 }
@@ -239,9 +223,6 @@ export default {
   grid-template-columns: 1fr 1fr;
   align-items: center;
   padding: 1em;
-}
-.intro-container .main-block-content .image-col{
-
 }
 .intro-container .main-block-content img{
   margin-bottom: -5em;
@@ -283,9 +264,6 @@ export default {
 }
 .sign-up-suggest h4{
   color: white;
-}
-.sign-up-suggest .main-block-content{
-  
 }
 .benefits-container{
   text-align: center;
