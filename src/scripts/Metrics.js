@@ -6,8 +6,8 @@ const Metrics={
         await this.recordIncomingUser()
     },
     async recordIncomingUser(){
-        const deviceMetricId=localStorage.metric_id
-        if(deviceMetricId){
+        const metric_id=await Utils.pref.get('metric_id')
+        if(metric_id){
             return
         }
         const url = new URL(location.href);
@@ -21,7 +21,8 @@ const Metrics={
             come_url:url.href
         }
         try{
-            localStorage.metric_id= await jQuery.post(`${heap.state.hostname}Metric/itemCreate`,request)
+            const new_metric_id= await jQuery.post(`${heap.state.hostname}Metric/itemCreate`,request)
+            await Utils.pref.set('metric_id',new_metric_id)
         }catch{/** */}
     },
 };

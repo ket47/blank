@@ -29,7 +29,7 @@ class Catalog{
         $store_id ?? (int)func_get_arg(0);
         $context = $this->storeDataGet($store_id);
         if(!$context){
-            return redirect('/');
+            return notfound();
         }
         view('store',$context);
     }
@@ -72,7 +72,7 @@ class Catalog{
         $product_id ?? (int)func_get_arg(0);
         $context = $this->productDataGet($product_id);
         if(!$context){
-            return redirect('/');
+            return notfound();
         }
         view('product',$context);
     }
@@ -105,7 +105,7 @@ class Catalog{
         $category_id ?? (int)func_get_arg(0);
         $context=$this->categoryDataGet($category_id);
         if(empty($context)){
-            return redirect('/');
+            return notfound();
         }
         view('category',$context);
     }

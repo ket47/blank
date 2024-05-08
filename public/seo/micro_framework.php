@@ -55,10 +55,18 @@ function parseDotEnv(){
 }
 parseDotEnv();
 
-function redirect($url, $permanent = false)
-{
+function redirect($url, $permanent = true){
     header('Location: ' . $url, true, $permanent ? 301 : 302);
     exit();
+}
+
+function notfound( $redirect=true ){
+    http_response_code(404);
+    echo "Page not found <a href=/>Home page</a>";
+    if( $redirect ){
+        //echo '<meta http-equiv="refresh" content="0; url=/">';
+    }
+    exit;
 }
 
 try{
