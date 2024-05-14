@@ -291,7 +291,7 @@ export default {
                         routeList['route_0']={courier_name:'',actual_color:'#fff',jobs:[]}
                     }
                 }
-                routeList['route_'+job.courier_id].jobs.push(job)
+                routeList['route_'+job.courier_id]?.jobs?.push(job)
             }
             return routeList
         },

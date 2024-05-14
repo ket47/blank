@@ -1,13 +1,11 @@
 import jQuery from "jquery"
 import heap from '@/heap';
-import Topic from '@/scripts/Topic';
 const Metrics={
     async init(){
         await this.recordIncomingUser()
     },
     async recordIncomingUser(){
-        const metric_id=await Utils.pref.get('metric_id')
-        if(metric_id){
+        if( sessionStorage.metric_come_data_set ){
             return
         }
         const url = new URL(location.href);
@@ -21,8 +19,8 @@ const Metrics={
             come_url:url.href
         }
         try{
-            const new_metric_id= await jQuery.post(`${heap.state.hostname}Metric/itemCreate`,request)
-            await Utils.pref.set('metric_id',new_metric_id)
+            await jQuery.post(`${heap.state.hostname}Metric/itemCreate`,request)
+            sessionStorage.metric_come_data_set=1
         }catch{/** */}
     },
 };

@@ -35,7 +35,7 @@
             </a>
         </ion-item>
     </ion-list>
-    <ion-button v-if="job.stage=='awaited'" @click="jobTake()" expand="block" color="success">Взять задание</ion-button>
+    <ion-button v-if="job.stage=='awaited'" @click="jobTake()" expand="block" :color="job.payment_is_cash==1?'warning':'success'">Взять задание</ion-button>
     <ion-button v-else @click="itemOpen()" expand="block">Открыть заказ</ion-button>
     <ion-button @click="close()" expand="block" color="light">Закрыть</ion-button>
  </ion-content>
