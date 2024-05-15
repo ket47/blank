@@ -9,6 +9,9 @@
             <ion-segment-button value="ledger">
                 Проводки
             </ion-segment-button>
+            <ion-segment-button value="sellerReport" >
+                Отчет
+            </ion-segment-button>
         </ion-segment>
         <div v-if="activeTab=='ledger'">
             <ion-list>
@@ -18,6 +21,19 @@
                 </ion-item>
             </ion-list>
             <ledger-comp :account="ledgerAccount" ref="ledger"/>
+        </div>
+        <div v-if="activeTab=='sellerReport'">
+            <ion-list>
+                <ion-item v-if="pickedStore" button @click="storePick()" color="primary">
+                    <ion-icon slot="start" :src="storefrontOutline"/>
+                    <ion-label>{{pickedStore.store_name}}</ion-label>
+                </ion-item>
+                <ion-item v-else button @click="storePick()" color="warning">
+                    <ion-icon slot="start" :src="storefrontOutline"/>
+                    <ion-label>Выбрать продавца</ion-label>
+                </ion-item>
+            </ion-list>
+            <statistics-seller-report :store="pickedStore" v-if="activeTab=='sellerReport'"/>
         </div>
     </base-layout>
 </template>
@@ -29,14 +45,16 @@ import {
   IonItem,
   IonLabel,
   IonIcon,
+    modalController,
  }                          from '@ionic/vue';
  import {
     addOutline,
     refreshOutline,
+    storefrontOutline,
  }                          from "ionicons/icons";
-import jquery               from 'jquery'
 import LedgerComp           from '@/components/LedgerComp.vue';
-
+import StatisticsSellerReport from "@/components/StatisticsSellerReport.vue";
+import ItemPicker             from '@/components/ItemPicker.vue'
 
 export default {
     components: {
@@ -47,19 +65,20 @@ export default {
         IonItem,
         IonLabel,
         IonIcon,
+    StatisticsSellerReport
     },
     setup(){
         return {
             addOutline,
             refreshOutline,
+            storefrontOutline,
         }
     },
     data(){
         return{
             activeTab:'ledger',
             ledgerAccount:'supplier',
-            ledgerHolder:null,
-            ledgerHolderId:null,
+            pickedStore:null
         }
     },
     computed:{
@@ -67,7 +86,25 @@ export default {
     methods:{
         itemCreate(){
             this.$go('/admin/transaction-edit-0')
-        }
+        },
+        async storePick(){
+            const modal = await modalController.create({
+                component: ItemPicker,
+                componentProps:{itemType:'store'},
+                initialBreakpoint: 0.75,
+                breakpoints: [0.75, 1],
+                canDissmiss:true,
+            });
+            modal.present()
+            this.$topic.on('dismissModal',()=>{
+                modal.dismiss()
+            });
+            const item=await modal.onDidDismiss();
+            if(!item.data){
+                return
+            }
+            this.pickedStore=item.data
+        },
     },
     ionViewDidEnter(){
         this.$refs.ledger.listGet()
