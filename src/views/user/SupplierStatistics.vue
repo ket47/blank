@@ -1,15 +1,15 @@
 <template>
     <base-layout pageTitle="Статистика продавца" pageDefaultBackLink="/user">
-        <ion-segment swipe-gesture="true" v-model="activeTab" @ionChange="activeTabChanged($event)">
-            <ion-segment-button value="ledger" >
-                Баланс
-            </ion-segment-button>
+        <ion-segment swipe-gesture="true" v-model="activeTab">
             <ion-segment-button value="sellerReport" >
                 Отчет
             </ion-segment-button>
+            <ion-segment-button value="ledger" >
+                Баланс
+            </ion-segment-button>
         </ion-segment>
-        <ledger-comp permanentTag="acc::supplier" v-if="activeTab=='ledger'"/>
-        <statistics-seller-report v-if="activeTab=='sellerReport'"/>
+        <ledger-comp v-if="activeTab=='ledger'" permanentTag="acc::supplier"/>
+        <statistics-seller-report v-if="activeTab=='sellerReport'" :store="store"/>
     </base-layout>
 </template>
 
@@ -22,15 +22,21 @@ import {
 import {
       receiptOutline
 }                   from "ionicons/icons";
+import 
+    ledgerComp 
+                    from "@/components/LedgerComp.vue";
+import 
+    StatisticsSellerReport 
+                    from "@/components/StatisticsSellerReport.vue";
 
-import ledgerComp from "@/components/LedgerComp.vue";
-import StatisticsSellerReport from "@/components/StatisticsSellerReport.vue";
+import jQuery       from "jquery";
+
 export default {
     components:{
-    IonSegment,
-    IonSegmentButton,
-    ledgerComp,
-    StatisticsSellerReport
+        IonSegment,
+        IonSegmentButton,
+        ledgerComp,
+        StatisticsSellerReport
     },
     setup(){
         return {
@@ -39,12 +45,20 @@ export default {
     },
     data(){
         return {
-            activeTab:'sellerReport'
+            activeTab:'sellerReport',
+            storeId:this.$route.params.id,
+            store:null,
         }
     },
+    mounted(){
+        this.storeGet(this.storeId)
+    },
     methods:{
-        async activeTabChanged(){
-            //
+        async storeGet( store_id ){
+            const request={
+                store_id
+            }
+            this.store=await jQuery.post(`${this.$heap.state.hostname}Store/itemGet`,request)
         },
     },
 }

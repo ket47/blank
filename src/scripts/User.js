@@ -245,6 +245,7 @@ const User = {
     },
     geo:{
         trackingActive:false,
+        trackedPositionExpires:0,
         clock:null,
         async switch(){
             /**
@@ -257,7 +258,7 @@ const User = {
                 Topic.publish('userMainLocationSet',location_main)
                 this.trackingStop()
             } else
-            if( lastStoredPosition ){//load last saved location
+            if( lastStoredPosition ){//load last saved location from gps
                 heap.commit('setUserCurrentLocation', lastStoredPosition)
                 Topic.publish('userCurrentLocationSet',lastStoredPosition)
                 this.trackingStart()
@@ -268,50 +269,6 @@ const User = {
                 this.trackingStart()
             }
         },
-        async currentLocationConfirm( address ){
-            const alert = await alertController.create({
-                header: 'Адрес доставки',
-                message:`Правильно ли мы определили ваш адрес: "${address}"?`,
-                buttons: [
-                  {
-                    text: 'Нет',
-                    role: 'cancel',
-                  },
-                  {
-                    text: 'Да, правильно',
-                    role: 'confirm',
-                  },
-                ],
-            });
-            await alert.present();
-            const { role } = await alert.onDidDismiss();
-            if( role=='confirm' ){
-                return true
-            }
-            return false
-        },
-        async addLocationAdvise( address ){
-            const alert = await alertController.create({
-                header: 'Адрес доставки',
-                message:`Рекомендуем зарегистрироваться и установить верный адрес, чтобы видеть продавцов поблизости`,
-                buttons: [
-                  {
-                    text: 'Отмена',
-                    role: 'cancel',
-                  },
-                  {
-                    text: 'Регистрация',
-                    role: 'confirm',
-                  },
-                ],
-            });
-            await alert.present();
-            const { role } = await alert.onDidDismiss();
-            if( role=='confirm' ){
-                return true
-            }
-            return false
-        },
         async get(){
             try{
                 return await Geolocation.getCurrentPosition({ enableHighAccuracy: false, timeout: 20000, maximumAge: 1000 });
@@ -321,10 +278,10 @@ const User = {
             return null
         },
         async trackingStart(){
-            if(localStorage.trackedPositionExpires>Date.now()){
+            if(User.geo.trackedPositionExpires>Date.now()){
                 return
             }
-            localStorage.trackedPositionExpires=(Date.now()*1+5*60*60*1000)//5 hours
+            User.geo.trackedPositionExpires=(Date.now()*1+0.5*60*60*1000)//0.5 hours
             try{
                 User.geo.trackingStop();
                 User.geo.trackingActive=true
@@ -349,23 +306,17 @@ const User = {
                         group_name:'Current',
                         location_latitude:curr_lat,
                         location_longitude:curr_lon,
-                        location_address: 'около ' + (current_address??'текущего местоположения'),
+                        location_address: (current_address??'текущего местоположения'),
                         timestamp:position.timestamp
                     }
                     
                     if(current_address && User.geo.trackingActive){
                         User.geo.trackingStop()
-                        const confirmed=await User.geo.currentLocationConfirm(current_address)
-                        if( !confirmed ){
-                            const want_register=await User.geo.addLocationAdvise()
-                            if( want_register ){
-                                router.push('/user/sign-up')
-                            }
-                            return 
-                        }
-                        User.geo.lastStoredSet(current_location)
-                        heap.commit('setUserCurrentLocation',current_location)
-                        Topic.publish('userCurrentLocationSet',current_location)
+                        Topic.publish('userCurrentLocationFound',current_location)
+                        /**
+                         * If geolocation was permitted then try to figure out current address
+                         * and present it to user
+                         */
                     }
                 });
             } catch (err){
@@ -382,6 +333,22 @@ const User = {
                 //console.log('trackingStop',err)
             }
         },
+        /**
+         * If user accepts presented location use it as main
+         */
+        async currentLocationSet(current_location){
+            // const confirmed=await User.geo.currentLocationConfirm(current_address)
+            // if( !confirmed ){
+            //     const want_register=await User.geo.addLocationAdvise()
+            //     if( want_register ){
+            //         router.push('/user/sign-up')
+            //     }
+            //     return 
+            // }
+            User.geo.lastStoredSave(current_location)
+            heap.commit('setUserCurrentLocation',current_location)
+            Topic.publish('userCurrentLocationSet',current_location)
+        },
         async geocode(coords){
             try{
                 await loadYmap({
@@ -396,13 +363,13 @@ const User = {
         },
         lastStoredGet(){
             try{
-                return JSON.parse(localStorage.lastStoredPosition)??null
+                return JSON.parse(sessionStorage.lastStoredPosition)??null
             } catch{/** */}
             return null
         },
-        lastStoredSet(current_location){
+        lastStoredSave(current_location){
             try{
-                localStorage.lastStoredPosition=JSON.stringify(current_location)
+                sessionStorage.lastStoredPosition=JSON.stringify(current_location)
             } catch{/** */}
         }
     },

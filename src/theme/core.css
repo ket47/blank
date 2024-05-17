@@ -48,22 +48,22 @@ ion-searchbar{
 ion-card-title{
     color: var(--ion-text-main);
 }
-
 @media print {
-    .printDiv {
-        background-color: white;
-        height: 100%;
-        width: 100%;
-        position: fixed;
-        top: 0;
-        left: 0;
-        margin: 0;
-        padding: 15px;
-        font-size: 14px;
-        line-height: 18px;
-        
+    body * {
+        visibility: hidden;
+        overflow: visible !important;
+
     }
-    ion-header,ion-tab-bar{
-        display:none;
+    .printDiv, .printDiv * {
+        visibility: visible;
+        height: auto !important;
+
+    }
+    .printDiv{
+        position: absolute;
+        left: 0;
+        top: 0;
     }
 }
+
+

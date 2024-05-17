@@ -23,6 +23,8 @@
                   v-model="verification_code"
                   type="numeric"
                   inputmode="numeric"
+                  maxlength="4"
+                  pattern="\d{4}"
                   placeholder="- - - -"
                   @ionInput="verification_code=$event.target.value;onSubmit()"
                   enterkeyhint="go"
@@ -91,6 +93,12 @@ export default  {
   },
   created(){
     this.smsSend();
+    if( navigator.credentials ){
+      navigator.credentials.get({
+        otp: {transport:['sms']}
+      })
+      .then(otp => this.verification_code = otp.code);
+    }
   },
   ionViewDidEnter(){
     this.smsSend();

@@ -78,11 +78,11 @@ ion-icon{
           </ion-item>
           <ion-item @click="$go('/admin/list-moderation')" lines="full" button detail>
               <ion-icon :icon="ribbonOutline" slot="start" color="primary"></ion-icon>
-              <ion-label>Элементы</ion-label>
+              <ion-label>Списки</ion-label>
           </ion-item>
           <ion-item @click="$go('/admin/tariff-list')" lines="full" button detail>
               <ion-icon :icon="briefcaseOutline" slot="start" color="primary"></ion-icon>
-              <ion-label>Список тарифов</ion-label>
+              <ion-label>Тарифы</ion-label>
           </ion-item>
           <ion-item @click="$go('/admin/accounting')" lines="full" button detail>
               <ion-icon :icon="pieChartOutline" slot="start" color="primary"></ion-icon>
@@ -91,9 +91,6 @@ ion-icon{
           <ion-item @click="$go('/admin/mailing-list')" lines="full" button detail>
               <ion-icon :icon="chatboxEllipsesOutline" slot="start" color="primary"></ion-icon>
               <ion-label>Рассылка</ion-label>
-          </ion-item>
-          <ion-item @click="$go('/order/shipment-draft')" lines="full" button detail>
-              <ion-label>Вызов курьера</ion-label>
           </ion-item>
         </ion-item-group>
       </ion-item-group>
@@ -183,12 +180,6 @@ ion-icon{
             <ion-icon :icon="storefrontOutline" slot="start"></ion-icon>
             {{store.store_name||store.store_name_new||'- - -'}}
           </ion-item>
-
-          <ion-item lines="full" button detail @click="$go('/user/supplier-statistics')">
-              <ion-icon :icon="pieChartOutline" slot="start" color="primary"></ion-icon>
-              <ion-label>Статистика</ion-label>
-          </ion-item>
-     
         </div>
         <div v-else>
           <ion-item lines="none">

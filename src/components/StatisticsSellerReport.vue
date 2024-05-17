@@ -3,41 +3,52 @@
     display:grid;
     grid-template-columns:repeat(2,auto);
     font-size:.8em;
-    background-color: #eee;
+    background-color: #ccc;
     border-radius: 2px;
-    margin: 5px;
+    margin: 10px;
     width:250px;
-    ---box-shadow: #eee 0px 0px 5px;
+    row-gap:1px;
 }
 .table_head>div{
-    padding: 5px;
+    padding: 15px;
+    background-color: #fcfcfc;
 }
 .table_head>div:nth-child(even){
     text-align: right;
+    color:var(--ion-color-primary);
 }
 .table{
     display:grid;
     grid-template-columns:repeat(11,auto);
-    font-size:.8em;
+    font-size:.6em;
+    margin: 10px;
 }
 .table_h{
     display:contents;
     font-weight:bold;
     text-align: center;
     white-space: nowrap;
+    border-radius:15px;
 }
 .table_r{
     display:contents;
 }
 .table_r:nth-child(odd)>div{
-    background-color: #eee;
+    background-color: #fcfcfc;
+}
+.table_r:hover>div{
+    background-color: var(--ion-color-primary-tint);
 }
 .table_h>div{
-    background-color: #def;
-    padding: 5px;
+    color:var(--ion-color-primary);
+    font-weight: bold;
+    background-color: var(--ion-color-primary-tint);
+    padding: 15px;
+    border-bottom: 3px var(--ion-color-primary) solid;
 }
 .table_r>div{
-    padding: 5px;
+    padding: 10px;
+    border-bottom: 1px #ccc solid;
 }
 </style>
 <template>
@@ -52,26 +63,24 @@
         <ion-item>
           <ion-text>Начальная дата</ion-text>
           <div slot="end" style="display:grid;grid-template-columns:120px;">
-            <ion-input type="date" v-model="start_at"  @ionChange="reportGet()"/>
+            <ion-input type="date" v-model="start_at"  @ionInput="reportGet()"/>
           </div>
         </ion-item>
         <ion-item>
           <ion-text>Конечная дата</ion-text>
           <div slot="end" style="display:grid;grid-template-columns:120px;">
-            <ion-input type="date" v-model="finish_at"  @ionChange="reportGet()" />
+            <ion-input type="date" v-model="finish_at"  @ionInput="reportGet()" />
           </div>
         </ion-item>
       </ion-list>
     </ion-accordion>
   </ion-accordion-group>
 
-
-    <div class="horizontalScroller">
-        <ion-chip @click="reportExport()" color="medium"><ion-icon :src="downloadOutline"/><ion-label>Скачать</ion-label></ion-chip>
-        <ion-chip @click="reportPrint()" color="medium"><ion-icon :src="printOutline"/><ion-label>Напечатать</ion-label></ion-chip>
-        <ion-chip @click="reportGet()" color="medium"><ion-icon :src="reloadOutline"/><ion-label>Обновить</ion-label></ion-chip>
-    </div>
-
+  <div class="horizontalScroller">
+      <ion-chip @click="reportExport()" color="medium"><ion-icon :src="downloadOutline"/><ion-label>Скачать</ion-label></ion-chip>
+      <!-- <ion-chip @click="reportPrint()" color="medium"><ion-icon :src="printOutline"/><ion-label>Напечатать</ion-label></ion-chip> -->
+      <ion-chip @click="reportGet()" color="medium"><ion-icon :src="reloadOutline"/><ion-label>Обновить</ion-label></ion-chip>
+  </div>
 
   <ion-searchbar v-model="searchQuery" placeholder="Поиск по товару" @ionInput="reportGet()" debounce="500" />
   <ion-list v-if="report==null">
@@ -81,7 +90,7 @@
         <ion-label slot="end" color="success"><ion-skeleton-text animated style="width:50px" /></ion-label>
     </ion-item>
   </ion-list>
-  <div v-else-if="report.body.length>0" style="overflow-x:scroll" class="printDiv">
+  <div v-else-if="report.body.length>0" class="printDiv">
     <div class="table_head">
         <div>Количество</div><div>{{report.head.total_quantity}}</div>
         <div>Скидка</div><div>{{report.head.total_discount}}</div>
@@ -89,7 +98,7 @@
         <div>Вознаграждение</div><div>{{report.head.total_commission}}</div>
         <div>К выплате</div><div>{{report.head.total_topay}}</div>
     </div>
-    <div class="table">
+    <div class="table" style="overflow-x:scroll">
         <div class="table_h">
             <div>Время</div>
             <div>Заказ №</div>
@@ -123,15 +132,11 @@
         Нет заказов в данном периоде
     </ion-item>
   </ion-list>
-
 </div>
 </template>
-
-
 <script>
 import {
   IonIcon,
-  IonTitle,
   IonLabel,
   IonItem,
   IonInput,
@@ -142,8 +147,6 @@ import {
   IonSkeletonText,
   IonSearchbar,
   IonChip,
-  modalController,
-  actionSheetController,
 }                             from "@ionic/vue";
 import { 
   calendarOutline,
@@ -155,12 +158,10 @@ import {
   printOutline,
 }                             from "ionicons/icons";
 import jquery                 from "jquery";
-import User                   from '@/scripts/User.js'
 
-export default {
+export default { 
   components: {
     IonIcon,
-    IonTitle,
     IonLabel,
     IonItem,
     IonInput,
@@ -175,19 +176,19 @@ export default {
   props:['store'],
   setup(){
     return {
-  calendarOutline,
-  addOutline,
-  closeCircle,
-  pricetagOutline,
-  downloadOutline,
-  reloadOutline,
-  printOutline,
+      calendarOutline,
+      addOutline,
+      closeCircle,
+      pricetagOutline,
+      downloadOutline,
+      reloadOutline,
+      printOutline,
     }
   },
   data() {
     console.log(this.query)
     const today = new Date();
-    const firstDay = new Date(Date.parse(`${today.getFullYear()}-${today.getMonth()+1}-1`));
+    const firstDay = new Date(Date.parse(`${today.getFullYear()}-${today.getMonth()+1}-01Z`));
     return {
       start_at: firstDay.toISOString().slice(0, 10),
       finish_at: today.toISOString().slice(0, 10),
@@ -196,11 +197,6 @@ export default {
       report:null,
       today:today,
     };
-  },
-  computed:{
-    is_admin(){
-      return User.isAdmin()
-    }
   },
   watch:{
     store:function(){
