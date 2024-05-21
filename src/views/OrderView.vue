@@ -24,16 +24,16 @@
             <ion-popover :is-open="isOpenDeliveryRejectionPopover" @didDismiss="isOpenDeliveryRejectionPopover=false">
                 <ion-content>
                 <ion-list>
-                    <ion-item :button="true" :detail="false" @click="action_rejected_reason('ОТКАЗ КУРЬЕРА: Отказ клиента')">
+                    <ion-item :button="true" :detail="false" @click="action_rejected_reason('Отказ клиента')">
                         <ion-label>Отказ клиента</ion-label>
                     </ion-item>
-                    <ion-item :button="true" :detail="false" @click="action_rejected_reason('ОТКАЗ КУРЬЕРА: Заказ не готов/не соответствует')">
+                    <ion-item :button="true" :detail="false" @click="action_rejected_reason('Заказ не готов/не соответствует')">
                         <ion-label>Заказ не готов/не соответствует</ion-label>
                     </ion-item>
-                    <ion-item :button="true" :detail="false" @click="action_rejected_reason('ОТКАЗ КУРЬЕРА: Поломка в пути')">
+                    <ion-item :button="true" :detail="false" @click="action_rejected_reason('Поломка в пути')">
                         <ion-label>Поломка в пути</ion-label>
                     </ion-item>
-                    <ion-item :button="true" :detail="false" @click="action_rejected_reason('ОТКАЗ КУРЬЕРА: Заказ испорчен')">
+                    <ion-item :button="true" :detail="false" @click="action_rejected_reason('Заказ испорчен')">
                         <ion-label>Заказ испорчен</ion-label>
                     </ion-item>
                 </ion-list>
