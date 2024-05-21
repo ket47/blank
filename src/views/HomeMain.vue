@@ -2,18 +2,6 @@
   <base-layout :pageLogo="mainLogo" hideBackLink="true">
       <home-slider/>
       <user-address-widget :deliveryTime="primaryDeliveryTime"/>
-      <div class="ion-padding ion-align-items-center" style="display: flex; color: white; background: linear-gradient(to top, rgb(0, 156, 205), rgb(42, 175, 217))">
-        <div class="ion-padding">
-          <img src="/img/delivery_box.png" width="80"/>
-        </div>
-        <div class="ion-padding-start">
-          <b>ВЫЗВАТЬ КУРЬЕРА</b>
-          <p style="font-size: 13px; margin-top: 5px;">Доставим всё, что Вам нужно</p>
-          <router-link to="/order/shipment-draft">
-            <ion-button  color="light">Вызвать</ion-button>
-          </router-link>
-        </div>
-      </div>
       <!-- <home-primary-category-widget @deliveryTimeGet="deliveryTime=>{primaryDeliveryTime=deliveryTime}"/> -->
       <!-- STORES ARE LOADING -->
       <div v-if="!storeList" class="store-list" >
@@ -74,6 +62,24 @@
           <home-store-slider v-if="storeSliderLoadQueue >= 2" :store-list="storeList" :filter="{member_of_groups: {value: 'halal', type: 'includes'}}" sliderTitle="Халяль" sliderTitleColor="#41a663" backgroundImage="/img/halal_background.jpg"/>    
           <home-store-slider v-if="storeSliderLoadQueue >= 3" :store-list="storeList" :filter="{member_of_groups: {value: 'foodstore', type: 'includes'}}" sliderTitle="Магазины" sliderTitleColor="#893abf" backgroundImage="/img/market_background.jpg"/>    
         </ion-list>
+        <!-- <ion-item lines="none" v-if="hiddenCount>0" style="margin-top: 30px; color:#ddd">
+          <ion-note>
+            Количество продавцов, находящихся за пределами радиуса доставки, скрытых из результатов <b>{{hiddenCount}}</b>
+          </ion-note>
+        </ion-item> -->
+      </div>
+      <div class="ion-padding ion-align-items-center" style="display: flex; color: white; background: linear-gradient(to top, rgb(0, 156, 205), rgb(42, 175, 217))">
+        <div class="ion-padding">
+          <img src="/img/delivery_box.png" width="80"/>
+        </div>
+        <div class="ion-padding-start">
+          <b>ВЫЗВАТЬ КУРЬЕРА</b>
+          <p style="font-size: 13px; margin-top: 5px;">Доставим всё, что Вам нужно</p>
+          <router-link to="/order/shipment-draft">
+            <ion-button  color="light">Вызвать</ion-button>
+          </router-link>
+        </div>
+      </div>
         <ion-card v-if="!suggestFormHidden">
           <ion-card-header>
             <ion-card-subtitle>Не нашли то, что искали?</ion-card-subtitle>
@@ -83,12 +89,7 @@
             <ion-button expand="block" @click="suggestFormSend()" color="light">отправить</ion-button>
           </ion-card-content>
         </ion-card>  
-        <!-- <ion-item lines="none" v-if="hiddenCount>0" style="margin-top: 30px; color:#ddd">
-          <ion-note>
-            Количество продавцов, находящихся за пределами радиуса доставки, скрытых из результатов <b>{{hiddenCount}}</b>
-          </ion-note>
-        </ion-item> -->
-      </div>
+
   </base-layout>
 </template>
 
@@ -198,6 +199,7 @@ export default {
       return found
     },
     async outFormSend(){
+      this.listNearReload()
       this.out.phone??=this.$heap.state.user?.user_phone
       this.out.address??=this.showndelivery_address
       if( !this.$heap.state.user?.user_id || this.$heap.state.user?.user_id<0 ){
@@ -218,6 +220,7 @@ export default {
       this.outofrangeFormHidden=1
     },
     async suggestFormSend(){
+      this.listNearReload()
       if(!this.storeSuggestion){
         this.$flash("Напишите что нам стоило бы добавить")
         return 

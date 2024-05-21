@@ -72,6 +72,11 @@
         <ion-icon :src="chevronBack" slot="start"/>
         Показать {{storeItem.store_name}}
       </ion-item>
+      <ion-item @click="$go(`/user/supplier-statistics-${storeId}`)" button>
+        <ion-icon :src="chevronBack" slot="start"/>
+        Статистика
+        <ion-icon :src="pieChartOutline" slot="end" color="primary"/>
+      </ion-item>
       <ion-item @click="$go(`/catalog/store-edit-products-${storeId}`)" button>
         <ion-icon :src="chevronBack" slot="start"/>
         Быстрое управление товарами
@@ -448,6 +453,7 @@ import {
   cartOutline,
   rocketOutline,
   swapHorizontalOutline,
+  pieChartOutline,
 }                           from 'ionicons/icons'
 import imageTileComp        from '@/components/ImageTileComp.vue'
 import UserAddressPicker    from '@/components/UserAddressPicker.vue'
@@ -501,6 +507,7 @@ export default  {
       cartOutline,
       rocketOutline,
       swapHorizontalOutline,
+      pieChartOutline,
       }
   },
   data(){

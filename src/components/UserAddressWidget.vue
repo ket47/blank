@@ -1,10 +1,4 @@
 <style scoped>
-  .delivery-adress{
-    
-  }
-  .delivery-time{
-
-  }
   .center{
     display: flex;
     align-items: center;
@@ -56,6 +50,22 @@
         <ion-textarea rows="1" placeholder="комментарий к адресу" @change="locationCommentChanged()" v-model="location_shown.location_comment"></ion-textarea>
     </ion-item>
   </ion-list>
+  <ion-card v-if="location_shown?.is_default==1">
+    <ion-card-header>
+      <ion-card-title>
+        Укажите адрес доставки
+      </ion-card-title>
+    </ion-card-header>
+    <ion-card-content v-if="location_unconfirmed">
+      <p>Ваш адрес определился как <span style="color:var(--ion-color-primary)"><b>{{location_unconfirmed.location_address}}</b></span>.</p>
+      <p>Использовать его для поиска продавцов поблизости?</p>
+      <ion-button expand="block" @click="confirmCurrentLocation()">Использовать адрес</ion-button>
+    </ion-card-content>
+    <ion-card-content v-else>
+      Рекомендуем зарегистрироваться и установить верный адрес, чтобы видеть продавцов поблизости
+      <ion-button expand="block" @click="$go('/user/sign-up')">Регистрация</ion-button>
+    </ion-card-content>
+  </ion-card>
 </template>
 
 <script>
@@ -68,16 +78,20 @@ import {
   IonList,
   IonThumbnail,
   IonChip,
- }  from "@ionic/vue";
+
+  IonCard,
+  IonCardHeader,
+  IonCardTitle,
+  IonCardSubtitle,
+  IonCardContent,
+}  from "@ionic/vue";
 
 import { 
   locationOutline, 
   chevronDownOutline,
   timeOutline
 }                               from "ionicons/icons";
-import heap                     from "@/heap";
-import router                   from '@/router';
-import Topic                    from '@/scripts/Topic.js'
+import User                    from '@/scripts/User.js'
 import jQuery                   from 'jquery';
 
 export default {
@@ -91,6 +105,12 @@ export default {
       IonList,
       IonThumbnail,
       IonChip,
+
+      IonCard,
+      IonCardHeader,
+      IonCardTitle,
+      IonCardSubtitle,
+      IonCardContent,
   },
   setup() {
     return { 
@@ -101,14 +121,19 @@ export default {
   },
   data() {
     return {
-      location_shown: heap.state.user.location_main,
+      location_shown: this.$heap.state.user.location_main,
+      location_unconfirmed:null
     };
   },
   created(){
-    Topic.on('userMainLocationSet',mainloc=>this.location_shown=mainloc)
-    Topic.on('userCurrentLocationSet',currloc=>this.location_shown=currloc)
+    this.$topic.on('userCurrentLocationFound',unconfirmedloc=>this.location_unconfirmed=unconfirmedloc)
+    this.$topic.on('userMainLocationSet',mainloc=>this.location_shown=mainloc)
+    this.$topic.on('userCurrentLocationSet',currloc=>this.location_shown=currloc)
   },
   methods: {
+    confirmCurrentLocation(){
+      User.geo.currentLocationSet(this.location_unconfirmed)
+    },
     selectDeliveryAddress() {
         this.$go('/modal/user-addresses');
     },
@@ -122,7 +147,7 @@ export default {
   },
   computed: {
     isSignedIn() {
-      return heap.state.user.user_id && heap.state.user.user_id > -1;
+      return this.$heap.state.user.user_id && this.$heap.state.user.user_id > -1;
     },
     isMainLocationSet(){
         return this.location_shown?1:0;

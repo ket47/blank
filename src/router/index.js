@@ -156,7 +156,7 @@ const routes = [
         component: () => import('@/views/user/CourierStatistics.vue')
       },
       {
-        path: '/user/supplier-statistics',
+        path: '/user/supplier-statistics-:id',
         component: () => import('@/views/user/SupplierStatistics.vue')
       },
       {

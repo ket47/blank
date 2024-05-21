@@ -48,3 +48,22 @@ ion-searchbar{
 ion-card-title{
     color: var(--ion-text-main);
 }
+@media print {
+    body * {
+        visibility: hidden;
+        overflow: visible !important;
+
+    }
+    .printDiv, .printDiv * {
+        visibility: visible;
+        height: auto !important;
+
+    }
+    .printDiv{
+        position: absolute;
+        left: 0;
+        top: 0;
+    }
+}
+
+
