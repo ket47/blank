@@ -33,3 +33,6 @@ npm-debug.log*
 /nbproject/private/
 public/seo/.htaccess
 .env
+package.json
+package-lock.json
+package.json
