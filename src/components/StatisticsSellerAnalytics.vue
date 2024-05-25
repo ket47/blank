@@ -111,9 +111,11 @@ export default {
     async productsGet() {
       try {
         const response = await jquery.post(`${this.$heap.state.hostname}Statistics/sellProductFunnelGet`, {store_id: 119, point_span: 7, point_num: 10})
-        this.parseStatisticResponse(response)
-        this.parseFunnelData(response)
-        this.parseTimelineData(response)
+        if(response.body.length > 0){
+          this.parseStatisticResponse(response)
+          this.parseFunnelData(response)
+          this.parseTimelineData(response)
+        }
       } catch (err) {
         const exception_code = err?.responseJSON?.messages?.error;
         switch (exception_code) {
@@ -134,11 +136,13 @@ export default {
         this.dataset[param] = {
           avg: response.head.avg[param],
           value: response.body[response.body.length - 1][param],
-          series: []
+          series: [],
+          dates: []
         }
         for(var i in response.body){
           if(response.body[i][param]){
             this.dataset[param].series.push(response.body[i][param])
+            this.dataset[param].dates.push(response.body[i].point_finish)
           }
         }
       }
@@ -171,7 +175,8 @@ export default {
       for(var key in bars){
         this.timelineSeries.push({
           name: bars[key],
-          data: this.dataset[key].series
+          data: this.dataset[key].series,
+          dates: this.dataset[key].dates
         })
       }
     },

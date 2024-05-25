@@ -1,5 +1,5 @@
 <template>
-  <ion-card>
+  <ion-card style="contain: initial;  overflow: visible; ">
     <ion-card-header style="padding-bottom: 0">
       <ion-card-subtitle>{{ label }}</ion-card-subtitle>
       <ion-card-title>
@@ -105,7 +105,8 @@ export default {
           show: false,
           labels: { show: false },
           axisBorder: { show: false },
-          axisTicks: { show: false }
+          axisTicks: { show: false },
+          categories: [],
         },
         yaxis: {
           show: false,
@@ -163,10 +164,23 @@ export default {
             icon: icon
           };
       },
+      dates(){
+          return this.getDates(this.data.dates)
+      },
   },
   methods: {
     initChart () {
       if(this.$refs.apexChart) this.$refs.apexChart.updateSeries(this.series);
+      this.$refs.apexChart.updateOptions({xaxis: {
+        categories: this.dates
+      }});
+    },
+    getDates(data) {
+      let result = [];
+      for(let i = 0; i < data.length; i++){
+        result.unshift(new Date(data[i]).toLocaleString("ru", {day: 'numeric', month: 'long'}))
+      }
+      return result;
     }
 
   },

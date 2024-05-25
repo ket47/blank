@@ -48,22 +48,48 @@ ion-searchbar{
 ion-card-title{
     color: var(--ion-text-main);
 }
+
 @media print {
-    body * {
-        visibility: hidden;
+    .ion-page {
+        display: initial !important;
+        position: initial !important;
+    }
+    body {
+        position: initial !important;
+        max-height: initial !important;
+        overflow: auto !important;
+    }
+    ion-router-outlet {
+        overflow: auto !important;
+        contain: none !important;
+        position: initial !important;
+    }
+    ion-content {
+        --offset-bottom: unset !important;
+        display: unset !important;
+        position: unset !important;
+    }
+    ion-tabs{
+        contain: initial !important;
+    }
+    
+    body ion-tabs * {
+        visibility: hidden !important;
         overflow: visible !important;
-
+        position: fixed;
     }
+    
     .printDiv, .printDiv * {
-        visibility: visible;
-        height: auto !important;
-
+        visibility: visible !important;
+        overflow: inherit !important;
+        position: relative !important;
+        page-break-after: avoid;
     }
-    .printDiv{
-        position: absolute;
-        left: 0;
-        top: 0;
-    }
+    
 }
-
-
+/*
+.printDiv{
+    position: absolute;
+    left: 0;
+    top: 0;
+}*/

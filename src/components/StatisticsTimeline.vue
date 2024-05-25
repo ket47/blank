@@ -70,9 +70,8 @@ export default {
     },
     getDates(data) {
       let result = [];
-      for(let i = 1; i < data.length; i++){
-        console.log(data[i])
-        result.unshift(new Date(data[i].point_finish).toLocaleString("ru", {day: 'numeric', month: 'long'}))
+      for(let i = 0; i < data[0].dates.length; i++){
+        result.unshift(new Date(data[0].dates[i]).toLocaleString("ru", {day: 'numeric', month: 'long'}))
       }
       return result;
     }
