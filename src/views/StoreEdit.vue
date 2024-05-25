@@ -768,14 +768,14 @@ export default  {
       this.itemUpdate(request)
     },
     async save(field_name, field_value) {
+      if(!field_name){
+        return
+      }
       if(field_name == 'user_phone'){
         if(!this.isPhoneValid){
           return false;
         }
         field_value = field_value.replace(/\D/g,"");
-      }
-      if(!field_name){
-        return
       }
       let request = {
         store_id:this.storeId,

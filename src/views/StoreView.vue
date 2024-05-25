@@ -86,7 +86,7 @@ ion-accordion-group .accordion-expanding .store-description{
   border-bottom-right-radius: 10px;
   display: flex;
   align-items: center;
-  font-size: 18px;
+  font-size: 16px;
 }
 
 
