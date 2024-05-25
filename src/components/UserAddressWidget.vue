@@ -82,7 +82,6 @@ import {
   IonCard,
   IonCardHeader,
   IonCardTitle,
-  IonCardSubtitle,
   IonCardContent,
 }  from "@ionic/vue";
 
@@ -109,7 +108,6 @@ export default {
       IonCard,
       IonCardHeader,
       IonCardTitle,
-      IonCardSubtitle,
       IonCardContent,
   },
   setup() {

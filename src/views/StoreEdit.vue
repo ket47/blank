@@ -74,7 +74,7 @@
       </ion-item>
       <ion-item @click="$go(`/user/supplier-statistics-${storeId}`)" button>
         <ion-icon :src="chevronBack" slot="start"/>
-        Статистика
+        Аналитика продаж
         <ion-icon :src="pieChartOutline" slot="end" color="primary"/>
       </ion-item>
       <ion-item @click="$go(`/catalog/store-edit-products-${storeId}`)" button>

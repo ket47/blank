@@ -1,6 +1,9 @@
 <template>
     <base-layout pageTitle="Статистика продавца" pageDefaultBackLink="/user">
         <ion-segment swipe-gesture="true" v-model="activeTab">
+            <ion-segment-button value="sellerAnalytics" >
+                Аналитика
+            </ion-segment-button>
             <ion-segment-button value="sellerReport" >
                 Отчет
             </ion-segment-button>
@@ -10,6 +13,7 @@
         </ion-segment>
         <ledger-comp v-if="activeTab=='ledger'" permanentTag="acc::supplier"/>
         <statistics-seller-report v-if="activeTab=='sellerReport'" :store="store"/>
+        <statistics-seller-analytics v-if="activeTab=='sellerAnalytics'" :store="store"/>
     </base-layout>
 </template>
 
@@ -28,6 +32,9 @@ import
 import 
     StatisticsSellerReport 
                     from "@/components/StatisticsSellerReport.vue";
+import 
+    StatisticsSellerAnalytics
+                    from "@/components/StatisticsSellerAnalytics.vue";
 
 import jQuery       from "jquery";
 
@@ -36,7 +43,8 @@ export default {
         IonSegment,
         IonSegmentButton,
         ledgerComp,
-        StatisticsSellerReport
+        StatisticsSellerReport,
+        StatisticsSellerAnalytics
     },
     setup(){
         return {
