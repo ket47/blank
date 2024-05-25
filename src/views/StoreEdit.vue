@@ -376,7 +376,7 @@
         <ion-icon v-if="storeItem.owner_id==owner.user_id" :src="ribbonOutline" slot="start" color="primary"/>
         <ion-icon v-else :src="personOutline" slot="start" color="primary"/>
         <ion-label>
-          {{owner.user_phone}} {{owner.user_name}} 
+          <a :href="`tel:+${owner.user_phone}`">+{{owner.user_phone}}</a> {{owner.user_name}}
           <span v-if="storeItem.owner_id==owner.user_id">(Суперадмин)</span>
         </ion-label>
         <ion-icon v-if="isStoreSuperadmin && storeItem.owner_id!=owner.user_id" :src="trashOutline" slot="end" @click="ownerDelete(owner.user_id)"/>

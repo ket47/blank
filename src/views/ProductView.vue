@@ -110,7 +110,7 @@ ion-accordion-group .accordion-expanding .product-description{
           </ion-item>
         </div>
 
-        <ion-item lines="none" v-if="productItem.product_price!=productItem.product_final_price">
+        <ion-item lines="none" v-if="productItem.product_price*1>productItem.product_final_price*1">
           <ion-icon slot="start" :src="giftOutline" color="medium"/>
           <ion-label color="medium">Акция до {{promoFinish}}</ion-label>
           <ion-label slot="end" color="success" style="font-size:1.2em">-{{promoPercent}}%</ion-label>
@@ -135,7 +135,7 @@ ion-accordion-group .accordion-expanding .product-description{
           <ion-icon slot="start" :src="cartOutline" color="medium"/>
           <ion-label v-if="inCart" color="medium">В корзине ({{productItem.product_unit}})</ion-label>
           <ion-label v-else color="medium">Не заказан</ion-label>
-          <cart-add-buttons slot="end" buttonLayout="horizontal" display="inline" :productItem="productItem"></cart-add-buttons>
+          <cart-add-buttons slot="end" buttonLayout="horizontal" display="inline" :productItem="productItem" @added="addedToCart($event)"></cart-add-buttons>
         </ion-item>
 
         <ion-item lines="none" v-if="inCart">
@@ -335,6 +335,15 @@ export default  {
         };
         Order.cart.entryUpdate(entry)
       },
+      /**
+       * If there are options. load option that was added to cart
+       */
+      addedToCart( addedProduct ){
+        if( addedProduct.product_id!=this.productId ){
+          this.$go('/catalog/product-'+addedProduct.product_id)
+        }
+        console.log(addedProduct)
+      }
   },
 }
 </script>

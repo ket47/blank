@@ -246,6 +246,7 @@ export default{
       this.productData.entry_quantity=newQuantity;
       await this.$Order.doc.entrySave(this.order_store_id,entry,this.orderData);
       this.productListItemHighlight();
+      this.$emit('added',this.productData)
     },
   },
   computed:{
