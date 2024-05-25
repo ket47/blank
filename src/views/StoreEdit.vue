@@ -188,6 +188,10 @@
       </ion-item>
       <div v-if="storeItem.store_delivery_allow==1">
         <ion-item lines="none">
+            <ion-text>Предоплата за доставку ({{$heap.state.currencySign}})</ion-text>
+            <ion-input slot="end" v-model="storeItem.store_delivery_cost" name="store_delivery_cost" placeholder="нет" style="width:100px;"/>
+        </ion-item>
+        <ion-item lines="none">
             <ion-text>Макс. радиус доставки (метров)</ion-text>
             <ion-input slot="end" v-model="storeItem.store_delivery_radius" name="store_delivery_radius" placeholder="по умолчанию" style="width:100px;"/>
         </ion-item>
