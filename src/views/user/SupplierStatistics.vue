@@ -13,7 +13,7 @@
         </ion-segment>
         <ledger-comp v-if="activeTab=='ledger'" permanentTag="acc::supplier"/>
         <statistics-seller-report v-if="activeTab=='sellerReport'" :store="store"/>
-        <statistics-seller-analytics v-if="activeTab=='sellerAnalytics'" :store="store"/>
+        <statistics-seller-analytics v-if="activeTab=='sellerAnalytics' && store" :store="store"/>
     </base-layout>
 </template>
 
@@ -53,7 +53,7 @@ export default {
     },
     data(){
         return {
-            activeTab:'sellerReport',
+            activeTab:'sellerAnalytics',
             storeId:this.$route.params.id,
             store:null,
         }

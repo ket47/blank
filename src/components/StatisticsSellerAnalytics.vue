@@ -106,6 +106,7 @@ export default {
             this.$flash("Период должен быть не больше 3 месяцев")
             break;
           default:
+            console.log(err)
             this.$flash("Ошибка получения выписки")
             break;
         }

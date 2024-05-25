@@ -169,12 +169,12 @@
       <ion-item>
           <ion-icon :icon="cartOutline" slot="start" color="primary"></ion-icon>
           <ion-text>Подготовка (минут)*</ion-text>
-          <ion-input slot="end" v-model="storeItem.store_time_preparation" name="store_time_preparation"/>
+          <ion-input slot="end" v-model="storeItem.store_time_preparation" name="store_time_preparation" style="width:100px;"/>
       </ion-item>
       <ion-item>
           <ion-icon :icon="cartOutline" slot="start" color="primary"></ion-icon>
           <ion-text>Мин. заказ ({{$heap.state.currencySign}})*</ion-text>
-          <ion-input slot="end" v-model="storeItem.store_minimal_order" name="store_minimal_order"/>
+          <ion-input slot="end" v-model="storeItem.store_minimal_order" name="store_minimal_order" style="width:100px;"/>
       </ion-item>
       <ion-item>
           <ion-icon :icon="storefrontOutline" slot="start" color="primary"></ion-icon>
@@ -186,15 +186,20 @@
           <ion-text>Своя доставка</ion-text>
           <ion-toggle slot="end" v-model="storeItem.store_delivery_allow" @ionChange="save('store_delivery_allow',$event.target.checked?1:0)" name="store_delivery_allow"/>
       </ion-item>
-      <ion-item lines="none" v-if="storeItem.store_delivery_allow==1">
-          <ion-icon :icon="rocketOutline" slot="start" color="primary"></ion-icon>
-          <ion-text>Условия доставки</ion-text>
-          <ion-button slot="end" @click="$go(`/catalog/store-edit-dmethods-${storeId}`)">Изменить</ion-button>
-      </ion-item>
-      <ion-item lines="none" v-if="storeItem.store_delivery_allow==1">
-          <p v-if="storeItem.store_delivery_methods" v-html="storeItem.store_delivery_methods" style="display: -webkit-box;-webkit-line-clamp: 4;-webkit-box-orient: vertical;overflow: hidden;"></p>
-          <ion-note v-else>Нажмите кнопку изменить и впишите ваши условия доставки</ion-note>
-      </ion-item>
+      <div v-if="storeItem.store_delivery_allow==1">
+        <ion-item lines="none">
+            <ion-text>Макс. радиус доставки (метров)</ion-text>
+            <ion-input slot="end" v-model="storeItem.store_delivery_radius" name="store_delivery_radius" placeholder="по умолчанию" style="width:100px;"/>
+        </ion-item>
+        <ion-item lines="none">
+            <ion-text>Условия доставки</ion-text>
+            <ion-button slot="end" @click="$go(`/catalog/store-edit-dmethods-${storeId}`)">Изменить</ion-button>
+        </ion-item>
+        <ion-item lines="none">
+            <p v-if="storeItem.store_delivery_methods" v-html="storeItem.store_delivery_methods" style="display: -webkit-box;-webkit-line-clamp: 4;-webkit-box-orient: vertical;overflow: hidden;"></p>
+            <ion-note v-else>Нажмите кнопку изменить и впишите ваши условия доставки</ion-note>
+        </ion-item>
+      </div>
     </ion-list>
 
       <ion-item-divider>
