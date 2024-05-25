@@ -15,7 +15,7 @@ export default {
   components: {
     apexchart: VueApexCharts
   },
-  props:['label', 'data', 'format', 'color'],
+  props:['label', 'data', 'format', 'color', 'dates'],
   setup(){
     return {}
   },
@@ -55,8 +55,8 @@ export default {
     };
   },
   computed:{
-      dates(){
-          return this.getDates(this.data)
+      datesParsed(){
+          return this.getDates(this.dates)
       },
   },
   methods: {
@@ -64,14 +64,14 @@ export default {
       if(this.$refs.apexChartElement){ 
         this.$refs.apexChartElement.updateSeries(this.data);
         this.$refs.apexChartElement.updateOptions({xaxis: {
-          categories: this.dates
+          categories: this.datesParsed
         }});
       }
     },
     getDates(data) {
       let result = [];
-      for(let i = 0; i < data[0].dates.length; i++){
-        result.unshift(new Date(data[0].dates[i]).toLocaleString("ru", {day: 'numeric', month: 'long'}))
+      for(let i = 0; i < data.length; i++){
+        result.unshift(new Date(data[i]).toLocaleString("ru", {day: 'numeric', month: 'long'}))
       }
       return result;
     }

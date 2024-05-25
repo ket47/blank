@@ -54,7 +54,7 @@ export default {
     IonChip,
     apexchart: VueApexCharts
   },
-  props:['label', 'data', 'format', 'color'],
+  props:['label', 'data', 'format', 'color', 'dates'],
   setup(){
     return {
       calendarOutline,
@@ -164,15 +164,15 @@ export default {
             icon: icon
           };
       },
-      dates(){
-          return this.getDates(this.data.dates)
+      datesParsed(){
+          return this.getDates(this.dates)
       },
   },
   methods: {
     initChart () {
       if(this.$refs.apexChart) this.$refs.apexChart.updateSeries(this.series);
       this.$refs.apexChart.updateOptions({xaxis: {
-        categories: this.dates
+        categories: this.datesParsed
       }});
     },
     getDates(data) {
