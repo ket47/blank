@@ -72,11 +72,14 @@ export default {
       }],
       chartOptions: {
         chart: {
-          height: '100%',
+          height: 70,
           type: 'area',
           zoom: { enabled: false },
           toolbar: { show: false },
           parentHeightOffset: 0,
+          sparkline: {
+            enabled: true
+          }
         },
         stroke: {
           width: 2,
