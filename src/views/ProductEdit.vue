@@ -1,29 +1,22 @@
 <style scoped>
-  .schedule ion-item ion-label{
-    width:130px
-  }
-  .disabled{
-    background-color: var(--ion-color-medium-shade);
-  }
-  .deleted{
-    background-color: var(--ion-color-danger-tint);
-  }
-  .notworking{
+  .pdisabled{
     background-color: var(--ion-color-light-shade);
   }
-  .primary{
-    background-color: var(--ion-color-primary-shade);
+  .pdeleted{
+    background-color: var(--ion-color-danger-tint);
   }
-  .active{
+  .phidden{
+    background-color: var(--ion-color-warning-tint);
+  }
+  .pactive{
     background-color: var(--ion-color-success-shade);
   }
 </style>
 
 <template>
   <base-layout :page-title="productItem?.product_name??'Товар'" :pageDefaultBackLink="`/catalog/product-${productId}`">
-
-  <div v-if="!is_option_child">
-    <ion-card :color="messageCardSeverity">
+  <div v-if="productItem && !is_option_child">
+    <ion-card :color="messageCardSeverity" v-if="(productItem?.validity<validity_min)">
       <ion-card-header>
         <ion-card-title>
           Форма заполнена на {{productItem?.validity??0}}%
@@ -45,9 +38,9 @@
         </ion-text>
       </ion-card-content>
     </ion-card>
-    <ion-card v-if="message&&productItem?.validity>validity_min">
+    <ion-card>
       <ion-card-content :class="messageClass">
-        <ion-text>{{message}}</ion-text>
+        <ion-text color="dark">{{message}}</ion-text>
       </ion-card-content>
     </ion-card>
   </div>
@@ -55,8 +48,11 @@
     <ion-list v-if="productItem">
       <ion-item>
         <ion-icon :src="trashOutline" color="primary" slot="start"/>
-        
-        <ion-toggle v-model="is_deleted" color="danger" @ionChange="itemDelete($event.target.checked?1:0)">Удалено</ion-toggle>
+        <ion-toggle v-model="is_deleted" color="danger" @ionChange="itemDelete($event.target.checked?1:0)">Удален</ion-toggle>
+      </ion-item>
+      <ion-item>
+        <ion-icon :src="eyeOffOutline" color="primary" slot="start"/>
+        <ion-toggle v-model="is_hidden" color="warning" @ionChange="save('is_hidden',$event.target.checked?1:0)">Скрыт</ion-toggle>
       </ion-item>
       <ion-item>
         <ion-icon :src="calculatorOutline" color="primary" slot="start"/>
@@ -311,6 +307,7 @@ import {
   chevronBack,
   layersOutline,
   ribbonOutline,
+  eyeOffOutline,
 }                     from 'ionicons/icons'
 import imageTileComp  from '@/components/ImageTileComp.vue'
 import GroupPicker    from '@/components/GroupPicker.vue'
@@ -353,6 +350,7 @@ export default  {
       chevronBack,
       layersOutline,
       ribbonOutline,
+      eyeOffOutline,
       }
   },
   data(){
@@ -372,6 +370,7 @@ export default  {
       is_deleted:0,
       is_disabled:0,
       is_counted:0,
+      is_hidden:0,
     }
   },
   computed: {
@@ -385,28 +384,37 @@ export default  {
       return 'primary';
     },
     message(){
-      if(this.productItem?.deleted_at){
+      if( !this.productItem ){
+        return ''
+      }
+      if(this.productItem.deleted_at){
         return "Товар не активен и будет удален. Вы еще можете отменить удаление";
       }
-      if(this.productItem?.is_disabled==1){
+      if(this.productItem.is_disabled==1){
         return "Товар не активен и находится на рассмотрении у администратора";
       }
-      if(this.productItem?.is_counted!=1){
+      if(this.productItem.is_counted!=1){
         return "Товар активен и готов к продаже. Учет остатков товара не ведется";
+      }
+      if(this.productItem.is_hidden==1){
+        return "Товар скрыт из магазина. Не продается";
       }
       return "Товар активен и готов к продаже.";
     },
     messageClass(){
+      if( !this.productItem ){
+        return ''
+      }
       if(this.productItem?.deleted_at){
-        return "deleted";
+        return "pdeleted";
       }
       if(this.productItem?.is_disabled==1){
-        return "disabled";
+        return "pdisabled";
       }
-      if(this.productItem?.is_counted!=1){
-        return "primary";
+      if(this.productItem?.is_hidden==1){
+        return "phidden";
       }
-      return 'active';
+      return 'pactive';
     },
     categoryList(){
       let categories=[];
@@ -458,6 +466,7 @@ export default  {
       this.is_deleted   = this.productItem.deleted_at==null?0:1
       this.is_disabled  = this.productItem.is_disabled==0?0:1
       this.is_counted  = this.productItem.is_counted==0?0:1
+      this.is_hidden  = this.productItem.is_hidden==0?0:1
     },
     async itemDelete( is_deleted ){
       const remoteFunction=is_deleted?'itemDelete':'itemUnDelete'
