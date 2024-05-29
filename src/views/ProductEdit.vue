@@ -6,7 +6,7 @@
     background-color: var(--ion-color-danger-tint);
   }
   .phidden{
-    background-color: var(--ion-color-warning-tint);
+    background-color: var(--ion-color-warning-shade);
   }
   .pactive{
     background-color: var(--ion-color-success-shade);
@@ -47,24 +47,24 @@
 
     <ion-list v-if="productItem">
       <ion-item>
-        <ion-icon :src="trashOutline" color="primary" slot="start"/>
-        <ion-toggle v-model="is_deleted" color="danger" @ionChange="itemDelete($event.target.checked?1:0)">Удален</ion-toggle>
-      </ion-item>
-      <ion-item>
         <ion-icon :src="eyeOffOutline" color="primary" slot="start"/>
         <ion-toggle v-model="is_hidden" color="warning" @ionChange="save('is_hidden',$event.target.checked?1:0)">Скрыт</ion-toggle>
       </ion-item>
       <ion-item>
         <ion-icon :src="calculatorOutline" color="primary" slot="start"/>
-        <ion-toggle v-if="productItem" v-model="is_counted" @ionChange="save('is_counted',$event.target.checked?1:0)">Вести учет остатков</ion-toggle>
+        <ion-toggle v-if="productItem" v-model="is_counted" @ionChange="save('is_counted',$event.target.checked?1:0)">Остаток учитывается</ion-toggle>
       </ion-item>
-      <ion-item v-if="!is_option_child">
-        <ion-icon :src="layersOutline" color="primary" slot="start"/>
-        <ion-toggle v-if="productItem" v-model="is_option_parent" @ionChange="itemOptionSet($event.target.checked);">Имеет варианты</ion-toggle>
+      <ion-item>
+        <ion-icon :src="trashOutline" color="primary" slot="start"/>
+        <ion-toggle v-model="is_deleted" color="danger" @ionChange="itemDelete($event.target.checked?1:0)">Удален</ion-toggle>
       </ion-item>
       <ion-item>
         <ion-icon :src="ribbonOutline" color="primary" slot="start"/>
         <ion-toggle v-model="is_disabled" @ionChange="itemDisable($event.target.checked?1:0)">На модерации</ion-toggle>
+      </ion-item>
+      <ion-item v-if="!is_option_child">
+        <ion-icon :src="layersOutline" color="primary" slot="start"/>
+        <ion-toggle v-if="productItem" v-model="is_option_parent" @ionChange="itemOptionSet($event.target.checked);">Имеет варианты</ion-toggle>
       </ion-item>
 
 
@@ -122,7 +122,7 @@
           </ion-card>
           <ion-card>
             <ion-card-content>
-              <ion-button color="light" expand="block" @click="itemOptionCreate()"><ion-icon :src="addOutline"/>добавить</ion-button>
+              <ion-button color="light" expand="block" @click="itemOptionCreate()">+ вариант</ion-button>
             </ion-card-content>
           </ion-card>
         </div>
@@ -388,18 +388,18 @@ export default  {
         return ''
       }
       if(this.productItem.deleted_at){
-        return "Товар не активен и будет удален. Вы еще можете отменить удаление";
+        return "Товар не активен и будет удален. Вы еще можете отменить удаление"
       }
       if(this.productItem.is_disabled==1){
-        return "Товар не активен и находится на рассмотрении у администратора";
-      }
-      if(this.productItem.is_counted!=1){
-        return "Товар активен и готов к продаже. Учет остатков товара не ведется";
+        return "Товар не активен и находится на рассмотрении у администратора"
       }
       if(this.productItem.is_hidden==1){
-        return "Товар скрыт из магазина. Не продается";
+        return "Товар скрыт из магазина. Не продается"
       }
-      return "Товар активен и готов к продаже.";
+      if(this.productItem.is_counted!=1){
+        return "Товар активен и готов к продаже. Остаток товара неограничен"
+      }
+      return "Товар активен и готов к продаже."
     },
     messageClass(){
       if( !this.productItem ){
@@ -469,6 +469,10 @@ export default  {
       this.is_hidden  = this.productItem.is_hidden==0?0:1
     },
     async itemDelete( is_deleted ){
+      // if(is_deleted && !confirm("Внимание товар будет удален! Продолжить?")){
+      //   setTimeout(()=>{this.is_deleted=0;},100)
+      //   return
+      // }
       const remoteFunction=is_deleted?'itemDelete':'itemUnDelete'
       try{
         await jQuery.post( heap.state.hostname + "Product/"+remoteFunction, { product_id: this.productId })
