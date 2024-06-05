@@ -417,7 +417,7 @@ export default {
                 component: DeliveryJobPreview,
                 componentProps:{job},
                 initialBreakpoint: 0.75,
-                breakpoints: [0.5]
+                breakpoints: [0.75,1]
                 });
             this.$topic.on('dismissModal',()=>{
                 modal.dismiss()

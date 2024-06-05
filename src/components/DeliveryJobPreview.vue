@@ -22,9 +22,7 @@
             <a :href="`https://yandex.ru/maps/?pt=${job.start_longitude},${job.start_latitude}&z=19&l=map,trf`" target="_new" style="color:#999">
                 {{job.start_address}}
             </a>
-       
         </ion-item>
-
         <ion-item>
             <h6>Привезти до {{job.finish_plan_date}}</h6>
         </ion-item>
@@ -35,7 +33,18 @@
             </a>
         </ion-item>
     </ion-list>
-    <ion-button v-if="job.stage=='awaited'" @click="jobTake()" expand="block" :color="job.payment_is_cash==1?'warning':'success'">Взять задание</ion-button>
+    <ion-card v-if="job.payment_by_cash==1" color="light">
+        <ion-card-header>
+            <ion-card-subtitle>Заказ не оплачен</ion-card-subtitle>
+        </ion-card-header>
+        <ion-card-content v-if="customerDetails">
+        <p>Созвонитесь с клиентом <b>{{customerDetails.user_name}}</b> <ion-chip color="primary"><a :href="`tel:+${customerDetails.user_phone}`">+{{customerDetails.user_phone}}</a></ion-chip></p>
+        <p>
+            <ion-checkbox @click="confirmed=$event.target.checked?0:1">Клиент на связи и готов ждать</ion-checkbox>
+        </p>
+        </ion-card-content>
+    </ion-card>
+    <ion-button v-if="job.stage=='awaited'" @click="jobTake()" expand="block" :disabled="!confirmed">Взять задание</ion-button>
     <ion-button v-else @click="itemOpen()" expand="block">Открыть заказ</ion-button>
     <ion-button @click="close()" expand="block" color="light">Закрыть</ion-button>
  </ion-content>
@@ -71,8 +80,17 @@ export default({
     },
     data(){
         return {
-
+            customerDetails:null,
+            confirmed:0
         };
+    },
+    mounted(){
+        this.customerDetailsGet()
+        if(this.job.payment_by_cash==1){
+            this.confirmed=0
+        } else {
+            this.confirmed=1
+        }
     },
     methods:{
         async jobTake(){
@@ -107,6 +125,13 @@ export default({
             } else {
                 this.$go(`/order/order-${this.job.order_id}`);
             }
+        },
+        async customerDetailsGet(){
+            this.customerDetails=null
+            const request={
+                job_id:this.job.job_id
+            }
+            this.customerDetails=await jQuery.post(`${this.$heap.state.hostname}DeliveryJob/itemCustomerDetailGet`,request)
         },
         close(){
             modalController.dismiss(null, 'cancel')

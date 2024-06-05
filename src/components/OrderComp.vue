@@ -17,7 +17,7 @@
         <ion-list>
             <ion-item lines="full">
                 <ion-label v-if="orderData.order_id>0" color="medium">
-                Заказ #{{orderData.order_id}}
+
                 </ion-label>
                 <ion-label v-else color="medium">
                 Корзина
@@ -44,10 +44,10 @@
                     <div v-if="entry.product_id"  style="position:relative;min-height:40px;">
                         <cart-add-buttons v-if="isEditable" buttonLayout="horizontal" :entry="entry" :orderData="orderData"></cart-add-buttons>
                         <ion-text v-else color="primary"> 
-                            {{entry.entry_quantity}}
-                            <span v-if="entry.product_unit=='порция'">по {{entry.product_weight*1000}}г</span>
-                            <span v-else-if="entry.product_unit=='порция мл'">по {{entry.product_weight*1000}}мл</span>
-                            <span v-else>{{entry.product_unit}}</span>
+                            <b><big>{{entry.entry_quantity}}</big></b>
+                            <span v-if="entry.product_unit=='порция'"> по {{entry.product_weight*1000}}г</span>
+                            <span v-else-if="entry.product_unit=='порция мл'"> по {{entry.product_weight*1000}}мл</span>
+                            <span v-else> {{entry.product_unit}}</span>
                         </ion-text>
                     </div>
 
@@ -131,6 +131,14 @@
             <ion-card-content>{{orderData.order_objection}}</ion-card-content>
         </ion-card>
 
+        <ion-card color="light"  v-if="orderData?.info?.tariff_info">
+            <ion-card-header>
+                <ion-card-title>Оплата и доставка</ion-card-title>
+            </ion-card-header>
+            <ion-card-content>
+                <ion-text v-html="orderData.info.tariff_info"></ion-text>
+            </ion-card-content>
+        </ion-card>
 
         <ion-grid>
             <ion-row>

@@ -106,7 +106,6 @@ import {
   IonCardContent,
   IonSearchbar,
   IonChip,
-  IonCheckbox,
   IonIcon,
 
   IonPopover,
@@ -135,7 +134,6 @@ export default {
         IonCardContent,
         IonSearchbar,
         IonChip,
-        IonCheckbox,
         IonIcon,
         IonPopover,
         IonContent,

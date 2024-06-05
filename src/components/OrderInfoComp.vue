@@ -1,14 +1,4 @@
 <template>
-    <ion-list v-if="orderData?.info?.tariff_info">
-        <ion-item lines="none" color="light">
-            <h4>Условия оплаты и доставки</h4>
-        </ion-item>
-        <ion-item lines="none" color="light">
-            <ion-text v-html="orderData.info.tariff_info">
-            </ion-text>
-        </ion-item>
-    </ion-list>
-
     <ion-accordion-group>
         <ion-accordion v-if="orderData?.info?.customer_name">
             <ion-item slot="header">

@@ -399,7 +399,7 @@ export default  {
       if(this.productItem.is_counted!=1){
         return "Товар активен и готов к продаже. Остаток товара неограничен"
       }
-      return "Товар активен и готов к продаже."
+      return "Товар активен и готов к продаже. Остаток "+this.productItem.product_quantity+this.productItem.product_unit
     },
     messageClass(){
       if( !this.productItem ){
