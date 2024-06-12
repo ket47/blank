@@ -217,7 +217,6 @@ export default{
     async onSubmit() {
       this.submitted = true;
       if (!this.phoneValid || !this.passwordValid || !this.usernameValid || this.user_pass!=this.user_pass_confirm) {
-        //
         return;
       }
       let requestData = {
