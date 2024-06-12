@@ -24,9 +24,9 @@
     </div>
     <ion-grid>
       <ion-row>
-        <ion-col size="12" size-sm="4"><statistics-card v-if="dataset.product_viewed" label="Показы" :data="dataset.product_viewed" format="integer" color="#008FFB" :dates="totalDates"/></ion-col>
-        <ion-col size="12" size-sm="4"><statistics-card v-if="dataset.product_added" label="Оформление" :data="dataset.product_added" format="integer" color="#04e398" :dates="totalDates"/></ion-col>
-        <ion-col size="12" size-sm="4"><statistics-card v-if="dataset.product_purchased" label="Продано" :data="dataset.product_purchased" format="integer" color="#feba37" :dates="totalDates"/></ion-col>
+        <ion-col size="12" size-sm="4"><statistics-card v-if="dataset.product_viewed" label="Показы" :data="dataset.product_viewed" format="integer" color="#008FFB" :dates="productDates"/></ion-col>
+        <ion-col size="12" size-sm="4"><statistics-card v-if="dataset.product_added" label="Оформление" :data="dataset.product_added" format="integer" color="#04e398" :dates="productDates"/></ion-col>
+        <ion-col size="12" size-sm="4"><statistics-card v-if="dataset.product_purchased" label="Продано" :data="dataset.product_purchased" format="integer" color="#feba37" :dates="productDates"/></ion-col>
       </ion-row>
       <ion-row>
         <ion-col size="12" size-sm="6">
@@ -57,7 +57,7 @@ import jquery                 from "jquery";
 
 import StatisticsCard          from "@/components/StatisticsCard.vue";
 import StatisticsFunnel        from "@/components/StatisticsFunnel.vue";
-import StatisticsTimeline        from "@/components/StatisticsTimeline.vue";
+import StatisticsTimeline      from "@/components/StatisticsTimeline.vue";
 
 export default {
   components: {
@@ -117,7 +117,7 @@ export default {
     },
     async productsGet() {
       try {
-        const response = await jquery.post(`${this.$heap.state.hostname}Statistics/sellProductFunnelGet`, {store_id: 119, point_span: 7, point_num: 10})
+        const response = await jquery.post(`${this.$heap.state.hostname}Statistics/sellProductFunnelGet`, {store_id: this.store.store_id, point_span: 7, point_num: 10})
         if(response.body.length > 0){
           response.body.reverse()
           this.productDates = this.parseDates(response)

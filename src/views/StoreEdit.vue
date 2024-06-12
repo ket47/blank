@@ -68,21 +68,34 @@
 
 
       <ion-item-divider></ion-item-divider>
-      <ion-item button @click="$go('/catalog/store-'+storeId)">
-        <ion-icon :src="chevronBack" slot="start"/>
-        Показать {{storeItem.store_name}}
+      <ion-item>
+        <ion-icon :src="chevronBack" slot="start" color="medium"/>
+        <router-link :to="`/catalog/store-${storeId}`">Показать {{storeItem.store_name}}</router-link>
+        <ion-label slot="end">
+          <a :href="` ${$heap.state.hostname}Store/qrGet?store_id=${storeId}&type=store`" target="_blank">
+            <ion-icon :src="qrCode" color="primary"></ion-icon>
+          </a>
+        </ion-label>
       </ion-item>
-      <ion-item @click="$go(`/user/supplier-statistics-${storeId}`)" button>
-        <ion-icon :src="chevronBack" slot="start"/>
+      <ion-item>
+        <ion-icon :src="chevronBack" slot="start" color="medium"/>
+        <router-link :to="`/catalog/store-${storeId}/menu`">Электронное меню</router-link>
+        <ion-label slot="end">
+          <a :href="` ${$heap.state.hostname}Store/qrGet?store_id=${storeId}&type=menu`" target="_blank">
+            <ion-icon :src="qrCode" color="primary"></ion-icon>
+          </a>
+        </ion-label>
+      </ion-item>
+      <ion-item @click="$go(`/user/supplier-statistics-${storeId}`)">
+        <ion-icon :src="pieChartOutline" slot="start" color="medium"/>
         Аналитика продаж
-        <ion-icon :src="pieChartOutline" slot="end" color="primary"/>
       </ion-item>
-      <ion-item @click="$go(`/catalog/store-edit-products-${storeId}`)" button>
-        <ion-icon :src="chevronBack" slot="start"/>
+      <ion-item @click="$go(`/catalog/store-edit-products-${storeId}`)">
+        <ion-icon :src="cubeOutline" slot="start" color="medium"/>
         Быстрое управление товарами
       </ion-item>
-      <ion-item @click="productItemCreate()" button>
-        <ion-icon :src="addOutline" slot="start"/>
+      <ion-item @click="productItemCreate()">
+        <ion-icon :src="addOutline" slot="start" color="medium"/>
         Добавить товар в {{storeItem.store_name}}
       </ion-item>
     </ion-list>
@@ -188,10 +201,14 @@
       </ion-item>
       <div v-if="storeItem.store_delivery_allow==1">
         <ion-item lines="none">
-            <ion-text>Макс. радиус доставки (метров)</ion-text>
-            <ion-input slot="end" v-model="storeItem.store_delivery_radius" name="store_delivery_radius" placeholder="по умолчанию" style="width:100px;"/>
+            <ion-text>Минимальная стоимость достаки ({{$heap.state.currencySign}})</ion-text>
+            <ion-input slot="end" v-model="storeItem.store_delivery_cost" name="store_delivery_cost" placeholder="бесплатно" style="width:100px;"/>
         </ion-item>
         <ion-item lines="none">
+            <ion-text>Максимальный радиус доставки (км)</ion-text>
+            <ion-input slot="end" v-model="storeItem.store_delivery_radius" name="store_delivery_radius" placeholder="по умолчанию" style="width:100px;"/>
+        </ion-item>
+        <ion-item lines="none" :color="storeItem.store_delivery_methods?'':'warning'">
             <ion-text>Условия доставки</ion-text>
             <ion-button slot="end" @click="$go(`/catalog/store-edit-dmethods-${storeId}`)">Изменить</ion-button>
         </ion-item>
@@ -459,6 +476,8 @@ import {
   rocketOutline,
   swapHorizontalOutline,
   pieChartOutline,
+  qrCode,
+  cubeOutline,
 }                           from 'ionicons/icons'
 import imageTileComp        from '@/components/ImageTileComp.vue'
 import UserAddressPicker    from '@/components/UserAddressPicker.vue'
@@ -513,6 +532,9 @@ export default  {
       rocketOutline,
       swapHorizontalOutline,
       pieChartOutline,
+      qrCode,
+      cubeOutline,
+      
       }
   },
   data(){
@@ -619,6 +641,11 @@ export default  {
         this.storeItem=await jQuery.post( heap.state.hostname + "Store/itemGet", { store_id: this.storeId })
         this.storeItem.store_pickup_allow*=1
         this.storeItem.store_delivery_allow*=1
+        if( this.storeItem.store_delivery_radius>0 ){
+          this.storeItem.store_delivery_radius=this.storeItem.store_delivery_radius/1000
+        } else {
+          this.storeItem.store_delivery_radius=''
+        }
         this.storeItem.store_delivery_methods_short=String(this.storeItem.store_delivery_methods).substring(0,100)+"..."
         this.itemParseFlags()
         this.itemValidityCalc()
@@ -764,20 +791,23 @@ export default  {
       this.itemUpdate(request)
     },
     async save(field_name, field_value) {
+      if(!field_name){
+        return
+      }
       if(field_name == 'user_phone'){
         if(!this.isPhoneValid){
           return false;
         }
         field_value = field_value.replace(/\D/g,"");
       }
-      if(!field_name){
-        return
-      }
       let request = {
         store_id:this.storeId,
         [field_name]:field_value
       };
       this.storeItem[field_name] = field_value;
+      if( field_name=='store_delivery_radius' && field_value>0 ){
+        request.store_delivery_radius=field_value*1000
+      }
       this.itemValidityCalc()
       this.itemUpdate(request)
       this.itemParseFlags()

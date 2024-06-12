@@ -5,8 +5,11 @@
 .disabled{
     border: 3px gray solid;
 }
-.absent{
+.absent img{
     filter: grayscale(1);
+}
+.hidden{
+    border: 3px orange solid;
 }
 </style>
 <template>
@@ -46,18 +49,24 @@
                     <ion-text>
                         {{item.item_name}}
                         <span v-if="item.is_counted==1 && item.product_quantity*1==0"> (нет в наличии)</span>
+                        <span v-if="item.is_hidden==1"> (скрыт)</span>
                     </ion-text>
                 </ion-item>
                 <ion-item lines="full">
-                    <ion-chip color="medium">
+                    <ion-chip v-if="item.is_hidden==1" @click="itemUpdate(item.product_id,'is_hidden',0)" color="warning">
+                        <ion-icon :src="eyeOffOutline"/>&nbsp;&nbsp;
+                    </ion-chip>
+                    <ion-chip v-else @click="itemUpdate(item.product_id,'is_hidden',1)" color="medium">
+                        <ion-icon :src="eyeOffOutline"/>&nbsp;&nbsp;
+                    </ion-chip>
+
+
+                    <ion-chip v-if="item.is_counted==1" :color="item.product_quantity>0?'success':'danger'" @click="itemPrompt(item,'product_quantity','введите остаток')">
                         <ion-icon :src="calculatorOutline"/>
-                        <ion-checkbox label-placement="start" :checked="item.is_counted==1" @ionChange="itemUpdate(item.product_id,'is_counted',$event.target.checked?1:0)">учет</ion-checkbox>&nbsp;
+                        <ion-label>{{item.product_quantity||0}}{{item.product_unit}}</ion-label>
                     </ion-chip>
-                    <ion-chip v-if="item.is_counted==0" color="medium">
-                        <ion-icon :src="infiniteOutline"/>&nbsp;&nbsp;
-                    </ion-chip>
-                    <ion-chip v-else :color="item.product_quantity>0?'success':'danger'" @click="itemPrompt(item,'product_quantity','введите остаток')">
-                        {{item.product_quantity||0}}{{item.product_unit}}
+                    <ion-chip v-else @click="itemUpdate(item.product_id,'is_counted',1)" color="medium">
+                        <ion-icon :src="calculatorOutline"/><ion-icon :src="infiniteOutline"/>&nbsp;&nbsp;
                     </ion-chip>
 
                     <ion-chip color="primary" @click="itemPrompt(item,'product_price','введите цену')">{{item.product_price}}{{$heap.state.currencySign}}</ion-chip>                    
@@ -97,7 +106,6 @@ import {
   IonCardContent,
   IonSearchbar,
   IonChip,
-  IonCheckbox,
   IonIcon,
 
   IonPopover,
@@ -109,7 +117,8 @@ import jquery               from 'jquery'
 import ImagePreviewModal    from '@/components/ImagePreviewModal'
 import { 
   infiniteOutline,
-  calculatorOutline
+  calculatorOutline,
+  eyeOffOutline
 }                         from "ionicons/icons";
 export default {
     components: {
@@ -125,7 +134,6 @@ export default {
         IonCardContent,
         IonSearchbar,
         IonChip,
-        IonCheckbox,
         IonIcon,
         IonPopover,
         IonContent,
@@ -133,7 +141,8 @@ export default {
   IonButton,
     },
     setup(){
-        return {infiniteOutline,calculatorOutline}
+        return {infiniteOutline,calculatorOutline,
+  eyeOffOutline}
     },
     data(){
         return{
@@ -161,17 +170,20 @@ export default {
     },
     computed:{
         listComputed(){
-            for(let item of this.items){
-                item.image_hash=item.image_hash||item.courier_photo_image_hash
-                item.item_id=item.image_id||item.store_id||item.courier_id||item.product_id
-                item.item_name=this.holders[item.image_holder]||(item.store_name??item.store_name_new)||item.user_name||item.product_name
+            let list=[]
+            for(let i of this.items){
+                let item=Object.assign({},i)
+                item.item_id=item.product_id
+                item.item_name=item.product_name
                 item.date_time=this.toLocDateTime(item.updated_at)
                 item.class=''
                 item.class+=(item.deleted_at)?'deleted ':''
                 item.class+=(item.is_disabled==1)?'disabled ':''
+                item.class+=(item.is_hidden==1)?'hidden ':''
                 item.class+=(item.is_counted==1 && item.product_quantity==0)?'absent ':''
+                list.push(item)
             }
-            return this.items
+            return list
         }
     },
     methods:{
@@ -234,16 +246,16 @@ export default {
         },
         async itemPrompt( item, property, label ){
             const val=item[property]
-            const alert = await alertController.create({
+            const conf={
                 header: label,
                 buttons: [
                     {
-                        text: 'Отмена',
-                        role: 'cancel'
-                    },
-                    {
                         text: 'Ок',
                         role: 'confirm'
+                    },
+                    {
+                        text: 'Отмена',
+                        role: 'cancel'
                     },
                 ],
                 inputs: [
@@ -254,10 +266,21 @@ export default {
                         value:val
                     },
                 ],
-            });
+            }
+            if(property=='product_quantity'){
+                conf.buttons.push({
+                        text: 'Бесконечное кол-во',
+                        role: 'notcount'
+                    },)
+            }
+            const alert = await alertController.create(conf);
             await alert.present();
             const {data,role}=await alert.onDidDismiss()
             if(role=='cancel'){
+                return
+            }
+            if(role=='notcount'){
+                this.itemUpdate( item.product_id, 'is_counted', 0 )
                 return
             }
             this.itemUpdate( item.product_id, property, data.values.comment )

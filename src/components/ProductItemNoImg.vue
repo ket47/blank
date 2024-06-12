@@ -32,8 +32,9 @@
 .disabled.product_item{
     border: 4px solid #666;
 }
-.promo .product_list_item_img{
-    /** */
+.hidden.product_item{
+    border: 4px solid #fa0;
+    opacity: 0.5;
 }
 </style>
 <template>
@@ -94,6 +95,9 @@ export default {
             }
             if(this.productItem.is_disabled==1){
                 return 'disabled'
+            }
+            if(this.productItem.is_hidden==1){
+                return 'hidden'
             }
             if(this.productItem.is_counted==1 && !( (this.productItem.product_quantity-this.productItem.product_quantity_reserved)>0 ) ){
                 return 'absent'

@@ -24,16 +24,16 @@
             <ion-popover :is-open="isOpenDeliveryRejectionPopover" @didDismiss="isOpenDeliveryRejectionPopover=false">
                 <ion-content>
                 <ion-list>
-                    <ion-item :button="true" :detail="false" @click="action_rejected_reason('Отказ клиента')">
+                    <ion-item :button="true" :detail="false" @click="action_rejected_reason('ДОСТАВКА НЕ УДАЛАСЬ: Отказ клиента')">
                         <ion-label>Отказ клиента</ion-label>
                     </ion-item>
                     <ion-item :button="true" :detail="false" @click="action_rejected_reason('Заказ не готов/не соответствует')">
                         <ion-label>Заказ не готов/не соответствует</ion-label>
                     </ion-item>
-                    <ion-item :button="true" :detail="false" @click="action_rejected_reason('Поломка в пути')">
+                    <ion-item :button="true" :detail="false" @click="action_rejected_reason('ДОСТАВКА НЕ УДАЛАСЬ: Поломка в пути')">
                         <ion-label>Поломка в пути</ion-label>
                     </ion-item>
-                    <ion-item :button="true" :detail="false" @click="action_rejected_reason('Заказ испорчен')">
+                    <ion-item :button="true" :detail="false" @click="action_rejected_reason('ДОСТАВКА НЕ УДАЛАСЬ: Заказ испорчен')">
                         <ion-label>Заказ испорчен</ion-label>
                     </ion-item>
                 </ion-list>
@@ -178,6 +178,25 @@ export default({
                     case 'already_payed':
                         this.$flash("Заказ уже оплачен")
                         break;
+                        
+                    case 'deposit_inapplicable':
+                        this.$flash("Внесение оплаты не предусмотрено")
+                        break;
+                    case 'deposit_error_nocof':
+                        this.$flash("Нет привязанного способа оплаты")
+                        break;
+                    case 'deposit_error_fund':
+                        this.$alert("На счету недостаточно средств","Оплата не прошла")
+                        break;
+                    case 'deposit_error_card':
+                        this.$alert("Возможно, карта заблокирована или просрочена","Не действительная карта")
+                        break;
+                    case 'deposit_error_fraud':
+                        this.$alert("Отказано в оплате! Обратитесь в ваш банк.","Оплата отклонена")
+                        break;
+                    case 'deposit_error':
+                        this.$flash("Оплата привязанной картой не удалась")
+                        break;
                     default:
                         this.$flash("Не удалось изменить статус заказа")
                         break;
@@ -217,12 +236,12 @@ export default({
                 canDissmiss:true,
                 });
             modal.present()
+            const is_disputed=await this.onStageCreate(this.order_id, 'customer_disputed');
             const objection=await modal.onDidDismiss();
             if(objection.data){
                 const message=`ВОЗРАЖЕНИЕ ПОКУПАТЕЛЯ: ${objection.data}`;
                 const result=await Order.api.itemUpdate({order_id:this.order_id,order_objection:message})
                 if( result=='ok' ){
-                    const is_disputed=await this.onStageCreate(this.order_id, 'customer_disputed');
                     if( is_disputed ){
                         this.$flash("Ваше возражение принято и будет рассмотрено администратором.")
                         alert("Необходимо сфотографировать заказ")
@@ -244,9 +263,6 @@ export default({
         },
         action_take_photo(){
             this.$refs.orderImgs.take_photo();
-        },
-        action_call_customer(){
-            location.href=`tel:+${this.order.customer.user_phone}`
         },
         async action_courier_assign(){
             const itemType='courier'
@@ -279,7 +295,7 @@ export default({
             } catch{
                 this.$flash("Не удалось назначить курьера")
             }
-        }
+        },
     },
     ionViewDidEnter() {
         this.itemGet();

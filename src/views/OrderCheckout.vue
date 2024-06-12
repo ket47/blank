@@ -181,10 +181,6 @@
             <ion-card-content>{{checkoutError}}</ion-card-content>
         </ion-card>
 
-        <ion-card v-if="isVPNon && (paymentType=='use_card')" color="light">
-            <ion-card-content>Возможно включен VPN. Банк часто блокирует платежи через VPN.</ion-card-content>
-        </ion-card>
-
         <ion-button v-if="paymentType=='use_card' || paymentType=='use_card_recurrent'" expand="block" @click="proceed()" :disabled="checkoutError">Оплатить картой</ion-button>
         <ion-button v-else expand="block" @click="proceed()" :disabled="checkoutError">Послать заказ</ion-button>
     </div>
@@ -303,8 +299,8 @@ export default({
             storeIsReady:null,
             errNotfound:0,
             errTooFar:0,
+            errNoTariff:0,
 
-            iplocation:null,
             paymentType:'use_card',
             deliveryType:'delivery_by_courier',
             bankCard:null,
@@ -328,7 +324,10 @@ export default({
                 return `Заказ удален`
             }
             if( this.storeIsReady==0 ){
-                return `К сожалению, ${this.order?.store?.store_name||'продавец'} не готов к заказам`
+                return `К сожалению, ${this.order?.store?.store_name||'продавец'} сейчас не принимает заказы`
+            }
+            if( this.errNoTariff==1 ){
+                return `К сожалению, ${this.order?.store?.store_name||'продавец'} отключен`
             }
             if( this.termsAccepted==0 ){
                 return `К сожалению, мы не можем доставить вам заказ, без согласия с условиями`
@@ -380,12 +379,6 @@ export default({
         },
         pickupByCustomerRuleChecked(){
             return this.tariffRule.pickupByCustomer==1
-        },
-        isVPNon(){
-            if( !this.iplocation || ['UA','RU','???'].includes(this.iplocation.country_code??'???') ){
-                return false
-            }
-            return true
         },
         bankCardCalc(){
             let card=this.bankCard;
@@ -461,6 +454,7 @@ export default({
                 this.promoCount=bulkResponse.Promo_listGet
                 this.storeIsReady=Array.isArray(bulkResponse.Store_deliveryOptions)?1:0
                 this.errTooFar=0
+                this.errNoTariff=0
                 this.bankCard=bulkResponse?.bankCard;
                 this.tariffRuleList=bulkResponse.Store_deliveryOptions
                 this.tariffRuleSet(this.tariffRuleList[0]||{})
@@ -472,8 +466,6 @@ export default({
                 } else {
                     this.deliveryTime={}
                 }
-                
-                this.customerIpLocationGet()
             }
             catch(err){
                 this.is_checkout_data_loaded=1
@@ -483,23 +475,16 @@ export default({
                         this.errTooFar=1
                         break;
                     case 'not_ready':
-                    case 'no_tariff':
                         this.storeIsReady=0
+                        break;
+                    case 'no_tariff':
+                        this.errNoTariff=1
                         break;
                     default:
                         this.errNotfound=1
                 }
                 return false
             }
-        },
-        async customerIpLocationGet(){
-            if(this.iplocation){
-                return//already got
-            }
-            try{
-                const response = await fetch("https://geolocation-db.com/json/");
-                this.iplocation = await response.json();
-            }catch{/** */}
         },
         tariffRuleSet( tariffRule ){
             this.deliveryType='delivery_by_courier'
@@ -652,7 +637,7 @@ export default({
                     card_id:this.bankCard.card_id
                 }
                 try{
-                    this.$flash("Оплачиваем привязанной картой...")
+                    this.$flash("Оплачиваем сохраненной картой...")
                     await jQuery.post(`${this.$heap.state.hostname}CardAcquirer/paymentDo`,request)
                 } catch(err){
                     const exception_code=err?.responseJSON?.messages?.error;
@@ -670,7 +655,7 @@ export default({
                             this.$alert("Отказано в оплате! Обратитесь в ваш банк.","Оплата отклонена")
                             break;
                         default:
-                            this.$flash("Оплата привязанной картой не удалась")
+                            this.$flash("Оплата сохраненной картой не удалась")
                     }
                     return false
                 }

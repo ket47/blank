@@ -1,29 +1,22 @@
 <style scoped>
-  .schedule ion-item ion-label{
-    width:130px
-  }
-  .disabled{
-    background-color: var(--ion-color-medium-shade);
-  }
-  .deleted{
-    background-color: var(--ion-color-danger-tint);
-  }
-  .notworking{
+  .pdisabled{
     background-color: var(--ion-color-light-shade);
   }
-  .primary{
-    background-color: var(--ion-color-primary-shade);
+  .pdeleted{
+    background-color: var(--ion-color-danger-tint);
   }
-  .active{
+  .phidden{
+    background-color: var(--ion-color-warning-shade);
+  }
+  .pactive{
     background-color: var(--ion-color-success-shade);
   }
 </style>
 
 <template>
   <base-layout :page-title="productItem?.product_name??'Товар'" :pageDefaultBackLink="`/catalog/product-${productId}`">
-
-  <div v-if="!is_option_child">
-    <ion-card :color="messageCardSeverity">
+  <div v-if="productItem && !is_option_child">
+    <ion-card :color="messageCardSeverity" v-if="(productItem?.validity<validity_min)">
       <ion-card-header>
         <ion-card-title>
           Форма заполнена на {{productItem?.validity??0}}%
@@ -45,30 +38,33 @@
         </ion-text>
       </ion-card-content>
     </ion-card>
-    <ion-card v-if="message&&productItem?.validity>validity_min">
+    <ion-card>
       <ion-card-content :class="messageClass">
-        <ion-text>{{message}}</ion-text>
+        <ion-text color="dark">{{message}}</ion-text>
       </ion-card-content>
     </ion-card>
   </div>
 
     <ion-list v-if="productItem">
       <ion-item>
-        <ion-icon :src="trashOutline" color="primary" slot="start"/>
-        
-        <ion-toggle v-model="is_deleted" color="danger" @ionChange="itemDelete($event.target.checked?1:0)">Удалено</ion-toggle>
+        <ion-icon :src="eyeOffOutline" color="primary" slot="start"/>
+        <ion-toggle v-model="is_hidden" color="warning" @ionChange="save('is_hidden',$event.target.checked?1:0)">Скрыт</ion-toggle>
       </ion-item>
       <ion-item>
         <ion-icon :src="calculatorOutline" color="primary" slot="start"/>
-        <ion-toggle v-if="productItem" v-model="is_counted" @ionChange="save('is_counted',$event.target.checked?1:0)">Вести учет остатков</ion-toggle>
+        <ion-toggle v-if="productItem" v-model="is_counted" @ionChange="save('is_counted',$event.target.checked?1:0)">Остаток учитывается</ion-toggle>
       </ion-item>
-      <ion-item v-if="!is_option_child">
-        <ion-icon :src="layersOutline" color="primary" slot="start"/>
-        <ion-toggle v-if="productItem" v-model="is_option_parent" @ionChange="itemOptionSet($event.target.checked);">Имеет варианты</ion-toggle>
+      <ion-item>
+        <ion-icon :src="trashOutline" color="primary" slot="start"/>
+        <ion-toggle v-model="is_deleted" color="danger" @ionChange="itemDelete($event.target.checked?1:0)">Удален</ion-toggle>
       </ion-item>
       <ion-item>
         <ion-icon :src="ribbonOutline" color="primary" slot="start"/>
         <ion-toggle v-model="is_disabled" @ionChange="itemDisable($event.target.checked?1:0)">На модерации</ion-toggle>
+      </ion-item>
+      <ion-item v-if="!is_option_child">
+        <ion-icon :src="layersOutline" color="primary" slot="start"/>
+        <ion-toggle v-if="productItem" v-model="is_option_parent" @ionChange="itemOptionSet($event.target.checked);">Имеет варианты</ion-toggle>
       </ion-item>
 
 
@@ -126,7 +122,7 @@
           </ion-card>
           <ion-card>
             <ion-card-content>
-              <ion-button color="light" expand="block" @click="itemOptionCreate()"><ion-icon :src="addOutline"/>добавить</ion-button>
+              <ion-button color="light" expand="block" @click="itemOptionCreate()">+ вариант</ion-button>
             </ion-card-content>
           </ion-card>
         </div>
@@ -311,6 +307,7 @@ import {
   chevronBack,
   layersOutline,
   ribbonOutline,
+  eyeOffOutline,
 }                     from 'ionicons/icons'
 import imageTileComp  from '@/components/ImageTileComp.vue'
 import GroupPicker    from '@/components/GroupPicker.vue'
@@ -353,6 +350,7 @@ export default  {
       chevronBack,
       layersOutline,
       ribbonOutline,
+      eyeOffOutline,
       }
   },
   data(){
@@ -372,6 +370,7 @@ export default  {
       is_deleted:0,
       is_disabled:0,
       is_counted:0,
+      is_hidden:0,
     }
   },
   computed: {
@@ -385,28 +384,37 @@ export default  {
       return 'primary';
     },
     message(){
-      if(this.productItem?.deleted_at){
-        return "Товар не активен и будет удален. Вы еще можете отменить удаление";
+      if( !this.productItem ){
+        return ''
       }
-      if(this.productItem?.is_disabled==1){
-        return "Товар не активен и находится на рассмотрении у администратора";
+      if(this.productItem.deleted_at){
+        return "Товар не активен и будет удален. Вы еще можете отменить удаление"
       }
-      if(this.productItem?.is_counted!=1){
-        return "Товар активен и готов к продаже. Учет остатков товара не ведется";
+      if(this.productItem.is_disabled==1){
+        return "Товар не активен и находится на рассмотрении у администратора"
       }
-      return "Товар активен и готов к продаже.";
+      if(this.productItem.is_hidden==1){
+        return "Товар скрыт из магазина. Не продается"
+      }
+      if(this.productItem.is_counted!=1){
+        return "Товар активен и готов к продаже. Остаток товара неограничен"
+      }
+      return "Товар активен и готов к продаже. Остаток "+this.productItem.product_quantity+this.productItem.product_unit
     },
     messageClass(){
+      if( !this.productItem ){
+        return ''
+      }
       if(this.productItem?.deleted_at){
-        return "deleted";
+        return "pdeleted";
       }
       if(this.productItem?.is_disabled==1){
-        return "disabled";
+        return "pdisabled";
       }
-      if(this.productItem?.is_counted!=1){
-        return "primary";
+      if(this.productItem?.is_hidden==1){
+        return "phidden";
       }
-      return 'active';
+      return 'pactive';
     },
     categoryList(){
       let categories=[];
@@ -458,8 +466,13 @@ export default  {
       this.is_deleted   = this.productItem.deleted_at==null?0:1
       this.is_disabled  = this.productItem.is_disabled==0?0:1
       this.is_counted  = this.productItem.is_counted==0?0:1
+      this.is_hidden  = this.productItem.is_hidden==0?0:1
     },
     async itemDelete( is_deleted ){
+      // if(is_deleted && !confirm("Внимание товар будет удален! Продолжить?")){
+      //   setTimeout(()=>{this.is_deleted=0;},100)
+      //   return
+      // }
       const remoteFunction=is_deleted?'itemDelete':'itemUnDelete'
       try{
         await jQuery.post( heap.state.hostname + "Product/"+remoteFunction, { product_id: this.productId })
