@@ -16,9 +16,6 @@
       <form novalidate>
         <ion-list>
           <ion-item>
-            <ion-row>
-              <ion-col>
-                <ion-label position="stacked" color="primary">Код подтверждения из смс</ion-label>
                 <ion-input
                   v-model="verification_code"
                   type="numeric"
@@ -26,13 +23,12 @@
                   maxlength="4"
                   pattern="\d{4}"
                   placeholder="- - - -"
-                  @ionInput="verification_code=$event.target.value;onSubmit()"
                   enterkeyhint="go"
                   required
                   autocomplete="one-time-code"
+                  label="Код подтверждения из смс"
+                  label-placement="stacked"
                 ></ion-input>
-              </ion-col>
-            </ion-row>
           </ion-item>
         </ion-list>
 
@@ -91,13 +87,17 @@ export default  {
       timeToResend:120
     }
   },
-  created(){
+  async created(){
     this.smsSend();
     if( navigator.credentials ){
-      navigator.credentials.get({
-        otp: {transport:['sms']}
-      })
-      .then(otp => this.verification_code = otp.code);
+      try{
+        const otp=await navigator.credentials.get({
+          otp: {transport:["sms"]}
+        })
+        this.verification_code = otp.code
+      } catch (err){
+        console.log(err)
+      }
     }
   },
   ionViewDidEnter(){
@@ -159,5 +159,10 @@ export default  {
       }
     },
   },
+  watch:{
+    "verification_code":function(newval,oldval){
+      this.onSubmit()
+    }
+  }
 }
 </script>
