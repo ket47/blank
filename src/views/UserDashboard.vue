@@ -92,6 +92,10 @@ ion-icon{
               <ion-icon :icon="chatboxEllipsesOutline" slot="start" color="primary"></ion-icon>
               <ion-label>Рассылка</ion-label>
           </ion-item>
+          <ion-item @click="$go('/admin/analytics')" lines="full" button detail>
+              <ion-icon :icon="chatboxEllipsesOutline" slot="start" color="primary"></ion-icon>
+              <ion-label>Аналитика</ion-label>
+          </ion-item>
         </ion-item-group>
       </ion-item-group>
 

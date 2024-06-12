@@ -244,6 +244,10 @@ const routes = [
         path: '/admin/mailing-list',
         component: () => import('@/views/admin/MailingView.vue')
       },
+      {
+        path: '/admin/analytics',
+        component: () => import('@/views/admin/AnalyticsView.vue')
+      },
   ]
   },
   {
