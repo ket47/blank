@@ -87,31 +87,7 @@
 
 
             <ion-item-divider>Итог</ion-item-divider>
-            <ion-accordion-group>
-                <ion-accordion>
-                    <ion-item slot="header">
-                        <ion-icon :icon="walletOutline" slot="start" color="medium"></ion-icon>
-                        <ion-text>Итого к оплате</ion-text>
-                        <ion-label slot="end" color="primary"><b>{{ order_sum_total }}{{$heap.state.currencySign}}</b></ion-label>
-                    </ion-item>
-                    <ion-list slot="content">
-                        <ion-item>
-                            <ion-icon :icon="cubeOutline" slot="start" color="medium"></ion-icon>
-                            Сумма заказа 
-                            <ion-text slot="end">{{order.order_sum_product}}{{$heap.state.currencySign}}</ion-text>
-                        </ion-item>
-                        <ion-item v-if="order_sum_delivery>0">
-                            <ion-icon :icon="rocketOutline" slot="start" color="medium"></ion-icon>
-                            <div>
-                                Доставка
-                                <div v-if="tariffRule.deliveryHeavyCost" style="font-size:0.75em;color:#666">{{order_sum_delivery-tariffRule.deliveryHeavyCost}}+{{tariffRule.deliveryHeavyCost}} (непогода или высокая загруженность)</div>
-                            </div>
-                            <ion-text slot="end">{{order_sum_delivery??0}}{{$heap.state.currencySign}}</ion-text>
-                        </ion-item>
-                    </ion-list>
-                </ion-accordion>
-            </ion-accordion-group>
-            <div v-if="deliveryByCourierRuleChecked">
+            <div v-if="deliveryByCourierRuleChecked && (paymentType=='use_card' || paymentType=='use_card_recurrent')">
                 <ion-item v-if="promo" button @click="promoPick()" color="success">
                     <div slot="start">
                         <ion-icon :icon="giftOutline" color="medium" style="font-size:1.5em"></ion-icon>
@@ -134,10 +110,41 @@
                         <ion-icon :icon="giftOutline" color="medium" style="font-size:1.5em"></ion-icon>
                     </div>
                     <ion-text color="medium">
-                    Скидка доступна при доставке <b>{{$heap.state.settings?.app_title}}</b>
+                    Скидка доступна при доставке <b>{{$heap.state.settings?.app_title}}</b> и оплате картой
                     </ion-text>
                 </ion-item>
             </div>
+           <ion-accordion-group>
+                <ion-accordion>
+                    <ion-item slot="header">
+                        <ion-icon :icon="walletOutline" slot="start" color="medium"></ion-icon>
+                        <ion-text>Итого к оплате</ion-text>
+                        <ion-label slot="end" color="primary"><b>{{ order_sum_total }}{{$heap.state.currencySign}}</b></ion-label>
+                    </ion-item>
+                    <ion-list slot="content">
+                        <ion-item>
+                            <ion-icon :icon="cubeOutline" slot="start" color="medium"></ion-icon>
+                            Сумма заказа 
+                            <ion-text slot="end">{{order.order_sum_product}}{{$heap.state.currencySign}}</ion-text>
+                        </ion-item>
+                        <ion-item v-if="order_sum_delivery>0">
+                            <ion-icon :icon="rocketOutline" slot="start" color="medium"></ion-icon>
+                            <div>
+                                Доставка
+                                <div v-if="tariffRule.deliveryHeavyCost" style="font-size:0.75em;color:#666">{{order_sum_delivery-tariffRule.deliveryHeavyCost}}+{{tariffRule.deliveryHeavyCost}} (непогода или высокая загруженность)</div>
+                            </div>
+                            <ion-text slot="end">{{order_sum_delivery??0}}{{$heap.state.currencySign}}</ion-text>
+                        </ion-item>
+                        <ion-item v-if="promo" button>
+                            <div slot="start">
+                                <ion-icon :icon="giftOutline" color="medium" style="font-size:1.5em"></ion-icon>
+                            </div>
+                            {{promo.promo_name}}
+                            <ion-text slot="end">-{{order.order_sum_promo}}{{$heap.state.currencySign}}</ion-text>
+                        </ion-item>
+                    </ion-list>
+                </ion-accordion>
+            </ion-accordion-group>
 
 
             <!-- <ion-item>

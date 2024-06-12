@@ -91,7 +91,7 @@
         Аналитика продаж
       </ion-item>
       <ion-item @click="$go(`/catalog/store-edit-products-${storeId}`)">
-        <ion-icon :src="cubeOutline" slot="start" color="medium"/>
+        <ion-icon :src="listOutline" slot="start" color="medium"/>
         Быстрое управление товарами
       </ion-item>
       <ion-item @click="productItemCreate()">
@@ -477,7 +477,7 @@ import {
   swapHorizontalOutline,
   pieChartOutline,
   qrCode,
-  cubeOutline,
+  listOutline,
 }                           from 'ionicons/icons'
 import imageTileComp        from '@/components/ImageTileComp.vue'
 import UserAddressPicker    from '@/components/UserAddressPicker.vue'
@@ -533,7 +533,7 @@ export default  {
       swapHorizontalOutline,
       pieChartOutline,
       qrCode,
-      cubeOutline,
+      listOutline,
       
       }
   },

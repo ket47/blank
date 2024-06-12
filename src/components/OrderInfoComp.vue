@@ -75,7 +75,6 @@ import {
     IonItem,
     IonAccordion,
     IonAccordionGroup,
-    IonList,
     IonText,
     alertController,
 }                       from '@ionic/vue';
@@ -96,7 +95,6 @@ export default({
     IonItem,
     IonAccordion,
     IonAccordionGroup,
-    IonList,
     IonText,
     },
     setup() {
