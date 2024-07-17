@@ -34,6 +34,13 @@ ion-item-divider.ios{
 .horizontalScroller::-webkit-scrollbar {
     display: none;
 }
+.max-two-lines{
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+            line-clamp: 2; 
+    -webkit-box-orient: vertical;
+}
 
 main {
     display: flex;

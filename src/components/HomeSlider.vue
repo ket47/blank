@@ -19,8 +19,7 @@
 
 <style scoped>
   .home-swiper{
-    margin: 8px 16px;
-    border-radius: 8px;
+    margin: 8px 0;
   }
   .home_slide{
     position:absolute;

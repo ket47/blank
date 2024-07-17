@@ -1,13 +1,13 @@
 <template>
   <ion-page>
-    <ion-header :class="[pageClass]">
-      <ion-toolbar>
+    <ion-header :class="[pageClass, 'ion-no-border']" >
+      <ion-toolbar :color="headerColor ?? 'white'">
         <ion-buttons v-if="canGoBack" slot="start">
           <ion-button v-if="isIos" @click="goback()" style="font-family:SF, Arial, Helvetica, sans-serif"><ion-icon :src="chevronBackOutline"/>Назад</ion-button>
           <ion-button v-else @click="goback()"><ion-icon :src="arrowBackOutline" size="large"/></ion-button>
         </ion-buttons>
         <ion-title v-if="pageTitle" size="small"><div style="line-height: 1.5;max-height:3em;text-overflow: ellipsis;overflow: hidden;font-weight: bold;">{{ pageTitle }}</div></ion-title>
-        <ion-icon  v-if="pageLogo" class="toolbar_svg_logo" style="color: var(--ion-color-primary)"  :icon="pageLogo"/>
+        <ion-icon  v-if="pageLogo" class="toolbar_svg_logo" :style="`color: ${(headerColor) ? 'white' : 'var(--ion-color-primary'})`"  :icon="pageLogo"/>
         <div slot="end">
           <cart-header slot="end"></cart-header>
         </div>
@@ -104,6 +104,7 @@ export default defineComponent({
     "pageClass",
     "cartComponent",
     "contentOnScroll",
+    "headerColor"
   ],
   components: {
     IonPage,
