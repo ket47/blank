@@ -8,6 +8,9 @@
     src: url('../assets/fonts/Roboto/Roboto-Regular.ttf');
     font-display: swap;
 }
+body{
+        font-size:12px;
+}
 
 ion-label,ion-item{
     font-size: 13px;

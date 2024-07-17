@@ -84,17 +84,21 @@ ion-icon{
               <ion-icon :icon="briefcaseOutline" slot="start" color="primary"></ion-icon>
               <ion-label>Тарифы</ion-label>
           </ion-item>
-          <ion-item @click="$go('/admin/accounting')" lines="full" button detail>
-              <ion-icon :icon="pieChartOutline" slot="start" color="primary"></ion-icon>
-              <ion-label>Бухгалтерия</ion-label>
-          </ion-item>
           <ion-item @click="$go('/admin/mailing-list')" lines="full" button detail>
               <ion-icon :icon="chatboxEllipsesOutline" slot="start" color="primary"></ion-icon>
               <ion-label>Рассылка</ion-label>
           </ion-item>
+          <ion-item @click="$go('/admin/accounting')" lines="full" button detail>
+              <ion-icon :icon="pieChartOutline" slot="start" color="primary"></ion-icon>
+              <ion-label>Бухгалтерия</ion-label>
+          </ion-item>
           <ion-item @click="$go('/admin/analytics')" lines="full" button detail>
-              <ion-icon :icon="chatboxEllipsesOutline" slot="start" color="primary"></ion-icon>
+              <ion-icon :icon="pieChartOutline" slot="start" color="primary"></ion-icon>
               <ion-label>Аналитика</ion-label>
+          </ion-item>
+          <ion-item @click="$go('/modal/user-authorize')" lines="full" button detail>
+              <ion-icon :icon="keyOutline" slot="start" color="primary"></ion-icon>
+              <ion-label>Авторизация</ion-label>
           </ion-item>
         </ion-item-group>
       </ion-item-group>

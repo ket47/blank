@@ -135,10 +135,10 @@ const routes = [
         component: () => import('@/views/UserVerifyPhone.vue'),
         props: true
       },
-      {
-        path: '/user/reset-password',
-        component: () => import('@/views/UserResetPassword.vue')
-      },
+      // {
+      //   path: '/user/reset-password',
+      //   component: () => import('@/views/UserResetPassword.vue')
+      // },
       {
         path: '/user/confirm-password',
         component: () => import('@/views/UserResetPasswordConfirm.vue')
@@ -265,6 +265,10 @@ const routes = [
   {
     path: '/modal/user-addresses',
     component: () => import('@/views/UserAddresses.vue')
+  },
+  {
+    path: '/modal/user-authorize',
+    component: () => import('@/views/UserAuthorize.vue')
   },
   {
     path: '/catalog/store-:id/menu',

@@ -182,7 +182,7 @@
             </ion-select>
           </ion-item>
           <ion-item v-if="productItem.product_unit!='кг'">
-            <ion-input v-model="productItem.product_weight" :label=" (productItem.product_unit=='порция мл')?'Объем л*':`Вес 1${productItem.product_unit} в кг*`" labelPlacement="stacked" name="product_weight" type="number" step="0.1" inputmode="numeric" pattern="\d\."/>
+            <ion-input v-model="productItem.product_weight" :label=" (productItem.product_unit=='порция мл')?'Объем мл*':`Вес 1${productItem.product_unit} в г*`" labelPlacement="stacked" name="product_weight" type="number" step="1" inputmode="numeric" pattern="\d"/>
           </ion-item>
         </ion-item-group>
       </ion-list>
@@ -399,7 +399,7 @@ export default  {
       if(this.productItem.is_counted!=1){
         return "Товар активен и готов к продаже. Остаток товара неограничен"
       }
-      return "Товар активен и готов к продаже. Остаток "+this.productItem.product_quantity+this.productItem.product_unit
+      return "Товар активен и готов к продаже. Остаток "+(this.productItem.product_quantity||0)+this.productItem.product_unit
     },
     messageClass(){
       if( !this.productItem ){
@@ -447,6 +447,9 @@ export default  {
 
         this.is_option_child=(this.productItem.product_parent_id && this.productItem.product_parent_id!=this.productItem.product_id)
         this.is_option_parent=(this.productItem.product_parent_id && this.productItem.product_parent_id==this.productItem.product_id)
+        if(this.productItem.product_weight>0){//convert to g
+          this.productItem.product_weight=this.productItem.product_weight*1000
+        }
         //this.is_option_same_price=!parseFloat(this.productItem.product_price)
         await this.itemOptionGet();
       }catch(err){
@@ -619,6 +622,9 @@ export default  {
       let request = {
         product_id:this.productItem.product_id,
         [field_name]:field_value
+      }
+      if(field_name=='product_weight' && field_value>0){//convert to kg
+        request.product_weight=field_value/1000
       }
       if( this.itemUpdate(request) ){
         this.productItem[field_name] = field_value;

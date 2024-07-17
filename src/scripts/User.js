@@ -25,10 +25,23 @@ const User = {
         const settings=await jQuery.get( heap.state.hostname + "User/itemSettingsGet")
         heap.commit('setSettings', settings);
         Topic.publish('settingsGet',settings);
+        localStorage.settings=JSON.stringify(settings)
     },
     async get( mode='all' ){
         if( !heap.state.settings ){
-            await this.settingsGet()
+            if( localStorage.settings ){
+                /**
+                 * Loading data after app bootstarp
+                 */
+                try{
+                    let settings_stored=JSON.parse(localStorage.settings)
+                    heap.commit('setSettings', settings_stored);
+                    Topic.publish('settingsGet',settings_stored);
+                } catch{/** */}
+                setTimeout(()=>{this.settingsGet()},3000)
+            } else {
+                await this.settingsGet()
+            }
         }
         const user=await jQuery.post( heap.state.hostname + "User/itemGet",{mode})
         .done(function(response, textStatus, request){
@@ -47,7 +60,12 @@ const User = {
             //Order.api.listCount()
         }
         if( User.isCourier() ){
-            await User.courier.get();
+            /**
+             * Loading data after app bootstarp
+             */
+            setTimeout(async ()=>{
+                await User.courier.get();
+            },3000)
         }
         localStorage.user_is_courier=User.isCourier()
         localStorage.user_is_admin=User.isAdmin()
@@ -95,9 +113,9 @@ const User = {
                 await Utils.pref.set('metric_user_id',response)
             }
         })
-        .fail(async function(){
-            //await Utils.pref.set('signInData',null)//user signin is failed should we reset localStorage.signInData????
-        });
+        // .fail(async function(){
+        //     //await Utils.pref.set('signInData',null)//user signin is failed should we reset localStorage.signInData????
+        // });
     },
     async signOut(){
         try{

@@ -88,7 +88,7 @@
         </ion-row>
 
 
-      <ion-modal :isOpen="passwordPromptShow" :initial-breakpoint="0.40" :breakpoints="[0, 0.40, 0.8]">
+      <ion-modal :isOpen="passwordPromptShow" :initial-breakpoint="0.8" :breakpoints="[0, 0.40, 0.8]">
         <ion-header>
           <ion-toolbar>
             <ion-title>Новый пароль</ion-title>
@@ -97,7 +97,7 @@
         </ion-header>
         <ion-content class="ion-padding">
           <ion-item>
-            <ion-input v-model="fields.user_pass_current" type="password" placeholder="пароль" label="Действующий пароль" label-placement="stacked"></ion-input>
+            <ion-input v-model="fields.user_pass_current" type="password" placeholder="нет пароля" label="Действующий пароль" label-placement="stacked"></ion-input>
           </ion-item>
           <ion-item>
             <ion-input v-model="fields.user_pass" type="text" placeholder="пароль" label="Новый пароль" label-placement="stacked"></ion-input>
@@ -109,7 +109,7 @@
         </ion-content>
       </ion-modal>
 
-    <ion-modal :isOpen="deletePromptShow" :initial-breakpoint="0.40" :breakpoints="[0, 0.40, 0.8]">
+    <ion-modal :isOpen="deletePromptShow" :initial-breakpoint="0.8" :breakpoints="[0, 0.40, 0.8]">
       <ion-header>
         <ion-toolbar color="danger">
           <ion-title>Удаление учетной записи</ion-title>
@@ -214,6 +214,7 @@ export default  {
       requestData[field_name] = field_value;
       await this.itemUpdate(requestData)
       this.fields[field_name] = field_value
+      this.$flash("Сохранено")
     },
     async itemUpdate(requestData) {
       try{
@@ -249,6 +250,9 @@ export default  {
             case 'user_pass_short':
               this.$flash("Пароль слишком короткий");
               break;
+            case 'user_pass_wrong':
+              this.$flash("Действующий пароль не верный");
+              break;
             case 'user_pass_notmatches':
               this.$flash("Пароль не совпадает с подтверждением");
               break;
@@ -268,8 +272,8 @@ export default  {
         this.$flash("Пароль и подтверждение не совпадают")
         return
       }
-      if(!this.fields.user_pass_current || !this.fields.user_pass || !this.fields.user_pass_confirm){
-        this.$flash("Все поля обязательны для заполнения")
+      if(!this.fields.user_pass){
+        this.$flash("Пароль не заполнен")
         return
       }
       const requestData={

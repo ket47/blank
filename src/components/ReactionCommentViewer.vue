@@ -39,14 +39,17 @@
     </ion-list>
     <ion-list v-else-if="itemList?.length">
         <div v-for="item in itemList" :key="item.id">
-            <div>
+            <div class="ion-padding">
                 <ion-item lines="none">
                     <ion-thumbnail slot="start">
                         <ion-img v-if="item.image_hash" :src="`${$heap.state.hostname}image/get.php/${item.image_hash}.150.150.webp`" style="border-radius:10px;"/>
                     </ion-thumbnail>
                     <div>
-                        <div style="color:#999">{{item.user_name}} • <i v-if="item.reaction_is_like"><ion-icon :src="thumbsUpSharp" color="primary"/></i></div>
-                        <div>{{item.reaction_comment}}</div>
+                        <div style="color:#999">{{item.user_name}}
+                            <i v-if="item.reaction_is_like==1"> • <ion-icon :src="thumbsUpSharp" color="primary"/></i>
+                            <i v-if="item.reaction_is_dislike==1"> • <ion-icon :src="thumbsDownSharp" color="medium"/></i>
+                        </div>
+                        <div style="color:#333;font-size:0.9em">{{item.reaction_comment}}</div>
                     </div>
                 </ion-item>
             </div>

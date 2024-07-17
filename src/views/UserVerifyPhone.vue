@@ -49,7 +49,6 @@
 
 <script>
 import { 
-  IonLabel,
   IonCol,
   IonInput,
   IonRow,
@@ -67,7 +66,6 @@ import User           from '@/scripts/User.js';
 export default  {
   name:'UserVerifyPhone',
   components:{
-  IonLabel,
   IonCol,
   IonInput,
   IonRow,

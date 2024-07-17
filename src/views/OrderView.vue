@@ -170,7 +170,7 @@ export default({
                         this.$flash("Сумма заказа должна быть меньше предоплаты")
                         break;
                     case 'order_sum_zero':
-                        this.$flash("Нельзя завершить пустой заказ, от него можно отказаться.")
+                        this.$flash("Неверная стоимость заказа!")
                         break;
                     case 'forbidden_bycustomer':
                         this.$flash("Запрещено покупателем")

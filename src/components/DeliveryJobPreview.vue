@@ -33,7 +33,7 @@
             </a>
         </ion-item>
     </ion-list>
-    <ion-card v-if="job.payment_by_cash==1" color="light">
+    <ion-card v-if="job.stage=='awaited' && job.payment_by_cash==1" color="light">
         <ion-card-header>
             <ion-card-subtitle>Заказ не оплачен</ion-card-subtitle>
         </ion-card-header>
@@ -86,7 +86,7 @@ export default({
     },
     mounted(){
         this.customerDetailsGet()
-        if(this.job.payment_by_cash==1){
+        if(this.job.stage=='awaited' && this.job.payment_by_cash==1){
             this.confirmed=0
         } else {
             this.confirmed=1

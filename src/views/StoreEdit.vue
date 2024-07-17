@@ -260,9 +260,9 @@
         <ion-button @click="$refs.storeImgs.take_photo()" color="light" expand="block">
           <ion-icon :src="cameraOutline" slot="start"/> Добавить фото на витрину
         </ion-button>
-        <image-tile-comp :images="storeItem.avatar" :image_holder="'store_avatar'" :image_holder_id="storeItem.store_id" controller="Store" title="Аватар продавца 1 фото" ref="storeAvatar"></image-tile-comp>
+        <image-tile-comp :images="storeItem.avatar" :image_holder="'store_avatar'" :image_holder_id="storeItem.store_id" controller="Store" title="Логотип продавца 1 фото" ref="storeAvatar"></image-tile-comp>
         <ion-button @click="$refs.storeAvatar.take_photo()" color="light" expand="block">
-          <ion-icon :src="cameraOutline" slot="start"/> Добавить аватар
+          <ion-icon :src="cameraOutline" slot="start"/> Добавить логотип
         </ion-button>
       </ion-list>
 

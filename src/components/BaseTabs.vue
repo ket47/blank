@@ -211,17 +211,24 @@ export default{
       can_click:0
     }
   },
-  async created(){
+  async mounted(){
     const self=this
     this.$topic.on('pushStageChanged',data=>{
       self.activeOrderCount=data?.orderActiveCount
     })
-    this.activeOrderCount=await Order.api.listCount()
+    //this.activeOrderCount=await Order.api.listCount()
     const isMobile= /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(window.navigator.userAgent);
     if(!isMobile){
       document.querySelector('.main-tab-bar').classList.add('main-tab-bar-adaptive');
     }
     this.tabSelect()
+
+    /**
+     * Nonessential request delayed bootstrap
+     */
+    setTimeout(async ()=>{
+      this.activeOrderCount=await Order.api.listCount()
+    },3000)
   },
   methods:{
     tabClicked(newroute){

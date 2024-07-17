@@ -77,6 +77,8 @@ import {
   IonButton,
   isPlatform,
   IonModal,
+  IonList,
+  IonItem,
 }                           from "@ionic/vue";
 import CartHeader           from "@/components/CartHeader";
 import { defineComponent }  from "@vue/runtime-core";
@@ -118,6 +120,8 @@ export default defineComponent({
     CartHeader,
     TezkelLoader,
     IonModal,
+    IonList,
+    IonItem,
   },
   setup(){
     return {
