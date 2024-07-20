@@ -14,7 +14,7 @@
     
 
     <form novalidate onsubmit="return false">
-    <div style="display:grid;grid-template-columns:auto minmax(330px,400px) auto;width:100%;">
+    <div style="display:grid;grid-template-columns:auto minmax(330px,400px) auto;width:100%;min-height:80vh">
       <div></div>
       <!--PHONE ENTRY SCREEN-->
       <section v-if="screen=='enter_phone'" class="ion-padding">
@@ -70,6 +70,7 @@
           autocomplete="tel-national"
           v-model="user_phone"
           @ionInput="phoneFormat($event)"
+          @ionChange="phoneSubmit()"
           label="Номер телефона"
           label-placement="stacked"
         ></ion-input>
@@ -92,8 +93,6 @@
 
         <div class="vspace"></div>
         <ion-button @click="codeSend" expand="block" color="success"><ion-icon :src="chatboxEllipsesOutline" slot="start"/>Войти СМС кодом</ion-button>
-        <div class="vspace"></div>
-        <ion-button @click="screen='enter_phone'" expand="block" fill="clear" color="medium">Изменить номер телефона</ion-button>
       </section>
 
 
@@ -136,6 +135,8 @@
         <ion-item v-else lines="none">
           Смс с кодом не пришла? <ion-chip slot="end" @click="codeSend" color="primary">Послать еще раз</ion-chip>
         </ion-item>
+        <div class="vspace"></div>
+        <ion-button @click="screen='enter_phone'" expand="block" fill="clear" color="medium">Изменить номер телефона</ion-button>
       </section>
 
       <!--USER CREATE PASS-->
@@ -330,7 +331,7 @@ export default{
   },
   data(){
     return {
-      user_phone:'79787288233',
+      user_phone:'',
       user_name:null,
       user_email:null,
       user_avatar_name:'man',
@@ -633,15 +634,7 @@ export default{
         const response=await jQuery.post( `${this.$heap.state.hostname}User/signUp`, request)
         const user=await User.get();
         this.$flash(`Добро пожаловать ${user.user_name}`)
-        
-        
-        
-        
-        
-        
-        
-        
-        //this.$router.go(-1);
+        this.$router.go(-1);
       } catch(err){
         let exception_code = "unknown";
         try {
