@@ -44,7 +44,7 @@
                     <div v-if="entry.product_id"  style="position:relative;min-height:40px;">
                         <cart-add-buttons v-if="isEditable" buttonLayout="horizontal" :entry="entry" :orderData="orderData"></cart-add-buttons>
                         <ion-text v-else color="primary"> 
-                            <b><big>{{entry.entry_quantity}}</big></b>
+                            <b style="font-size:16px">{{entry.entry_quantity}}</b>
                             <span v-if="entry.product_unit=='порция'"> по {{entry.product_weight*1000}}г</span>
                             <span v-else-if="entry.product_unit=='порция мл'"> по {{entry.product_weight*1000}}мл</span>
                             <span v-else> {{entry.product_unit}}</span>

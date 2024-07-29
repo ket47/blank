@@ -251,6 +251,8 @@ import OrderCheckoutAddress     from '@/components/OrderCheckoutAddress.vue';
 import OrderPaymentCardModal    from '@/components/OrderPaymentCardModal.vue';
 import PromoPickerComp          from '@/components/PromoPickerComp.vue'
 
+import { Browser } from '@capacitor/browser';
+
 export default({
     components: { 
     OrderCheckoutAddress,
@@ -589,9 +591,9 @@ export default({
             Order.api.itemUpdate(request);
         },
         async proceed(){
-            if( this.tariffRule.deliveryIsReady=='busy' && !await this.heavyLoadConfirm() ){
-                return false
-            }
+            // if( this.tariffRule.deliveryIsReady=='busy' && !await this.heavyLoadConfirm() ){
+            //     return false
+            // }
             if( this.deliveryByCourierRuleChecked && !await this.deliveryAddressConfirm() ){
                 return false
             }
@@ -687,6 +689,34 @@ export default({
         },
         async cancel(){
             this.$router.replace('/order/order-'+this.order.order_id);
+        }, 
+        async __paymentFormOpen( order_data ) {
+            try{
+                const request={
+                    order_id:order_data.order_id,
+                    enable_auto_cof:(localStorage.disable_auto_cof==1?0:1)
+                }
+                let paymentLink=await jQuery.post(this.$heap.state.hostname+'CardAcquirer/paymentLinkGet',request)
+                await Browser.open({ url: paymentLink });
+                Browser.addListener('browserFinished', () => {
+                    console.log('paymentStatusCheck');
+                    this.paymentStatusCheck();
+                })
+                Browser.addListener('browserPageLoaded', () => {
+                    //alert('browserPageLoaded')
+                })
+            } catch(err){
+                console.log(err)
+                const exception_code = err?.responseJSON?.messages?.error;
+                if(exception_code =='order_notvalid'){
+                    this.$flash("Попробуйте еще раз");
+                } else 
+                if(exception_code =='nocardid'){
+                    this.$flash("Не удалось добавить карту");
+                } else {
+                    this.$flash("Нет возможности принять оплату картой");
+                }
+            }
         },
         async paymentFormOpen( order_data ) {
             const presEl=document.querySelector('ion-router-outlet');

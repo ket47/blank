@@ -78,6 +78,7 @@ import {
   IonList,
   IonThumbnail,
   IonChip,
+  IonButton,
 
   IonCard,
   IonCardHeader,
@@ -104,6 +105,7 @@ export default {
       IonList,
       IonThumbnail,
       IonChip,
+      IonButton,
 
       IonCard,
       IonCardHeader,
