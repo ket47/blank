@@ -37,6 +37,7 @@
     "@ionic/vue": "^7.0.0",
     "@ionic/vue-router": "^7.0.0",
     "@phudak/ckeditor5-emoji": "^1.1.1",
+    "@pqina/flip": "^1.8.3",
     "@vue/cli": "^5.0.8",
     "core-js": "^3.6.5",
     "firebase": "^9.8.3",

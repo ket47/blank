@@ -100,6 +100,10 @@ ion-icon{
               <ion-icon :icon="keyOutline" slot="start" color="primary"></ion-icon>
               <ion-label>Авторизация</ion-label>
           </ion-item>
+          <ion-item @click="$go('/catalog/home-2')" lines="full" button detail>
+              <ion-icon :icon="keyOutline" slot="start" color="primary"></ion-icon>
+              <ion-label>Новый Главный Экран</ion-label>
+          </ion-item>
         </ion-item-group>
       </ion-item-group>
 

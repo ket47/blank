@@ -3,23 +3,22 @@
       <user-address-widget :deliveryTime="primaryDeliveryTime" />
       <home-slider/>
       <!-- <home-primary-category-widget @deliveryTimeGet="deliveryTime=>{primaryDeliveryTime=deliveryTime}"/> -->
-        
+    <div class="special-grid">
+      <div class="ion-padding-vertical" style="color: white; background: linear-gradient(to left, rgb(0, 156, 205), rgb(42, 175, 217)); margin: 10px; border-radius: 10px;">
+        <ion-item  color="transparent" lines="none" button style="color: white" detail="true" :detailIcon="chevronForwardOutline"  href="/order/shipment-draft" >
+          <img slot="start" src="/img/delivery_box.png" width="60"/>
+          <ion-label class="">
+            <strong>ВЫЗВАТЬ КУРЬЕРА</strong>
+            <p style="font-size: 12px">Доставим всё, что Вам нужно: </p>
+          </ion-label>
+        </ion-item>
+
+      </div>
       <home-promo-counter />
-      <ion-searchbar class="ion-no-margin ion-margin-bottom search-container"  @click="$router.push('/search')" placeholder="Поиск по названию..."></ion-searchbar>
+    </div>  
+      <ion-searchbar class="ion-no-margin ion-margin-bottom search-container"  @click="$router.push('/search')" placeholder="Поиск..."></ion-searchbar>
       <!-- STORES ARE LOADING -->
       <store-list-new/>
-      <div class="ion-padding ion-align-items-center" style="display: flex; color: white; background: linear-gradient(to top, rgb(0, 156, 205), rgb(42, 175, 217))">
-        <div class="ion-padding">
-          <img src="/img/delivery_box.png" width="80"/>
-        </div>
-        <div class="ion-padding-start">
-          <b>ВЫЗВАТЬ КУРЬЕРА</b>
-          <p style="font-size: 13px; margin-top: 5px;">Доставим всё, что Вам нужно</p>
-          <router-link to="/order/shipment-draft">
-            <ion-button  color="light">Вызвать</ion-button>
-          </router-link>
-        </div>
-      </div>
         <ion-card v-if="!suggestFormHidden">
           <ion-card-header>
             <ion-card-subtitle>Не нашли то, что искали?</ion-card-subtitle>
@@ -52,15 +51,25 @@ import {
   IonCardContent,
   IonInput,
   IonSearchbar,
+  IonItem,
+  IonLabel,
   isPlatform
 }                   from "@ionic/vue";
+
+import {  
+  chevronBackOutline,
+  chevronForwardOutline
+ }                  from 'ionicons/icons'
+
 
 export default {
   setup() {
     const alter_logo=isPlatform('ios')//isPlatform('capacitor')
     const mainLogo=isPlatform('ios')?simpleLogo:standartLogo
     return {
-      mainLogo
+      mainLogo,
+      chevronBackOutline,
+      chevronForwardOutline
     }
   },
   components: {
@@ -73,6 +82,8 @@ export default {
     IonSearchbar,
     HomeSlider,
     StoreListNew,
+    IonItem,
+    IonLabel,
     UserAddressWidget,
     HomePromoCounter
   },
@@ -154,3 +165,15 @@ export default {
   },
 };
 </script>
+<style scoped>
+.special-grid{
+  display: grid;
+  grid-template-columns: 50% 50%;
+}
+
+@media screen and (max-width: 740px) {
+  .special-grid{
+    grid-template-columns: 100%;
+  }
+}
+</style>

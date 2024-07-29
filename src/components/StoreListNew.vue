@@ -16,6 +16,7 @@ ion-card{
   border-radius: 10px;
   contain: initial;
   overflow: visible;
+  margin: 15px 10px 5px;
 }
 ion-card .store-title{
   --min-height: auto;
@@ -128,6 +129,18 @@ ion-card .store-title{
 .ribbon-container .ribbon.ribbon-blue::after {
   border-color: #064274 transparent transparent;
 }
+.ribbon-container .ribbon.ribbon-purple{
+  background: linear-gradient(to right, #eb1e5c, #a0123c);
+}
+.ribbon-container .ribbon.ribbon-purple::before {
+  border-color: #eb1e5c #eb1e5c #eb1e5c transparent;
+}
+.ribbon-container .ribbon.ribbon-purple::after {
+  border-color: #740c2b transparent transparent;
+}
+
+
+
 </style>
 
 <template>
@@ -357,6 +370,14 @@ export default {
           group_target_value: 'product_new',
           group_name: "Новинка",
           image_url: "/product_new.png"
+        },
+        {
+          group_id: 'c4',
+          group_parent: 'perks',
+          group_target_key: 'perk_type',
+          group_target_value: 'product_promo',
+          group_name: "Акция",
+          image_url: "/promo.png"
         }
       ]
     };
@@ -415,6 +436,10 @@ export default {
         product_new: {
           color: "blue",
           label: "Новинки"
+        },
+        product_promo: {
+          color: "purple",
+          label: "Акция"
         }
       }
       for(let i in perks){
