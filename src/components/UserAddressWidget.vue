@@ -85,7 +85,6 @@ import {
   IonThumbnail,
   IonChip,
   IonButton,
-  IonButton,
 
   IonCard,
   IonCardHeader,
