@@ -3,6 +3,7 @@ import { createRouter, createWebHistory, } from '@ionic/vue-router';
 import BaseTabs       from '@/components/BaseTabs.vue'
 //import HomePage       from '@/views/HomePage.vue'
 import HomeMain       from '@/views/HomeMain.vue'
+import HomeMainNew    from '@/views/HomeMainNew.vue'
 import SearchView     from '@/views/SearchView.vue'
 import UserDashboard  from '@/views/UserDashboard.vue'
 import StoreView      from '@/views/StoreView.vue'
@@ -40,7 +41,7 @@ const routes = [
       },
       {
         path: "/catalog/home-2",
-        component: HomeMain
+        component: HomeMainNew
       },
       {
         path: '/catalog/store-edit-products-:id',

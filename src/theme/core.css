@@ -31,6 +31,13 @@ ion-item-divider.ios{
 .horizontalScroller::-webkit-scrollbar {
     display: none;
 }
+.max-two-lines{
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+            line-clamp: 2; 
+    -webkit-box-orient: vertical;
+}
 
 main {
     display: flex;
@@ -47,6 +54,13 @@ ion-searchbar{
 
 ion-card-title{
     color: var(--ion-text-main);
+}
+
+.flip-card__back-bottom, 
+.flip-card__back-bottom-4digits, 
+.flip-card__bottom, 
+.flip-card__bottom-4digits{
+  border: none !important;
 }
 
 @media print {

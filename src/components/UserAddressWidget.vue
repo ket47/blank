@@ -1,4 +1,7 @@
 <style scoped>
+  .address-description{
+    font-size: 12px;
+  }
   .center{
     display: flex;
     align-items: center;
@@ -30,19 +33,22 @@
 <template>
   <ion-list v-if="isMainLocationSet" @click="selectDeliveryAddress()">
       <ion-item lines="none">
-        <ion-text v-if="location_shown.group_name=='Current'" color="medium">Ваше местоположение</ion-text>
-        <ion-text v-else color="medium">Адрес доставки заказа</ion-text>
         <ion-icon slot="end" :icon="chevronDownOutline"/>
-      </ion-item>
-      <ion-item lines="none">
-        <ion-thumbnail v-if="location_shown.image_hash" slot="start" style="width:30px;height:30px">
-          <ion-img :src="`${$heap.state.hostname}/image/get.php/${location_shown.image_hash}.32.32.png`" />
-        </ion-thumbnail>
-        <ion-icon v-else slot="start" color="primary" :icon="locationOutline"/>
-        <ion-text color="dark">{{location_shown?.location_address}}</ion-text>
-        <ion-chip v-if="deliveryTime?.time>0" slot="end"  color="medium"  background="transparent">
-          <ion-icon :src="timeOutline"/><label>{{deliveryTime.time}}</label>
-        </ion-chip>
+        <ion-label>
+          <ion-text v-if="location_shown.group_name=='Current'" color="medium">Ваше местоположение</ion-text>
+          <ion-text v-else color="medium">Адрес доставки заказа</ion-text>
+          <br />
+          <ion-note color="medium" class="ion-text-wrap">
+            <ion-thumbnail v-if="location_shown.image_hash" slot="start" style="width:30px;height:30px">
+              <ion-img :src="`${$heap.state.hostname}/image/get.php/${location_shown.image_hash}.32.32.png`" />
+            </ion-thumbnail>
+            <ion-icon v-else slot="start" color="primary" :icon="locationOutline"/>
+            <ion-text color="dark" class="max-two-lines address-description">{{ location_shown?.location_address }}</ion-text>
+            <ion-chip v-if="deliveryTime?.time>0" slot="end"  color="medium"  background="transparent">
+              <ion-icon :src="timeOutline"/><label>{{deliveryTime.time}}</label>
+            </ion-chip>
+          </ion-note>
+        </ion-label>
       </ion-item>
   </ion-list>
   <ion-list v-if="showComment && location_shown">
@@ -79,11 +85,14 @@ import {
   IonThumbnail,
   IonChip,
   IonButton,
+  IonButton,
 
   IonCard,
   IonCardHeader,
   IonCardTitle,
   IonCardContent,
+  IonNote,
+  IonLabel
 }  from "@ionic/vue";
 
 import { 
@@ -106,11 +115,12 @@ export default {
       IonThumbnail,
       IonChip,
       IonButton,
-
       IonCard,
       IonCardHeader,
       IonCardTitle,
       IonCardContent,
+      IonNote,
+      IonLabel
   },
   setup() {
     return { 
