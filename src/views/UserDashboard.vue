@@ -29,14 +29,14 @@ ion-icon{
             <ion-icon :icon="exitOutline" slot="start" color="primary"></ion-icon>
             <ion-label>Выйти</ion-label>
         </ion-item>
-        <ion-item v-else lines="full" button detail @click="$go('/user/sign-in')">
+        <ion-item v-else lines="full" button detail @click="$go('/modal/user-authorize')">
             <ion-icon :icon="logInOutline" slot="start" color="primary"></ion-icon>
-            <ion-label>Войти</ion-label>
+            <ion-label>Вход в профиль</ion-label>
         </ion-item>
-        <ion-item v-if="!isSignedIn" lines="full" button detail @click="$go('/user/sign-up')">
+        <!-- <ion-item v-if="!isSignedIn" lines="full" button detail @click="$go('/user/sign-up')">
             <ion-icon :icon="personAddOutline" slot="start" color="primary"></ion-icon>
             <ion-label>Зарегистрироваться</ion-label>
-        </ion-item>
+        </ion-item> -->
       </ion-list>
     </div>
     <msg-subscription-comp/>
@@ -72,13 +72,13 @@ ion-icon{
           <ion-item-divider>
             <ion-label>Администратор</ion-label>
           </ion-item-divider>
-          <ion-item @click="$go('/admin/text-list')" lines="full" button detail>
-              <ion-icon :icon="documentTextOutline" slot="start" color="primary"></ion-icon>
-              <ion-label>Редактирование страниц</ion-label>
-          </ion-item>
           <ion-item @click="$go('/admin/list-moderation')" lines="full" button detail>
               <ion-icon :icon="ribbonOutline" slot="start" color="primary"></ion-icon>
               <ion-label>Списки</ion-label>
+          </ion-item>
+          <ion-item @click="$go('/admin/text-list')" lines="full" button detail>
+              <ion-icon :icon="documentTextOutline" slot="start" color="primary"></ion-icon>
+              <ion-label>Редактирование страниц</ion-label>
           </ion-item>
           <ion-item @click="$go('/admin/tariff-list')" lines="full" button detail>
               <ion-icon :icon="briefcaseOutline" slot="start" color="primary"></ion-icon>

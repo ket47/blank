@@ -69,7 +69,7 @@
     </ion-card-content>
     <ion-card-content v-else>
       Рекомендуем зарегистрироваться и установить верный адрес, чтобы видеть продавцов поблизости
-      <ion-button expand="block" @click="$go('/user/sign-up')">Регистрация</ion-button>
+      <ion-button expand="block" @click="$go('/modal/user-authorize')">Регистрация</ion-button>
     </ion-card-content>
   </ion-card>
 </template>
