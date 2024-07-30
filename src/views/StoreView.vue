@@ -185,16 +185,11 @@ ion-accordion-group .accordion-expanding .store-description{
   width: 80% !important;
 }
 .group-fixed-block {
-  position: fixed;
-  top: 56px;
+  position: sticky;
+  top: 0px;
   z-index: 10000;
   width: 100%;
   background-color: white;
-}
-.ios .group-fixed-block {
-  position: fixed;
-  position: -webkit-sticky;
-  top: 0px;
 }
 .md .group-fixed-block{
   border-bottom: 1px solid lightgray;

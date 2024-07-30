@@ -19,8 +19,8 @@
 </template>
 
 <script>
-import ProductItem from "@/components/ProductItem";
-import ProductItemNoImg from "@/components/ProductItemNoImg";
+import ProductItem        from "@/components/ProductItem";
+import ProductItemNoImg   from "@/components/ProductItemNoImg";
 
 export default {
   props: ["productList"],

@@ -1,3 +1,15 @@
+<style scoped>
+.special-grid{
+  display: grid;
+  grid-template-columns: 50% 50%;
+}
+
+@media screen and (max-width: 740px) {
+  .special-grid{
+    grid-template-columns: 100%;
+  }
+}
+</style>
 <template>
   <base-layout :pageLogo="mainLogo" hideBackLink="true" >
       <user-address-widget :deliveryTime="primaryDeliveryTime" />
@@ -29,6 +41,18 @@
           </ion-card-content>
         </ion-card>  
 
+
+
+
+
+
+
+
+
+      <product-list-home-infinite ref="productlist_infinite"></product-list-home-infinite>
+      <ion-infinite-scroll @ionInfinite="listLoadMore($event)" threshold="50%">
+          <ion-infinite-scroll-content loading-spinner="bubbles"></ion-infinite-scroll-content>
+      </ion-infinite-scroll>
   </base-layout>
 </template>
 
@@ -36,12 +60,13 @@
 import HomeSlider                 from "@/components/HomeSlider";
 import StoreListNew               from "@/components/StoreListNew";
 import HomePromoCounter           from "@/components/HomePromoCounter";
-
 import UserAddressWidget          from "@/components/UserAddressWidget";
+import ProductListHomeInfinite     from "@/components/ProductListHomeInfinite";
+
 import standartLogo               from "@/assets/icons/tezkel_logo.svg";
 import simpleLogo                 from "@/assets/icons/tezkel_simple_logo.svg";
 
-import Utils        from '@/scripts/Utils.js'
+import Utils                      from '@/scripts/Utils.js'
 
 import {
   IonButton,
@@ -53,7 +78,9 @@ import {
   IonSearchbar,
   IonItem,
   IonLabel,
-  isPlatform
+  isPlatform,
+  IonInfiniteScroll, 
+  IonInfiniteScrollContent,
 }                   from "@ionic/vue";
 
 import {  
@@ -85,7 +112,10 @@ export default {
     IonItem,
     IonLabel,
     UserAddressWidget,
-    HomePromoCounter
+    HomePromoCounter,
+    ProductListHomeInfinite,
+    IonInfiniteScroll, 
+    IonInfiniteScrollContent,
   },
   data(){
     return {
@@ -95,7 +125,9 @@ export default {
       storeSuggestion:null,
       suggestFormHidden:0,
       hiddenCount:null,
-      storeSliderLoadQueue: 100
+      storeSliderLoadQueue: 100,
+
+      mounted_at:0,
     }
   },
   computed: {
@@ -107,7 +139,10 @@ export default {
     }
   },
   methods: {
-    
+    async listLoadMore(ev){
+      await this.$refs.productlist_infinite.listNearGet()
+      ev.target.complete();
+    },
     async outFormSend(){
       //this.listNearReload()
       this.out.phone??=this.$heap.state.user?.user_phone
@@ -165,15 +200,3 @@ export default {
   },
 };
 </script>
-<style scoped>
-.special-grid{
-  display: grid;
-  grid-template-columns: 50% 50%;
-}
-
-@media screen and (max-width: 740px) {
-  .special-grid{
-    grid-template-columns: 100%;
-  }
-}
-</style>
