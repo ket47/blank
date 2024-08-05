@@ -22,7 +22,7 @@ ion-card .store-title{
   --min-height: auto;
   padding-top: 10px;
 }
-.closed ion-img{
+.closed img{
   filter: grayscale(1);
 }
 .section-title{
@@ -77,6 +77,7 @@ ion-card .store-title{
   top: 0;
   display: grid;
   align-content: baseline;
+  pointer-events: none;
 }
 .ribbon-container .ribbon{
   padding: 5px 10px 5px 0px;
@@ -90,6 +91,7 @@ ion-card .store-title{
   text-transform: uppercase;
   text-align: center;
   border-top-right-radius: 3px;
+  min-width: 90px;
 }
 .ribbon-container .ribbon::before {
   height: 0;
@@ -139,13 +141,24 @@ ion-card .store-title{
   border-color: #740c2b transparent transparent;
 }
 
-
+.suggest-card > ion-card{
+  background: linear-gradient(-45deg, #00b4be, #08b3e6);
+  border-radius: 15px;
+  color: white;
+  height: 180px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.suggest-card .add-icon{
+  font-size: 30px;
+}
 
 </style>
 
 <template>
-  <home-store-category-tiles :storeGroups="storeGroups" @on-group-selected="(val)=>{filter.store_group = val}" :is-blocked="filterBlock"/>
-  <home-product-category-tiles :productGroups="productGroupsFiltered" @on-product-group-selected="(val)=>{filter.product_groups = val}" :is-blocked="filterBlock" :storeGroup="filter.store_group"/>
+  <home-store-category-tiles :storeGroups="storeGroups" @on-group-selected="(val)=>{filter.store_group = val}"/>
+  <home-product-category-tiles :productGroups="productGroupsFiltered" @on-product-group-selected="(val)=>{filter.product_groups = val}" :storeGroup="filter.store_group"/>
   <!-- STORES ARE LOADING -->
 
   <ion-list lines="none">
@@ -194,9 +207,10 @@ ion-card .store-title{
     </ion-grid>
   </div>
   <!-- STORES ARE FOUND -->
-  <div v-else-if="storeListFiltered && storeListFiltered.length>0">
+  <div v-else-if="storeListRendered && storeListRendered.length>0">
     <ion-list class="store-list">
-      <div  v-for="(store_item, store_index) in storeListFiltered"  :key="store_item.store_id"  >
+      <div  v-for="(store_item, store_index) in storeListRendered"  :key="store_index"  >
+        <div v-if="!store_item.not_found">
         <ion-card style="position:relative;height:fit-content" :class="store_item.is_opened==0?'closed':''">
             <div @click="$go(`/catalog/store-${store_item.store_id}`)" class="crop-to-fit" style="height: 180px;cursor:pointer">
                 <img v-if="store_item.image_hash" :src="$heap.state.hostname +'image/get.php/' +store_item.image_hash +'.700.700.webp'"/>
@@ -215,15 +229,15 @@ ion-card .store-title{
           </ion-card>
           <ion-grid class="store-indicators">
             <ion-row class="ion-justify-content-between">
-              <ion-col size="auto">
+              <ion-col size="9">
                 <div @click="$go(`/catalog/store-${store_item.store_id}`)" style="cursor:pointer"  class="">
-                  <ion-label lines="none" class="store-title" style="font-family: Roboto; font-size: 15px;">
+                  <ion-label lines="none" class="store-title " style="font-family: Roboto; font-size: 15px;">
                       <b>{{store_item.store_name}}</b>
                   </ion-label>
                 </div>
               </ion-col>
-              <ion-col size="auto" v-if="store_item.rating">
-                <div class="rating">
+              <ion-col size="3" v-if="store_item.rating">
+                <div class="rating" style="text-align: right;">
                   <ion-icon :icon="star" style="font-size: 15px" color="warning"></ion-icon>
                   <span> {{ store_item.rating ?? 0 }}</span>
                 </div>
@@ -235,22 +249,58 @@ ion-card .store-title{
                     <label><ion-text color="success"> ◉ </ion-text> <ion-text class="indicator-label-text" color="medium">открыт до {{ store_item.store_time_closes }}:00</ion-text></label>
                 </div>
                 <div v-else>
-                    <label v-if="store_item.is_working==0"><ion-text class="indicator-label-text"> ◉ </ion-text><ion-text color="medium">временно не работает</ion-text></label>
+                    <label v-if="store_item.is_working==0"><ion-text class="indicator-label-text"> ◉ </ion-text><ion-text color="medium">не работает</ion-text></label>
                     <label v-else-if="store_item.store_opens_tomorrow"><ion-text class="indicator-label-text" color="warning"> ◉ </ion-text><ion-text color="medium">Доставим завтра</ion-text></label>
                     <label v-else-if="store_item.store_next_time_opens>0"><ion-text class="indicator-label-text"> ◉ </ion-text><ion-text color="medium">закрыт до {{ store_item.store_next_time_opens }}:00</ion-text></label>
                     <label v-else><ion-text color="danger"> ◉ </ion-text><ion-text class="indicator-label-text">закрыт</ion-text></label>
                 </div>
               </ion-col>
               <ion-col size="auto"  class="indicator-label">
-                <div v-if="store_item.deliveryTime.timeMin" lines="none">
+                <div v-if="store_item.deliveryTime.timeMin && store_item.is_opened==1" lines="none">
                   <ion-text class="indicator-label-text">{{store_item.deliveryTime.timeMin}}-{{store_item.deliveryTime.timeMax}}мин</ion-text>
                 </div>
               </ion-col>
             </ion-row>
-          </ion-grid> 
+          </ion-grid>
+        </div>
+        <div v-else class="suggest-card"  @click="openModal()">
+          <ion-card style="position:relative;">
+            <div class="add-icon">+</div>
+          </ion-card>
+          <ion-grid class="store-indicators">
+            <ion-row class="ion-justify-content-between">
+              <ion-col size="12">
+                <div style="cursor:pointer"  class="">
+                  <ion-label lines="none" class="store-title " style="font-family: Roboto; font-size: 15px;">
+                      <b>Не нашли то, что искали?</b>
+                  </ion-label>
+                </div>
+              </ion-col>
+              <ion-col size="12">
+                <label  style="font-size: 12px"><ion-text color="medium">Что вы хотите здесь увидеть?</ion-text></label>
+              </ion-col>
+            </ion-row>
+          </ion-grid>
+        </div>
       </div>
     </ion-list>
   </div>
+  <ion-modal ref="modal">
+    <ion-header>
+      <ion-toolbar>
+        <ion-buttons slot="start">
+          <ion-button @click="closeModal()">Отмена</ion-button>
+        </ion-buttons>
+        <ion-title>Не нашли то, что искали?</ion-title>
+        <ion-buttons slot="end">
+          <ion-button fill="block" @click="suggestFormSend()" >отправить</ion-button>
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content class="ion-padding">
+      <ion-input v-model="storeSuggestion" label="" helperText="маркет, магазин, кафе, ресторан, аптека" placeholder="ваше предложение"/>
+    </ion-content>
+  </ion-modal>
 </template>
 
 <script>
@@ -269,7 +319,11 @@ import {
   IonText,
   IonNote,
   IonPopover,
-  IonContent
+  IonContent,
+  IonButtons,
+  IonModal,
+  IonHeader,
+  modalController
 }                   from "@ionic/vue";
 import {  
   timeOutline, 
@@ -302,7 +356,10 @@ export default {
     IonIcon,
     IonNote,
     IonPopover,
-    IonContent
+    IonButtons,
+    IonModal,
+    IonContent,
+    IonHeader
   },
   setup(){
       return {
@@ -321,7 +378,6 @@ export default {
       productGroups: [],
       productGroupsFiltered: [],
       filter: {store_group: '1', product_groups: []},
-      filterBlock: false,
       can_reload_at:0,
       loadedLocation:{},
       out:{},
@@ -385,7 +441,7 @@ export default {
   computed: {
     store_perks () {
       return this.storeListFiltered.map(function(store) {
-        return store.perks.filter(perk => perk.perk_type == 'store_halal')
+        return (store.perks) ? store.perks.filter(perk => perk.perk_type == 'store_halal') : false
       });
     },
     showndelivery_address(){
@@ -393,6 +449,12 @@ export default {
         return this.$heap.state.user.location_main.location_address
       }
       return this.$heap.state.user.location_current.location_address
+    },
+    storeListRendered(){
+      var result = this.storeListFiltered
+      result.push({not_found: true})
+      console.log(result)
+      return result
     }
   },
   methods: {
@@ -408,7 +470,7 @@ export default {
         response=await Utils.prePost(`${heap.state.hostname}Store/listNearGet`, location)
         response=await Utils.post(`${heap.state.hostname}Store/listNearGet`, location)
         this.storeList=this.filterSubstract(response.store_list)
-        this.storeGroups=response.store_groups
+        this.storeGroups=this.storeGroupsPrecompose(response.store_groups)
         this.productGroups=this.customProductGroups.concat(response.product_groups);
         this.filterStoreList();
         this.productCategoryRecalc(this.storeListFiltered)
@@ -435,7 +497,7 @@ export default {
         },
         product_new: {
           color: "blue",
-          label: "Новинки"
+          label: "Новинка"
         },
         product_promo: {
           color: "purple",
@@ -461,6 +523,15 @@ export default {
       if(this.filter.product_groups.length > 0){
         this.storeListFiltered = this.storeListFiltered.filter((el) => { return el.cache_groups.product_groups.filter( value => this.filter.product_groups.includes(value)).length == this.filter.product_groups.length });
       } 
+    },
+    storeGroupsPrecompose(storeGroups){
+      for(var i in storeGroups){
+        storeGroups[i].store_count = this.storeList.filter((el) => { return el.cache_groups.store_groups.includes(storeGroups[i].group_id)})
+      }
+      return storeGroups.sort( ( a, b ) => {
+        if ( a.store_count > b.store_count ) return -1; 
+        if ( a.store_count < b.store_count ) return 1;
+      });
     },
     productGroupsPrecompose(storeItem){
       var self = this  
@@ -488,6 +559,9 @@ export default {
     sortStoreList(){
       var self = this
       this.storeListFiltered = this.storeListFiltered.sort( ( a, b ) => {
+        if(b.is_opened !== '1') {
+          return -1
+        }
         if(self.sortBy.code == 'deliveryTime'){
           if ( a.deliveryTime.timeMin < b.deliveryTime.timeMin ) return -1; 
           if ( a.deliveryTime.timeMin > b.deliveryTime.timeMin ) return 1;
@@ -502,6 +576,12 @@ export default {
         }
         return 0;
       });
+    },
+    openModal(){
+      this.$refs.modal.$el.present()
+    },
+    closeModal(){
+      this.$refs.modal.$el.dismiss()
     }
   },
   mounted () {

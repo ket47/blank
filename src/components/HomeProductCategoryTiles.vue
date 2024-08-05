@@ -70,17 +70,17 @@
         </a>
       </ion-item>
       <swiper :slides-per-view="'auto'" class="product-category-swiper">
-        <swiper-slide v-for="(store_group, i) in productGroups" :key="i" @click="selectGroup(store_group.group_id)">
-          <div :class="`product-category-item ${(activeGroups[store_group.group_id]) ? 'active-item' : ''}`" >
+        <swiper-slide v-for="(product_group, i) in productGroups" :key="i" @click="selectGroup(product_group.group_id)">
+          <div :class="`product-category-item ${(activeGroups[product_group.group_id]) ? 'active-item' : ''}`" >
             <div class="img-section">
               <div class="img-container">
-                <img v-if="store_group.image_hash" :src="`${$heap.state.hostname +'image/get.php/' +store_group.image_hash +'.80.80.png'}`"/>
-                <img v-else :src="`/img/perks/${store_group.image_url}`"/>
+                <img v-if="product_group.image_hash" :src="`${$heap.state.hostname +'image/get.php/' +product_group.image_hash +'.80.80.png'}`"/>
+                <img v-else :src="`/img/perks/${product_group.image_url}`"/>
               </div>
-              <ion-icon v-if="activeGroups[store_group.group_id]" :icon="checkmark" ></ion-icon>
+              <ion-icon v-if="activeGroups[product_group.group_id]" :icon="checkmark" ></ion-icon>
             </div>
             <div class="desc-section">
-              <h5> {{ store_group.group_name }}</h5>
+              <h5> {{ product_group.group_name }}</h5>
             </div>
             
           </div>
@@ -135,7 +135,7 @@ export default {
         checkmark
       }
   },
-  props: ['productGroups','isBlocked', 'storeGroup'],
+  props: ['productGroups', 'storeGroup'],
   data() {
     return {
       activeGroups: {},

@@ -13,28 +13,29 @@
 </style>
 
 <template>
-  
-  <ion-list v-if="lastPromo.expired_at" class="promo-counter-container" style="  margin: 10px; border-radius: 10px; padding: 10px 0">
-    <div class="snow"></div>
-      <ion-item  color="transparent" lines="none" button style="color: white" detail="true" :detailIcon="chevronForwardOutline" href="/user/user-promo">
+  <div v-if="promoList.length > 0">
+    <ion-list v-if="lastPromo.expired_at" class="promo-counter-container" style="  margin: 10px; border-radius: 10px; padding: 10px 0">
+      <div class="snow"></div>
+        <ion-item  color="transparent" lines="none" button style="color: white" detail="true" :detailIcon="chevronForwardOutline" href="/user/user-promo">
+          <ion-label class="ion-no-margin">
+            <strong>У вас есть скидка 🔥</strong>
+            <p style="font-size: 12px">Успейте воспользоваться, времени мало:</p>
+          </ion-label>
+        </ion-item>
+      <ion-item  color="transparent" lines="none">
+        <div style="margin: 0 auto">
+          <FlipCountdown  :deadline="lastPromo.expired_at" />
+        </div>
+      </ion-item>
+    </ion-list>
+    <div v-else>
+      <ion-item  color="transparent" lines="none" >
         <ion-label class="ion-no-margin">
-          <strong>У вас есть скидка 🔥</strong>
-          <p style="font-size: 12px">Успейте воспользоваться, времени мало:</p>
+          <strong><ion-skeleton-text :animated="true" style="width: 120px"></ion-skeleton-text></strong>
+          <p style="font-size: 12px"><ion-skeleton-text :animated="true" style="width: 190px"></ion-skeleton-text></p>
         </ion-label>
       </ion-item>
-    <ion-item  color="transparent" lines="none">
-      <div style="margin: 0 auto">
-        <FlipCountdown  :deadline="lastPromo.expired_at" />
-      </div>
-    </ion-item>
-  </ion-list>
-  <div v-else>
-    <ion-item  color="transparent" lines="none" >
-      <ion-label class="ion-no-margin">
-        <strong><ion-skeleton-text :animated="true" style="width: 120px"></ion-skeleton-text></strong>
-        <p style="font-size: 12px"><ion-skeleton-text :animated="true" style="width: 190px"></ion-skeleton-text></p>
-      </ion-label>
-    </ion-item>
+    </div>
   </div>
 
 </template>

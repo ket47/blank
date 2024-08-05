@@ -31,15 +31,6 @@
       <ion-searchbar class="ion-no-margin ion-margin-bottom search-container"  @click="$router.push('/search')" placeholder="Поиск..."></ion-searchbar>
       <!-- STORES ARE LOADING -->
       <store-list-new/>
-        <ion-card v-if="!suggestFormHidden">
-          <ion-card-header>
-            <ion-card-subtitle>Не нашли то, что искали?</ion-card-subtitle>
-          </ion-card-header>
-          <ion-card-content>
-            <ion-input v-model="storeSuggestion" label="" helperText="маркет, магазин, кафе, ресторан, аптека" placeholder="ваше предложение"/>
-            <ion-button expand="block" @click="suggestFormSend()" color="light">отправить</ion-button>
-          </ion-card-content>
-        </ion-card>  
 
 
 
@@ -123,7 +114,6 @@ export default {
       primaryDeliveryTime: null,
       outofrangeFormHidden:0,
       storeSuggestion:null,
-      suggestFormHidden:0,
       hiddenCount:null,
       storeSliderLoadQueue: 100,
 
@@ -181,7 +171,6 @@ export default {
         await Utils.post(`${this.$heap.state.hostname}Talk/inquiryCreate`, request)
         this.$flash("Ваше предложение отправлено")
       }catch{/** */}
-      this.suggestFormHidden=1
     },
     loadStoreSlider(InfiniteScrollEvent){
       this.storeSliderLoadQueue++;

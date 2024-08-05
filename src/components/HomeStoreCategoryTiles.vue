@@ -2,37 +2,41 @@
 .store-category-container{
   position: relative;
 }
-.store-category-container .horizontalScroller{
-
-  padding: 8px;
-}
-.store-category-container .navigation{
-  position: absolute;
-  height: 100%;
-  width: 100%;
-  pointer-events: none;
-}
-.store-category-container .navigation ion-button{
-  pointer-events: all;
-}
 .store-category-container 
 .store-category-grid{
   display: grid;
-  grid-template-areas: 
-            "a a b c"
-            "d e f g";
   align-items: end;
-  grid-template-columns: 28% 28% 28% 28% 28% 28% 28%;
-  grid-gap: 0.5em;
+  grid-template-columns: 48% 48%;
+  grid-gap: 2%;
+  padding-bottom: 10px;
+}
+
+.swiper-slide {
+  width: 250px;
+}
+.swiper-slide:nth-child(1) .store-category-grid{
+  grid-template-areas: 
+            "a a"
+            "b c";
+  margin-left: 10px;
+}
+.swiper-slide:nth-child(2) .store-category-grid{
+  grid-template-areas: 
+            "a b"
+            "c d";
+}
+.swiper-slide:last-child .store-category-grid{
+  margin-right: 10px;
 }
 .store-category-item{
   background: linear-gradient(to top, #eee, #fff);
   display: grid;
   border-radius: 10px;
   overflow: hidden;
-  height: 100%;
+  height: 100px;
   width: 100%;
   box-shadow: 2px 2px 10px -5px #00000082;
+  position: relative;
 }
 .store-category-item .desc-section{
   padding: 5px;
@@ -40,8 +44,9 @@
 .store-category-item .img-section{
   justify-self: end;
   text-align: right;
-  align-self: end;
-  margin-top: -10px;
+  position: absolute;
+  bottom: 0;
+  right: 0;
 }
 .store-category-item .img-section img{
   vertical-align: bottom;
@@ -57,8 +62,12 @@
 }
 .store-category-item:nth-child(1){
   grid-area: a;
+}
+/*.store-category-container
+.swiper-slide:nth-child(1) .store-category-item:nth-child(1){
   grid-template-columns: 40% 60%;
 }
+*/
 .store-category-item:nth-child(2){
   grid-area: b;
 }
@@ -78,16 +87,12 @@
   grid-area: g;
 }
 
-.store-category-item:nth-child(1) .img-section{
-  margin-top: -30px;
-}
-.store-category-item:nth-child(2) .img-section{
-  width: 70%;
-}
-.store-category-item:nth-child(3) .img-section,
-.store-category-item:nth-child(4) .img-section,
-.store-category-item:nth-child(5) .img-section{
+.store-category-item .img-section{
   width: 60%;
+}
+ .swiper-slide:nth-child(1) .store-category-item:nth-child(1) .img-section{
+  
+  width: 100%;
 }
 .store-category-item.active-item:nth-child(2) {
   background: linear-gradient(-45deg, #c7831c, #e80f08);
@@ -108,47 +113,47 @@
 
 
 @media screen and (min-width: 740px) {
-  
-  .store-category-container 
-  .store-category-grid{
-    grid-gap: 1em;
+
+  .swiper-slide {
+    width: 400px;
   }
-  .store-category-grid{
-    grid-template-columns: 20% 20% 20% 20% 20% 20% 20% !important;
+  .store-category-item{
+    height: 120px;
   }
-  .store-category-item:nth-child(1){
+  .store-category-item .img-section{
+    width: 50%;
+  }
+  /*
+  .swiper-slide:nth-child(1) .store-category-item:nth-child(1){
     grid-template-columns: 60% 40%;
   }
+  */
 }
 
 </style>
 
 <template>
   <div class="store-category-container">
-    <ion-row v-if="!isMobile" class="ion-justify-content-between ion-align-items-center navigation">
-      <ion-col class="ion-text-start">
-        <ion-button @click="scrollSlider('prev')" shape="round" color="light"><ion-icon slot="icon-only" :icon="chevronBackOutline"></ion-icon></ion-button>
-      </ion-col>
-      <ion-col class="ion-text-end">
-        <ion-button @click="scrollSlider('next')" shape="round" color="light"><ion-icon slot="icon-only" :icon="chevronForwardOutline"></ion-icon></ion-button>
-      </ion-col>
-    </ion-row>
-    <div class="horizontalScroller"  ref="catSlider">
-      <div class="store-category-grid">
-        <div :class="`store-category-item ${(activeGroup == store_group.group_id) ? 'active-item' : ''}`" v-for="(store_group, i) in storeGroups" @click="selectGroup(store_group.group_id)" :key="i">
-          <div class="desc-section">
-            <h5> {{ store_group.group_name }}</h5>
-          </div>
-          <div class="img-section">
-            <img :src="`${$heap.state.hostname +'image/get.php/' +store_group.image_hash +'.120.120.png'}`"/>
-          </div>
-        </div>
-      </div>
-    </div>
+      <swiper :slides-per-view="'auto'" class="store-category-swiper">
+        <swiper-slide v-for="(group, i) in this.storeGroupsGrouped" :key="i">
+            
+            <div class="store-category-grid">
+              <div :class="`store-category-item ${(activeGroup == store_group.group_id) ? 'active-item' : ''}`" v-for="(store_group, k) in group" @click="activeGroup = store_group.group_id; selectGroup(store_group.group_id)" :key="k">
+                <div class="desc-section">
+                  <h5> {{ store_group.group_name }}</h5>
+                </div>
+                <div class="img-section">
+                  <img :src="`${$heap.state.hostname +'image/get.php/' +store_group.image_hash +'.120.120.png'}`"/>
+                </div>
+              </div>
+            </div>
+        </swiper-slide>
+      </swiper>  
   </div>
 </template>
 
 <script>
+import { Swiper, SwiperSlide } from 'swiper/vue';
 
 import {
   IonButton,
@@ -161,9 +166,13 @@ import {
   chevronForwardOutline
  }                  from 'ionicons/icons'
 
+import 'swiper/css/bundle';
+
 export default {
-  props: ['storeGroups','isBlocked'],
+  props: ['storeGroups'],
   components: {
+    Swiper,
+    SwiperSlide,
     IonButton,
     IonRow,
     IonCol,
@@ -177,7 +186,8 @@ export default {
   },
   data() {
     return {
-      activeGroup: 1,
+      activeGroup: 0,
+      storeGroupsGrouped: [],
       isMobile: /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(window.navigator.userAgent),
       imgConfig: {
         6: '/img/categories/tezkel_category_burger.png',
@@ -190,23 +200,31 @@ export default {
   },
   methods: {
     selectGroup(val) {
-      if(this.isBlocked){
-        return false;
-      }
-      this.activeGroup = val
       this.$emit('onGroupSelected', val)
+      
     },
-    scrollSlider (direction){
-      let stepWidth = 330
-      let scrollLeft
-      if(direction == 'prev') scrollLeft = this.$refs.catSlider.scrollLeft - stepWidth;
-      if(direction == 'next') scrollLeft = this.$refs.catSlider.scrollLeft + stepWidth;
-      this.$refs.catSlider.scrollTo({
-        top: 0,
-        left: scrollLeft,
-        behavior: 'smooth'
-      });
+    groupStoreGroups(){
+      this.storeGroupsGrouped = []
+      var batch = []
+      for(var i in this.storeGroups){
+        batch.push(this.storeGroups[i])
+        if((this.storeGroupsGrouped.length == 0 && batch.length == 3) || (batch.length == 4)){
+          this.storeGroupsGrouped.push(batch)
+          batch = []
+        } 
+      }
+      if(batch.length > 0) this.storeGroupsGrouped.push(batch)
     }
+  },
+  watch:{
+    'storeGroups'(){
+      this.activeGroup = this.storeGroups[0].group_id
+      this.groupStoreGroups()
+    }
+  },
+  mounted(){
+    if(this.storeGroups.length > 0) this.activeGroup = this.storeGroups[0].group_id
+    this.groupStoreGroups()
   }
 };
 </script>
