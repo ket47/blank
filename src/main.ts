@@ -150,7 +150,11 @@ jQuery( document ).ajaxError(( event, jqxhr, settings, thrownError )=>{
 jQuery( document ).ajaxSend(()=>{
   heap.commit('setInteractionStatus',1)
 })
-jQuery( document ).ajaxComplete(()=>{
+jQuery( document ).ajaxComplete((e,xhr)=>{
+  const sid = xhr.getResponseHeader('x-sid');
+  if(sid){
+    User.sessionIdUse(sid);
+  }
   setTimeout(()=>{
     heap.commit('setInteractionStatus',-1)
   },100)
