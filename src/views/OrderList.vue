@@ -137,8 +137,8 @@
             </div>
             <div v-else style="width:max-content;text-align:center">
                 <ion-icon :icon="informationOutline" size="large"></ion-icon>
-                <ion-label>Необходимо войти в систему</ion-label><br>
-                <ion-note @click="$router.replace('/user/sign-in')" style="cursor:pointer" color="primary">вход в систему</ion-note>
+                <ion-label>Необходимо войти в профиль</ion-label><br>
+                <ion-note @click="$router.replace('/modal/user-authorize')" style="cursor:pointer" color="primary">вход в профиль</ion-note>
             </div>
         </div>
         <ion-infinite-scroll @ionInfinite="listLoadMore($event)" id="moderation-infinite-scroll">
@@ -322,7 +322,7 @@ export default {
             return event.toLocaleDateString(undefined, options);
         },
         courierReadinessCheck(){
-            this.courierJobsInclude=localStorage.user_is_courier || localStorage.user_is_admin
+            this.courierJobsInclude=localStorage.user_is_courier==1 || localStorage.user_is_admin==1
             if(this.courierJobsInclude==0){
                 this.orderType='active';
             }
