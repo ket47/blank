@@ -1,22 +1,15 @@
 <style scoped>
 .promo-counter-container{
   position: relative;
-  background: linear-gradient(-45deg, #ee7752, #e80f08, #e73c7e);
-  background-size: 400% 400%;
-  animation: gradient 10s ease infinite;
-}
-@keyframes gradient {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+  background: var(--ion-color-light);
 }
 </style>
 
 <template>
   <div v-if="promoList.length > 0">
-    <ion-list v-if="lastPromo.expired_at" class="promo-counter-container" style="  margin: 10px; border-radius: 10px; padding: 10px 0">
+    <ion-list v-if="lastPromo.expired_at" class="promo-counter-container" style="  margin: 5px; border-radius: 10px; padding: 10px 0">
       <div class="snow"></div>
-        <ion-item  color="transparent" lines="none" button style="color: white" detail="true" :detailIcon="chevronForwardOutline" href="/user/user-promo">
+        <ion-item  color="transparent" lines="none" button detail="true" :detailIcon="chevronForwardOutline" href="/user/user-promo">
           <ion-label class="ion-no-margin">
             <strong>У вас есть скидка 🔥</strong>
             <p style="font-size: 12px">Успейте воспользоваться, времени мало:</p>

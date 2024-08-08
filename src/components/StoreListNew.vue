@@ -141,17 +141,19 @@ ion-card .store-title{
   border-color: #740c2b transparent transparent;
 }
 
-.suggest-card > ion-card{
-  background: linear-gradient(-45deg, #00b4be, #08b3e6);
+.suggest-card ion-card{
+  background:  var(--ion-color-light);
   border-radius: 15px;
-  color: white;
+  color: #909090;
   height: 180px;
   display: flex;
   align-items: center;
   justify-content: center;
+  box-shadow: none;
+  text-align: center;
 }
 .suggest-card .add-icon{
-  font-size: 30px;
+  font-size: 50px;
 }
 
 </style>
@@ -160,7 +162,6 @@ ion-card .store-title{
   <home-store-category-tiles :storeGroups="storeGroups" @on-group-selected="(val)=>{filter.store_group = val}"/>
   <home-product-category-tiles :productGroups="productGroupsFiltered" @on-product-group-selected="(val)=>{filter.product_groups = val}" :storeGroup="filter.store_group"/>
   <!-- STORES ARE LOADING -->
-
   <ion-list lines="none">
     <ion-item :button="true" detail="false"  @click="popoverOpen = 1">
       <ion-icon :icon="swapVerticalOutline" slot="start"></ion-icon>
@@ -263,46 +264,74 @@ ion-card .store-title{
             </ion-row>
           </ion-grid>
         </div>
-        <div v-else class="suggest-card"  @click="openModal()">
-          <ion-card style="position:relative;">
-            <div class="add-icon">+</div>
-          </ion-card>
-          <ion-grid class="store-indicators">
-            <ion-row class="ion-justify-content-between">
-              <ion-col size="12">
-                <div style="cursor:pointer"  class="">
-                  <ion-label lines="none" class="store-title " style="font-family: Roboto; font-size: 15px;">
-                      <b>Не нашли то, что искали?</b>
-                  </ion-label>
-                </div>
-              </ion-col>
-              <ion-col size="12">
-                <label  style="font-size: 12px"><ion-text color="medium">Что вы хотите здесь увидеть?</ion-text></label>
-              </ion-col>
-            </ion-row>
-          </ion-grid>
+        <div v-else class="suggest-card" >
+          <div v-if="suggestFormState === 0">
+            <ion-card style="position:relative;" @click="suggestFormState = 1">
+              <div class="add-icon">+</div>
+            </ion-card>
+            <ion-grid class="store-indicators">
+              <ion-row class="ion-justify-content-between"> 
+                <ion-col size="12">
+                  <div style="cursor:pointer"  class="">
+                    <ion-label lines="none" class="store-title " style="font-family: Roboto; font-size: 15px;">
+                        <b>Не нашли то, что искали?</b>
+                    </ion-label>
+                  </div>
+                </ion-col>
+                <ion-col size="12">
+                  <label  style="font-size: 12px"><ion-text color="medium">Что вы хотите здесь увидеть?</ion-text></label>
+                </ion-col>
+              </ion-row>
+            </ion-grid>
+          </div>
+          <div v-else-if="suggestFormState === 1">
+            <ion-card style="position:relative;">
+              <div>
+                <ion-input v-model="storeSuggestion" label="" helperText="Маркет, магазин, кафе, ресторан, аптека" placeholder="ваше предложение"/>
+                <ion-button color="primary" @click="suggestFormSend()" >отправить</ion-button>
+              </div>
+            </ion-card>
+            <ion-grid class="store-indicators">
+              <ion-row class="ion-justify-content-between"> 
+                <ion-col size="12">
+                  <div style="cursor:pointer"  class="">
+                    <ion-label lines="none" class="store-title " style="font-family: Roboto; font-size: 15px;">
+                        <b>Введите название</b>
+                    </ion-label>
+                  </div>
+                </ion-col>
+                <ion-col size="12">
+                  <label  style="font-size: 12px"><ion-text color="medium">И оно обязательно появится</ion-text></label>
+                </ion-col>
+              </ion-row>
+            </ion-grid>
+          </div>
+          <div v-else>
+            <ion-card style="position:relative;">
+              <div>
+                <h4>Спасибо за Ваше предложение</h4>
+              </div>
+            </ion-card>
+            <ion-grid class="store-indicators">
+              <ion-row class="ion-justify-content-between"> 
+                <ion-col size="12">
+                  <div style="cursor:pointer"  class="">
+                    <ion-label lines="none" class="store-title " style="font-family: Roboto; font-size: 15px;">
+                        <b>Мы исправимся</b>
+                    </ion-label>
+                  </div>
+                </ion-col>
+                <ion-col size="12">
+                  <label  style="font-size: 12px"><ion-text color="medium">С учётом Ваших пожеланий</ion-text></label>
+                </ion-col>
+              </ion-row>
+            </ion-grid>
+          </div>
         </div>
       </div>
     </ion-list>
   </div>
-  <ion-modal ref="modal">
-    <ion-header>
-      <ion-toolbar>
-        <ion-buttons slot="start">
-          <ion-button @click="closeModal()">Отмена</ion-button>
-        </ion-buttons>
-        <ion-title>Не нашли то, что искали?</ion-title>
-        <ion-buttons slot="end">
-          <ion-button fill="block" @click="suggestFormSend()" >отправить</ion-button>
-        </ion-buttons>
-      </ion-toolbar>
-    </ion-header>
-    <ion-content class="ion-padding">
-      <ion-input v-model="storeSuggestion" label="" helperText="маркет, магазин, кафе, ресторан, аптека" placeholder="ваше предложение"/>
-    </ion-content>
-  </ion-modal>
 </template>
-
 <script>
 import {
   IonList,
@@ -320,10 +349,7 @@ import {
   IonNote,
   IonPopover,
   IonContent,
-  IonButtons,
-  IonModal,
-  IonHeader,
-  modalController
+  IonInput
 }                   from "@ionic/vue";
 import {  
   timeOutline, 
@@ -356,10 +382,8 @@ export default {
     IonIcon,
     IonNote,
     IonPopover,
-    IonButtons,
-    IonModal,
-    IonContent,
-    IonHeader
+    IonInput,
+    IonContent
   },
   setup(){
       return {
@@ -378,11 +402,9 @@ export default {
       productGroups: [],
       productGroupsFiltered: [],
       filter: {store_group: '1', product_groups: []},
-      can_reload_at:0,
       loadedLocation:{},
-      out:{},
-      storeSuggestion:null,
-      suggestFormHidden:0,
+      storeSuggestion: "",
+      suggestFormState: 0,
       popoverOpen: false,
       sorts: [
         {
@@ -408,7 +430,7 @@ export default {
           group_parent: 'root',
           group_target_key: 'store_delivery_allow',
           group_target_value: '1',
-          group_name: "Своя доставка",
+          group_name: "Доставка продавца",
           image_url: "/store_delivery_allow.png"
         },
         {
@@ -582,7 +604,25 @@ export default {
     },
     closeModal(){
       this.$refs.modal.$el.dismiss()
-    }
+    },
+    async suggestFormSend(){
+      if(!this.storeSuggestion){
+        this.$flash("Напишите что нам стоило бы добавить")
+        return 
+      }
+      try{
+        const request={
+          type:'suggest_new_store',
+          user_id:this.$heap.state.user?.user_id,
+          from:this.$heap.state.user?.user_phone,
+          subject:this.showndelivery_address,
+          body:this.storeSuggestion
+        }
+        await Utils.post(`${this.$heap.state.hostname}Talk/inquiryCreate`, request)
+        this.suggestFormState = 2
+        this.$flash("Ваше предложение отправлено")
+      }catch{/** */}
+    },
   },
   mounted () {
     this.$topic.on('userMainLocationSet',loc=>this.listNearGet(loc))

@@ -1,25 +1,26 @@
 <template>
-      <swiper 
-        v-if="home_slides"
-        :modules="modules" 
-        :autoplay='{delay: 6000, disableOnInteraction: false}' 
-        :loop="true" 
-        class="home-swiper">
-        <swiper-slide v-for="hslide in home_slides" :key="hslide.title" 
-          :style="`background-color:${hslide.color};`"
-          @click="go(hslide.link)">
-          <img :src="hslide.image" class="home_slide_img" :alt="hslide.alt"/>
-          <div class="home_slide">
-            <h1 style="font-size:3em">{{hslide.title}}</h1>
-            <p>{{hslide.description}}</p>
-          </div>
-        </swiper-slide>
-      </swiper>
+  <swiper 
+    v-if="home_slides"
+    :modules="modules" 
+    :autoplay='{delay: 6000, disableOnInteraction: false}' 
+    :loop="true" 
+    class="home-swiper">
+    <swiper-slide v-for="hslide in home_slides" :key="hslide.title" 
+      :style="`background-color:${hslide.color};`"
+      @click="go(hslide.link)">
+      <img :src="hslide.image" class="home_slide_img" :alt="hslide.alt"/>
+      <div class="home_slide">
+        <h1 style="font-size:3em">{{hslide.title}}</h1>
+        <p>{{hslide.description}}</p>
+      </div>
+    </swiper-slide>
+  </swiper>
 </template>
 
 <style scoped>
   .home-swiper{
-    margin: 8px 0;
+    margin: 5px 10px;
+    border-radius: 10px;
   }
   .home_slide{
     position:absolute;
@@ -32,7 +33,7 @@
   .home_slide_img{
     display: block;
     margin-left: auto;
-    -max-height:250px;
+    max-height: 250px;
   }
 </style>
 

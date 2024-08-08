@@ -17,6 +17,9 @@
   padding: 2px;
   position: relative;
 }
+.product-category-swiper .swiper-slide:nth-child(1){
+  margin-left: 5px;
+}
 .product-category-item .img-section ion-icon{
   position: absolute;
   bottom: 25%;
@@ -101,8 +104,6 @@
 
 <script>
 import { Swiper, SwiperSlide } from 'swiper/vue';
-
-
 import {
   IonBadge,
   IonItem,
@@ -154,7 +155,8 @@ export default {
       } else {
         this.activeGroups[val] = this.productGroups.find((item) => item.group_id == val)
       }
-      this.$emit('onProductGroupSelected', Object.keys(this.activeGroups))
+      setTimeout(() => {this.$emit('onProductGroupSelected', Object.keys(this.activeGroups))}, 10)
+      
     },
     clearActive() {
       this.activeGroups = {}

@@ -113,7 +113,6 @@ export default {
   align-items: center;
 }
 .flip-countdown .delimiter{
-  color: white;
   margin: 0 5px;
 }
 
@@ -125,8 +124,8 @@ export default {
   display: none;
 }
 .flip-countdown .tick-flip-panel {
-  color: #e80f08;
-  background-color: #fff;
+  color: white;
+  background-color: #e80f08;
 }
 .flip-countdown .tick-flip-panel-back::after {
   z-index: 1;

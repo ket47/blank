@@ -6,8 +6,8 @@
 .store-category-grid{
   display: grid;
   align-items: end;
-  grid-template-columns: 48% 48%;
-  grid-gap: 2%;
+  grid-template-columns: calc(-10px + 50%) calc(-10px + 50%);
+  grid-gap: 10px;
   padding-bottom: 10px;
 }
 
@@ -29,13 +29,12 @@
   margin-right: 10px;
 }
 .store-category-item{
-  background: linear-gradient(to top, #eee, #fff);
+  background: #f2f1f0;
   display: grid;
   border-radius: 10px;
   overflow: hidden;
   height: 100px;
   width: 100%;
-  box-shadow: 2px 2px 10px -5px #00000082;
   position: relative;
 }
 .store-category-item .desc-section{
@@ -63,11 +62,6 @@
 .store-category-item:nth-child(1){
   grid-area: a;
 }
-/*.store-category-container
-.swiper-slide:nth-child(1) .store-category-item:nth-child(1){
-  grid-template-columns: 40% 60%;
-}
-*/
 .store-category-item:nth-child(2){
   grid-area: b;
 }
@@ -88,7 +82,7 @@
 }
 
 .store-category-item .img-section{
-  width: 60%;
+  width: 70%;
 }
  .swiper-slide:nth-child(1) .store-category-item:nth-child(1) .img-section{
   
@@ -113,7 +107,6 @@
 
 
 @media screen and (min-width: 740px) {
-
   .swiper-slide {
     width: 400px;
   }
@@ -123,11 +116,6 @@
   .store-category-item .img-section{
     width: 50%;
   }
-  /*
-  .swiper-slide:nth-child(1) .store-category-item:nth-child(1){
-    grid-template-columns: 60% 40%;
-  }
-  */
 }
 
 </style>
@@ -138,7 +126,7 @@
         <swiper-slide v-for="(group, i) in this.storeGroupsGrouped" :key="i">
             
             <div class="store-category-grid">
-              <div :class="`store-category-item ${(activeGroup == store_group.group_id) ? 'active-item' : ''}`" v-for="(store_group, k) in group" @click="activeGroup = store_group.group_id; selectGroup(store_group.group_id)" :key="k">
+              <div :class="`store-category-item ${(activeGroup == store_group.group_id) ? 'active-item' : ''}`" v-for="(store_group, k) in group" @click="selectGroup(store_group.group_id)" :key="k">
                 <div class="desc-section">
                   <h5> {{ store_group.group_name }}</h5>
                 </div>
@@ -155,12 +143,6 @@
 <script>
 import { Swiper, SwiperSlide } from 'swiper/vue';
 
-import {
-  IonButton,
-  IonRow,
-  IonCol,
-  IonIcon
-}                   from "@ionic/vue";
 import {  
   chevronBackOutline,
   chevronForwardOutline
@@ -172,11 +154,7 @@ export default {
   props: ['storeGroups'],
   components: {
     Swiper,
-    SwiperSlide,
-    IonButton,
-    IonRow,
-    IonCol,
-    IonIcon
+    SwiperSlide
   },
   setup(){
       return {
@@ -200,7 +178,8 @@ export default {
   },
   methods: {
     selectGroup(val) {
-      this.$emit('onGroupSelected', val)
+      this.activeGroup = val; 
+      setTimeout(() => {this.$emit('onGroupSelected', val)}, 10)
       
     },
     groupStoreGroups(){
