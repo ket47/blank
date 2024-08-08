@@ -30,6 +30,16 @@
       </ion-item>
     </div>
   </div>
+  <div v-else>
+    <div class="promo-counter-container" style="  margin: 5px; border-radius: 10px; padding: 25px 0px">
+        <ion-item  color="transparent" lines="none" button detail="true" :detailIcon="chevronForwardOutline"  href="/user/user-promo">
+          <ion-label class="ion-no-margin">
+            <strong>К сожалению, скидок нет =(</strong>
+            <p style="font-size: 12px">Пригласите друзей и скидки появятся! =)</p>
+          </ion-label>
+        </ion-item>
+    </div>
+  </div>
 
 </template>
 
