@@ -475,7 +475,6 @@ export default {
     storeListRendered(){
       var result = this.storeListFiltered
       result.push({not_found: true})
-      console.log(result)
       return result
     }
   },
