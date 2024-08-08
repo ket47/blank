@@ -150,7 +150,7 @@ export default  {
         switch(message){
           case 'verification_not_found':
             this.$flash("Код верификации устарел")
-            this.$router.replace('/user/sign-in')
+            this.$router.replace('/modal/user-authorize')
             break;
         }
         this.$flash("Не удалось верифицировать телефон")

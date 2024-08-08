@@ -129,7 +129,7 @@
           </ion-row>
           <ion-row responsive-sm>
             <ion-col>
-              <ion-button color="light" expand="block" @click="$router.replace('/user/sign-in')">Уже есть учетная запись?</ion-button>
+              <ion-button color="light" expand="block" @click="$router.replace('/modal/user-authorize')">Уже есть учетная запись?</ion-button>
             </ion-col>
           </ion-row>
         </ion-grid>
