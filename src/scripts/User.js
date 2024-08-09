@@ -94,12 +94,12 @@ const User = {
         return userData;
     },
     async sessionIdUse(sid){
-        await Utils.pref.set('sessionId',sid)
         jQuery.ajaxSetup({ 
             beforeSend: function(xhr) {
                 xhr.setRequestHeader('x-sid',  sid);
             }
         });
+        await Utils.pref.set('sessionId',sid)
     },
     async signIn(requestData){
         const metric_id=await Utils.pref.get('metric_id')
@@ -123,7 +123,7 @@ const User = {
             await jQuery.post( heap.state.hostname + "User/signOut")
             await Utils.pref.remove('signInData')
             heap.commit('setUser', {user_id: -1})
-            User.sessionIdUse(null)
+            //User.sessionIdUse(null)
             User.geo.trackingStop()
             return {user_id: -1}
         } catch{/** */}
