@@ -67,6 +67,10 @@
       <p>Использовать его для поиска продавцов поблизости?</p>
       <ion-button expand="block" @click="confirmCurrentLocation()">Использовать адрес</ion-button>
     </ion-card-content>
+    <ion-card-content v-else-if="isSignedIn">
+      <p>Добавьте ваш адрес доставки, чтобы видеть продавцов поблизости.</p>
+      <ion-button expand="block" @click="$go('/modal/user-addresses')">Добавить адрес</ion-button>
+    </ion-card-content>
     <ion-card-content v-else>
       Рекомендуем зарегистрироваться и установить верный адрес, чтобы видеть продавцов поблизости
       <ion-button expand="block" @click="$go('/modal/user-authorize')">Регистрация</ion-button>

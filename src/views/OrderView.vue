@@ -135,6 +135,14 @@ export default({
                 }
                 return;
             }
+
+            if( order_stage_code=='supplier_rejected' ){
+                const result=await this.objection_input('ПРИЧИНА ОТМЕНЫ ЗАКАЗА: ')
+                if( result!=='ok' ){
+                    return
+                }
+            }
+
             try{
                 const stateChangeResult=await Order.api.itemStageCreate(order_id, order_stage_code);
                 if(stateChangeResult=='ok'){
@@ -228,7 +236,7 @@ export default({
             const product=await modal.onDidDismiss();     
             this.itemGet()  
         },
-        async action_objection(){
+        async objection_input( prefix='' ){
             const modal = await modalController.create({
                 component: OrderObjectionModal,
                 initialBreakpoint: 0.50,
@@ -236,17 +244,21 @@ export default({
                 canDissmiss:true,
                 });
             modal.present()
-            const is_disputed=await this.onStageCreate(this.order_id, 'customer_disputed');
             const objection=await modal.onDidDismiss();
-            if(objection.data){
-                const message=`ВОЗРАЖЕНИЕ ПОКУПАТЕЛЯ: ${objection.data}`;
-                const result=await Order.api.itemUpdate({order_id:this.order_id,order_objection:message})
-                if( result=='ok' ){
-                    if( is_disputed ){
-                        this.$flash("Ваше возражение принято и будет рассмотрено администратором.")
-                        alert("Необходимо сфотографировать заказ")
-                        this.action_take_photo()
-                    }
+            if(!objection.data){
+                return null;
+            }
+            const message=`${prefix} ${objection.data}`;
+            return await Order.api.itemUpdate({order_id:this.order_id,order_objection:message})
+        },
+        async action_objection(){
+            const result=await this.objection_input('ВОЗРАЖЕНИЕ ПОКУПАТЕЛЯ: ')
+            if( result=='ok' ){
+                const is_disputed=await this.onStageCreate(this.order_id, 'customer_disputed');
+                if( is_disputed ){
+                    this.$flash("Ваше возражение будет рассмотрено продавцом.")
+                    this.$alert("Необходимо сфотографировать заказ")
+                    this.action_take_photo()
                 }
             }
         },

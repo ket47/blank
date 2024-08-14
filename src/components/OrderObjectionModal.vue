@@ -1,18 +1,17 @@
 <template>
   <ion-header>
       <ion-toolbar>
-        <ion-title>Возражение</ion-title>
+        <ion-title>Проблема с заказом</ion-title>
       </ion-toolbar>
   </ion-header>
   <ion-content>
       <ion-list>
           <ion-item>
-              <ion-label position="stacked"></ion-label>
-              <ion-textarea rows="6" v-model="objection_text" placeholder="опишите суть возражения к исполнению заказа (минимум 10 букв)"></ion-textarea>
+              <ion-textarea rows="6" v-model="objection_text" placeholder="опишите суть проблемы (минимум 10 букв)" label=""></ion-textarea>
           </ion-item>
       </ion-list>
-    <ion-button @click="save()" color="primary" :disabled="!objection_text || objection_text.length<10" expand="full">Сохранить возражение</ion-button>
-    <ion-button @click="close()" color="light" expand="full">Закрыть без возражения</ion-button>
+    <ion-button @click="save()" color="primary" :disabled="!objection_text || objection_text.length<10" expand="full">Сохранить</ion-button>
+    <ion-button @click="close()" color="light" expand="full">Закрыть</ion-button>
   </ion-content>
 </template>
 <script>
