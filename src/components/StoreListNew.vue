@@ -344,6 +344,7 @@ import {
   IonCol,
   IonCard,
   IonIcon,
+  IonButton,
   IonSkeletonText,
   IonText,
   IonNote,
@@ -374,6 +375,7 @@ export default {
     IonGrid,
     IonRow,
     IonCol,
+    IonButton,
     IonCard,
     IonSkeletonText,
     HomeStoreCategoryTiles,
@@ -539,7 +541,7 @@ export default {
     filterStoreList(){
       this.storeListFiltered = this.storeList
       if(this.filter.store_group){
-        this.storeListFiltered = this.storeList.filter((el) => { return el.cache_groups.store_groups.includes(this.filter.store_group) })
+        this.storeListFiltered = this.storeList.filter((el) => { return el.cache_groups?.store_groups.includes(this.filter.store_group) })
       }
       if(this.filter.product_groups.length > 0){
         this.storeListFiltered = this.storeListFiltered.filter((el) => { return el.cache_groups.product_groups.filter( value => this.filter.product_groups.includes(value)).length == this.filter.product_groups.length });
@@ -579,6 +581,7 @@ export default {
     },
     sortStoreList(){
       var self = this
+      if(!this.storeListFiltered) return false
       this.storeListFiltered = this.storeListFiltered.sort( ( a, b ) => {
         if(b.is_opened !== '1') {
           return -1

@@ -12,7 +12,8 @@
 }
 
 .swiper-slide {
-  width: 250px;
+  width: 60%;
+  max-width: 250px;
 }
 .swiper-slide:nth-child(1) .store-category-grid{
   grid-template-areas: 
@@ -29,7 +30,7 @@
   margin-right: 10px;
 }
 .store-category-item{
-  background: #f2f1f0;
+  background: #f4f5f8;
   display: grid;
   border-radius: 10px;
   overflow: hidden;
@@ -49,10 +50,6 @@
 }
 .store-category-item .img-section img{
   vertical-align: bottom;
-}
-.store-category-item.active-item {
-  background: linear-gradient(to top, #00b4bd, #08b3e8);
-  color: white;
 }
 .store-category-item h5{
   margin: 5px;
@@ -85,30 +82,57 @@
   width: 70%;
 }
  .swiper-slide:nth-child(1) .store-category-item:nth-child(1) .img-section{
-  
   width: 100%;
 }
-.store-category-item.active-item:nth-child(2) {
+
+.swiper-slide:nth-child(1) .store-category-item:nth-child(1) .img-section img{
+  max-width: 120px;
+}
+.swiper-slide:nth-child(1) .store-category-item.active-item {
+  background: linear-gradient(to top, #00b4bd, #08b3e8);
+  color: white;
+}
+.swiper-slide:nth-child(1)  .store-category-item.active-item:nth-child(2) {
   background: linear-gradient(-45deg, #c7831c, #e80f08);
   color: white;
 }
-.store-category-item.active-item:nth-child(3) {
+.swiper-slide:nth-child(1) .store-category-item.active-item:nth-child(3) {
   background: linear-gradient(-45deg, #367440, #000000);
   color: white;
 }
-.store-category-item.active-item:nth-child(4) {
+.swiper-slide:nth-child(2) .store-category-item.active-item:nth-child(1) {
   background: linear-gradient(-45deg, #1cc785, #08cc22);
   color: white;
 }
-.store-category-item.active-item:nth-child(5) {
+.swiper-slide:nth-child(2) .store-category-item.active-item:nth-child(2) {
   background: linear-gradient(-45deg, #d8db26, #c27400);
+  color: white;
+}
+.swiper-slide:nth-child(2) .store-category-item.active-item:nth-child(3) {
+  background: linear-gradient(to top, #5868fc, #622fee);
+  color: white;
+}
+.swiper-slide:nth-child(2) .store-category-item.active-item:nth-child(4) {
+  background: linear-gradient(to top, #27c080, #2080a7);
+  color: white;
+}
+.swiper-slide:nth-child(3) .store-category-item.active-item:nth-child(1) {
+  background: linear-gradient(to top, #d4386c, #860a1f);
+  color: white;
+}
+.swiper-slide:nth-child(3) .store-category-item.active-item:nth-child(2) {
+  background: linear-gradient(to top, #00b4bd, #08b3e8);
+  color: white;
+}
+.swiper-slide:nth-child(3) .store-category-item.active-item:nth-child(3) {
+  background: linear-gradient(-45deg, #1cc785, #08cc22);
   color: white;
 }
 
 
 @media screen and (min-width: 740px) {
   .swiper-slide {
-    width: 400px;
+    max-width: 400px;
   }
   .store-category-item{
     height: 120px;
@@ -131,7 +155,7 @@
                   <h5> {{ store_group.group_name }}</h5>
                 </div>
                 <div class="img-section">
-                  <img :src="`${$heap.state.hostname +'image/get.php/' +store_group.image_hash +'.120.120.png'}`"/>
+                  <img :src="`${$heap.state.hostname +'image/get.php/' +store_group.image_hash +'.180.180.png'}`"/>
                 </div>
               </div>
             </div>
@@ -142,6 +166,7 @@
 
 <script>
 import { Swiper, SwiperSlide } from 'swiper/vue';
+import { useRoute, useRouter } from 'vue-router';
 
 import {  
   chevronBackOutline,
@@ -157,7 +182,11 @@ export default {
     SwiperSlide
   },
   setup(){
+      const route = useRoute();
+      const router = useRouter();
       return {
+        route,
+        router,
         chevronBackOutline,
         chevronForwardOutline
       }
@@ -178,9 +207,7 @@ export default {
   },
   methods: {
     selectGroup(val) {
-      this.activeGroup = val; 
-      setTimeout(() => {this.$emit('onGroupSelected', val)}, 10)
-      
+      this.router.push({ hash: '#cat='+val })
     },
     groupStoreGroups(){
       this.storeGroupsGrouped = []
@@ -197,12 +224,21 @@ export default {
   },
   watch:{
     'storeGroups'(){
-      this.activeGroup = this.storeGroups[0].group_id
+      this.activeGroup = this.route.hash.split('=')[1] ?? this.storeGroups[0].group_id
+      setTimeout(() => {this.$emit('onGroupSelected', this.activeGroup)}, 10)
       this.groupStoreGroups()
+    },
+    'route.hash'(){
+      var group_id = this.route.hash.split('=')[1]
+      this.activeGroup = group_id; 
+      setTimeout(() => {this.$emit('onGroupSelected', group_id)}, 10)
     }
   },
   mounted(){
-    if(this.storeGroups.length > 0) this.activeGroup = this.storeGroups[0].group_id
+    if(this.storeGroups.length > 0) {
+      this.activeGroup = this.route.hash.split('=')[1] ?? this.storeGroups[0].group_id
+      setTimeout(() => {this.$emit('onGroupSelected', this.activeGroup)}, 10)
+    }
     this.groupStoreGroups()
   }
 };
