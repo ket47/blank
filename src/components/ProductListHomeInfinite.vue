@@ -1,4 +1,8 @@
 <template>
+
+  <ion-item v-if="items?.length>0"  class="ion-justify-content-between ion-align-items-center" lines="none"  style="--background: transparent;--padding-start: 10px;">
+    <h5 slot="start" class="ion-no-margin section-title">Лучшее для вас</h5>
+  </ion-item>
   <div class="ion-padding">
     <product-list v-if="items?.length>0" :productList="items"/>
   </div>
@@ -6,6 +10,9 @@
 </template>
 
 <script>
+import {
+  IonItem
+}                   from "@ionic/vue";
 
 import ProductList          from "@/components/ProductList";
 import jquery               from 'jquery'
@@ -13,6 +20,7 @@ import jquery               from 'jquery'
 export default {
   components: {
     ProductList,
+    IonItem
   },
   data(){
     return {

@@ -1,53 +1,79 @@
 <style scoped>
 .special-grid{
-  display: grid;
-  grid-template-columns: 50% 50%;
+  display: flex;
+  overflow: auto;
+  white-space: nowrap;
   padding: 0 5px;
 }
 .fake-searchbar{
-  background: var(--ion-color-light);
+  background: white;
+  box-shadow: 0px 0px 10px -5px black;
   display: flex;
   align-items: center;
   border-radius: 10px;
   cursor: text;
-  margin: 5px 10px 10px;
+  margin: 5px 10px 20px;
+  box-shadow: rgba(0, 0, 0, 0.2) 0px 3px 1px -2px, rgba(0, 0, 0, 0.14) 0px 2px 2px 0px, rgba(0, 0, 0, 0.12) 0px 1px 5px 0px;
+  color: #8e8e8e;
 }
 .fake-searchbar span{
   font-size: 14px;
+}
+.delivery-block{
+  background: var(--ion-color-light); 
+  margin: 5px; 
+  border-radius: 10px; 
+  align-content: center;  
+  min-width: 280px;
+  width: 50%;
 }
 @media screen and (max-width: 740px) {
   .special-grid{
     grid-template-columns: 100%;
   }
 }
+@media screen and (min-width: 1420px) {
+  .special-grid{
+    grid-template-columns: 30% 70%;
+  }
+}
+.hidden-block{
+  display: none;
+}
 </style>
 <template>
-  <base-layout :pageLogo="mainLogo" hideBackLink="true" >
-      <user-address-widget :deliveryTime="primaryDeliveryTime" />
-      <home-slider/>
-      <!-- <home-primary-category-widget @deliveryTimeGet="deliveryTime=>{primaryDeliveryTime=deliveryTime}"/> -->
+  <base-layout :pageLogo="mainLogo" hideBackLink="true" :contentOnScroll="onScroll">
+    <div ref="topMarker"></div>
+    <user-address-widget :deliveryTime="primaryDeliveryTime" />
+    <home-slider/>
+    <!-- <home-primary-category-widget @deliveryTimeGet="deliveryTime=>{primaryDeliveryTime=deliveryTime}"/> -->
     <div class="special-grid">
-      <div class="ion-padding-vertical" style="background: var(--ion-color-light); margin: 5px; border-radius: 10px; align-content: center;">
-        <ion-item  color="transparent" lines="none" button detail="true" :detailIcon="chevronForwardOutline"  href="/order/shipment-draft" >
+      <div class="ion-padding-vertical delivery-block">
+        <ion-item color="transparent" lines="none" button detail="true" :detailIcon="chevronForwardOutline"  href="/order/shipment-draft" >
           <img slot="start" src="/img/delivery_box.png" width="60"/>
-          <ion-label class="">
+          <ion-label style="white-space: initial;">
             <strong>ВЫЗВАТЬ КУРЬЕРА</strong>
-            <p style="font-size: 12px">Доставим всё, что Вам нужно: </p>
+            <p style="font-size: 12px; line-height: 16px; margin-top: 5px;">Доставим всё, что Вам нужно</p>
           </ion-label>
         </ion-item>
       </div>
       <home-promo-counter />
     </div>  
-      <div class="fake-searchbar ion-padding" @click="$router.push('/search')">
-        <ion-icon slot="start" :icon="searchOutline" size="small"></ion-icon>
-        <span class="ion-margin-horizontal">Поиск...</span>
-      </div>
-      <!-- STORES ARE LOADING -->
-      <store-list-new/>
-      <product-list-home-infinite ref="productlist_infinite"></product-list-home-infinite>
-      <ion-infinite-scroll @ionInfinite="listLoadMore($event)" threshold="50%">
-          <ion-infinite-scroll-content loading-spinner="bubbles"></ion-infinite-scroll-content>
-      </ion-infinite-scroll>
+    <div class="fake-searchbar ion-padding" @click="$router.push('/search')">
+      <ion-icon slot="start" :icon="searchOutline" size="small"></ion-icon>
+      <span class="ion-margin-horizontal">Поиск...</span>
+    </div>
+    <!-- STORES ARE LOADING -->
+    <store-list-new/>
+    <product-list-home-infinite ref="productlist_infinite"></product-list-home-infinite>
+    <ion-infinite-scroll @ionInfinite="listLoadMore($event)" threshold="50%">
+        <ion-infinite-scroll-content loading-spinner="bubbles"></ion-infinite-scroll-content>
+    </ion-infinite-scroll>
+    <ion-fab horizontal="end" vertical="bottom" slot="fixed" class="hidden-block" ref="scrollToTopButton" @click="scrollToTop()" style="position: fixed">
+      <ion-fab-button>
+        <ion-icon :icon="chevronUpOutline"></ion-icon>
+      </ion-fab-button>
+    </ion-fab>
   </base-layout>
 </template>
 
@@ -66,6 +92,8 @@ import Utils                      from '@/scripts/Utils.js'
 import {
   IonIcon,
   IonItem,
+  IonFab,
+  IonFabButton,
   IonLabel,
   isPlatform,
   IonInfiniteScroll, 
@@ -75,7 +103,8 @@ import {
 import {  
   chevronBackOutline,
   searchOutline,
-  chevronForwardOutline
+  chevronForwardOutline,
+  chevronUpOutline
  }                  from 'ionicons/icons'
 
 
@@ -87,12 +116,15 @@ export default {
       mainLogo,
       chevronBackOutline,
       searchOutline,
-      chevronForwardOutline
+      chevronForwardOutline,
+      chevronUpOutline
     }
   },
   components: {
     IonIcon,
     HomeSlider,
+    IonFab,
+    IonFabButton,
     StoreListNew,
     IonItem,
     IonLabel,
@@ -150,6 +182,20 @@ export default {
       this.storeSliderLoadQueue++;
       InfiniteScrollEvent.target.complete();
     },
+    onScroll(event) {
+      if(!this.$refs.scrollToTopButton ){
+        return
+      }
+      const offsetTop=this.$refs.scrollToTopButton.$el?.offsetTop;
+      if (event.detail.scrollTop > 200 ) {
+        this.$refs.scrollToTopButton.$el.classList?.remove("hidden-block");
+      } else {
+        this.$refs.scrollToTopButton.$el.classList?.add("hidden-block");
+      }
+    },
+    scrollToTop() {
+      this.$refs.topMarker.scrollIntoView();
+    }
   }
 };
 </script>

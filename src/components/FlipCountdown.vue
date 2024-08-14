@@ -117,8 +117,8 @@ export default {
 }
 
 .flip-countdown .tick {
-  font-size: 3em;
-  font-size: 20px;
+  font-size: 2.5em;
+  font-size: 18px;
 }
 .flip-countdown .tick .tick-credits{
   display: none;

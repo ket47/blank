@@ -2,17 +2,28 @@
 .promo-counter-container{
   position: relative;
   background: var(--ion-color-light);
+  display: grid;
+  align-items: center;
+  margin: 5px; 
+  border-radius: 10px; 
+  min-width: 330px;
+  width: 50%;
+  white-space: initial;
 }
+
+
+
 </style>
 
 <template>
-  <div v-if="promoList.length > 0">
-    <ion-list v-if="lastPromo.expired_at" class="promo-counter-container" style="  margin: 5px; border-radius: 10px; padding: 10px 0">
+  <div v-if="promoList.length > 0" class="promo-counter-container">
+    <ion-list v-if="lastPromo.expired_at" style="background: transparent;">
       <div class="snow"></div>
         <ion-item  color="transparent" lines="none" button detail="true" :detailIcon="chevronForwardOutline" href="/user/user-promo">
+          <img slot="start" src="/img/discount_box.png" width="60"/>
           <ion-label class="ion-no-margin">
             <strong>У вас есть скидка 🔥</strong>
-            <p style="font-size: 12px">Успейте воспользоваться, времени мало:</p>
+            <p style="font-size: 12px; line-height: 16px; margin-top: 5px;">Успейте воспользоваться, времени мало:</p>
           </ion-label>
         </ion-item>
       <ion-item  color="transparent" lines="none">
@@ -30,15 +41,14 @@
       </ion-item>
     </div>
   </div>
-  <div v-else>
-    <div class="promo-counter-container" style="  margin: 5px; border-radius: 10px; padding: 25px 0px">
+  <div v-else  class="promo-counter-container" >
         <ion-item  color="transparent" lines="none" button detail="true" :detailIcon="chevronForwardOutline"  href="/user/user-promo">
+          <img slot="start" src="/img/discount_box.png" width="60"/>
           <ion-label class="ion-no-margin">
-            <strong>К сожалению, скидок нет =(</strong>
-            <p style="font-size: 12px">Пригласите друзей и скидки появятся! =)</p>
+            <strong>Нужны скидки?</strong>
+            <p style="font-size: 12px">Приглашайте друзей</p>
           </ion-label>
         </ion-item>
-    </div>
   </div>
 
 </template>
@@ -90,10 +100,6 @@ export default {
       totalSum: 0,
       promoList: [],
       lastPromo: {},
-      counterConfig : {
-        labelSize: '12px',
-        countdownSize: '26px'
-      }
     };
   },
   methods: {
