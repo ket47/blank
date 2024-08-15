@@ -433,7 +433,7 @@ export default {
           group_target_key: 'store_delivery_allow',
           group_target_value: '1',
           group_name: "Доставка продавца",
-          image_url: "/store_delivery_allow.png"
+          image_url: "store_delivery_allow.png"
         },
         {
           group_id: 'c2',
@@ -441,7 +441,7 @@ export default {
           group_target_key: 'perk_type',
           group_target_value: 'product_top',
           group_name: "Хит продаж",
-          image_url: "/product_top.png"
+          image_url: "product_top.png"
         },
         {
           group_id: 'c3',
@@ -449,7 +449,7 @@ export default {
           group_target_key: 'perk_type',
           group_target_value: 'product_new',
           group_name: "Новинка",
-          image_url: "/product_new.png"
+          image_url: "product_new.png"
         },
         {
           group_id: 'c4',
@@ -457,7 +457,7 @@ export default {
           group_target_key: 'perk_type',
           group_target_value: 'product_promo',
           group_name: "Акция",
-          image_url: "/promo.png"
+          image_url: "promo.png"
         }
       ]
     };
@@ -581,11 +581,11 @@ export default {
     },
     sortStoreList(){
       var self = this
-      if(!this.storeListFiltered) return false
-      this.storeListFiltered = this.storeListFiltered.sort( ( a, b ) => {
-        if(b.is_opened !== '1') {
-          return -1
-        }
+      if( !this.storeListFiltered ){
+        return false
+      }
+      this.storeListFiltered
+      .sort( ( a, b ) => {
         if(self.sortBy.code == 'deliveryTime'){
           if ( a.deliveryTime.timeMin < b.deliveryTime.timeMin ) return -1; 
           if ( a.deliveryTime.timeMin > b.deliveryTime.timeMin ) return 1;
@@ -599,7 +599,12 @@ export default {
           if ( a.rating < b.rating ) return 1;
         }
         return 0;
-      });
+      })
+      .sort( ( a, b ) => {
+        if(a.is_opened < b.is_opened )return 1
+        if(a.is_opened > b.is_opened )return -1
+        return 0
+      })
     },
     openModal(){
       this.$refs.modal.$el.present()

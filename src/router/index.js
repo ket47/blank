@@ -2,7 +2,7 @@ import { createRouter, createWebHistory, } from '@ionic/vue-router';
 
 import BaseTabs       from '@/components/BaseTabs.vue'
 //import HomePage       from '@/views/HomePage.vue'
-import HomeMain       from '@/views/HomeMain.vue'
+//import HomeMain       from '@/views/HomeMain.vue'
 import HomeMainNew    from '@/views/HomeMainNew.vue'
 import SearchView     from '@/views/SearchView.vue'
 import UserDashboard  from '@/views/UserDashboard.vue'
@@ -37,7 +37,7 @@ const routes = [
       // },
       {
         path: "/catalog",
-        component: HomeMain
+        component: HomeMainNew
       },
       {
         path: "/catalog/home-2",
