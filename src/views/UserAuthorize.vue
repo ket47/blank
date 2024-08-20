@@ -28,13 +28,14 @@
           ref="uphone"
           fill="outline" 
           mode="md"
-          placeholder="7 (XXX) XXX XX XX"
+          placeholder="7 (___) ___ __ __"
           name="phone"
           type="tel"
           inputmode="tel"
           autocomplete="tel-national"
           v-model="user_phone"
           @ionInput="phoneFormat($event)"
+          @keyup.enter="phoneSubmit()"
           label="Номер телефона"
           label-placement="stacked"
         ></ion-input>
@@ -86,6 +87,7 @@
           required
           label="Пароль"
           label-placement="stacked"
+          @keyup.enter="passSubmit()"
         ></ion-input>
 
         <div class="vspace"></div>

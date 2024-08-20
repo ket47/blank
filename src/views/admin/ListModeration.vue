@@ -15,6 +15,9 @@
             <ion-segment-button value="stores">
                 Магазины
             </ion-segment-button>
+            <ion-segment-button value="users" @click="item_type='active'">
+                Пользователи
+            </ion-segment-button>
             <ion-segment-button value="couriers">
                 Курьеры
             </ion-segment-button>
@@ -27,16 +30,43 @@
                     <ion-select-option value="deleted">удаленные</ion-select-option>
                 </ion-select>
             </ion-item>
-            <ion-searchbar v-if="moderationType=='stores' || moderationType=='products' || moderationType=='couriers'" placeholder="Фильтр" v-model="filter"/>
-            <ion-list v-if="listComputed.length>0">
-                <ion-item v-for="item in listComputed" :key="item.item_id" button detail @click="itemEdit(item)">
-                    <ion-thumbnail slot="start" :class="item.class">
-                        <ion-img :src="`${$heap.state.hostname}image/get.php/${item.image_hash}.150.150.webp`"/>
-                    </ion-thumbnail>
-                    <ion-text>{{item.item_name}}</ion-text>
-                    <ion-label slot="end">{{item.date_time}}</ion-label>
-                </ion-item>
-            </ion-list>
+            <ion-searchbar v-if="moderationType=='stores' || moderationType=='products' || moderationType=='couriers' || moderationType=='users'" placeholder="Фильтр" v-model="filter"/>
+
+
+
+            <div v-if="listComputed.length>0">
+                <ion-list v-if="moderationType=='users'">
+                    <!--USERS component-->
+                    <ion-item button detail @click="itemEdit({user_id:0})">
+                        <ion-icon :src="addOutline" slot="start"></ion-icon>
+                        <ion-text>Добавить нового пользователя</ion-text>
+                    </ion-item>
+                    <div v-for="item in listComputed" :key="item.item_id">
+                        <ion-item button detail @click="itemEdit(item)" lines="none">
+                            <ion-avatar slot="start">
+                                <ion-img v-if="item.user_avatar_name" :src="`${$heap.state.settings.app.backendUrl}img/avatar/${item.user_avatar_name}.png`"/>
+                            </ion-avatar>
+                            <ion-text>{{item.item_name}}</ion-text>
+                            <ion-label slot="end">{{item.date_dmy}}</ion-label>
+                        </ion-item>
+                        <ion-item>
+                            <ion-chip color="primary">
+                                <ion-icon :src="callOutline"></ion-icon>
+                                <ion-label><a :href="`tel:${item.user_phone}`">{{item.user_phone}}</a></ion-label>
+                            </ion-chip>
+                        </ion-item>
+                    </div>
+                </ion-list>
+                <ion-list v-else>
+                    <ion-item v-for="item in listComputed" :key="item.item_id" button detail @click="itemEdit(item)">
+                        <ion-thumbnail slot="start" :class="item.class" v-if="item.image_hash">
+                            <ion-img :src="`${$heap.state.hostname}image/get.php/${item.image_hash}.150.150.webp`"/>
+                        </ion-thumbnail>
+                        <ion-text>{{item.item_name}}</ion-text>
+                        <ion-label slot="end">{{item.date_time}}</ion-label>
+                    </ion-item>
+                </ion-list>
+            </div>
             <ion-list v-else-if="is_loading==1">
                 <ion-item v-for="item in [1,2,3]" :key="item" button detail>
                     <ion-thumbnail slot="start" style="background-color:lightgray"></ion-thumbnail>
@@ -48,8 +78,11 @@
                 Ничего не найдено
                 </ion-card-content>
             </ion-card>
+            <ion-item v-if="!is_items_left" lines="none">
+
+            </ion-item>
             <ion-infinite-scroll @ionInfinite="listLoadMore($event)" id="moderation-infinite-scroll">
-                <ion-infinite-scroll-content loading-spinner="bubbles" loading-text="Loading more data..."></ion-infinite-scroll-content>
+                <ion-infinite-scroll-content loading-spinner="bubbles" loading-text="Загрузка"></ion-infinite-scroll-content>
             </ion-infinite-scroll>
         </div>
     </base-layout>
@@ -73,9 +106,17 @@ import {
   IonSearchbar,
   IonSelect,
   IonSelectOption,
- }                          from '@ionic/vue';
+  IonChip,
+  IonAvatar,
+  IonIcon,
+}                          from '@ionic/vue';
 import jquery               from 'jquery'
 import ImagePreviewModal    from '@/components/ImagePreviewModal'
+
+import {
+  callOutline,
+  addOutline,
+}                     from 'ionicons/icons'
 
 export default {
     components: {
@@ -93,8 +134,17 @@ export default {
         IonCard,
         IonCardContent,
         IonSearchbar,
-  IonSelect,
-  IonSelectOption,
+        IonSelect,
+        IonSelectOption,
+        IonChip,
+        IonAvatar,
+        IonIcon,
+    },
+    setup(){
+        return {
+            addOutline,
+            callOutline
+        }
     },
     data(){
         return{
@@ -102,7 +152,8 @@ export default {
             item_type:'disabled',
             filter:'',
             is_loading:0,
-            moderationType:'images',
+            is_items_left:1,
+            moderationType:localStorage.listModerationLastType||"images",
             holders:{
                 'store':'Поставщик',
                 'courier':'Курьер',
@@ -122,6 +173,7 @@ export default {
                 item.item_id=item.image_id||item.store_id||item.courier_id||item.product_id
                 item.item_name=this.holders[item.image_holder]||(item.store_name??item.store_name_new)||item.user_name||item.product_name
                 item.date_time=this.toLocDateTime(item.updated_at)
+                item.date_dmy=this.toDmy(item.updated_at)
                 item.class=item.deleted_at?'deleted':''
             }
             return this.items
@@ -129,10 +181,13 @@ export default {
     },
     methods:{
         async listLoadMore(ev){
-            await this.listLoad()
+            if( this.is_items_left ){
+                await this.listLoad()
+            }
             ev.target.complete();
         },
         async listReload(){
+            this.is_items_left=1
             this.items=[]
             this.listLoad()
         },
@@ -167,16 +222,25 @@ export default {
                     request.name_query_fields='courier_vehicle,user_phone,user_name'
                     request.order='courier_list.updated_at'
                     items=await jquery.post(`${this.$heap.state.hostname}Courier/listGet`,request)
+                } else 
+                if(this.moderationType=='users'){
+                    request.name_query_fields='user_phone,user_name'
+                    request.order='signed_in_at'
+                    items=await jquery.post(`${this.$heap.state.hostname}User/listGet`,request)
                 }
                 this.is_loading=0
                 this.items=this.items.concat(items)
+                if( items.length<request.limit ){
+                    this.is_items_left=0
+                }
             } catch(err){
                 //console.log(err)
             }
         },
         listTypeChanged(e){
-            const listType=e.target.value;
+            localStorage.listModerationLastType=e.target.value;
             this.items=[]
+            this.is_items_left=1
             this.listLoad();
         },
         listFilter(){
@@ -197,6 +261,13 @@ export default {
 
             return event.toLocaleDateString(undefined, options);
         },
+        toDmy( iso ){
+            try{
+                return iso.split(' ')[0].split('-').reverse().join('.')
+            } catch{
+                return ''
+            }
+        },
         itemEdit(item){
             if( this.moderationType=='images' ){
                 this.imageEdit(item)
@@ -209,6 +280,9 @@ export default {
             }
             if( this.moderationType=='couriers' ){
                 this.$go('/user/courier-dashboard?courier_id='+item.courier_id)
+            }
+            if( this.moderationType=='users' ){
+                this.$go('/user/user-management?user_id='+item.user_id)
             }
         },
         async imageEdit(item){
@@ -252,6 +326,9 @@ export default {
         },
     },
     mounted(){
+        if(this.moderationType=='users'){
+            this.item_type='active'
+        }
         this.listLoad();
     },
     watch:{

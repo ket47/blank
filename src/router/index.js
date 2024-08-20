@@ -105,6 +105,10 @@ const routes = [
         component:() => import('@/views/CourierDashboard.vue')
       },
       {
+        path: '/user/user-management',
+        component:() => import('@/views/admin/UserManagement.vue')
+      },
+      {
         path: '/user/supplier-dashboard',
         component:() => import('@/views/SupplierDashboard.vue')
       },
