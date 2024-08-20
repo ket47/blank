@@ -210,7 +210,7 @@ ion-card .store-title{
   <!-- STORES ARE FOUND -->
   <div v-else-if="storeListRendered && storeListRendered.length>0">
     <ion-list class="store-list">
-      <div  v-for="(store_item, store_index) in storeListRendered"  :key="store_index"  >
+      <div  v-for="(store_item, store_index) in storeListRendered"  :key="store_item.store_id"  >
         <div v-if="!store_item.not_found">
         <ion-card style="position:relative;height:fit-content" :class="store_item.is_opened==0?'closed':''">
             <div @click="$go(`/catalog/store-${store_item.store_id}`)" class="crop-to-fit" style="height: 180px;cursor:pointer">

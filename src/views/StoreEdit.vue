@@ -201,7 +201,7 @@
       </ion-item>
       <div v-if="storeItem.store_delivery_allow==1">
         <ion-item lines="none">
-            <ion-text>Минимальная стоимость достаки ({{$heap.state.currencySign}})</ion-text>
+            <ion-text>Минимальная стоимость доставки ({{$heap.state.currencySign}})</ion-text>
             <ion-input slot="end" v-model="storeItem.store_delivery_cost" name="store_delivery_cost" placeholder="бесплатно" style="width:100px;"/>
         </ion-item>
         <ion-item lines="none">
