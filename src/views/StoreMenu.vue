@@ -319,7 +319,9 @@
                                 <p class="product-description">{{productItem.product_description}}</p>
                                 <div v-if="productItem.options">
                                   <ion-chip v-for="option in productItem.options" :key="option.product_id" color="primary">
-                                    <ion-label>{{option.product_option}}</ion-label>&nbsp;<ion-label v-if="option.product_final_price>0">{{option.product_final_price}}{{$heap.state.currencySign}}</ion-label>
+                                    <ion-label>{{option.product_option}}</ion-label>&nbsp;
+                                    <ion-label v-if="option.product_net_price>0">{{option.product_net_price}}{{$heap.state.currencySign}}</ion-label>
+                                    <ion-label v-else-if="option.product_final_price>0">{{option.product_final_price}}{{$heap.state.currencySign}}</ion-label>
                                   </ion-chip>
                                 </div>
                                 <div class="product-price">
