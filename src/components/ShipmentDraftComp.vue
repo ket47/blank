@@ -117,7 +117,6 @@
                         <ion-chip v-else color="medium" @click="locationPhoneEdit('locationFinish')"><ion-icon :src="addOutline"/><ion-label>телефон</ion-label></ion-chip>
                     </div>
                 </ion-item>
-
             </div>
             <ion-item v-else button :detail-icon="addOutline" @click="locationFinishSelect()">
                 <ion-icon color="medium" :src="flagOutline" slot="start"/>

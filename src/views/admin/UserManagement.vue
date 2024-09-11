@@ -182,21 +182,14 @@ ion-text{
 
 <script>
 import { 
-  IonTextarea,
   IonInput,
   IonCard,
-  IonCardHeader,
-  IonCardTitle,
   IonCardContent,
-  IonGrid,
-  IonRow,
-  IonCol,
   IonLabel,
   IonItem,
   IonButton,
   IonList,
   IonCheckbox,
-  IonText,
   IonItemDivider,
   IonToggle,
   IonIcon,
@@ -224,21 +217,14 @@ import User           from '@/scripts/User.js';
 
 export default  {
   components: {
-  IonTextarea,
   IonInput,
   IonCard,
-  IonCardHeader,
-  IonCardTitle,
   IonCardContent,
-  IonGrid,
-  IonRow,
-  IonCol,
   IonLabel,
   IonItem,
   IonButton,
   IonList,
   IonCheckbox,
-  IonText,
   IonItemDivider,
   IonToggle,
   IonIcon,
@@ -487,16 +473,7 @@ export default  {
       this.itemGet()
     }
 
-    // async itemOrderCreate(){
-    //   const store=this.storePick()
-    //   try{
-    //     const request={
-    //       store_id:store.store_id
-    //     }
-    //     const order_id=await jQuery.post( `${heap.state.hostname}Order/itemCreate`,request)
 
-
-    //   }
     // },
     // async storePick(){
     //     const modal = await modalController.create({

@@ -48,6 +48,7 @@
     <home-slider/>
     <!-- <home-primary-category-widget @deliveryTimeGet="deliveryTime=>{primaryDeliveryTime=deliveryTime}"/> -->
     <div class="special-grid">
+      <home-promo-counter />
       <div class="ion-padding-vertical delivery-block">
         <ion-item color="transparent" lines="none" button detail="true" :detailIcon="chevronForwardOutline"  href="/order/shipment-draft" >
           <img slot="start" src="/img/delivery_box.png" width="60"/>
@@ -57,7 +58,6 @@
           </ion-label>
         </ion-item>
       </div>
-      <home-promo-counter />
     </div>  
     <div class="fake-searchbar ion-padding" @click="$router.push('/search')">
       <ion-icon slot="start" :icon="searchOutline" size="small"></ion-icon>

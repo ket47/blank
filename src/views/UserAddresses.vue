@@ -7,20 +7,19 @@
   <base-layout page-title="Мои адреса" ref="UserAddressPage">
         <ion-card v-if="mainAddress">
           <ion-card-header>
-            <ion-card-subtitle>
+            <ion-card-title>
               Адрес доставки заказа
-            </ion-card-subtitle>
+            </ion-card-title>
           </ion-card-header>
           <ion-card-content>
-            <p>Вы выбрали <b style="color:var(--ion-color-primary)">{{mainAddress.location_address}}</b>, как адрес доставки заказов.</p>
-            <p>Вы сможете заказать из ресторанов и магазинов в пределах радиуса доставки.</p>
+            <p><b style="color:var(--ion-color-primary)">{{mainAddress.location_address}}</b>, выбран как адрес доставки заказов.</p>
           </ion-card-content>
         </ion-card>
         <ion-card v-else>
           <ion-card-header>
-            <ion-card-subtitle>
+            <ion-card-title>
               Адрес не установлен
-            </ion-card-subtitle>
+            </ion-card-title>
           </ion-card-header>
           <ion-card-content>
             <p>Вы пока не добавили адрес доставки заказа.</p>
@@ -28,17 +27,31 @@
           </ion-card-content>
         </ion-card>
 
-        <ion-list v-if="locationList.length" lines="full">
-          <ion-item v-for="(location,i) in locationList" :key="location.location_id">
-              <ion-img slot="start" alt="location icon" :src="`${$heap.state.hostname}/image/get.php/${location.image_hash}.60.60.png`" style="height:24px" />
-              <div>
-                <ion-label @click="locationSetMain(`${location.location_id}`,`${i}`)" style="white-space:normal;cursor:pointer;"  :class="location.is_main==1?'is_main':''">
+        <ion-list v-if="locationList.length" lines="none">
+          <div v-for="(location,i) in locationList" :key="location.location_id">
+            <ion-item button detail @click="locationSetMain(`${location.location_id}`,`${i}`)">
+                <ion-img slot="start" alt="location icon" :src="`${$heap.state.hostname}/image/get.php/${location.image_hash}.60.60.png`" style="height:24px" />
+                <ion-label style="white-space:normal;cursor:pointer;"  :class="location.is_main==1?'is_main':''">
                   {{ location.location_address }}
                 </ion-label>
-                <div style="color:var(--ion-color-medium)">{{ location.location_comment }}</div>
-              </div>
-              <ion-icon slot="end" :icon="trashOutline" @click="locationDelete(`${location.location_id}`,`${i}`)"></ion-icon>
-          </ion-item>
+            </ion-item>
+            <ion-item  lines="full" v-if="location.is_main==1">
+                <div>
+                    <div v-if="location.location_comment" @click="locationCommentEdit('locationStart')" style="padding:10px;background-color:var(--ion-color-light);color:#666;border-radius:15px;display:inline-block">
+                        {{location.location_comment}}
+                    </div>
+                    <ion-chip color="medium" v-else @click="locationCommentEdit('locationStart')">
+                        <ion-icon :src="addOutline"/><ion-label>комментарий</ion-label>
+                    </ion-chip>
+
+                    <ion-chip v-if="location.location_phone>0" color="medium" @click="locationPhoneEdit('locationStart')">
+                        <ion-icon :src="callOutline"/><ion-label>{{location.location_phone}}</ion-label>
+                    </ion-chip>
+                    <ion-chip v-else color="medium" @click="locationPhoneEdit('locationStart')"><ion-icon :src="addOutline"/><ion-label>телефон</ion-label></ion-chip>
+                </div>
+                <ion-icon slot="end" :icon="trashOutline" @click="locationDelete(`${location.location_id}`,`${i}`)" color="medium"></ion-icon>
+            </ion-item>
+          </div>
         </ion-list>
 
         <ion-list>
@@ -66,9 +79,11 @@ import {
   IonCard,
   IonCardHeader,
   IonCardContent,
-  IonCardSubtitle,
+  IonCardTitle,
   modalController,
   loadingController,
+  IonChip,
+  alertController,
 }                         from "@ionic/vue";
 import router             from '@/router';
 import heap               from '@/heap';
@@ -76,7 +91,7 @@ import User               from '@/scripts/User.js'
 import jQuery             from 'jquery';
 import UserAddressPicker  from '@/components/UserAddressPicker.vue';
 
-import { locationOutline,trashOutline,addOutline }          from 'ionicons/icons';
+import { locationOutline,trashOutline,addOutline,callOutline, }          from 'ionicons/icons';
 
 
 export default{
@@ -91,10 +106,11 @@ export default{
   IonCard,
   IonCardHeader,
   IonCardContent,
-  IonCardSubtitle,
+  IonCardTitle,
+  IonChip,
   },
   setup(){
-    return { locationOutline,trashOutline,addOutline };
+    return { locationOutline,trashOutline,addOutline,callOutline, };
   },
   mounted(){
     this.locationListGet();
@@ -182,8 +198,7 @@ export default{
       }
     },
     async locationSetMain( location_id, index ){
-      var self=this;
-      var loc=self.locationList[index];
+      const loc=this.locationList[index];
       heap.state.user.location_main={
         location_id:loc.location_id,
         location_latitude:loc.location_latitude,
@@ -191,9 +206,15 @@ export default{
         location_address:loc.location_address,
         image_hash:loc.image_hash
       };
-      router.go(-1);
       await jQuery.post(heap.state.hostname + "User/locationSetMain",{location_id});
       this.$topic.publish('userMainLocationSet',heap.state.user.location_main)
+      this.$flash("Адрес доставки изменен")
+      if(this.$heap.state.next_route){
+        this.$go(this.$heap.state.next_route)
+        this.$heap.state.next_route=null
+      } else {
+        this.locationListGet()
+      }
     },
     async locationDelete( location_id, index ){
       if(!confirm("Удалить адрес доставки?")){
@@ -218,7 +239,107 @@ export default{
       }
       loading.dismiss();
       router.go(-1)
-    }
+    },
+    async locationUpdate( update ){
+      await jQuery.post(heap.state.hostname + "Location/itemUpdate",JSON.stringify(update))
+      this.$flash("Сохранено")
+      this.locationListGet();
+    },
+    async locationPhoneEdit( type ){
+        let phone=heap.state.user.location_main.location_phone??''
+        const alert = await alertController.create({
+            header: 'Напишите номер телефона',
+            buttons: [
+                {
+                    text: 'Удалить',
+                    role: 'cancel'
+                },
+                {
+                    text: 'OK',
+                    role: 'confirm'
+                },
+            ],
+            inputs: [
+                {
+                    name:'phone',
+                    placeholder: '+7 xxxxxxxxxx',
+                    value:phone
+                },
+            ],
+        });
+        try{
+            await alert.present();
+            const {data,role}=await alert.onDidDismiss()
+            if(role=='confirm'){
+                phone=data.values.phone.replace(/\D/g,'').replace(/^7/,'')
+                if(phone){
+                    if(phone.length!=10){
+                        this.$flash("Проверьте правильность телефона")
+                        return
+                    }
+                    phone='+7'+phone
+                }
+            }
+            if(role=='cancel'){
+                phone=''
+            }
+            heap.state.user.location_main.location_phone=phone
+            const update={
+              location_id:heap.state.user.location_main.location_id,
+              location_phone:phone
+            }
+            this.locationUpdate( update )
+        } catch(err){
+            console.log(err)
+        }
+    },
+    async locationCommentEdit( type ){
+        let comment=heap.state.user.location_main.location_comment??''
+        const alert = await alertController.create({
+            header: 'Комментарий к адресу',
+            buttons: [
+                {
+                    text: 'Удалить',
+                    role: 'cancel'
+                },
+                {
+                    text: 'OK',
+                    role: 'confirm'
+                },
+            ],
+            inputs: [
+                {
+                    type:'textarea',
+                    name:'comment',
+                    placeholder: 'напишите комментарий',
+                    value:comment
+                },
+            ],
+        });
+        try{
+            await alert.present();
+            const {data,role}=await alert.onDidDismiss()
+            comment=data.values.comment
+            if(role=='cancel'){
+                comment=''
+            }
+            heap.state.user.location_main.location_comment=comment
+            const update={
+              location_id:heap.state.user.location_main.location_id,
+              location_comment:comment
+            }
+            this.locationUpdate( update )
+        } catch(err){
+            console.log(err)
+        }
+    },
+
+
+
+
+
+
+
   },
   data(){
     return{

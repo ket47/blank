@@ -117,7 +117,11 @@
             <ion-card-content>Рекомендуем делать фотографии товара до упаковки.  Ответственность, в случае претензий со стороны Покупателя к качеству и комплектности, лежит на <b>Продавце</b>.</ion-card-content>
         </ion-card>
 
-        <ion-card color="primary"  v-if="orderData.order_description">
+
+        <div class="ion-padding" v-if="isEditable">
+                <ion-textarea style="background-color:var(--ion-color-light-tint);border-radius:10px" label="" rows="2" placeholder="комментарий к заказу" @change="orderDescriptionChanged($event.target.value)" :value="orderData.order_description"></ion-textarea>
+        </div>
+        <ion-card color="primary"  v-else-if="orderData.order_description">
             <ion-card-header>
                 <ion-card-title>Комментарий</ion-card-title>
             </ion-card-header>
@@ -209,6 +213,7 @@ import {
     IonAvatar,
     IonAccordionGroup,
     IonAccordion,
+    IonTextarea,
 }                       from '@ionic/vue';
 import { 
     add,
@@ -253,6 +258,7 @@ export default({
     IonAvatar,
     IonAccordionGroup,
     IonAccordion,
+    IonTextarea,
     },
     setup() {
         return { 
@@ -385,12 +391,23 @@ export default({
                 entry_discount:new_discount
             }
             try{
-                const result=await jQuery.post( `${this.$heap.state.hostname}Entry/itemUpdate`, JSON.stringify(request) );
+                await jQuery.post( `${this.$heap.state.hostname}Entry/itemUpdate`, JSON.stringify(request) );
                 this.$emit('orderRefresh');
             }catch{
                 this.$flash("Не удалось изменить скидку")
             }
-        }
+        },
+        async orderDescriptionChanged( val ){
+            if( this.atCart ){
+                Order.cart.itemUpdate(this.orderData.order_store_id,null,{order_description:val})
+                return
+            }
+            const request={
+                order_id:this.orderData.order_id,
+                order_description:val
+            };
+            Order.api.itemUpdate(request);
+        },
     }
 })
 </script>

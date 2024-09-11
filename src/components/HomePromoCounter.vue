@@ -22,7 +22,7 @@
         <ion-item  color="transparent" lines="none" button detail="true" :detailIcon="chevronForwardOutline" href="/user/user-promo">
           <img slot="start" src="/img/discount_box.png" width="60"/>
           <ion-label class="ion-no-margin">
-            <strong>У вас есть скидка 🔥</strong>
+            <strong>У вас есть скидка 🔥 {{lastPromo.promo_value}}</strong>
             <p style="font-size: 12px; line-height: 16px; margin-top: 5px;">Успейте воспользоваться, времени мало:</p>
           </ion-label>
         </ion-item>
