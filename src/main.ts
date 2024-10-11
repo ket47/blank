@@ -113,7 +113,7 @@ const alert = async (message:string,title:string)=>{
 }
 
 const go = async (route:any)=>{
-  router.push(route)
+  await router.push(route)
 }
 
 jQuery( document ).ajaxError(( event, jqxhr, settings, thrownError )=>{

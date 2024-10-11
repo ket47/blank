@@ -123,10 +123,11 @@
             <p>Повторная регистрация по этому номеру телефона будет невозможна!</p>
           </div>
         </ion-item>
-        <ion-item>
+        <!-- <ion-item>
           <ion-input v-model="fields.user_pass_current" type="password" placeholder="пароль" label="Действующий пароль" label-placement="stacked"></ion-input>
-        </ion-item>
+        </ion-item> -->
         <ion-button @click="deleteAccount()" expand="block" color="danger">Удалить аккаунт</ion-button>
+        <ion-button @click="deletePromptShow=false" expand="block" color="light">Закрыть</ion-button>
       </ion-content>
     </ion-modal>
 
@@ -303,13 +304,13 @@ export default  {
     },
     async deleteAccount(){
       try{
-        if(!this.fields.user_pass_current){
-          this.$flash("Действующий пароль обязателен")
-          return
-        }
+        // if(!this.fields.user_pass_current){
+        //   this.$flash("Действующий пароль обязателен")
+        //   return
+        // }
         const requestData={
           user_id:this.$heap.state.user.user_id,
-          user_pass:this.fields.user_pass_current,
+          //user_pass:this.fields.user_pass_current,
         }
         await jQuery.post( `${this.$heap.state.hostname}User/itemDelete`, requestData)
         this.deletePromptShow=false

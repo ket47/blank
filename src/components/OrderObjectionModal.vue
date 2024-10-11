@@ -25,7 +25,6 @@ import {
     IonContent,
     IonList,
     IonItem,
-    IonLabel,
 }                   from '@ionic/vue';
 export default {
     components:{
@@ -37,7 +36,6 @@ export default {
     IonContent,
     IonList,
     IonItem,
-    IonLabel,
     },
     data(){
         return {

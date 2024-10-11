@@ -186,9 +186,8 @@ export default {
     }
   },
   data() {
-    console.log(this.query)
     const today = new Date();
-    const firstDay = new Date(Date.parse(`${today.getFullYear()}-${today.getMonth()+1}-01Z`));
+    const firstDay = new Date(Date.UTC(today.getFullYear(),today.getMonth(),1));
     return {
       start_at: firstDay.toISOString().slice(0, 10),
       finish_at: today.toISOString().slice(0, 10),
@@ -252,10 +251,11 @@ export default {
                 output:'xlsx'
             }
             const response= await jquery.post(`${this.$heap.state.hostname}Statistics/sellReportProductGet`,request)
-            const storeNameCleared=this.store.store_name.replace(/[^\wа-яА-Я]/gi,'')
-            const reportUrl=`${this.$heap.state.hostname}Statistics/download/${response}/sellReport_${storeNameCleared}_${this.start_at}.xlsx`;
+            const storeNameCleared=this.store.store_name.replace(/[^\wа-яА-Яa-zA-Z]/gi,'')
+            const reportUrl=`${this.$heap.state.hostname}Statistics/download/${response}/sellReport_${storeNameCleared}_${this.start_at}.xlsx`
             const anchor = document.createElement('a')
             anchor.href =reportUrl
+            anchor.download='download'
             anchor.click()
         } catch (err) {
             const exception_code = err?.responseJSON?.messages?.error;

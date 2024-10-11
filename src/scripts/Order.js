@@ -218,10 +218,17 @@ const Order = {
             Order.cart.listSave();
             return store_id;
         },
-        itemUpdate(store_id,entries){
+        itemUpdate(store_id,entries=null,properties=null){
             const existingOrder=this.itemGetByStoreId(store_id);
             if( existingOrder ){
-                heap.state.cartList[existingOrder.order_index].entries=existingOrder.data.entries.concat(entries||[]);
+                if(entries){
+                    heap.state.cartList[existingOrder.order_index].entries=existingOrder.data.entries.concat(entries||[]);
+                }
+                if(properties){//here we copying properties to order
+                    for(let i in properties){
+                        heap.state.cartList[existingOrder.order_index][i]=properties[i]
+                    }
+                }
                 Order.cart.listSave();
                 return true;
             }

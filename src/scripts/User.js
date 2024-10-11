@@ -63,9 +63,7 @@ const User = {
             /**
              * Loading data after app bootstarp
              */
-            setTimeout(async ()=>{
-                await User.courier.get();
-            },3000)
+            setTimeout(()=>{User.courier.get()},3000)
         }
         localStorage.user_is_courier=User.isCourier()
         localStorage.user_is_admin=User.isAdmin()
