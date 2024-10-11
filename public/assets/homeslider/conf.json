@@ -6,7 +6,7 @@
             "alt":"Пицца в подарок",
             "image":"/assets/homeslider/pizza_banner.jpg",
             "color":"#e48608",
-            "link":""
+            "link":"/catalog/store-126"
         },
         {
             "title":"",
@@ -14,7 +14,7 @@
             "alt":"Дубайский шоколад",
             "image":"/assets/homeslider/chocolatte_banner.jpg",
             "color":"#86b855",
-            "link":""
+            "link":"/catalog/store-119"
         },
         {
             "title":"",
