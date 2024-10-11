@@ -41,7 +41,7 @@
 
 
 
-        <ion-accordion-group v-if="orderType=='jobs' && jobList?.length>0">
+        <!-- <ion-accordion-group v-if="orderType=='jobs' && jobList?.length>0">
             <ion-accordion value="oldjobs">
                 <ion-item slot="header" color="light">
                     <ion-label>Задания</ion-label>
@@ -75,11 +75,11 @@
                     </ion-item>
                 </div>
             </ion-accordion>
-        </ion-accordion-group>
-        <ion-list v-if="orderType=='jobs' && routeListGroupped">
+        </ion-accordion-group> -->
+        <ion-list v-if="orderType=='jobs' && routeListGroupped" lines="none">
             <ion-list-header><h3>Маршрут</h3></ion-list-header>
             <div v-for="route in routeListGroupped" :key="route.courier_id">
-                <ion-item lines="none">
+                <ion-item>
                     <ion-avatar slot="start" v-if="route.image_hash">
                         <ion-img style="border-radius:10px;" :src="`${$heap.state.hostname}image/get.php/${route.image_hash}.150.150.webp`"/>
                     </ion-avatar>
@@ -88,22 +88,26 @@
                     </ion-text>
                     <ion-icon slot="end" :icon="square" :style="`color:${route.actual_color}`"/>
                 </ion-item>
-                <div v-for="(job) in route.jobs" :key="job.job_id">
-                    <ion-item lines="none" style="--inner-padding-bottom:0px" @click="itemClickConfirm(job)">
+                <div v-for="(job) in route.jobs" :key="job.job_id" @click="itemClickConfirm(job)">
+                    <ion-item lines="none" style="--inner-padding-bottom:0px">
+                        <ion-icon v-if="job.finish_plan_scheduled_date" :icon="timeOutline" slot="start"></ion-icon>
                         <ion-text>
-                            {{job.job_name}} <b style="color:var(--ion-color-primary)">{{job.finish_plan_scheduled_date}}</b>
+                            {{job.job_name}} <b style="color:var(--ion-color-primary)" v-if="job.finish_plan_scheduled_date">{{job.finish_plan_scheduled_date}}</b>
                         </ion-text>
                         <ion-chip slot="end" :color="job.stage_color">
                             <ion-icon :icon="checkmarkOutline"></ion-icon>
                             <ion-label color="dark"><small>{{job.stage_label}}</small></ion-label>
                         </ion-chip>
                     </ion-item>
-                    <ion-item lines="full" @click="itemClickConfirm(job)">
-                        <div style="display:grid;grid-template-columns:40px auto 20px;width:100%">
+                    <ion-item lines="full">
+                        <div style="display:grid;grid-template-columns:40px auto 20px;width:100%;margin-bottom:3px">
                             <div style="padding:3px;color:var(--ion-color-primary)"><b>{{job.start_plan_date}}</b></div>
                             <div style="padding:3px;color:#333"><small>{{job.start_address}}</small></div>
                             <div><ion-icon :icon="square" :style="`color:${job.start_color}`"/></div>
-                            <div style="padding:3px;color:#999">{{job.finish_plan_date}}</div>
+                            <div v-if="job.finish_plan_scheduled_date" style="padding:3px;color:#fff;background-color:var(--ion-color-primary);border-radius:3px">
+                                {{job.finish_plan_scheduled_date}}
+                            </div>
+                            <div style="padding:3px;color:#999" v-else>{{job.finish_plan_date}}</div>
                             <div style="padding:3px;color:#333"><small>{{job.finish_address}}</small></div>
                             <div><ion-icon :icon="square" :style="`color:${job.finish_color}`"/></div>
                         </div>
@@ -164,8 +168,6 @@ import {
     IonInfiniteScroll,
     IonInfiniteScrollContent,
     IonSkeletonText,
-    IonAccordionGroup,
-    IonAccordion,
 }                   from '@ionic/vue';
 import {
     storefrontOutline,
@@ -203,8 +205,6 @@ export default {
     IonInfiniteScroll,
     IonInfiniteScrollContent,
     IonSkeletonText,
-    IonAccordionGroup,
-    IonAccordion,
     },
     setup() {
       return { sparklesOutline,storefrontOutline,timeOutline,ordersIcon,rocketOutline,ribbonOutline,checkmarkOutline,informationOutline,banOutline,square,};

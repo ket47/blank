@@ -70,10 +70,18 @@ ion-text{
       </ion-card>
       <ion-card lines="none" v-else>
         <ion-card-content style="background-color: var(--ion-color-success-tint);">
-        Анкета пользователя активна.
+        <p>Анкета пользователя активна.</p>
+        <ion-chip color="primary" v-if="user.user_phone">
+            <ion-icon :src="callOutline"/>
+            <a :href="`tel:+${user.user_phone}`">+{{user.user_phone}}</a>
+        </ion-chip>
+        <ion-chip color="primary" v-if="user.user_email">
+            <ion-icon :src="mailOutline"/>
+            <a :href="`mailto:${user.user_email}`">{{user.user_email}}</a>
+        </ion-chip>
         </ion-card-content>
       </ion-card>
-      
+
       <form @change="updateUser">
         <ion-list>
           <ion-item>
@@ -200,6 +208,7 @@ import {
   IonContent,
   IonToolbar,
   IonTitle,
+  IonChip,
 }                    from "@ionic/vue";
 import {
   enterOutline,
@@ -209,6 +218,8 @@ import {
   documentTextOutline,
   checkmarkOutline,
   closeOutline,
+  callOutline,
+  mailOutline,
 }                     from 'ionicons/icons'
 import jQuery         from "jquery";
 import heap           from '@/heap';
@@ -235,6 +246,7 @@ export default  {
   IonContent,
   IonToolbar,
   IonTitle,
+  IonChip,
   },
   setup(){
     return {
@@ -244,7 +256,9 @@ export default  {
       searchOutline,
       documentTextOutline,
       checkmarkOutline,
-      closeOutline
+      closeOutline,
+      callOutline,
+      mailOutline,
     }
   },
   data(){

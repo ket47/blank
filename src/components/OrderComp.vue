@@ -320,7 +320,7 @@ export default({
                 if(this.orderData.stage_next[i][0]){
                     buttons[i]=this.orderData.stage_next[i];
                     buttons[i].icon=checkmarkOutline
-                    if(i.includes('admin')){
+                    if(i.includes('admin') || i.includes('system')){
                         buttons[i].icon=ribbonOutline
                     } else 
                     if(i.includes('delivery')){

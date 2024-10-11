@@ -29,7 +29,7 @@
             </ion-item>
 
 
-            <ion-card v-if="routePlan.plan_mode=='scheduled'" color="light">
+            <ion-card v-if="deliveryPlanMode=='scheduled'" color="light">
                 <ion-card-header>
                     <ion-card-title>
                         Запланировать заказ
@@ -286,9 +286,9 @@ export default {
             return Math.round(this.routePlan.deliveryDistance/100)/10 || 0
         },
         checkoutError(){
-            if( this.routePlan.start_plan_mode=='nocourier' ){
-                return `К сожалению, нет доступных курьеров`;
-            }
+            // if( this.routePlan.start_plan_mode=='nocourier' ){
+            //     return `К сожалению, нет доступных курьеров`;
+            // }
             if( this.errorCode=='no_input' ){
                 return "Выберите адрес забора и доставки посылки"
             }

@@ -12,7 +12,8 @@
   <ion-content>
     <ion-list lines="none">
         <ion-item>
-            <h4 style="color:#999">{{job.job_name}} [{{job.stage_label}}]</h4>
+            <ion-icon v-if="job.finish_plan_scheduled_date" :icon="timeOutline" slot="start" style="font-size:24px;"></ion-icon>
+            <h5 style="color:#999">{{job.job_name}} <ion-text color="primary" v-if="job.finish_plan_scheduled_date">{{job.finish_plan_scheduled_date}}</ion-text> [{{job.stage_label}}]</h5>
         </ion-item>
         <ion-item>
             <h6>Забрать до {{job.start_plan_date}}</h6>
@@ -24,7 +25,8 @@
             </a>
         </ion-item>
         <ion-item>
-            <h6>Привезти до {{job.finish_plan_date}}</h6>
+            <h6 v-if="job.finish_plan_scheduled_date">Привезти до <b style="border:solid 2px var(--ion-color-primary);border-radius:3px;padding:3px;background-color:var(--ion-color-primary-tint)">{{job.finish_plan_scheduled_date}}</b></h6>
+            <h6 v-else>Привезти до {{job.finish_plan_date}}</h6>
         </ion-item>
         <ion-item>
             <ion-icon slot="end" :icon="square" size="large"  :style="`color:${job.finish_color}`"/>
@@ -45,7 +47,7 @@
         </ion-card-content>
     </ion-card>
     <ion-button v-if="job.stage=='awaited'" @click="jobTake()" expand="block" :disabled="!confirmed">Взять задание</ion-button>
-    <ion-button v-else @click="itemOpen()" expand="block">Открыть заказ</ion-button>
+    <ion-button v-else-if="job.stage!='scheduled'" @click="itemOpen()" expand="block">Открыть заказ</ion-button>
     <ion-button @click="close()" expand="block" color="light">Закрыть</ion-button>
  </ion-content>
 </template>
@@ -56,10 +58,17 @@ import {
     IonItem,
     IonIcon,
     IonContent,
+    IonCard,
+    IonCardHeader,
+    IonCardContent,
+    IonCardSubtitle,
+    IonChip,
+    IonCheckbox,
     modalController
 }                   from '@ionic/vue';
 import {
-    square
+    square,
+    timeOutline,
     }               from 'ionicons/icons';
 import jQuery       from 'jquery';
 
@@ -71,11 +80,18 @@ export default({
     IonButton,
     IonItem,
     IonIcon,
-    IonContent
+    IonContent,
+    IonCard,
+    IonCardHeader,
+    IonCardContent,
+    IonCardSubtitle,
+    IonChip,
+    IonCheckbox,
     },
     setup() {
         return { 
-            square
+            square,
+            timeOutline
             }
     },
     data(){
@@ -85,13 +101,22 @@ export default({
         };
     },
     mounted(){
-        this.customerDetailsGet()
         if(this.job.stage=='awaited' && this.job.payment_by_cash==1){
+            this.customerDetailsGet()
             this.confirmed=0
         } else {
             this.confirmed=1
         }
     },
+    // computed:{
+    //     finish_plan_scheduled_date(){
+    //         if( !job.finish_plan_scheduled ){
+    //             return null
+    //         }
+    //         const finish_plan_scheduled = new Date(job.finish_plan_scheduled*1000)
+    //         return finish_plan_scheduled.toLocaleDateString(undefined, { month: 'numeric', day: 'numeric',hour:'numeric',minute:'numeric' })
+    //     }
+    // },
     methods:{
         async jobTake(){
             try{
@@ -131,7 +156,11 @@ export default({
             const request={
                 job_id:this.job.job_id
             }
-            this.customerDetails=await jQuery.post(`${this.$heap.state.hostname}DeliveryJob/itemCustomerDetailGet`,request)
+            try{
+                this.customerDetails=await jQuery.post(`${this.$heap.state.hostname}DeliveryJob/itemCustomerDetailGet`,request)
+            } catch{
+                this.$flash("Данные клиента не найдены")
+            }
         },
         close(){
             modalController.dismiss(null, 'cancel')
