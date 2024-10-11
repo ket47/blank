@@ -587,8 +587,8 @@ export default {
       this.storeListFiltered
       .sort( ( a, b ) => {
         if(self.sortBy.code == 'deliveryTime'){
-          if ( a.deliveryTime.timeMin < b.deliveryTime.timeMin ) return -1; 
-          if ( a.deliveryTime.timeMin > b.deliveryTime.timeMin ) return 1;
+          if ( a.deliveryTime.timeMin < b.deliveryTime?.timeMin ) return -1; 
+          if ( a.deliveryTime.timeMin > b.deliveryTime?.timeMin ) return 1;
         }
         if(self.sortBy.code == 'distance'){
           if ( a.distance < b.distance ) return -1; 
@@ -650,6 +650,11 @@ export default {
     },
     'sortBy'(){
       this.sortStoreList()
+    },
+    '$route.path'(to,from){
+      if(to=='/catalog'){
+        this.listNearGet(heap.state.user.location_current??heap.state.user.location_main);
+      }
     }
   }
 };

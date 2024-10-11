@@ -19,7 +19,7 @@
   <div v-if="promoList.length > 0" class="promo-counter-container">
     <ion-list v-if="lastPromo.expired_at" style="background: transparent;">
       <div class="snow"></div>
-        <ion-item  color="transparent" lines="none" button detail="true" :detailIcon="chevronForwardOutline" href="/user/user-promo">
+        <ion-item  color="transparent" lines="none" button detail="true" :detailIcon="chevronForwardOutline" @click="$go(`/user/user-promo`)">
           <img slot="start" src="/img/discount_box.png" width="60"/>
           <ion-label class="ion-no-margin">
             <strong>У вас есть скидка 🔥</strong>

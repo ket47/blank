@@ -246,7 +246,7 @@ export default{
       this.$router.push(newroute)
     },
     tabSelect(){
-      const currroute=this.$route.href
+      const currroute=this.$route.path
       if(!currroute){
         return
       }

@@ -49,7 +49,7 @@
     <!-- <home-primary-category-widget @deliveryTimeGet="deliveryTime=>{primaryDeliveryTime=deliveryTime}"/> -->
     <div class="special-grid">
       <div class="ion-padding-vertical delivery-block">
-        <ion-item color="transparent" lines="none" button detail="true" :detailIcon="chevronForwardOutline"  href="/order/shipment-draft" >
+        <ion-item color="transparent" lines="none" button detail="true" :detailIcon="chevronForwardOutline" @click="$go(`/order/shipment-draft`)">
           <img slot="start" src="/img/delivery_box.png" width="60"/>
           <ion-label style="white-space: initial;">
             <strong>ВЫЗВАТЬ КУРЬЕРА</strong>

@@ -32,7 +32,7 @@
   }
   .home_slide_img{
     display: block;
-    margin-left: auto;
+    margin: 0 auto;
     max-height: 250px;
   }
 </style>

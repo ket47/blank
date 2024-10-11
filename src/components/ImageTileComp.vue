@@ -235,7 +235,8 @@ export default {
             };
             try{
                 await jQuery.ajax(request)
-                this.load()
+                await this.load()
+                this.$emit('onChange', this.images_loaded)
             } catch(err){
                 if(err?.responseJSON?.messages?.error=='limit_exeeded'){
                     this.$flash("Уже загружено максимальное количество фото");
