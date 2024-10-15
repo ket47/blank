@@ -266,7 +266,7 @@ const routes = [
   },
   {
     path: '/modal/order-checkout-beta-:id',
-    component: import('@/views/OrderCheckoutBeta.vue')
+    component: () => import('@/views/OrderCheckoutBeta.vue')
   },
   {
     path: '/modal/order-checkout-:id',

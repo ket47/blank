@@ -62,14 +62,15 @@
       };
     },
     created(){
-      this.$topic.on('settingsGet',()=>{
-        this.getSlideList();
-      })
+      this.getSlideList();
     },
     methods: {
         async getSlideList(){
           try{
-            const response=await jQuery.get( this.$heap.state.settings.app.frontendUrl+"/assets/homeslider/conf.json")
+            if(this.home_slides){
+              return
+            }
+            const response=await jQuery.get( this.$heap.state.hostname+"etc/homeslider/conf.json")
             this.home_slides=response.slides
           }catch(err){
             console.log(err)

@@ -8,10 +8,6 @@
 		"classpath": "com.capacitorjs.plugins.app.AppPlugin"
 	},
 	{
-		"pkg": "@capacitor/browser",
-		"classpath": "com.capacitorjs.plugins.browser.BrowserPlugin"
-	},
-	{
 		"pkg": "@capacitor/camera",
 		"classpath": "com.capacitorjs.plugins.camera.CameraPlugin"
 	},
@@ -54,5 +50,9 @@
 	{
 		"pkg": "@capgo/capacitor-updater",
 		"classpath": "ee.forgr.capacitor_updater.CapacitorUpdaterPlugin"
+	},
+	{
+		"pkg": "@capgo/inappbrowser",
+		"classpath": "ee.forgr.capacitor_inappbrowser.InAppBrowserPlugin"
 	}
 ]

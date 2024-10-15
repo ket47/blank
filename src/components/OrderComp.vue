@@ -119,7 +119,7 @@
 
 
         <div class="ion-padding" v-if="isEditable">
-                <ion-textarea style="background-color:var(--ion-color-light-tint);border-radius:10px" label="" rows="2" placeholder="комментарий к заказу" @change="orderDescriptionChanged($event.target.value)" :value="orderData.order_description"></ion-textarea>
+            <ion-textarea style="background-color:var(--ion-color-light-tint);border-radius:10px" label="" rows="2" placeholder="комментарий к заказу" @ionChange="orderDescriptionChanged($event.target.value)" :value="orderData.order_description"></ion-textarea>
         </div>
         <ion-card color="primary"  v-else-if="orderData.order_description">
             <ion-card-header>
@@ -400,6 +400,8 @@ export default({
         async orderDescriptionChanged( val ){
             if( this.atCart ){
                 Order.cart.itemUpdate(this.orderData.order_store_id,null,{order_description:val})
+            }
+            if( !this.orderData?.order_id ){
                 return
             }
             const request={
