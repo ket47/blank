@@ -92,7 +92,7 @@
                     <ion-item lines="none" style="--inner-padding-bottom:0px">
                         <ion-icon v-if="job.finish_plan_scheduled_date" :icon="timeOutline" slot="start"></ion-icon>
                         <ion-text>
-                            {{job.job_name}} <b style="color:var(--ion-color-primary)" v-if="job.finish_plan_scheduled_date">{{job.finish_plan_scheduled_date}}</b>
+                            {{job.job_name}}
                         </ion-text>
                         <ion-chip slot="end" :color="job.stage_color">
                             <ion-icon :icon="checkmarkOutline"></ion-icon>
@@ -107,7 +107,7 @@
                             <div v-if="job.finish_plan_scheduled_date" style="padding:3px;color:#fff;background-color:var(--ion-color-primary);border-radius:3px">
                                 {{job.finish_plan_scheduled_date}}
                             </div>
-                            <div style="padding:3px;color:#999" v-else>{{job.finish_plan_date}}</div>
+                            <div v-else style="padding:3px;color:#999">{{job.finish_plan_date}}</div>
                             <div style="padding:3px;color:#333"><small>{{job.finish_address}}</small></div>
                             <div><ion-icon :icon="square" :style="`color:${job.finish_color}`"/></div>
                         </div>

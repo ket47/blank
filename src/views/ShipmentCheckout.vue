@@ -29,7 +29,7 @@
             </ion-item>
 
 
-            <ion-card v-if="deliveryPlanMode=='scheduled'" color="light">
+            <ion-card v-if="this.routePlan.start_plan_mode=='scheduled'" color="light">
                 <ion-card-header>
                     <ion-card-title>
                         Запланировать заказ

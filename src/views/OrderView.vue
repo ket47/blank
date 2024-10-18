@@ -27,9 +27,6 @@
                     <ion-item :button="true" :detail="false" @click="action_rejected_reason('ДОСТАВКА НЕ УДАЛАСЬ: Отказ клиента')">
                         <ion-label>Отказ клиента</ion-label>
                     </ion-item>
-                    <ion-item :button="true" :detail="false" @click="action_rejected_reason('Заказ не готов/не соответствует')">
-                        <ion-label>Заказ не готов/не соответствует</ion-label>
-                    </ion-item>
                     <ion-item :button="true" :detail="false" @click="action_rejected_reason('ДОСТАВКА НЕ УДАЛАСЬ: Поломка в пути')">
                         <ion-label>Поломка в пути</ion-label>
                     </ion-item>
