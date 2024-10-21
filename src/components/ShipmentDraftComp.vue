@@ -154,6 +154,10 @@
                     </ion-item>
                     <ion-list slot="content">
                         <ion-item>
+                            <ion-icon :src="helpCircleOutline" slot="start"/>
+                            <ion-checkbox v-model="isValidSenderReciever">Получатель и отправитель на связи</ion-checkbox>
+                        </ion-item>
+                        <ion-item>
                             <ion-icon :src="helpCircleOutline" slot="start" @click="$router.push('/page/rules-customer#dimentions')"/>
                             <ion-checkbox v-model="isValidDimention">Меньше 40 × 40 × 25 см</ion-checkbox>
                         </ion-item>
@@ -353,6 +357,7 @@ export default({
     data(){
         return {
             isValidReadyness:1,
+            isValidSenderReciever:1,
             isValidDimention:1,
             isValidWeight:1,
             isValidContent:1,
@@ -395,7 +400,7 @@ export default({
             return this.orderData.order_description && this.orderData.locationStart && this.orderData.locationFinish && !this.checkoutError && this.isValidAll
         },
         isValidAll(){
-            return this.isValidContent&&this.isValidDimention&&this.isValidReadyness&&this.isValidWeight
+            return this.isValidContent&&this.isValidDimention&&this.isValidReadyness&&this.isValidWeight&&this.isValidSenderReciever
         },
         nextStageButtons(){
             let buttons={};
@@ -548,7 +553,7 @@ export default({
             }
         },
         toggleValid( checked ){
-            this.isValidContent=this.isValidDimention=this.isValidWeight=this.isValidReadyness=checked
+            this.isValidContent=this.isValidDimention=this.isValidWeight=this.isValidReadyness=this.isValidSenderReciever=checked
         }
     },
     async created(){

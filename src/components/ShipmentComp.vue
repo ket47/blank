@@ -120,6 +120,11 @@
             </ion-card-header>
             <ion-card-content>{{orderData.order_objection}}</ion-card-content>
         </ion-card>
+        <ion-card color="light"  v-if="orderData?.info?.tariff_info">
+            <ion-card-content>
+                <ion-text v-html="orderData.info.tariff_info"></ion-text>
+            </ion-card-content>
+        </ion-card>
 
 
 

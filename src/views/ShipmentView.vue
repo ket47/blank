@@ -21,9 +21,13 @@
             <ion-popover :is-open="isOpenDeliveryRejectionPopover" @didDismiss="isOpenDeliveryRejectionPopover=false">
                 <ion-content>
                 <ion-list>
-                    <ion-item :button="true" :detail="false" @click="action_rejected_reason('Посылка не отвечает условиям сервиса')">
-                        <ion-label>Не отвечает условиям</ion-label>
+                    <ion-item :button="true" :detail="false" @click="action_rejected_reason('Посылка не готова к отправке, к приезду курьера')">
+                        <ion-label>Посылка не готова</ion-label>
                     </ion-item>
+                    <ion-item :button="true" :detail="false" @click="action_rejected_reason('Посылка больше или тяжелее чем предусмотрено условиями')">
+                        <ion-label>Посылка большая или тяжелая</ion-label>
+                    </ion-item>
+
                     <ion-item :button="true" :detail="false" @click="action_rejected_reason('ДОСТАВКА НЕ УДАЛАСЬ: Получатель не принял посылку')">
                         <ion-label>Отказ получателя</ion-label>
                     </ion-item>
