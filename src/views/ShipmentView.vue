@@ -21,14 +21,20 @@
             <ion-popover :is-open="isOpenDeliveryRejectionPopover" @didDismiss="isOpenDeliveryRejectionPopover=false">
                 <ion-content>
                 <ion-list>
-                    <ion-item :button="true" :detail="false" @click="action_rejected_reason('ДОСТАВКА НЕ УДАЛАСЬ: Отказ клиента')">
-                        <ion-label>Отказ клиента</ion-label>
+                    <ion-item :button="true" :detail="false" @click="action_rejected_reason('Посылка не отвечает условиям сервиса')">
+                        <ion-label>Не отвечает условиям</ion-label>
+                    </ion-item>
+                    <ion-item :button="true" :detail="false" @click="action_rejected_reason('ДОСТАВКА НЕ УДАЛАСЬ: Получатель не принял посылку')">
+                        <ion-label>Отказ получателя</ion-label>
                     </ion-item>
                     <ion-item :button="true" :detail="false" @click="action_rejected_reason('ДОСТАВКА НЕ УДАЛАСЬ: Поломка в пути')">
                         <ion-label>Поломка в пути</ion-label>
                     </ion-item>
                     <ion-item :button="true" :detail="false" @click="action_rejected_reason('ДОСТАВКА НЕ УДАЛАСЬ: Заказ испорчен')">
                         <ion-label>Заказ испорчен</ion-label>
+                    </ion-item>
+                    <ion-item :button="true" :detail="false" @click="action_objection()">
+                        <ion-label>Другая причина</ion-label>
                     </ion-item>
                 </ion-list>
                 </ion-content>
@@ -194,18 +200,18 @@ export default({
             modal.present()
             const objection=await modal.onDidDismiss();
             if(objection.data){
-                const message=`ВОЗРАЖЕНИЕ ПОКУПАТЕЛЯ: ${objection.data}`;
+                const message=`${objection.data}`;
                 const request={
                     order_id:this.order_id,
                     order_objection:message
                 }
-                const result=await jQuery.post(`${this.$heap.state.hostname}Shipment/itemUpdate`,request)
+                const result=await jQuery.post(`${this.$heap.state.hostname}Shipment/itemUpdate`,JSON.stringify(request))
                 if( result=='ok' ){
-                    const is_disputed=await this.onStageCreate(this.order_id, 'customer_disputed');
+                    const is_disputed=await this.onStageCreate(this.order_id, 'delivery_rejected');
                     if( is_disputed ){
                         this.$flash("Ваше возражение принято и будет рассмотрено администратором.")
-                        alert("Необходимо сфотографировать заказ")
-                        this.action_take_photo()
+                        //alert("Необходимо сфотографировать заказ")
+                        //this.action_take_photo()
                     }
                 }
             }

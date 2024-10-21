@@ -25,7 +25,7 @@
             </a>
         </ion-item>
         <ion-item>
-            <h6 v-if="job.finish_plan_scheduled_date">Привезти до <b style="border:solid 2px var(--ion-color-primary);border-radius:3px;padding:3px;background-color:var(--ion-color-primary-tint)">{{job.finish_plan_scheduled_date}}</b></h6>
+            <h6 v-if="job.finish_plan_scheduled_date">Привезти к <b style="border:solid 2px var(--ion-color-primary);border-radius:3px;padding:3px;background-color:var(--ion-color-primary-tint)">{{job.finish_plan_scheduled_date}}</b></h6>
             <h6 v-else>Привезти до {{job.finish_plan_date}}</h6>
         </ion-item>
         <ion-item>
@@ -35,6 +35,11 @@
             </a>
         </ion-item>
     </ion-list>
+    <ion-card v-if="job.finish_plan_scheduled_date" color="primary">
+        <ion-card-content>
+            <p>Заказ привезти к {{job.finish_plan_scheduled_date}}</p>
+        </ion-card-content>
+    </ion-card>
     <ion-card v-if="job.stage=='awaited' && job.payment_by_cash==1" color="light">
         <ion-card-header>
             <ion-card-subtitle>Заказ не оплачен</ion-card-subtitle>

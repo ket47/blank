@@ -12,7 +12,11 @@
             <ion-icon v-else slot="start" :icon="storefrontOutline"></ion-icon>
             <ion-label>{{orderData?.store?.store_name}}</ion-label>
         </ion-item>
-
+        <ion-card color="primary"  v-if="orderData?.finish_plan_scheduled" @click="timePlanInfo()">
+            <ion-card-content>
+                <small>Запланированое время доставки</small> <b>{{orderData?.finish_plan_scheduled}}</b>
+            </ion-card-content>
+        </ion-card>
 
         <ion-list>
             <ion-item lines="full">
@@ -214,6 +218,7 @@ import {
     IonAccordionGroup,
     IonAccordion,
     IonTextarea,
+    alertController,
 }                       from '@ionic/vue';
 import { 
     add,
@@ -410,6 +415,25 @@ export default({
             };
             Order.api.itemUpdate(request);
         },
+        async timePlanInfo(){
+            const alert = await alertController.create({
+                header: 'Время доставки',
+                message:'Указано приблизительное время. На него влияют длительность приготовления заказа, пробки и другие факторы.',
+                buttons: [
+                  {
+                    text: 'Ок',
+                    role: 'confirm',
+                  },
+                ],
+            });
+            await alert.present();
+            const { role } = await alert.onDidDismiss();
+            if( role=='confirm' ){
+                return true
+            }
+            return false
+        },
+
     }
 })
 </script>
