@@ -36,10 +36,10 @@ ion-textarea.ion-invalid{
         </ion-item>
         <div v-if="mailing.regular_group == '0'">
             <ion-item>
-                <ion-toggle @ionChange="mailing.is_delayed = $event.target.checked">Отправить потом</ion-toggle>
+                <ion-toggle @ionChange="mailing.is_delayed = $event.target.checked" :checked="mailing.is_delayed">Отправить потом</ion-toggle>
             </ion-item>
             <ion-item v-if="mailing.is_delayed">
-                <ion-input v-model="mailing.start_at" type="datetime-local" :min="new Date().toISOString().slice(0, -8)" label="Когда отправить?" label-placement="stacked"></ion-input>
+                <ion-input v-model="mailing.start_at" type="datetime-local" :min="new Date().toISOString().slice(0, -8)" label="Когда отправить?" label-placement="stacked" @ionChange="itemSave()"></ion-input>
             </ion-item>
         </div>
         <div v-else>
@@ -342,8 +342,8 @@ export default {
                 result.user_filter??={}
                 if(result.regular_group !== '0'){
                     result.start_at = new Date(result.start_at).toLocaleTimeString([], { hour12: false, hour: "2-digit", minute: "2-digit" });
-                    
-                    console.log(result.start_at)
+                } else {
+                    result.is_delayed = new Date(result.start_at) > new Date()
                 }
                 this.mailing=result
             }catch{/** */}
@@ -367,13 +367,12 @@ export default {
         },
         async itemUpdate(){
             let request=this.mailing
-            if(request.regular_group !== '0'){
+            if(request.regular_group !== '0' && request.start_at.length < 10){
                 request.start_at = '1999-07-01 '+request.start_at+':00';
             }
             try{
                 await jQuery.post(`${this.$heap.state.hostname}Admin/Mailing/itemUpdate`,JSON.stringify(request))
                 this.$flash("💾 сохранено")
-                //this.listGet()
                 this.itemGet()
             }catch{
                 this.$flash("Ошибка сохранения")
@@ -425,7 +424,7 @@ export default {
             }
             try{
                 await jQuery.post(`${this.$heap.state.hostname}Admin/Mailing/itemStart`,request)
-                this.listGet()
+                this.itemGet()
             }catch{/** */}
         },
         async modalLocationCreate() {

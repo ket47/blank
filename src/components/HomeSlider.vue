@@ -78,6 +78,10 @@
           }
         },
         go(link){
+          if(link.indexOf('tel') !== -1 || link.indexOf('mailto') !== -1){
+            location.href = link
+            return
+          }
           if(!link){
             return
           }
