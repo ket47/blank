@@ -6,9 +6,10 @@
 </style>
 <template>
   <base-layout page-title="Поиск" hideBackLink="true">
-    <ion-searchbar class="search-container" v-model="query" debounce="400" @ionInput="listGet()" @ionClear="listGet()" placeholder="начните искать"></ion-searchbar>
+    <user-address-widget />
+    <ion-searchbar class="search-container" v-model="query" debounce="600" @ionInput="listGet()" @ionClear="listGet()" placeholder="поиск товаров"></ion-searchbar>
     <div v-if="found?.product_matches?.length>0">
-      <h2 class="ion-padding">Результат поиска</h2>
+      <h3 class="ion-padding" style="text-transform: capitalize;" v-if="query">{{query}}:</h3>
       <div v-for="store in found.product_matches" :key="store.store_id" class="ion-padding-top">
           <ion-item detail button @click="$go(`/search/store-${store.store_id}`)" lines="none" color="light">
             <ion-thumbnail slot="start">
@@ -38,7 +39,6 @@
 
     </div>
     <div v-else-if="found==null">
-      <h2 class="ion-padding">Результат поиска</h2>
       <ion-item detail lines="full" color="light">
         <ion-thumbnail slot="start">
           <ion-skeleton-text style="width:50px;height:50px;border-radius:10px;margin-top:3px;" animated></ion-skeleton-text>
@@ -64,13 +64,14 @@
       </div>          
 
     </div>
-    <div v-else>
-      <ion-card color="light">
-        <ion-card-header>
-          <ion-card-title>Ничего не найдено.</ion-card-title>
-        </ion-card-header>
-        <ion-card-content>Возможно у нас нет того что вы ищите или вы находитель за пределами зоны доставки</ion-card-content>
-      </ion-card>
+    <div v-else class="ion-padding">
+      <div v-if="query">
+        <h3>Ничего не нашлось по запросу "{{query}}"</h3>
+        Попробуйте поискать по-другому или сократить запрос
+      </div>
+      <div v-else>
+        Напишите что будем искать
+      </div>
     </div>
   </base-layout>
 </template>
@@ -92,10 +93,12 @@ import {
 import Utils            from '@/scripts/Utils.js'
 import ProductItem      from '@/components/ProductItem.vue'
 import StoreOpenedIndicator from '@/components/StoreOpenedIndicator.vue';
+import UserAddressWidget          from "@/components/UserAddressWidget";
 
 export default  {
   components:{
   StoreOpenedIndicator,
+  UserAddressWidget,
   IonSearchbar,
   IonImg,
   IonThumbnail,
@@ -112,7 +115,8 @@ export default  {
   data(){
     return {
       query:this.$route.query.q||'',
-      found:null
+      found:null,
+      last_request_id:0
     }
   },
   created(){
@@ -121,6 +125,8 @@ export default  {
   },
   methods:{
     async listGet(){
+      const request_id=Date.now()
+      this.last_request_id=request_id
       const request={
         query:this.query,
         in_products:1,
@@ -135,8 +141,12 @@ export default  {
         if( found ){
           this.found=this.storeListCalculate(found)
         }
+        this.found=null
         found=await Utils.post(`${this.$heap.state.hostname}Search/listGet`,request)
-        this.found=this.storeListCalculate(found)
+
+        if(this.last_request_id==request_id){
+          this.found=this.storeListCalculate(found)
+        }
       }catch(err){
         console.log(err)
         this.found=null

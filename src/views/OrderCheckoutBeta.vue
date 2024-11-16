@@ -376,11 +376,11 @@ export default({
             if( !this.order ){
                 return false
             }
-            if( this.errTooFar==1 ){
-                return "Адрес доставки заказа вне зоны обслуживания"
-            }
             if(this.$heap.state.user?.location_main?.is_default==1){
                 return `Нужно указать адрес, куда доставить заказ`;
+            }
+            if( this.errTooFar==1 ){
+                return "Адрес доставки заказа вне зоны обслуживания"
             }
             if( this.errNotfound==1 ){
                 return `Заказ удален`
@@ -416,7 +416,7 @@ export default({
         },
 
         order_sum_total(){
-            return Math.round( (this.order.order_sum_product-this.order.order_sum_promo+this.order_sum_delivery)*100 ) / 100
+            return Math.round( (this.order.order_sum_product*1-this.order.order_sum_promo*1+this.order_sum_delivery*1)*100 ) / 100
         },
 
         deliveryByCourierRule(){
@@ -499,6 +499,7 @@ export default({
                 this.storeIsReady=Array.isArray(bulkResponse.Store_deliveryOptions)?1:0
                 this.errTooFar=0
                 this.errNoTariff=0
+                this.errNotfound=0
                 this.bankCard=bulkResponse?.bankCard;
                 this.tariffRuleList=bulkResponse.Store_deliveryOptions
                 if( !this.tariffRule.tariff_id ){//if not set already
