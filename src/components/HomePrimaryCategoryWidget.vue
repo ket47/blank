@@ -84,7 +84,7 @@
             <ion-row class="ion-justify-content-between">
               <ion-col size="auto">
                 <div @click="$go(`/catalog/store-${primaryStoreData.store_id}`)" style="cursor:pointer"  class="">
-                  <ion-label lines="none" class="store-title" style="font-family: Roboto; font-size: 17px;">
+                  <ion-label lines="none" class="store-title" style="font-size: 17px;">
                       <b>{{primaryStoreData.store_name}}</b>
                   </ion-label>
                 </div>

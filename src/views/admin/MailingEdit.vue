@@ -2,9 +2,7 @@
 .deleted{
     border: 3px red solid;
 }
-.preview-card{
-    font-family: Roboto;
-}
+
 .preview-card ion-card-header{
     padding-bottom: 5px;
 }

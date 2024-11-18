@@ -64,7 +64,7 @@ ion-card .store-title{
   }
 }
 .rating{
-  font-family: Roboto;
+  
 }
 .rating span{
   margin-left: 5px;
@@ -232,7 +232,7 @@ ion-card .store-title{
             <ion-row class="ion-justify-content-between">
               <ion-col size="9">
                 <div @click="$go(`/catalog/store-${store_item.store_id}`)" style="cursor:pointer"  class="">
-                  <ion-label lines="none" class="store-title " style="font-family: Roboto; font-size: 15px;">
+                  <ion-label lines="none" class="store-title " style=" font-size: 15px;">
                       <b>{{store_item.store_name}}</b>
                   </ion-label>
                 </div>
@@ -273,7 +273,7 @@ ion-card .store-title{
               <ion-row class="ion-justify-content-between"> 
                 <ion-col size="12">
                   <div style="cursor:pointer"  class="">
-                    <ion-label lines="none" class="store-title " style="font-family: Roboto; font-size: 15px;">
+                    <ion-label lines="none" class="store-title " style=" font-size: 15px;">
                         <b>Не нашли то, что искали?</b>
                     </ion-label>
                   </div>
@@ -295,7 +295,7 @@ ion-card .store-title{
               <ion-row class="ion-justify-content-between"> 
                 <ion-col size="12">
                   <div style="cursor:pointer"  class="">
-                    <ion-label lines="none" class="store-title " style="font-family: Roboto; font-size: 15px;">
+                    <ion-label lines="none" class="store-title " style=" font-size: 15px;">
                         <b>Введите название</b>
                     </ion-label>
                   </div>
@@ -316,7 +316,7 @@ ion-card .store-title{
               <ion-row class="ion-justify-content-between"> 
                 <ion-col size="12">
                   <div style="cursor:pointer"  class="">
-                    <ion-label lines="none" class="store-title " style="font-family: Roboto; font-size: 15px;">
+                    <ion-label lines="none" class="store-title " style=" font-size: 15px;">
                         <b>Мы исправимся</b>
                     </ion-label>
                   </div>
