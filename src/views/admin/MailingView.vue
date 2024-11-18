@@ -51,7 +51,7 @@
                                 </ion-item>
                                 <ion-item button @click="itemCopy(mailing.mailing_id)">
                                     <ion-icon slot="end" :icon="copyOutline"></ion-icon>
-                                    <ion-label>Купировать</ion-label>
+                                    <ion-label>Дублировать</ion-label>
                                 </ion-item>
                                 <ion-item button @click="itemDelete(mailing.mailing_id)">
                                     <ion-icon slot="end" :icon="trash" color="danger"></ion-icon>
