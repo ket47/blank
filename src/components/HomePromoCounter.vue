@@ -6,7 +6,7 @@
   align-items: center;
   margin: 5px; 
   border-radius: 10px; 
-  min-width: 330px;
+  min-width: 300px;
   width: 50%;
   white-space: initial;
 }

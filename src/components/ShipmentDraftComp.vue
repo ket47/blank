@@ -8,7 +8,7 @@
         <ion-list lines="none">
             <ion-item>
                 <ion-label>
-                    <h1>Ваш заказ</h1>
+                    <h1>Создание зявки</h1>
                     <p><b>Курьер отвезет вашу посылку</b></p>
                 </ion-label>
             </ion-item>
@@ -37,7 +37,7 @@
                 <ion-text color="medium">Скажите нам, что нужно перевезти?</ion-text>
                 <ion-icon color="warning" :src="alertCircleOutline" slot="end"/>
             </ion-item>-->
-            <ion-item-divider>Детали перевозки</ion-item-divider>
+            <ion-item-divider>Доставка</ion-item-divider>
             <!-- <ion-item >
                 <ion-label><h1>Детали перевозки</h1></ion-label>
             </ion-item> -->
@@ -219,6 +219,10 @@
                     </ion-button>
                 </ion-col>
             </ion-row>
+            <ion-button @click="stageCreate(orderData.order_id, 'customer_deleted','')" expand="block" fill="clear"> 
+                <ion-icon slot="start" :src="checkmarkOutline"></ion-icon>
+                Удалить
+            </ion-button>
         </ion-grid>
         
     </div>
@@ -367,8 +371,11 @@ export default({
     },
     computed:{
         checkoutError(){
+            if( !this.orderData.locationStart || !this.orderData.locationFinish ){
+                return;
+            }
             const errorCode=this.orderLocal.deliveryCalculation?.error??null
-            if( errorCode=='no_input' || !this.orderData.locationStart || !this.orderData.locationFinish){
+            if( errorCode=='no_input'){// || !this.orderData.locationStart || !this.orderData.locationFinish
                 return "Выберите адрес отправителя и получателя"
             }
             if( errorCode=='start_center_toofar' ){
@@ -381,10 +388,10 @@ export default({
                 const max_distance_km=Math.round(this.orderLocal.deliveryCalculation?.max_distance/100)/10
                 return `Расстояние по карте между адресами ${this.deliveryDistanceKm}км, больше максимального в ${max_distance_km}км`
             }
-            if( !(this.orderLocal.deliveryCalculation?.fee??0) ){
-                return "Тариф доставки не установлен"
+            if( this.orderLocal.deliveryCalculation && !(this.orderLocal.deliveryCalculation?.fee??0) ){
+                return "Недостаточно данных, для рассчета стоимости доствки"
             }
-            if( !(this.orderLocal.deliveryCalculation?.deliveryDistance??0) ){
+            if( this.orderLocal.deliveryCalculation && !(this.orderLocal.deliveryCalculation?.deliveryDistance??0) ){
                 return "Отправитель и получатель в одной точке"
             }
             return null
@@ -424,11 +431,11 @@ export default({
     },
     methods:{
         stageCreate(order_id, order_stage_code, severity){
-            if( severity=='danger' ){
-                if(!confirm("Вы уверены?")){
-                    return
-                }
-            }
+            // if( severity=='danger' ){
+            //     if(!confirm("Вы уверены?")){
+            //         return
+            //     }
+            // }
             this.$emit('stageCreate',order_id, order_stage_code);
         },
         async itemUpdate( mode='skipRefresh' ){
@@ -453,12 +460,12 @@ export default({
         },
         async locationStartSelect(){
             this.orderLocal.locationStart=await this.locationSelect()
-            this.orderLocal.start_location_id=this.orderLocal.locationStart?.location_id
+            this.orderLocal.order_start_location_id=this.orderLocal.locationStart?.location_id
             this.itemUpdate('refreshTotalEstimates')
         },
         async locationFinishSelect(){
             this.orderLocal.locationFinish=await this.locationSelect()
-            this.orderLocal.finish_location_id=this.orderLocal.locationFinish?.location_id
+            this.orderLocal.order_finish_location_id=this.orderLocal.locationFinish?.location_id
             this.itemUpdate('refreshTotalEstimates')
         },
         async locationPhoneEdit( type ){
@@ -562,9 +569,6 @@ export default({
     watch:{
         'orderData':async function(newval){
             this.orderLocal=newval
-            if(this.orderLocal){
-                //this.orderLocal.deliveryCalculation=await this.itemTotalEstimate(this.orderLocal.start_location_id,this.orderLocal.finish_location_id)
-            }
         },
     }
 })

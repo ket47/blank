@@ -73,7 +73,7 @@
             const response=await jQuery.get( this.$heap.state.hostname+"etc/homeslider/conf.json")
             this.home_slides=response.slides
           }catch(err){
-            console.log(err)
+            console.log('homeslider get error')
             /** */
           }
         },

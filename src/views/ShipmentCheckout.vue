@@ -20,15 +20,16 @@
 <template>
     <base-layout pageTitle="Оформление доставки посылки" :pageDefaultBackLink="`/order/shipment-${order_id}`" ref="page">
         <ion-list  lines="none">
-            <ion-item-divider style="margin-top:0px;box-shadow:none;">Детали перевозки</ion-item-divider>
-            <ion-item>
+            <ion-item-divider style="margin-top:0px;box-shadow:none;">Доставка</ion-item-divider>
+            <!-- <ion-item>
                 Курьер отвезет вашу посылку
             </ion-item>
             <ion-item>
                 {{order?.order_description}}
+            </ion-item> -->
+            <ion-item>
+
             </ion-item>
-
-
             <ion-card v-if="this.routePlan.start_plan_mode=='scheduled'" color="light">
                 <ion-card-header>
                     <ion-card-title>
@@ -56,7 +57,7 @@
                     </ion-segment-button>
                 </ion-segment>
             </ion-item>
-            <ion-item-divider>Способы оплаты</ion-item-divider>
+            <ion-item-divider>Оплата</ion-item-divider>
             <ion-radio-group v-model="paymentType">
             <ion-item button detail="false" @click="paymentType='use_credit_store'" v-if="tariffRule.paymentByCreditStore==1">
                 <ion-icon :icon="businessOutline" slot="start" color="medium"></ion-icon>
@@ -511,7 +512,7 @@ export default {
                     this.$router.replace('/order/shipment-'+this.order.order_id);
                 } else
                 if(message=='not_authorized'){
-                    this.$flash("Оплата не удалась, возможно не достаточно средств");
+                    this.$flash("Оплата не прошла");
                     this.$router.replace('/order/shipment-'+this.order.order_id);
                 } else
                 if(message=='waiting'){

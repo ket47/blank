@@ -13,14 +13,14 @@
                 </ion-chip>
             </ion-item>
             <ion-item>
-                Доставка посылки
+                Посылка
             </ion-item>
             <ion-item>
                 <ion-icon :src="cubeOutline" slot="start" size="large" color="medium" style="font-size:2em"/>
                 <ion-text color="dark"><b>{{orderData.order_description}}</b></ion-text>
             </ion-item>
 
-            <ion-item-divider>Детали перевозки</ion-item-divider>
+            <ion-item-divider>Доставка</ion-item-divider>
 
 
             <ion-card color="primary"  v-if="orderData?.finish_plan_scheduled" @click="timePlanInfo()">
