@@ -37,7 +37,7 @@
 
 
 
-            <div v-if="listComputed.length>0">
+
                 <ion-list v-if="moderationType=='users'">
                     <!--USERS component-->
                     <ion-item button detail @click="itemEdit({user_id:0})">
@@ -60,6 +60,22 @@
                         </ion-item>
                     </div>
                 </ion-list>
+                <ion-list v-else-if="moderationType=='posts'">
+                    <!--POSTS component-->
+                    <ion-item button detail @click="itemEdit({post_id:0})">
+                        <ion-icon :src="addOutline" slot="start"></ion-icon>
+                        <ion-text>Добавить ноый пост</ion-text>
+                    </ion-item>
+                    <div v-for="item in listComputed" :key="item.item_id">
+                        <ion-item button detail @click="itemEdit(item)" lines="none">
+                            <ion-thumbnail slot="start" :class="item.class" v-if="item.image_hash">
+                                <ion-img :src="`${$heap.state.hostname}image/get.php/${item.image_hash}.150.150.webp`"/>
+                            </ion-thumbnail>
+                            <ion-text>{{item.item_name}}</ion-text>
+                            <ion-label slot="end">{{item.date_dmy}}</ion-label>
+                        </ion-item>
+                    </div>
+                </ion-list>
                 <ion-list v-else>
                     <ion-item v-for="item in listComputed" :key="item.item_id" button detail @click="itemEdit(item)">
                         <ion-thumbnail slot="start" :class="item.class" v-if="item.image_hash">
@@ -69,21 +85,18 @@
                         <ion-label slot="end">{{item.date_time}}</ion-label>
                     </ion-item>
                 </ion-list>
-            </div>
-            <ion-list v-else-if="is_loading==1">
+
+            <ion-list v-if="is_loading==1">
                 <ion-item v-for="item in [1,2,3]" :key="item" button detail>
                     <ion-thumbnail slot="start" style="background-color:lightgray"></ion-thumbnail>
                     <ion-skeleton-text animated></ion-skeleton-text>
                 </ion-item>
             </ion-list>
-            <ion-card v-else color="light">
+            <ion-card v-else-if="listComputed.length==0" color="light">
                 <ion-card-content>
                 Ничего не найдено
                 </ion-card-content>
             </ion-card>
-            <ion-item v-if="!is_items_left" lines="none">
-
-            </ion-item>
             <ion-infinite-scroll @ionInfinite="listLoadMore($event)" id="moderation-infinite-scroll">
                 <ion-infinite-scroll-content loading-spinner="bubbles" loading-text="Загрузка"></ion-infinite-scroll-content>
             </ion-infinite-scroll>
@@ -339,7 +352,7 @@ export default {
     },
     mounted(){
         if(this.moderationType=='users'){
-            this.item_type='active'
+            //this.item_type='active'
         }
         this.listLoad();
     },
@@ -347,6 +360,9 @@ export default {
         'filter':function(){
             this.listFilter()
         }
+    },
+    ionViewDidEnter(){
+        this.listReload();
     }
 }
 </script>
