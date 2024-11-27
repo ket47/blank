@@ -69,6 +69,9 @@
 .item-width-1 .crop-to-fit {
   height: 250px;
 }
+.item-width-2 .crop-to-fit {
+  min-height: 250px;
+}
 
 .crop-to-fit img{
   min-width: 100%;
@@ -271,10 +274,11 @@ export default  {
     location.hash = ''
     window.onhashchange = () => {
       if(location.hash !== ''){
+        if(this.query == '') return location.hash = ''
         this.activeView = 'search'
       } else {
-        this.activeView = 'category'
         this.query = ''
+        this.activeView = 'category'
       }
     }
   },
@@ -292,7 +296,7 @@ export default  {
         location_id:this.locMainGet()
       }
       if(this.query == ""){
-        this.found = null
+        location.hash = ''
         this.isLoading = false;
         return
       }
@@ -301,6 +305,7 @@ export default  {
         return
       }
       try{
+        location.hash = '#search'
         let response=await Utils.prePost(`${this.$heap.state.hostname}Search/listGet`,request)
         if( response ){
           this.found=this.storeListCalculate(response)
@@ -359,14 +364,6 @@ export default  {
     }
   },
   watch:{
-      'found'(){
-          if(!this.found){
-            location.hash = ''
-          } else {
-            location.hash = '#search'
-          }
-          console.log(this.activeView)
-      },
       'isLoading'(){
           if(this.isLoading){
             //this.activeView = 'loading'
