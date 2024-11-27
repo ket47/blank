@@ -46,14 +46,15 @@ main {
     align-items: center;
     justify-content: center;
     height: 100%;
-    
 }
 ion-searchbar{
     visibility: visible;
     margin: 1em 0;
     --border-radius: 10px !important;
 }
-
+b, strong{
+    font-weight: 500;
+}
 ion-card-title{
     color: var(--ion-text-main);
 }
