@@ -85,7 +85,7 @@ import {
 }                               from '@capacitor/camera';
 
 export default {
-    props:['images','image_holder','image_holder_id','controller','title','hide_if_empty','source'],
+    props:['images','image_holder','image_holder_id','controller','title','hide_if_empty','source','params'],
     components:{
     IonLabel,
     IonIcon,
@@ -225,6 +225,11 @@ export default {
             data.set("image_holder_id", this.image_holder_id);
             if(this.image_holder){
                 data.set("image_holder", this.image_holder);
+            }
+            if( this.params ){
+                for( let i in this.params ){
+                    data.set(i, this.params[i]);
+                }
             }
             const request={
                 url : this.$heap.state.hostname + this.controller + "/fileUpload",

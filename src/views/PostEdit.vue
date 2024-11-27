@@ -14,7 +14,7 @@
 </style>
 
 <template>
-  <base-layout :page-title="postItem?.post_title??'Пост'" :pageDefaultBackLink="`/wall/post-${postId}`">
+  <base-layout :page-title="postItem?.post_title??'Пост'">
   <div v-if="postItem">
     <ion-card>
       <ion-card-content :class="messageClass">
@@ -71,7 +71,7 @@
       </ion-item-divider>
       <ion-list>
         <ion-radio-group v-model="postItem.post_type" @ionChange="saveForm" name="post_type">
-          <ion-item v-for="type in postTypes" :key="type.post_type">
+          <ion-item v-for="type in postTypes" :key="type.post_type" @click="itemImageParamsSet()">
             {{type.post_type_name}}
             <ion-radio color="primary" slot="end" :value="type.post_type"></ion-radio>
           </ion-item>
@@ -79,11 +79,11 @@
       </ion-list>
     </form>
 
-    <ion-list>
+    <ion-list v-if="imageParams">
       <ion-item-divider>
         <ion-label>Изображения*</ion-label>
       </ion-item-divider>
-      <image-tile-comp :images="postItem.images" :image_holder_id="postItem.post_id" title="Фото поста" controller="Post" ref="postImgs"></image-tile-comp>
+      <image-tile-comp :images="postItem.images" :image_holder_id="postItem.post_id" :params="imageParams" title="Фото поста" controller="Post" ref="postImgs"></image-tile-comp>
       <ion-button @click="$refs.postImgs.take_photo()" color="light" expand="block">
         <ion-icon :src="cameraOutline" slot="start"/> Добавить фото в пост
       </ion-button>
@@ -193,14 +193,19 @@ export default  {
     return {
       postId: this.$route.params.id,
       postItem: null,
+      imageParams:null,
       postTypes:[
         {
           post_type:'homeslide',
-          post_type_name:'Главная-слайд 1920x700'
+          post_type_name:'Главная-слайд 1920x700',
+          image_height:700,
+          image_width:1920,
         },
         {
           post_type:'wellcomeslide',
-          post_type_name:'Приветствие-слайд 1500x3200'
+          post_type_name:'Приветствие-слайд 1500x3200',
+          image_height:3200,
+          image_width:1500,
         },
       ],
       is_deleted:0,
@@ -262,12 +267,26 @@ export default  {
   methods:{
     async itemGet(){
       try{
+        if( this.postId==0 ){
+          await this.itemCreate()
+          return
+        }
         let postItem=await jQuery.post(`${this.$heap.state.hostname}Post/itemGet`, { post_id: this.postId })
         this.postItem=this.itemPrepare(postItem)
         this.itemParseFlags()
+        this.itemImageParamsSet()
       }catch(err){
         //console.log(err);
       }
+    },
+    itemImageParamsSet(){
+        if(this.postItem.post_type){
+          for(let type of this.postTypes){
+            if(type.post_type==this.postItem.post_type){
+              this.imageParams={image_width:type.image_width,image_height:type.image_height}
+            }
+          }
+        }
     },
     itemPrepare(postItem){
       if(postItem.started_at){
@@ -281,6 +300,17 @@ export default  {
     itemParseFlags(){
       this.is_deleted   = this.postItem.deleted_at==null?0:1
       this.is_disabled  = this.postItem.is_disabled==0?0:1
+    },
+    async itemCreate(){
+      const draft={
+        post_title:'Черновик'
+      }
+      try{
+        const post_id=await jQuery.post(`${this.$heap.state.hostname}Post/itemCreate`, draft)
+        if( post_id ){
+          this.$router.replace(`/wall/post-edit-${post_id}`)
+        }
+      } catch{/** */}
     },
     async itemDelete( is_deleted ){
       const remoteFunction=is_deleted?'itemDelete':'itemUnDelete'
