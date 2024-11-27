@@ -491,15 +491,21 @@ export default {
         this.$emit('isloading', true)
         let response
         response=await Utils.prePost(`${heap.state.hostname}Store/listNearGet`, location)
+        if(response){
+          this.render(response)
+        }
         response=await Utils.post(`${heap.state.hostname}Store/listNearGet`, location)
-        this.storeList=this.filterSubstract(response.store_list)
-        this.storeGroups=this.storeGroupsPrecompose(response.store_groups)
-        this.productGroups=this.customProductGroups.concat(response.product_groups);
-        this.filterStoreList();
-        this.productCategoryRecalc(this.storeListFiltered)
-        this.sortStoreList()
+        this.render(response)
         this.$emit('isloading', false)
       }catch{  this.$emit('isloading', false) }
+    },
+    render(response){
+      this.storeList=this.filterSubstract(response.store_list)
+      this.storeGroups=this.storeGroupsPrecompose(response.store_groups)
+      this.productGroups=this.customProductGroups.concat(response.product_groups);
+      this.filterStoreList();
+      this.productCategoryRecalc(this.storeListFiltered)
+      this.sortStoreList()
     },
     filterSubstract(storeList){
       for(let i in storeList){
