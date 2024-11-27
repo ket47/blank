@@ -27,7 +27,13 @@ module.exports = {
       background_color: "#fff",
       categories: ["shopping", "business", "food"],
       orientation: "portrait-primary",
-      prefer_related_applications: false,
+      prefer_related_applications: true,
+      related_applications: [
+        {
+          "platform": "play",
+          "id": "com.tezkel.twa"
+        },
+      ],
       lang:'ru',
       dir:'ltr',
       description: "Tezkel – это служба экспресс-доставки товаров. Мы сотрудничаем со многими заведениями общественного питания и магазинами, поэтому всего через полчаса после оформления заказа вы получите его в руки. Экономия времени, разнообразный ассортимент и возможность получить любой товар не выходя за пределы любимого домашнего очага, - все это возможно с Tezkel.",
@@ -55,33 +61,20 @@ module.exports = {
       ],
       icons: [
         {
+          "src": "./img/icons/main.svg",
+          "sizes": "any",
+          "type": "image/svg+xml",
+        },
+        {
+          "src": "./img/icons/main-1024x1024.png",
+          "sizes": "1024x1024",
+          "type": "image/png",
+        },
+        {
           "src": "./img/icons/monochrome.png",
           "type": "image/png",
           "purpose": "monochrome"
         },
-        {
-          "src": "./img/icons/android-chrome-192x192.png",
-          "sizes": "192x192",
-          "type": "image/png"
-        },
-        {
-          "src": "./img/icons/android-chrome-512x512.png",
-          "sizes": "512x512",
-          "type": "image/png",
-          "purpose":"any"
-        },
-        {
-          "src": "./img/icons/android-chrome-maskable-192x192.png",
-          "sizes": "192x192",
-          "type": "image/png",
-          "purpose": "maskable"
-        },
-        {
-          "src": "./img/icons/android-chrome-maskable-512x512.png",
-          "sizes": "512x512",
-          "type": "image/png",
-          "purpose": "maskable"
-        }
       ],
       screenshots : [
         {
