@@ -179,7 +179,7 @@ import {
   reader,
 }                   from 'ionicons/icons';
 
-import mainLogo     from "@/assets/icons/tezkel_logo.svg";
+import mainLogo     from "@/assets/icons/tezkel_logo_text.svg";
 
 export default{
   components: {

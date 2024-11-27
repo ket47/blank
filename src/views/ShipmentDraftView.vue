@@ -39,9 +39,8 @@ export default {
             try{
                 const storedOrder=JSON.parse(localStorage.shipmentDraft)
                 if(storedOrder){
-                    storedOrder.deliveryCalculation=await this.itemTotalEstimate(storedOrder.start_location_id,storedOrder.finish_location_id)
+                    storedOrder.deliveryCalculation=await this.itemTotalEstimate(storedOrder.order_start_location_id,storedOrder.order_finish_location_id)
                     this.order=storedOrder
-                    //this.itemTotalEstimate()
                     return
                 }
             }catch{/** */}
@@ -52,9 +51,9 @@ export default {
             localStorage.shipmentDraft=JSON.stringify(order)
         },
         async itemUpdate( orderUpdate ){
-            console.log(orderUpdate.mode)
+            console.log(orderUpdate.mode,orderUpdate.order_start_location_id,orderUpdate.order_finish_location_id)
             if( orderUpdate.mode=='refreshTotalEstimates' ){
-                orderUpdate.deliveryCalculation=await this.itemTotalEstimate( orderUpdate.start_location_id, orderUpdate.finish_location_id )
+                orderUpdate.deliveryCalculation=await this.itemTotalEstimate( orderUpdate.order_start_location_id, orderUpdate.order_finish_location_id )
             }
             this.itemSave(Object.assign({},this.order,orderUpdate))
         },
@@ -79,6 +78,13 @@ export default {
             if(order_stage_code=='customer_purged' || order_stage_code=='customer_deleted' ){
                 localStorage.removeItem('shipmentDraft');
                 this.$router.replace(`/order/order-list`)
+                try{
+                    const request={
+                        order_id:this.order.order_id,
+                        new_stage:order_stage_code
+                    }
+                    await jQuery.post(`${this.$heap.state.hostname}Shipment/itemStageCreate`,request);
+                }catch{/** */}
                 return
             }
             if(order_stage_code=='customer_action_confirm'){
@@ -87,9 +93,10 @@ export default {
             try{
                 const request={
                     is_shopping:0,
+                    order_id:this.order.order_id??null,
                     order_description:this.order.order_description,
-                    order_start_location_id:this.order.start_location_id,
-                    order_finish_location_id:this.order.finish_location_id,
+                    order_start_location_id:this.order.order_start_location_id,
+                    order_finish_location_id:this.order.order_finish_location_id,
                     order_sum_delivery:this.order.deliveryCalculation.sum
                 }
                 const order_id = await jQuery.post(`${this.$heap.state.hostname}Shipment/itemSync`,JSON.stringify(request))
@@ -102,9 +109,6 @@ export default {
                     return false;
                 }
                 switch(exception_code){
-                    case 'order_is_empty':
-                        this.$alert("К сожалению, товара не осталось в наличии ☹️","Заказ пуст");
-                        break;
                     case 'address_not_set':
                         this.$flash("Необходимо добавить адрес доставки")
                         this.$topic.publish('dismissModal')

@@ -50,7 +50,7 @@
     <div class="special-grid">
       <home-promo-counter />
       <div class="ion-padding-vertical delivery-block">
-        <ion-item color="transparent" lines="none" button detail="true" :detailIcon="chevronForwardOutline" @click="$go(`/order/shipment-draft`)">
+        <ion-item color="transparent" lines="none" button detail="true" :detailIcon="chevronForwardOutline" @click="$go(`/order/shipment-0`)">
           <img slot="start" src="/img/delivery_box.png" width="60"/>
           <ion-label style="white-space: initial;">
             <strong>ВЫЗВАТЬ КУРЬЕРА</strong>
@@ -84,7 +84,7 @@ import HomePromoCounter           from "@/components/HomePromoCounter";
 import UserAddressWidget          from "@/components/UserAddressWidget";
 import ProductListHomeInfinite     from "@/components/ProductListHomeInfinite";
 
-import standartLogo               from "@/assets/icons/tezkel_logo.svg";
+import standartLogo               from "@/assets/icons/tezkel_logo_text.svg";
 import simpleLogo                 from "@/assets/icons/tezkel_simple_logo.svg";
 
 import Utils                      from '@/scripts/Utils.js'
@@ -110,8 +110,7 @@ import {
 
 export default {
   setup() {
-    const alter_logo=isPlatform('ios')//isPlatform('capacitor')
-    const mainLogo=isPlatform('ios')?simpleLogo:standartLogo
+    const mainLogo=isPlatform('ios')&&isPlatform('capacitor')?null:standartLogo
     return {
       mainLogo,
       chevronBackOutline,

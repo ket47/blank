@@ -375,7 +375,7 @@ export default  {
   },
   computed: {
     messageCardSeverity(){
-      if(this.productItem?.validity<50){
+      if(this.productItem?.validity<60){
         return 'danger';
       }
       if(this.productItem?.validity<this.validity_min){

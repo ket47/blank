@@ -9,6 +9,9 @@
             <ion-segment-button value="images">
                 Картинки
             </ion-segment-button>
+            <ion-segment-button value="posts">
+                Посты
+            </ion-segment-button>
             <ion-segment-button value="products">
                 Товары
             </ion-segment-button>
@@ -30,7 +33,7 @@
                     <ion-select-option value="deleted">удаленные</ion-select-option>
                 </ion-select>
             </ion-item>
-            <ion-searchbar v-if="moderationType=='stores' || moderationType=='products' || moderationType=='couriers' || moderationType=='users'" placeholder="Фильтр" v-model="filter"/>
+            <ion-searchbar v-if="moderationType=='posts' || moderationType=='stores' || moderationType=='products' || moderationType=='couriers' || moderationType=='users'" placeholder="Фильтр" v-model="filter"/>
 
 
 
@@ -170,8 +173,8 @@ export default {
         listComputed(){
             for(let item of this.items){
                 item.image_hash=item.image_hash||item.courier_photo_image_hash
-                item.item_id=item.image_id||item.store_id||item.courier_id||item.product_id
-                item.item_name=this.holders[item.image_holder]||(item.store_name??item.store_name_new)||item.user_name||item.product_name
+                item.item_id=item.image_id||item.store_id||item.courier_id||item.product_id||item.post_id
+                item.item_name=this.holders[item.image_holder]||(item.store_name??item.store_name_new)||item.user_name||item.product_name||item.post_title+(item.post_type=='wellcomeslide'?' |👋':item.post_type=='homeslide'?' |🏠':'')
                 item.date_time=this.toLocDateTime(item.updated_at)
                 item.date_dmy=this.toDmy(item.updated_at)
                 item.class=item.deleted_at?'deleted':''
@@ -206,6 +209,12 @@ export default {
                 if(this.moderationType=='images'){
                     request.order='updated_at'
                     items=await jquery.post(`${this.$heap.state.hostname}Image/listGet`,request)
+                } else 
+                if(this.moderationType=='posts'){
+                    request.name_query_fields='post_title,post_content'
+                    request.order='updated_at'
+                    const posts=await jquery.post(`${this.$heap.state.hostname}Post/listGet`,request)
+                    items=posts.post_list
                 } else 
                 if(this.moderationType=='products'){
                     request.name_query_fields='product_name,product_description,product_barcode,product_code'
@@ -271,6 +280,9 @@ export default {
         itemEdit(item){
             if( this.moderationType=='images' ){
                 this.imageEdit(item)
+            }
+            if( this.moderationType=='posts' ){
+                this.$go('/wall/post-edit-'+item.post_id)
             }
             if( this.moderationType=='products' ){
                 this.$go('/catalog/product-edit-'+item.product_id)

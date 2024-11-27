@@ -99,7 +99,7 @@ import HomePrimaryCategoryWidget  from "@/components/HomePrimaryCategoryWidget";
 import HomePromoProductSlider     from "@/components/HomePromoProductSlider";
 import HomeStoreSlider            from "@/components/HomeStoreSlider";
 import UserAddressWidget          from "@/components/UserAddressWidget";
-import standartLogo               from "@/assets/icons/tezkel_logo.svg";
+import standartLogo               from "@/assets/icons/tezkel_logo_text.svg";
 import simpleLogo                 from "@/assets/icons/tezkel_simple_logo.svg";
 
 import Utils        from '@/scripts/Utils.js'

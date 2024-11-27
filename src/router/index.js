@@ -258,6 +258,17 @@ const routes = [
         path: '/admin/analytics',
         component: () => import('@/views/admin/AnalyticsView.vue')
       },
+
+
+
+
+
+
+
+      {
+        path: '/wall/post-edit-:id',
+        component: () => import('@/views/PostEdit.vue')
+      },
   ]
   },
   {
