@@ -122,7 +122,7 @@ ion-tab-bar ion-label{
 <template>
   <ion-page>
     <ion-tabs style="position:relative">
-      <ion-router-outlet></ion-router-outlet>
+      <ion-router-outlet ref="routerOutlet"></ion-router-outlet>
       <ion-tab-bar class="main-tab-bar" slot="bottom">
         <div class="tabbar_svg_logo">
           <ion-icon class=" ion-color ion-color-primary" :icon="mainLogo"/>
@@ -242,6 +242,9 @@ export default{
       if( this.tabSelected!==currroute_tabname && this.tabRoutes[currroute_tabname] ){//look if there is prev opened page
         this.$router.push(this.tabRoutes[currroute_tabname])
         return
+      }
+      if( this.tabSelected==currroute_tabname ){
+        document.querySelector('.ion-page:not(.ion-page-hidden)>ion-content').scrollToTop(300)
       }
       this.$router.push(newroute)
     },
