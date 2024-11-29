@@ -233,18 +233,18 @@ export default{
   methods:{
     tabClicked(newroute){
       const now=Date.now()
+      const currroute_tabname=newroute?.split('/')?.[1]//currently opened tabs name
+      if( this.tabSelected==currroute_tabname ){
+        document.querySelector('.ion-page:not(.ion-page-hidden)>ion-content').scrollToTop(300)
+      }
       if(this.can_click>now){
         return
       }
-      this.can_click=now+300
+      this.can_click=now+200
 
-      const currroute_tabname=newroute?.split('/')?.[1]//currently opened tabs name
       if( this.tabSelected!==currroute_tabname && this.tabRoutes[currroute_tabname] ){//look if there is prev opened page
         this.$router.push(this.tabRoutes[currroute_tabname])
         return
-      }
-      if( this.tabSelected==currroute_tabname ){
-        document.querySelector('.ion-page:not(.ion-page-hidden)>ion-content').scrollToTop(300)
       }
       this.$router.push(newroute)
     },

@@ -26,9 +26,9 @@
 </style>
 <template>
     <base-layout pageTitle="Общая статистика" pageDefaultBackLink="/user">
-  <div class="horizontalScroller">
-      <ion-chip @click="reportPrint()" color="medium"><ion-icon :src="printOutline"/><ion-label>Напечатать</ion-label></ion-chip> 
-  </div>
+        <div class="horizontalScroller">
+            <ion-chip @click="reportPrint()" color="medium"><ion-icon :src="printOutline"/><ion-label>Напечатать</ion-label></ion-chip> 
+        </div>
         <div id="analysisPage">
                 <div class="print-nonbreakable">
                     <div class="ion-padding-horizontal"> 
@@ -37,13 +37,15 @@
                     </div>
                     <statistics-stacked-bar-timeline  label="Воронка заказов" :data="dataset" :dates="totalDates"/>
                 </div>
-                <div class="grid">
-                    <div class="row">
-                        <div class="col">
-                            <statistics-radial-pie  v-if="datasetPie.pay"  label="Успешные оплаты" :data="datasetPie.pay"/>
-                        </div>
-                        <div class="col">
-                            <statistics-radial-pie  v-if="datasetPie.completed"  label="Отказы продавцов" :data="datasetPie.completed"/>
+                <div class="horizontalScroller">
+                    <div class="grid">
+                        <div class="row">
+                            <div class="col">
+                                <statistics-radial-pie  v-if="datasetPie.pay"  label="Успешные оплаты" :data="datasetPie.pay"/>
+                            </div>
+                            <div class="col">
+                                <statistics-radial-pie  v-if="datasetPie.completed"  label="Отказы продавцов" :data="datasetPie.completed"/>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -52,13 +54,15 @@
                         <h5>Рейтинг продавцов</h5>
                         <p>За последние 7 дней</p>
                     </div>
-                    <div class="grid">
-                        <div class="row">
-                            <div class="col">
-                                <statistics-rating-list  v-if="datasetRatingLists.top_stores"  label="Лучшие продавцы" :data="datasetRatingLists.top_stores"/>
-                            </div>
-                            <div class="col">
-                                <statistics-rating-list  v-if="datasetRatingLists.antitop_stores"  label="Худшие продавцы" :data="datasetRatingLists.antitop_stores"/>
+                    <div class="horizontalScroller">
+                        <div class="grid">
+                            <div class="row">
+                                <div class="col">
+                                    <statistics-rating-list  v-if="datasetRatingLists.top_stores"  label="Лучшие продавцы" :data="datasetRatingLists.top_stores"/>
+                                </div>
+                                <div class="col">
+                                    <statistics-rating-list  v-if="datasetRatingLists.antitop_stores"  label="Худшие продавцы" :data="datasetRatingLists.antitop_stores"/>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -68,10 +72,12 @@
                         <h5>Рейтинг товаров</h5>
                         <p>За последние 7 дней</p>
                     </div>
-                    <div class="grid">
-                        <div class="row">
-                            <div class="col">
-                                <statistics-rating-list  v-if="datasetRatingLists.top_products"  label="Лучшие товары" :data="datasetRatingLists.top_products"/>
+                    <div class="horizontalScroller">
+                        <div class="grid">
+                            <div class="row">
+                                <div class="col">
+                                    <statistics-rating-list  v-if="datasetRatingLists.top_products"  label="Лучшие товары" :data="datasetRatingLists.top_products"/>
+                                </div>
                             </div>
                         </div>
                     </div>

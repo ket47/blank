@@ -53,6 +53,9 @@ export default {
           zoom: { enabled: false },
           toolbar: { show: false }
         },
+        dataLabels: {
+          enabled:false
+        },
         plotOptions: {
           bar: {
             horizontal: false,

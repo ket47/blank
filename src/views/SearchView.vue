@@ -211,8 +211,8 @@
       <ion-skeleton-text style="width:100%;height:250px;border-radius:10px" animated></ion-skeleton-text>
       <div style="display:grid;grid-template-columns:repeat(auto-fit, 160px);gap:10px">
         <div v-for="i in [1,2,3,4]" :key="i">                
-          <ion-skeleton-text style="width:150px;height:200px;border-radius:10px" animated></ion-skeleton-text>
-          <ion-skeleton-text style="width:150px;height:30px;border-radius:10px" animated></ion-skeleton-text>
+          <ion-skeleton-text style="width:100%;height:200px;border-radius:10px" animated></ion-skeleton-text>
+          <ion-skeleton-text style="width:100%;height:30px;border-radius:10px" animated></ion-skeleton-text>
         </div>
       </div>
     </div>

@@ -1,6 +1,6 @@
 <template>
   <ion-page>
-    <ion-header :class="[pageClass]">
+    <ion-header v-if="!hideTitle" :class="[pageClass]">
       <ion-toolbar>
         <ion-buttons v-if="canGoBack" slot="start">
           <ion-button v-if="isIos" @click="goback()"><ion-icon :src="chevronBackOutline"/>Назад</ion-button>
@@ -100,6 +100,7 @@ export default defineComponent({
     "pageLogo",
     "pageDefaultBackLink",
     "hideBackLink",
+    "hideTitle",
     "errorMessage",
     "pageClass",
     "cartComponent",
