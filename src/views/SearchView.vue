@@ -62,8 +62,7 @@
   align-items: center;
   overflow: hidden;
   border-radius: 10px;
-  height: 100%;
-  max-height: 370px;
+  height: 250px;
 }
 
 .item-width-1 .crop-to-fit {
@@ -71,6 +70,11 @@
 }
 .item-width-2 .crop-to-fit {
   min-height: 250px;
+}
+@media screen and (min-width: 450px) { 
+  .crop-to-fit {
+    height: 370px;
+  }
 }
 
 .crop-to-fit img{
@@ -192,7 +196,7 @@
       </div>
     </div>
 
-    <div class="search-category-grid"  v-else-if="activeView == 'category' && !isActiveSearch && !isLoading">
+    <div  v-else-if="activeView == 'category' && !isActiveSearch && !isLoading" class="search-category-grid">
       <div class="search-category-item" v-for="(category, k) in categories" @click="query = category.group_name; listGet()" :key="k">
         <div class="desc-section">
           <h5> {{ category.group_name }}</h5>
@@ -203,24 +207,14 @@
       </div>
     </div>
     
-    <div v-else-if="isLoading && !isActiveSearch">
-      <ion-item lines="none">
-        <div class="horizontalScroller" style="padding:6px">
-          <ion-chip color="medium">
-            <ion-skeleton-text style="width:100px"></ion-skeleton-text>
-          </ion-chip>
-          <ion-chip color="medium">
-            <ion-skeleton-text style="width:100px"></ion-skeleton-text>
-          </ion-chip>
-        </div>
-      </ion-item>
-      <div style="display:grid;grid-template-columns:repeat(auto-fit, 160px);padding:10px;gap:10px">
+    <div v-else-if="isLoading && !isActiveSearch" class="ion-padding">
+      <ion-skeleton-text style="width:100%;height:250px;border-radius:10px" animated></ion-skeleton-text>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit, 160px);gap:10px">
         <div v-for="i in [1,2,3,4]" :key="i">                
-          <ion-skeleton-text style="width:150px;height:150px;border-radius:10px" animated></ion-skeleton-text>
-          <ion-skeleton-text style="width:150px;height:30px;border-radius:10px" animated></ion-skeleton-text>
+          <ion-skeleton-text style="width:100%;height:200px;border-radius:10px" animated></ion-skeleton-text>
+          <ion-skeleton-text style="width:100%;height:30px;border-radius:10px" animated></ion-skeleton-text>
         </div>
-      </div>          
-
+      </div>
     </div>
   </base-layout>
 </template>
@@ -272,20 +266,23 @@ export default  {
     this.categoryListGet()
     this.$topic.on('userMainLocationSet',user=>this.categoryListGet())
     location.hash = ''
-    window.onhashchange = () => {
-      if(location.hash !== ''){
-        if(this.query == '') return location.hash = ''
-        this.activeView = 'search'
-      } else {
-        this.query = ''
-        this.activeView = 'category'
-      }
-    }
+    // window.onhashchange = () => {
+    //   if(location.hash !== ''){
+    //     if(this.query == '') {
+    //       location.hash = ''
+    //       return
+    //     }
+    //     this.activeView = 'search'
+    //   } else {
+    //     this.query = ''
+    //     this.activeView = 'category'
+    //   }
+    // }
   },
-  ionViewDidEnter(){
-    location.hash = ''
-    this.activeView = 'category'
-  },
+  // ionViewDidEnter(){
+  //   location.hash = ''
+  //   this.activeView = 'category'
+  // },
   methods:{
     async listGet(){
       this.isLoading = true;
@@ -296,8 +293,8 @@ export default  {
         location_id:this.locMainGet()
       }
       if(this.query == ""){
-        location.hash = ''
         this.isLoading = false;
+        this.activeView = 'category'
         return
       }
       if(!request.location_id){
@@ -305,8 +302,9 @@ export default  {
         return
       }
       try{
-        location.hash = '#search'
+        //location.hash = 'search'
         let response=await Utils.prePost(`${this.$heap.state.hostname}Search/listGet`,request)
+        this.activeView = 'search'
         if( response ){
           this.found=this.storeListCalculate(response)
         }
@@ -314,7 +312,6 @@ export default  {
         this.found=this.storeListCalculate(response)
         this.isLoading = false;
       }catch(err){
-        console.log(err)
         this.found=null
         this.isLoading = false;
       }
@@ -363,12 +360,12 @@ export default  {
       return this.$heap.state.user.location_main?this.$heap.state.user.location_main.location_id:null
     }
   },
-  watch:{
-      'isLoading'(){
-          if(this.isLoading){
-            //this.activeView = 'loading'
-          } 
-      },
-  }
+  // watch:{
+  //     'isLoading'(){
+  //         if(this.isLoading){
+  //           //this.activeView = 'loading'
+  //         } 
+  //     },
+  // }
 }
 </script>
