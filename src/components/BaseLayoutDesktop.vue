@@ -46,6 +46,7 @@ ion-tabs ion-icon{
         <div></div>
       </div>
       <footer-desktop/>
+      <welcome-modal/>
     </ion-content>
   </ion-page>
 </template>
@@ -64,6 +65,7 @@ import {
 import FooterDesktop  from "@/components/FooterDesktop";
 import CartHeader     from "@/components/CartHeader";
 import Order          from '@/scripts/Order.js'
+import WelcomeModal         from "@/components/WelcomeModal.vue"
 
 export default {
   setup() {
@@ -92,6 +94,7 @@ export default {
     FooterDesktop,
     IonTitle,
     IonToolbar,
+    WelcomeModal
   },
 };
 </script>
