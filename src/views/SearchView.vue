@@ -221,11 +221,9 @@
 
 <script>
 import {
-  IonItem,
   IonCard,
   IonCardContent,
   IonSkeletonText,
-  IonChip,
   IonRow,
   IonCol,
   IonText,
@@ -238,11 +236,9 @@ import UserAddressWidget    from "@/components/UserAddressWidget";
 
 export default  {
   components:{
-    IonItem,
     IonCard,
     IonCardContent,
     IonSkeletonText,
-    IonChip, 
     ProductItemNew,
     SearchBar,
     UserAddressWidget,

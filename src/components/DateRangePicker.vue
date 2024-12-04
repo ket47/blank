@@ -18,8 +18,9 @@
                 :max="dateRange?.dayLast"
                 :hour-values="hourValues"
                 :minute-values="minuteValues"
+                @ionChange="validate(datetime)"
             />
-            <ion-button color="primary" @click="confirm()" expand="block">Ок</ion-button>
+            <ion-button color="primary" @click="confirm()" expand="block" :disabled="notvalid">Ок</ion-button>
             <ion-button color="light" @click="cancel()" expand="block">Закрыть</ion-button>
         </ion-content>
     </div>
@@ -47,7 +48,8 @@ export default {
     data(){
         const dtime=this.defaultDatetime?.replace(' ','T')
         return {
-            datetime:dtime
+            datetime:dtime,
+            notvalid:false,
         }
     },
     computed:{
@@ -72,12 +74,28 @@ export default {
         }
     },
     methods:{
+        validate(){
+            const [pickedDate]=this.datetime.split('T')
+            const haveWorkingHours=this.dateRange.dayHours[pickedDate]
+            if( haveWorkingHours ){
+                this.notvalid=0
+                return
+            }
+            this.$flash("Выходной день")
+            this.notvalid=1
+        },
         confirm(){
+            if(this.notvalid){
+                return
+            }
             modalController.dismiss(this.datetime, 'confirm')
         },
         cancel(){
             modalController.dismiss(null, 'cancel')
         },
+    },
+    mounted(){
+        this.validate()
     }
 }
 </script>
