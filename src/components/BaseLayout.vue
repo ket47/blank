@@ -57,7 +57,7 @@
       <ion-fab v-if="isInteractingWithServer" vertical="bottom" slot="fixed">
         <tezkel-loader/>
       </ion-fab>
-      <welcome-modal/>
+      <stories-startup-modal-trigger/>
     </ion-content>
   </ion-page>
 </template>
@@ -84,7 +84,7 @@ import {
 import CartHeader           from "@/components/CartHeader";
 import { defineComponent }  from "@vue/runtime-core";
 import TezkelLoader         from "@/components/TezkelLoader.vue"
-import WelcomeModal         from "@/components/WelcomeModal.vue"
+import StoriesStartupModalTrigger         from "@/components/StoriesStartupModalTrigger.vue"
 
 import {
   arrowBackOutline,
@@ -126,7 +126,7 @@ export default defineComponent({
     IonModal,
     IonList,
     IonItem,
-    WelcomeModal
+    StoriesStartupModalTrigger
   },
   setup(){
     return {

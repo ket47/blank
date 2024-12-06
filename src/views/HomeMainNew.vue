@@ -46,6 +46,7 @@
     <div ref="topMarker"></div>
     <user-address-widget :deliveryTime="primaryDeliveryTime" />
     <home-slider/>
+    <stories-slider/>
     <!-- <home-primary-category-widget @deliveryTimeGet="deliveryTime=>{primaryDeliveryTime=deliveryTime}"/> -->
     <div class="special-grid">
       <home-promo-counter />
@@ -82,10 +83,10 @@ import HomeSlider                 from "@/components/HomeSlider";
 import StoreListNew               from "@/components/StoreListNew";
 import HomePromoCounter           from "@/components/HomePromoCounter";
 import UserAddressWidget          from "@/components/UserAddressWidget";
-import ProductListHomeInfinite     from "@/components/ProductListHomeInfinite";
+import ProductListHomeInfinite    from "@/components/ProductListHomeInfinite";
+import StoriesSlider              from "@/components/StoriesSlider";
 
 import standartLogo               from "@/assets/icons/tezkel_logo_text.svg";
-import simpleLogo                 from "@/assets/icons/tezkel_simple_logo.svg";
 
 import Utils                      from '@/scripts/Utils.js'
 
@@ -132,6 +133,7 @@ export default {
     ProductListHomeInfinite,
     IonInfiniteScroll, 
     IonInfiniteScrollContent,
+    StoriesSlider
   },
   data(){
     return {

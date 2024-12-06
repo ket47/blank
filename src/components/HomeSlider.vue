@@ -3,7 +3,15 @@
     v-if="slides"
     :modules="modules" 
     :autoplay='{delay: 6000, disableOnInteraction: false}' 
-    :loop="true" 
+    :centeredSlides="true"
+    :breakpoints="{
+      768: {
+        slidesPerView: 1
+      },
+      1024: {
+        slidesPerView: 1.6
+      }
+    }"
     class="home-swiper">
     <swiper-slide v-for="slide in slides" :key="slide.title" @click="go(slide.post_route)">
       <img :src="`${$heap.state.hostname}image/get.php/${slide.image_hash}.1000.1000.webp`" class="home_slide_img"/>
@@ -14,7 +22,6 @@
 <style scoped>
   .home-swiper{
     margin: 5px 10px;
-    border-radius: 10px;
   }
   .home_slide{
     position:absolute;
@@ -23,11 +30,20 @@
     margin-left:40%;
     text-align:left;
     text-shadow: 0px 0px 3px #000000;
+    overflow: hidden;
+    border-radius: 10px;
   }
   .home_slide_img{
     display: block;
     margin: 0 auto;
+    border-radius: 10px;
+    transition: 0.5s all;
     max-height: 250px;
+  }
+  .swiper-slide:not(.swiper-slide-active) .home_slide_img{
+    opacity: 0.5;
+    filter: blur(1px);
+    transform: scale(0.9);
   }
 </style>
 
@@ -63,38 +79,15 @@
             return
           }
           try{
-            const response = await jQuery.post( this.$heap.state.hostname+"Post/listGet")
-            this.slides = this.listPrepare(response.post_list)
+            const response = await jQuery.post( this.$heap.state.hostname+"Post/listGet", { is_actual: 1, is_active: 1, post_type: "homeslide" })
+            this.slides = response.post_list
           }catch(err){
             console.log('get post error')
-            /** */
           }
-        },
-        listPrepare(listRaw){
-          let result = []
-          let slides = listRaw.filter((el) => {return (el.post_type == 'homeslide')})
-          for(var i in slides){
-            if(slides[i].started_at == '0000-00-00 00:00:00') slides[i].started_at = null
-            if(slides[i].finished_at == '0000-00-00 00:00:00') slides[i].finished_at = null
-
-            if(!slides[i].started_at && !slides[i].finished_at){ 
-              result.push(slides[i]); 
-              continue;
-            }
-            if(slides[i].started_at  && new Date() > new Date(slides[i].started_at)) result.push(slides[i])
-            if(slides[i].finished_at && new Date() < new Date(slides[i].finished_at)) result.push(slides[i])
-          }
-          return result
         },
         go(link){
           if(!link) return
-          if(link.indexOf('tel') !== -1 || link.indexOf('mailto') !== -1){
-            location.href = link
-            return
-          }
-          if(!link){
-            return
-          }
+          if(link.indexOf('tel') !== -1 || link.indexOf('mailto') !== -1) return location.href = link
           this.$go(link)
         }
     },

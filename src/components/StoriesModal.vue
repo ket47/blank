@@ -67,19 +67,28 @@
 }
 .autoplay-progress {
   position: absolute;
-  top: 0px;
+  top: 4px;
   left: 0px;
   z-index: 10;
   color: white;
   width: 100%;
+  display: flex;
+  height: 4px;
 }
-.autoplay-progress > div{
+.autoplay-progress > .progress-container{
+  background: #ffffff45;
+  width: 100%;
+  margin: 0 5px;
+  border-radius: 4px;
+}
+.autoplay-progress > .progress-container > div{
   height: 4px;
   background-color: white;
   animation: progress 4s linear;
   display: none;
+  border-radius: 3px;
 }
-.autoplay-progress > div.active-progress{
+.autoplay-progress > .progress-container > div.active-progress{
   display: block;
 }
 @keyframes progress {
@@ -102,23 +111,27 @@
 
 <template>
   <div>
-    <ion-modal :is-open="isOpen"  :initial-breakpoint="1">
+    <ion-modal :is-open="isOpen"  :initial-breakpoint="1" @willDismiss="willClose" @didPresent="didPresent">
         <div class="autoplay-progress">
-          <div :class="`progress ${(progress) ? 'active-progress' : ''}`" ></div>
+          <div class="progress-container" v-for="(progress_item, index) in progress" :key="`pr_${index}`" >
+            <div :class="`progress ${(progress_item.animated) ? 'active-progress' : ''}`" :style="`animation-duration: ${progress_item.animationDuration}ms`" ></div>
+          </div>
         </div>
-        
         <swiper 
-            ref="welcomeSlider"
-            v-if="slides"
+            ref="storiesSlider"
+            v-if="stories"
             :modules="modules"  
             :pagination="{clickable: true}"
             :autoplay="{
-              delay: 4000,
-              disableOnInteraction: false,
+              delay: slideDuration,
+              stopOnLastSlide: true,
+              disableOnInteraction: false
             }"
-            style="max-width: 100%;"
-            @slideChange="onSlideChange">
-            <swiper-slide v-for="slide in slides" :key="slide.title" 
+            @slideChangeTransitionStart="slideChangeTransitionStart"
+            @slideChangeTransitionEnd="slideChangeTransitionEnd"
+            @slideChange="onSlideChange"
+            style="max-width: 100%;">
+            <swiper-slide v-for="slide in stories" :key="slide.title" 
               :style="`background-color:${slide.color};`">
               <div class="slide-container">
                 <div class="slide-content">
@@ -139,7 +152,7 @@
           </div>
           <div class="bottom-actions">
               <div @click="(currentSlide > 0) ? prevSlide() : closeModal()" class="prev-slide"></div>
-              <div @click="(currentSlide < slides.length-1) ? nextSlide() : closeModal()"  class="next-slide"></div>
+              <div @click="(currentSlide < stories.length-1) ? nextSlide() : closeModal()"  class="next-slide"></div>
           </div>
         </div>
     </ion-modal>
@@ -167,12 +180,13 @@ import 'swiper/css/pagination';
 export default{
   components: {
     IonIcon,
-    IonContent,
     IonModal,
     IonButton,
     Swiper,
     SwiperSlide,
   },
+  emits: ['onClose'],
+  props: ['stories', 'isOpen', 'slideDuration'],
   setup() {
       const closeModal = function(){
           modalController.dismiss();
@@ -181,72 +195,75 @@ export default{
   },
   data(){
     return {
-      isOpen: 0,
-      slides: [],
       currentSlide: 0,
-      progress: 1,
-      delaySeconds: 7200
+      progress: [],
+      closeTimout: null
     };
   },
-  mounted(){
-    if(localStorage.welcomeModalShown){
-      let diff = Date.now() - localStorage.welcomeModalShown
-      if(diff < this.delaySeconds*1000 ) return
-    }
-    this.listGet()
-    setTimeout(()=>{
-        this.isOpen = 1
-        localStorage.welcomeModalShown=Date.now()
-    },1000)
-  },
   methods: {
-    async listGet(){
-          if(this.slides.length > 0){
-            return
-          }
-          try{
-            const response=await jQuery.post( this.$heap.state.hostname+"Post/listGet")
-            this.slides = this.listPrepare(response.post_list)
-          }catch(err){
-            console.log('get post error')
-          }
-        },
-        listPrepare(listRaw){
-          let result = []
-          let slides = listRaw.filter((el) => {return (el.post_type == 'wellcomeslide')})
-          for(var i in slides){
-            if(slides[i].started_at == '0000-00-00 00:00:00') slides[i].started_at = null
-            if(slides[i].finished_at == '0000-00-00 00:00:00') slides[i].finished_at = null
-
-            if(slides[i].started_at  && new Date() > new Date(slides[i].started_at)) result.push(slides[i])
-            else if(slides[i].finished_at && new Date() < new Date(slides[i].finished_at)) result.push(slides[i])
-            else result.push(slides[i])
-          }
-          return result
-        },
-        go(link){
-          modalController.dismiss();
-          if(link.indexOf('tel') !== -1 || link.indexOf('mailto') !== -1) return location.href = link
-          if(!link) return
-          this.$go(link)
-        },
-        onSlideChange(swiper){
-          this.currentSlide = swiper.activeIndex
-          this.onAutoplayTimeLeft()
-        },
-        nextSlide(){
-          this.$refs.welcomeSlider.$el.swiper.slideNext()
-          this.currentSlide = this.$refs.welcomeSlider.$el.swiper.activeIndex
-        },
-        prevSlide(){
-          this.$refs.welcomeSlider.$el.swiper.slidePrev()
-          this.currentSlide = this.$refs.welcomeSlider.$el.swiper.activeIndex
-        },
-        onAutoplayTimeLeft (s, time, progress){
-            this.progress = 0;
-            setTimeout(() => {this.progress = 1}, 0)
-        },
+    go(link){
+      modalController.dismiss();
+      if(link.indexOf('tel') !== -1 || link.indexOf('mailto') !== -1) return location.href = link
+      if(!link) return
+      this.$go(link)
+    },
+    onSlideChange(swiper){
+      this.currentSlide = swiper.activeIndex
+      if(swiper.isEnd){
+        this.closeTimout = setTimeout(() => {
+          this.closeModal()
+        }, this.slideDuration+500)
+      }
+    },
+    nextSlide(){
+      clearTimeout(this.closeTimout)
+      this.$refs.storiesSlider.$el.swiper.slideNext()
+      this.currentSlide = this.$refs.storiesSlider.$el.swiper.activeIndex
+    },
+    prevSlide(){
+      clearTimeout(this.closeTimout)
+      this.$refs.storiesSlider.$el.swiper.slidePrev()
+      this.currentSlide = this.$refs.storiesSlider.$el.swiper.activeIndex
+    },  
+    didPresent(){
+      this.progress = [];
+      for(var i in this.stories){
+        if(i == 0){
+          this.progress.push({animated: true})
+        } else {
+          this.progress.push({animationDuration: this.slideDuration,animated: false})
+        }
         
+      }
+      this.$refs.storiesSlider?.$el.swiper.autoplay.start()
+    },
+    willClose(){
+        clearTimeout(this.closeTimout)
+        this.currentSlide = 0
+        this.$emit('onClose', true)
+    },
+    slideChangeTransitionStart(swiper){
+      this.progress[swiper.activeIndex].animationDuration = 0;
+      this.progress[swiper.activeIndex].animated = false;
+      this.setProgress(swiper.activeIndex)
+    },
+    slideChangeTransitionEnd(swiper){
+      this.progress[swiper.activeIndex].animationDuration = this.slideDuration;
+      this.progress[swiper.activeIndex].animated = true;
+    },
+    setProgress(index){
+       
+      for(var i in this.progress){
+          if(i < index){
+            this.progress[i].animationDuration = 0;
+            this.progress[i].animated = true;
+          } 
+          if(i >= index){
+            this.progress[i].animationDuration = this.slideDuration;
+            this.progress[i].animated = false;
+          }
+      }
+    },
   }
 };
 </script>
