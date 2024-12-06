@@ -474,7 +474,7 @@ export default({
             if(this.can_load_at>now){
                 reject=true
             }
-            this.can_load_at=now+300
+            this.can_load_at=now+1000
             return reject
         },
         async itemCheckoutDataGet(){

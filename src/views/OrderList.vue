@@ -100,7 +100,7 @@
                         </ion-chip>
                     </ion-item>
                     <ion-item lines="full">
-                        <div style="display:grid;grid-template-columns:40px auto 20px;width:100%;margin-bottom:3px">
+                        <div style="display:grid;grid-template-columns:45px auto 20px;width:100%;margin-bottom:3px">
                             <div style="padding:3px;color:var(--ion-color-primary)"><b>{{job.start_plan_date}}</b></div>
                             <div style="padding:3px;color:#333"><small>{{job.start_address}}</small></div>
                             <div><ion-icon :icon="square" :style="`color:${job.start_color}`"/></div>
