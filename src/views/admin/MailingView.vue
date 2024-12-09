@@ -11,7 +11,7 @@
                 <ion-label>Добавить Рассылку</ion-label>
             </ion-item>
         </ion-list>
-        <ion-segment value="blank" scrollable swipe-gesture="true" v-model="mailingType">
+        <ion-segment value="blank" scrollable swipe-gesture="true" v-model="filter.mailing_type.value">
             <ion-segment-button value="blank">
                 <ion-label>Неопубликованные <ion-badge >{{mailingListGrouped.blank?.length}}</ion-badge></ion-label>
             </ion-segment-button>
@@ -23,8 +23,25 @@
             </ion-segment-button>
         </ion-segment>
         <ion-list>
-            <ion-searchbar placeholder="Фильтр" show-clear-button="always" v-model="filter" @ionInput="listFilter()"/>
-            <ion-item v-for="mailing in mailingListActive" :key="mailing.mailing_id">
+                    <ion-list slot="content">
+                        <ion-item >
+                            <ion-input placeholder="Название" show-clear-button="always" v-model="filter.subject_template.value" @ionInput="listFilter()"/>
+                        </ion-item>
+                        <ion-item>
+                            <ion-select placeholder="Транспорт" label="Транспорт" v-model="filter.transport.value" @ionChange="listFilter()" :multiple="filter.transport.multiple">
+                                <ion-select-option value="push">Push</ion-select-option>
+                                <ion-select-option value="email">Email</ion-select-option>
+                                <ion-select-option value="telegram">Telegram</ion-select-option>
+                                <ion-select-option value="sms">Sms</ion-select-option>
+                            </ion-select>
+                        </ion-item>
+                        <ion-item v-if="filter.mailing_type.value == 'repeated'">
+                            <ion-select placeholder="Группа рассылок" label="Группа рассылок"  v-model="filter.regular_group.value" @ionChange="listFilter()" :multiple="filter.regular_group.multiple">
+                                <ion-select-option v-for="(translation, code) in regularGroupTranslation" :value="code" :key="translation">{{ translation }}</ion-select-option>
+                            </ion-select>
+                        </ion-item>
+                    </ion-list>
+            <ion-item v-for="mailing in mailingListActive" :key="`${mailing.subject_template}_${mailing.mailing_id}`">
                 <ion-label  @click="$go(`/admin/mailing-edit-${mailing.mailing_id}`)">
                     <ion-note v-if="mailing.mailing_type == 'finished'" color="medium" class="ion-text-wrap"  style="font-size: 12px">{{ mailing.start_at_humanized }}</ion-note><br />
                     <ion-text>{{mailing.subject_template}}</ion-text>
@@ -33,10 +50,10 @@
                         <ion-chip v-else-if="mailing.transport == 'email'" :icon="mailOutline" style="--background: #ff6810;--color: white; font-size: 12px;">e-mail</ion-chip>
                         <ion-chip v-else-if="mailing.transport == 'sms'" :icon="sendOutline" style="--background: #00213f;--color: white; font-size: 12px;">sms</ion-chip>
                         <ion-chip v-else-if="mailing.transport == 'telegram'" :icon="sendOutline" style="--background: #0163aa;--color: white; font-size: 12px;">telegram</ion-chip>
-
-                        
                         <ion-chip v-if="mailing.recieverCount?.all>0">Всего {{mailing.recieverCount.all}}</ion-chip>
+                        <ion-chip v-if="mailing.regular_group !== '0'" :icon="sendOutline" style="--background: var(--ion-color-primary);--color: white; font-size: 12px;">{{ regularGroupTranslation[mailing.regular_group] }}</ion-chip>
                     </div>
+                    
                 </ion-label>
                 <div  slot="end">
                     <ion-button :id="`click-trigger-${mailing.mailing_id}`" fill="clear">
@@ -76,11 +93,13 @@ import {
   IonButton,
   IonSegment,
   IonSegmentButton,
-  IonSearchbar,
   IonPopover,
   IonContent,
   IonBadge,
-  IonChip
+  IonChip,
+  IonSelect,
+  IonSelectOption,
+  IonInput
  }                          from '@ionic/vue';
  import {
     addOutline,
@@ -112,11 +131,13 @@ export default {
         IonButton,
         IonSegment,
         IonSegmentButton,
-        IonSearchbar,
         IonPopover,
         IonContent,
         IonBadge,
-        IonChip
+        IonChip,
+        IonSelect,
+        IonSelectOption,
+        IonInput
     },
     setup(){
         return {
@@ -138,13 +159,43 @@ export default {
     data(){
         return{
             openedAccordion:'message',
-            filter:'',
-            mailingType: 'blank',
+            filter: {
+                transport: {
+                    value: '',
+                    multiple: true
+                },
+                mailing_type: {
+                    value: 'blank'
+                },
+                subject_template: {
+                    value: ''
+                },
+                regular_group: {
+                    value: '',
+                    multiple: true
+                },
+            },
             mailingList:[],
             mailingListGrouped: [],
             mailingListActive: [],
             isMailingOpen:false,
-            saveClock:null
+            saveClock:null,
+            regularGroupTranslation: {
+                cart23: 'Корзина брошена сутки',
+                'promo-10': 'До конца скидки 10 дней',
+                'promo-3': 'До конца скидки 3 дня',
+                'promo-1': 'До конца скидки 1 день',
+                forgot14: 'Последний вход 2 недели назад',
+                forgot30: 'Последний вход месяц назад',
+                forgot90: 'Последний вход 3 месяца назад',
+                every_monday: 'Каждый понедельник',
+                every_tuesday: 'Каждый вторник',
+                every_wednesday: 'Каждую среду',
+                every_thursday: 'Каждый четверг',
+                every_friday: 'Каждую пятницу',
+                every_saturday: 'Каждую субботу',
+                every_sunday: 'Каждое воскресенье',
+            },
         }
     },
     computed:{
@@ -183,10 +234,6 @@ export default {
         },
         async listGet(){
             var response
-            const filter = {
-                'mailing_type': this.mailingType,
-                'name_query': this.filter
-            }
             this.mailingList=await Utils.prePost(`${this.$heap.state.hostname}Admin/Mailing/listGet`,{})
             try{
                 this.mailingList=await Utils.post(`${this.$heap.state.hostname}Admin/Mailing/listGet`,{})
@@ -210,9 +257,22 @@ export default {
             }, {});
         },
         listFilter(){
-            this.mailingListActive = this.mailingListGrouped[this.mailingType]
-            if(this.filter){
-                this.mailingListActive = this.mailingListActive.filter((el) => el.subject_template.toLowerCase().indexOf(this.filter.toLowerCase()) !== -1)
+            console.log(this.filter)
+            this.mailingListActive = this.mailingListGrouped[this.filter.mailing_type.value] 
+            for(var i in this.filter){
+                if(this.filter[i] && this.filter[i].value){
+                    if(this.filter[i].multiple){
+                        if(this.filter[i].value.length == 0) continue
+                        var mailingList = []
+                        for(const k in this.filter[i].value){
+                            mailingList = mailingList.concat(this.mailingListActive.filter((el) => el[i] == this.filter[i].value[k]))
+                        }
+                        this.mailingListActive = mailingList
+                    } else {
+                        this.mailingListActive = this.mailingListActive.filter((el) => el[i].toLowerCase().indexOf(this.filter[i].value.toLowerCase()) !== -1)
+                    }
+                    
+                }
             }
         },
         dateHumanize(date){
@@ -246,7 +306,10 @@ export default {
         this.listGet()
     },
     watch:{
-        'mailingType'(){
+        'filter.mailing_type.value'(){
+            this.filter.transport.value = ''
+            this.filter.regular_group.value = ''
+            this.filter.subject_template.value = ''
             this.listFilter()
         }
     },

@@ -42,7 +42,9 @@ ion-textarea.ion-invalid{
         </div>
         <div v-else>
             <ion-item>
-                <ion-input v-model="mailing.regular_group" label="Группа рассылок" placeholder="Выберите группу" @ionChange="itemSave()"></ion-input>
+                <ion-select placeholder="Группа рассылок" label="Группа рассылок"  v-model="mailing.regular_group" @ionChange="itemSave()">
+                    <ion-select-option v-for="(translation, code) in regularGroupTranslation" :value="code" :key="translation">{{ translation }}</ion-select-option>
+                </ion-select>
             </ion-item>
             <ion-item>
                 <ion-input v-model="mailing.start_at" type="time" label="Во сколько отправлять?" label-placement="stacked" @ionChange="itemSave()"></ion-input>
@@ -313,7 +315,23 @@ export default {
             openedAccordion:'message',
             mailingId: this.$route.params.id,
             mailing:{},
-            saveClock:null
+            saveClock:null,
+            regularGroupTranslation: {
+                cart23: 'Корзина брошена сутки',
+                'promo-10': 'До конца скидки 10 дней',
+                'promo-3': 'До конца скидки 3 дня',
+                'promo-1': 'До конца скидки 1 день',
+                forgot14: 'Последний вход 2 недели назад',
+                forgot30: 'Последний вход месяц назад',
+                forgot90: 'Последний вход 3 месяца назад',
+                every_monday: 'Каждый понедельник',
+                every_tuesday: 'Каждый вторник',
+                every_wednesday: 'Каждую среду',
+                every_thursday: 'Каждый четверг',
+                every_friday: 'Каждую пятницу',
+                every_saturday: 'Каждую субботу',
+                every_sunday: 'Каждое воскресенье',
+            },
         }
     },
     computed: {

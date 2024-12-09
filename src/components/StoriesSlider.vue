@@ -73,8 +73,10 @@ export default{
     };
   },
   mounted(){
-    if( !User.isAdmin() ) return
-    this.listGet()
+    this.$topic.on('userGet',user=>{
+        if( !User.isAdmin() ) return
+        this.listGet()
+    })
   },
   methods: {
     async listGet(){
