@@ -25,17 +25,17 @@
 </style>
 
 <template>
-    <div v-if="stories.length > 0" class="ion-padding-horizontal ion-padding-bottom">
+    <div v-if="storyGroups.length > 0" class="ion-padding-horizontal ion-padding-bottom">
         <h5>Истории</h5>
         <div class="horizontalScroller">
-            <div  v-for="(story_group, index) in stories"  :key="index" class="story-block">
-                <ion-avatar @click="showModal(story_group)" :class="`story-circle ${(story_group.is_shown) ? 'story-shown' : ''}`">
-                    <img :alt="story_group.user_name" :src="`${$heap.state.hostname}image/get.php/${story_group.image_hash}.400.400.webp`" />
+            <div  v-for="(story_group, index) in storyGroups"  :key="index" class="story-block">
+                <ion-avatar @click="showModal(story_group, index)" :class="`story-circle ${(story_group.is_shown) ? 'story-shown' : ''}`">
+                    <img :alt="story_group.holder_title" :src="`${$heap.state.hostname}image/get.php/${story_group.avatar_hash}.400.400.webp`" />
                 </ion-avatar>
-                <label><b>{{ story_group.user_name }}</b></label>
+                <label><b>{{ story_group.holder_title }}</b></label>
             </div>
         </div>
-        <stories-modal :stories="modalStories" :is-open="modalIsOpen" @on-close="closeModal" :slide-duration="4000"/>
+        <stories-modal :story-groups="storyGroups" :start-index="modalStartIndex" :is-open="modalIsOpen" @on-close="closeModal" :slide-duration="4000"/>
     </div>
 </template>
 
@@ -66,10 +66,11 @@ export default{
   },
   data(){
     return {
-      stories: [],
-      modalStories: [],
+      storyGroups: [],
+      modalStartIndex: 0,
       modalIsOpen: false,
-      localShown: []
+      localShown: [],
+      
     };
   },
   mounted(){
@@ -80,72 +81,92 @@ export default{
   },
   methods: {
     async listGet(){
-          if(this.stories.length > 0){
-            return
-          }
-          try{
-            const response=await jQuery.post( this.$heap.state.hostname+"Post/listGet", { is_actual: 1, is_active: 1, post_type: "wellcomeslide,story" })
-            this.stories = this.listPrepare(response.post_list)
+        try{
+            const response=await jQuery.post( this.$heap.state.hostname+"Post/listGet", { is_actual: 1, is_active: 1, post_type: "story" })
+            this.storyGroups  = this.composeSlides(response.post_list)
             this.checkShown()
-          }catch(err){
+        }catch(err){
             console.log('get post error')
-          }
-        },
-        listPrepare(listRaw){
-            let result = []
-            let groupByField = 'wellcomeslide'
-            let list = listRaw.reduce(function (r, a) {
-                r[a[groupByField]] = r[a[groupByField]] || [];
-                r[a[groupByField]].push(a);
-                return r;
-            }, Object.create(null));
-            for(var i in list){
-                result.push({
-                    id: i,
-                    user_name: this.$heap.state.settings.app_title,
-                    image_hash: list[i][0].image_hash,
-                    items: list[i],
-                    is_shown: true
-                })
-            }
-            return result
-        },
-        showModal(story_group){
-            this.modalStories = story_group.items
-            this.modalIsOpen = true
-            this.markShown(story_group.id)
-        },
-        checkShown(){
-            if(!localStorage.storiesShown){
-                localStorage.storiesShown = '[]'
-                return false
-            }
-            try{
-                this.localShown = JSON.parse(localStorage.storiesShown)
-            }catch(err){
-                console.log('local stories parse error =(')
-            }
-            for(var i in this.stories){
-                for(var k in this.stories[i].items){
-                    let story = this.stories[i].items[k]
-                    if(!this.localShown.includes(story.post_id*1)){
-                        this.stories[i].is_shown = false
-                    }
-                }
-            }
-        },
-        closeModal(){
-            this.modalIsOpen = false
-        },
-        markShown(id){
-            for(var i in this.stories) {
-                if(this.stories[i].id == id){ 
-                    let story_ids = this.stories[i].items.map(e => e.post_id*1);
-                    localStorage.storiesShown = JSON.stringify(this.localShown.concat(story_ids));
-                    return this.stories[i].is_shown = true 
+        }
+    },
+    composeSlides(storiesRaw){
+      const result = []
+      /*REDO!*/
+      const holders = [
+        {
+          holder_id: 1,
+          holder: '',
+          holder_name: 'Tezkel',
+          avatar_hash: '079cc810e1b1813474e727e9d23d2c6f'
+        }, 
+        {
+          holder_id: 2,
+          holder: 'store',
+          holder_name: 'Yaem',
+          avatar_hash: '11847ffd9b06d9c9d8298579a4692cce'
+        }
+      ];
+      const list = []
+      for(const story of storiesRaw){
+        let slide = story
+        let activeHolder = holders[Math.floor(Math.random() * 2)];
+        slide.holder_id = activeHolder.holder_id
+        slide.holder = activeHolder.holder
+        slide.meta = activeHolder
+        list.push(slide)
+      }
+      /*REDO!*/
+      let groups = list.reduce(function(rv, x) {
+        (rv[x['holder_id']] = rv[x['holder_id']] || []).push(x);
+        return rv;
+      }, {});
+      for (const holder_id in groups) result.push({
+        holder_id: holder_id,
+        is_shown: false,
+        holder_name: groups[holder_id][0].meta.holder_name,
+        holder: groups[holder_id][0].meta.holder,
+        avatar_hash: groups[holder_id][0].meta.avatar_hash,
+        children: groups[holder_id]
+      })
+      return result
+    },
+    showModal(story_group, index){
+        this.modalStartIndex = index
+        this.modalIsOpen = true
+        this.markShown(story_group.holder_id)
+    },
+    checkShown(){
+        if(!localStorage.storiesShown){
+            localStorage.storiesShown = '[]'
+            return false
+        }
+        try{
+            this.localShown = JSON.parse(localStorage.storiesShown)
+            this.localShown = this.localShown.slice(this.localShown.length - 100, this.localShown.length)
+        }catch(err){
+            console.log('local stories parse error =(')
+        }
+        for(var i in this.storyGroups){
+            for(var k in this.storyGroups[i].children){
+                let story = this.storyGroups[i].children[k]
+                if(this.localShown.includes(story.post_id*1)){
+                    this.storyGroups[i].is_shown = true
                 }
             }
         }
+    },
+    closeModal(){
+        this.modalIsOpen = false
+    },
+    markShown(id){
+        for(var i in this.storyGroups) {
+            if(this.storyGroups[i].holder_id == id){ 
+                let story_ids = this.storyGroups[i].children.map(e => e.post_id*1);
+                localStorage.storiesShown = JSON.stringify(this.localShown.concat(story_ids));
+                return this.storyGroups[i].is_shown = true 
+            }
+        }
+    }
   }
 };
 </script>
