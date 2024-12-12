@@ -30,6 +30,10 @@
       </ion-item>
       <ion-item>
         <ion-icon :src="ribbonOutline" color="primary" slot="start"/>
+        <ion-toggle v-model="is_promoted" @ionChange="save('is_promoted',is_promoted)">Promoted</ion-toggle>
+      </ion-item>
+      <ion-item>
+        <ion-icon :src="ribbonOutline" color="primary" slot="start"/>
         <ion-toggle v-model="is_disabled" @ionChange="itemDisable($event.target.checked?1:0)">На модерации</ion-toggle>
       </ion-item>
     </ion-list>
