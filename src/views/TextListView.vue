@@ -8,7 +8,7 @@
           page.updated_at
         }}</ion-note>
       </ion-item>
-      <ion-item detail button @click="$go('text-edit-0')">
+      <ion-item detail button @click="$go('/user/text-edit-0')">
         <ion-icon slot="start" :icon="addOutline"/>
         <ion-label>Добавить страницу</ion-label>
       </ion-item>
