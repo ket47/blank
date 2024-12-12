@@ -59,6 +59,19 @@
           <ion-icon :src="cameraOutline" slot="start"/> Добавить фото в пост
         </ion-button>
       </ion-list>
+      <ion-list>
+          <ion-item-divider>
+            <ion-label>Holder*</ion-label>
+          </ion-item-divider>
+          <ion-item v-if="pickedStore" button @click="storePick()" color="primary">
+              <ion-icon slot="start" :src="storefrontOutline"/>
+              <ion-label>{{pickedStore.store_name}}</ion-label>
+          </ion-item>
+          <ion-item v-else button @click="storePick()" color="warning">
+              <ion-icon slot="start" :src="storefrontOutline"/>
+              <ion-label>Выбрать продавца</ion-label>
+          </ion-item>
+      </ion-list>
       <ion-list v-if="imageParams" lines="full">
         <ion-item-group>
           <ion-item-divider>
@@ -130,6 +143,7 @@ import {
   IonText,
   IonRadio,
   IonRadioGroup,
+  modalController,
   }                   from '@ionic/vue'
 import {
   cameraOutline,
@@ -143,9 +157,12 @@ import {
   layersOutline,
   ribbonOutline,
   eyeOffOutline,
+  storefrontOutline,
 }                     from 'ionicons/icons'
 import imageTileComp  from '@/components/ImageTileComp.vue'
 import jQuery         from "jquery";
+
+import ItemPicker             from '@/components/ItemPicker.vue'
 
 export default  {
   components: { 
@@ -179,13 +196,15 @@ export default  {
       layersOutline,
       ribbonOutline,
       eyeOffOutline,
-      }
+      storefrontOutline,
+    }
   },
   data(){
     return {
       postId: this.$route.params.id,
       postItem: null,
       imageParams:null,
+      pickedStore:null,
       postTypes:[
         {
           post_type:'slide',
@@ -268,6 +287,9 @@ export default  {
         this.postItem=this.itemPrepare(postItem)
         this.itemParseFlags()
         this.itemImageParamsSet()
+        if(postItem.post_holder=='store'){
+          this.pickedStore=postItem.holder;
+        }
       }catch(err){
         //console.log(err);
       }
@@ -364,13 +386,29 @@ export default  {
         this.itemParseFlags()
       }
     },
-    categoryDelete(group_id,group_name){
-      if(!confirm("Исключить товар из категории "+group_name+"?")){
-        return
-      }
-      try{
-        this.itemUpdateGroup(0,group_id)
-      } catch{/** */}
+    async storePick(){
+        const modal = await modalController.create({
+            component: ItemPicker,
+            componentProps:{itemType:'store'},
+            initialBreakpoint: 0.75,
+            breakpoints: [0.75, 1],
+            canDissmiss:true,
+        });
+        modal.present()
+        this.$topic.on('dismissModal',()=>{
+            modal.dismiss()
+        });
+        const item=await modal.onDidDismiss();
+        if(!item.data){
+            return
+        }
+        const request={
+          post_id:this.postItem.post_id,
+          post_holder:'store',
+          post_holder_id:item.data.store_id
+        }
+        await this.itemUpdate(request)
+        await this.itemGet()
     },
     
   },
