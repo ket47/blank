@@ -30,12 +30,36 @@
       </ion-item>
       <ion-item>
         <ion-icon :src="ribbonOutline" color="primary" slot="start"/>
+        <ion-toggle v-model="is_promoted" @ionChange="save('is_promoted',is_promoted)">Promoted</ion-toggle>
+      </ion-item>
+      <ion-item>
+        <ion-icon :src="ribbonOutline" color="primary" slot="start"/>
         <ion-toggle v-model="is_disabled" @ionChange="itemDisable($event.target.checked?1:0)">На модерации</ion-toggle>
       </ion-item>
     </ion-list>
 
     <form @change="saveForm">
-      <ion-list lines="full">
+      <ion-item-divider>
+        <ion-label>Тип поста</ion-label>
+      </ion-item-divider>
+      <ion-list>
+        <ion-radio-group v-model="postItem.post_type" @ionChange="saveForm" name="post_type">
+          <ion-item v-for="type in postTypes" :key="type.post_type" @click="itemImageParamsSet()">
+            {{type.post_type_name}}
+            <ion-radio color="primary" slot="end" :value="type.post_type"></ion-radio>
+          </ion-item>
+        </ion-radio-group>
+      </ion-list>
+      <ion-list v-if="imageParams">
+        <ion-item-divider>
+          <ion-label>Изображения*</ion-label>
+        </ion-item-divider>
+        <image-tile-comp :images="postItem.images" :image_holder_id="postItem.post_id" :params="imageParams" title="Фото поста" controller="Post" ref="postImgs"></image-tile-comp>
+        <ion-button @click="$refs.postImgs.take_photo()" color="light" expand="block">
+          <ion-icon :src="cameraOutline" slot="start"/> Добавить фото в пост
+        </ion-button>
+      </ion-list>
+      <ion-list v-if="imageParams" lines="full">
         <ion-item-group>
           <ion-item-divider>
             <ion-label>Основные настройки</ion-label>
@@ -52,7 +76,7 @@
         </ion-item-group>
       </ion-list>
 
-      <ion-list lines="full">
+      <ion-list v-if="imageParams" lines="full">
         <ion-item-group>
           <ion-item-divider>
             <ion-label>Время действия</ion-label>
@@ -66,28 +90,8 @@
         </ion-item>
       </ion-list>
 
-      <ion-item-divider>
-        <ion-label>Тип поста</ion-label>
-      </ion-item-divider>
-      <ion-list>
-        <ion-radio-group v-model="postItem.post_type" @ionChange="saveForm" name="post_type">
-          <ion-item v-for="type in postTypes" :key="type.post_type" @click="itemImageParamsSet()">
-            {{type.post_type_name}}
-            <ion-radio color="primary" slot="end" :value="type.post_type"></ion-radio>
-          </ion-item>
-        </ion-radio-group>
-      </ion-list>
     </form>
 
-    <ion-list v-if="imageParams">
-      <ion-item-divider>
-        <ion-label>Изображения*</ion-label>
-      </ion-item-divider>
-      <image-tile-comp :images="postItem.images" :image_holder_id="postItem.post_id" :params="imageParams" title="Фото поста" controller="Post" ref="postImgs"></image-tile-comp>
-      <ion-button @click="$refs.postImgs.take_photo()" color="light" expand="block">
-        <ion-icon :src="cameraOutline" slot="start"/> Добавить фото в пост
-      </ion-button>
-    </ion-list>
 
 
     <ion-list v-if="postItem && postItem.updated_user">
@@ -184,20 +188,21 @@ export default  {
       imageParams:null,
       postTypes:[
         {
-          post_type:'homeslide',
-          post_type_name:'Главная-слайд 1920x700',
+          post_type:'slide',
+          post_type_name:'Слайд 1920x700',
           image_height:700,
           image_width:1920,
         },
         {
-          post_type:'wellcomeslide',
-          post_type_name:'Приветствие-слайд 1500x3200',
+          post_type:'story',
+          post_type_name:'История 1500x3200',
           image_height:3200,
           image_width:1500,
         },
       ],
       is_deleted:0,
       is_disabled:0,
+      is_promoted:0,
     }
   },
   computed: {
@@ -288,6 +293,7 @@ export default  {
     itemParseFlags(){
       this.is_deleted   = this.postItem.deleted_at==null?0:1
       this.is_disabled  = this.postItem.is_disabled==0?0:1
+      this.is_promoted  = this.postItem.is_promoted==0?0:1
     },
     async itemCreate(){
       const draft={

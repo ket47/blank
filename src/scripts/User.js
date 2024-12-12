@@ -148,25 +148,18 @@ const User = {
         return 0
     },
     isCourier(){
-        let user_types="";
-        try{
-            user_types=heap.state.user.member_of_groups.group_types;
-            if( user_types.indexOf('courier')>-1 ){
-                return 1;
-            }
-        }catch{/** */}
-        return 0;
+        const user_types=heap.state?.user?.member_of_groups?.group_types
+        if( user_types?.indexOf('courier')>-1 ){
+          return 1
+        }
+        return 0
     },
     isSupplier(){
-        return true
-        // let user_types="";
-        // try{
-        //     user_types=heap.state.user.member_of_groups.group_types;
-        // }catch{/** */}
-        // if( user_types.indexOf('supplier')>-1 ){
-        //   return true;
-        // }
-        // return false;
+        const user_types=heap.state?.user?.member_of_groups?.group_types
+        if( user_types?.indexOf('supplier')>-1 ){
+          return 1
+        }
+        return 0
     },
     supplier:{
         //data:null,
