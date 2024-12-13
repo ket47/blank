@@ -1,16 +1,24 @@
+<style scoped>
+  ion-fab ion-button {
+    --border-radius: 15px;
+    width:200px;
+  }
+</style>
 <template>
   <base-layout page-title="Заказы" hideBackLink="true">
-        <ion-segment swipe-gesture="true" v-model="orderType" @ionChange="listTypeChanged($event)" :scrollable="true">
+    <div>
+        <ion-segment style="height:50px" swipe-gesture="true" v-model="orderType" @ionChange="listTypeChanged($event)" :scrollable="true">
             <ion-segment-button value="jobs" v-if="courierJobsInclude">
-                Задания
+                Маршрут
             </ion-segment-button>
             <ion-segment-button value="active">
-                Активные
+                Заказы
             </ion-segment-button>
-            <ion-segment-button value="done">
-                Завершенные
+            <ion-segment-button value="done" color="medium">
+                Архив
             </ion-segment-button>
         </ion-segment>
+    </div>
         <ion-list v-if="orderList?.length>0">
             <div v-for="order in orderListComputed" :key="order.order_id" @click="itemClick(order)">
                 <ion-item lines="none">
@@ -37,45 +45,6 @@
                 </ion-item>
             </div>
         </ion-list>
-
-
-
-
-        <!-- <ion-accordion-group v-if="orderType=='jobs' && jobList?.length>0">
-            <ion-accordion value="oldjobs">
-                <ion-item slot="header" color="light">
-                    <ion-label>Задания</ion-label>
-                </ion-item>
-                <div slot="content" v-for="order in jobListComputed" :key="order.order_id" @click="itemClick(order)">
-                    <ion-item lines="none" color="light">
-                        <ion-icon slot="start" :icon="rocketOutline" color="primary"/>
-                        <ion-label v-if="order.is_shipment==1">Вызов курьера {{order.store_name}}</ion-label>
-                        <ion-label v-else>{{order.store_name}}</ion-label>
-                        <ion-text slot="end">{{order.date_time}}</ion-text>
-                    </ion-item>
-                    <ion-item lines="full" color="light">
-                        <b slot="start"><b style="color:var(--ion-color-primary)">{{order.distance_km}}</b> </b>
-                        <ion-text style="margin-bottom:3px;">
-                            <div style="padding:5px">
-                                {{order.location_address}}
-                                <ion-note v-if="order.location_comment">
-                                    {{order.location_comment}}
-                                </ion-note>
-                            </div>
-                            <div style="padding:5px" v-if="order.finish_location_address">
-                                <b>Доставить:</b> {{order.finish_location_address}}
-                                <ion-note v-if="order.finish_location_comment">
-                                    {{order.finish_location_comment}}
-                                </ion-note>
-                            </div>
-                            <div style="padding:10px;background-color:#eee;color:#333;border-radius:10px" v-if="order.order_description">
-                                    {{order.order_description}}
-                            </div>
-                        </ion-text>
-                    </ion-item>
-                </div>
-            </ion-accordion>
-        </ion-accordion-group> -->
         <ion-list v-if="orderType=='jobs' && routeListGroupped" lines="none">
             <ion-list-header><h3>Маршрут</h3></ion-list-header>
             <div v-for="route in routeListGroupped" :key="route.courier_id">
@@ -133,7 +102,7 @@
             </ion-item>
             </div>
         </ion-list>
-        <div v-else-if="(!orderList || orderList?.length==0) && (!jobList || jobList?.length==0) && (!routeList || routeList?.length==0)" style="display:flex;align-items:center;justify-content:center;height:70vh">
+        <div v-else-if="!cartListTotal && (!orderList || orderList?.length==0) && (!jobList || jobList?.length==0) && (!routeList || routeList?.length==0)" style="display:flex;align-items:end;justify-content:center;height:30vh">
             <div v-if="$heap.getters.userIsLogged" style="width:max-content;text-align:center">
                 <ion-icon :icon="sparklesOutline" size="large"></ion-icon>
                 <ion-label>Заказов нет</ion-label><br>
@@ -148,6 +117,27 @@
         <ion-infinite-scroll @ionInfinite="listLoadMore($event)" id="moderation-infinite-scroll">
             <ion-infinite-scroll-content loading-spinner="bubbles" loading-text="Загрузка..."></ion-infinite-scroll-content>
         </ion-infinite-scroll>
+
+
+
+
+        <ion-card v-if="cartListTotal && orderList" @click="$topic.publish('cartOpen')" color="light">
+            <ion-card-content style="text-align:center">
+                Ваши покупки все ещё ждут в корзине!
+                <ion-button expand="block" fill="clear">
+                    <ion-label slot="start">Посмотреть</ion-label>
+                </ion-button>
+            </ion-card-content>
+        </ion-card>
+
+        <ion-fab v-if="orderType=='active'" slot="fixed" vertical="bottom" horizontal="end">
+            <div>
+                <ion-button @click="$go('/order/shipment-0')">
+                    <ion-icon :icon="cubeOutline" slot="start"></ion-icon>
+                    <ion-label>Вызвать курьера</ion-label>
+                </ion-button>
+            </div>
+        </ion-fab>
   </base-layout>
 </template>
 <script>
@@ -168,6 +158,10 @@ import {
     IonInfiniteScroll,
     IonInfiniteScrollContent,
     IonSkeletonText,
+    IonFab,
+    IonButton,
+    IonCard,
+    IonCardContent,
 }                   from '@ionic/vue';
 import {
     storefrontOutline,
@@ -179,16 +173,18 @@ import {
     checkmarkOutline,
     banOutline,
     square,
-}                   from 'ionicons/icons';
-import ordersIcon   from "@/assets/icons/orders.svg";
-import Order        from '@/scripts/Order.js';
-import User         from '@/scripts/User.js';
-import Topic        from '@/scripts/Topic.js';
-import CourierJobPreview        from '@/components/CourierJobPreview.vue';
-import DeliveryJobPreview        from '@/components/DeliveryJobPreview.vue';
-import jQuery                   from 'jquery'
+    cubeOutline,
+    cartOutline,
+}                           from 'ionicons/icons';
+import ordersIcon           from "@/assets/icons/orders.svg";
+import Order                from '@/scripts/Order.js';
+import Topic                from '@/scripts/Topic.js';
+import CourierJobPreview    from '@/components/CourierJobPreview.vue';
+import DeliveryJobPreview   from '@/components/DeliveryJobPreview.vue';
+import jQuery               from 'jquery'
 
 export default {
+    inject:["$Order"],
     components: {
     IonSegment,
     IonSegmentButton,
@@ -205,9 +201,16 @@ export default {
     IonInfiniteScroll,
     IonInfiniteScrollContent,
     IonSkeletonText,
+    IonFab, 
+    IonButton,
+    IonCard,
+    IonCardContent,
     },
     setup() {
-      return { sparklesOutline,storefrontOutline,timeOutline,ordersIcon,rocketOutline,ribbonOutline,checkmarkOutline,informationOutline,banOutline,square,};
+      return { sparklesOutline,storefrontOutline,timeOutline,ordersIcon,rocketOutline,ribbonOutline,checkmarkOutline,informationOutline,banOutline,square,
+                cubeOutline,
+                cartOutline,
+            };
     },
     data(){
         return {
@@ -271,7 +274,6 @@ export default {
             const stageDict={
                 'scheduled':'Запланирован',
                 'awaited':'Очередь',
-                'inited':'Собирается',
                 'assigned':'Назначен',
                 'started':'В пути'
             }
@@ -297,9 +299,11 @@ export default {
             }
             return routeList
         },
+        cartListTotal(){
+            return this.$Order.cart.listTotalGet()
+        }
     },
     mounted(){
-        let self=this;
         this.$topic.on('courierStatusChange',()=>{
             this.courierReadinessCheck();
         });
@@ -326,11 +330,6 @@ export default {
             if(this.courierJobsInclude==0){
                 this.orderType='active';
             }
-            //if(this.courierJobsInclude==0){
-            //     this.orderType='active';
-            // } else {
-            //     this.orderType='jobs';
-            // }
         },
         async listLoad(listType,mode='reload'){
             if( listType=='jobs' ){
@@ -370,20 +369,6 @@ export default {
             this.orderList=null
             this.listLoad(listType);
         },
-        // async listJobLoad(){
-        //     try{
-        //         const courier_id=User.courier?.data?.courier_id;
-        //         this.jobList=await Order.api.listJobGet(courier_id);
-        //         this.orderList=null;
-        //         this.listRouteLoad()
-        //     } catch(err){
-        //         const message=err.responseJSON?.messages?.error;
-        //         if(message=='notready'){
-        //             User.courier.status='notready';
-        //             this.courierReadinessCheck();
-        //         }
-        //     }
-        // },
         async listRouteLoad(){
             try{
                 const request={}
@@ -405,11 +390,6 @@ export default {
         ionViewDidEnter() {
             this.courierReadinessCheck();
             this.listLoad(this.orderType);
-            // if(this.orderType=='active'){
-            //     this.listLoad('active');
-            // } else {
-            //     this.orderType='active'
-            // }
         },
         ionViewDidLeave() {
             clearTimeout(this.clock);
