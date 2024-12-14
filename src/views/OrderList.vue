@@ -22,35 +22,32 @@
         <ion-list v-if="orderList?.length>0">
             <div v-for="order in orderListComputed" :key="order.order_id" @click="itemClick(order)">
                 <ion-item lines="none">
-                    <ion-text slot="start">#{{order.order_id}}</ion-text>
-                    <ion-label v-if="order.is_shipment==1">Вызов курьера {{order.store_name}}</ion-label>
+                    <ion-avatar slot="start" v-if="order.image_hash">
+                        <ion-img style="border-radius:16px;" :src="`${$heap.state.hostname}image/get.php/${order.image_hash}.150.150.webp`"/>
+                    </ion-avatar>
+                    <ion-label v-if="order.is_shipment==1">Посылка {{order.store_name}}</ion-label>
                     <ion-label v-else>{{order.store_name}}</ion-label>
-                    <ion-text slot="end">{{order.date}}</ion-text>
+                    <ion-chip slot="end" :color="order.stage_color" v-if="order.stage_current_name">
+                        <ion-icon v-if="order.is_canceled==1" :icon="banOutline"></ion-icon>
+                        <ion-icon v-else :icon="checkmarkOutline"></ion-icon>
+                        <ion-label>{{order.stage_current_name}}</ion-label>
+                    </ion-chip>
                 </ion-item>
                 <ion-item lines="full">
-                    <ion-icon slot="start" :icon="order.icon" color="primary"/>
-                    <ion-text>
-                        <ion-label>
-                            <ion-chip color="medium">{{order.order_sum_total}}{{$heap.state.currencySign}}</ion-chip>
-                            <ion-chip :color="order.stage_color" v-if="order.stage_current_name">
-                                <ion-icon v-if="order.is_canceled==1" :icon="banOutline"></ion-icon>
-                                <ion-icon v-else :icon="checkmarkOutline"></ion-icon>
-                                <ion-label color="dark">{{order.stage_current_name}}</ion-label>
-                            </ion-chip>
-                        </ion-label>
+                    <!-- <ion-icon slot="start" :icon="order.icon" color="primary"/> -->
+                    <ion-text slot="start" color="medium">{{order.date}}</ion-text>
+                    <ion-text color="medium">#{{order.order_id}}</ion-text>
+                    <ion-text slot="end" color="medium">
+                        {{order.order_sum_total}}{{$heap.state.currencySign}}
                     </ion-text>
-                    <ion-avatar slot="end" v-if="order.image_hash">
-                        <ion-img style="border-radius:10px;" :src="`${$heap.state.hostname}image/get.php/${order.image_hash}.150.150.webp`"/>
-                    </ion-avatar>
                 </ion-item>
             </div>
         </ion-list>
         <ion-list v-if="orderType=='jobs' && routeListGroupped" lines="none">
-            <ion-list-header><h3>Маршрут</h3></ion-list-header>
             <div v-for="route in routeListGroupped" :key="route.courier_id">
                 <ion-item>
                     <ion-avatar slot="start" v-if="route.image_hash">
-                        <ion-img style="border-radius:10px;" :src="`${$heap.state.hostname}image/get.php/${route.image_hash}.150.150.webp`"/>
+                        <ion-img style="border-radius:16px;" :src="`${$heap.state.hostname}image/get.php/${route.image_hash}.150.150.webp`"/>
                     </ion-avatar>
                     <ion-text>
                         <b>{{route.courier_name}}</b>
@@ -114,16 +111,10 @@
                 <ion-note @click="$router.replace('/modal/user-authorize')" style="cursor:pointer" color="primary">вход в профиль</ion-note>
             </div>
         </div>
-        <ion-infinite-scroll @ionInfinite="listLoadMore($event)" id="moderation-infinite-scroll">
-            <ion-infinite-scroll-content loading-spinner="bubbles" loading-text="Загрузка..."></ion-infinite-scroll-content>
-        </ion-infinite-scroll>
 
-
-
-
-        <ion-card v-if="cartListTotal && orderList" @click="$topic.publish('cartOpen')" color="light">
+        <ion-card v-if="cartListTotal && orderList && orderType=='active'" @click="$topic.publish('cartOpen')" color="light">
             <ion-card-content style="text-align:center">
-                Ваши покупки все ещё ждут в корзине!
+                У вас есть не оформленные товары в корзине. Успейте купить!
                 <ion-button expand="block" fill="clear">
                     <ion-label slot="start">Посмотреть</ion-label>
                 </ion-button>
@@ -138,6 +129,9 @@
                 </ion-button>
             </div>
         </ion-fab>
+        <ion-infinite-scroll @ionInfinite="listLoadMore($event)" id="moderation-infinite-scroll">
+            <ion-infinite-scroll-content loading-spinner="bubbles" loading-text="Загрузка..."></ion-infinite-scroll-content>
+        </ion-infinite-scroll>
   </base-layout>
 </template>
 <script>

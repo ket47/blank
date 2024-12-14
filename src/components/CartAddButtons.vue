@@ -23,7 +23,8 @@
   }
   .product-actions ion-label{
     cursor:pointer;
-    width: 2.5em;
+    padding: 7px 1px 7px 1px;
+    min-width: 2.5em;
     text-align: center;
   }
   .product-actions ion-label:hover{
@@ -38,7 +39,12 @@
     left: 0px;
     top: 0px;
   }
-  .incart{
+  .product-actions.horizontal.incart ion-label{
+    background-color: white;
+    border:1px solid var(--ion-color-primary);
+    border-radius: 3px;
+    font-weight:300;
+    width:fit-content;
   }
   .sold{
     display: none;
@@ -191,9 +197,19 @@ export default{
       return this.updateOrder(newQuantity);
     },
     setInOrder(){
-      let newQuantity=parseFloat( prompt("Введите количество",this.currentQuantity) );
+      let unit=this.productData.product_unit
+      let quantity=this.currentQuantity
+      if( unit=='кг' && this.currentQuantity<=1 ){
+        unit='грамм'
+        quantity=this.currentQuantity*1000
+      }
+      let input=prompt(`Введите количество в единице: ${unit}`,quantity)
+      let newQuantity=parseFloat( String(input).replace(',','.') );
       if(newQuantity==null || isNaN(newQuantity)){
         return;
+      }
+      if(unit=='грамм'){
+        newQuantity=newQuantity/1000
       }
       return this.updateOrder(newQuantity);
     },
@@ -212,7 +228,7 @@ export default{
       }
       //console.log(newQuantity,newQuantity/this.productData.product_quantity_min,Math.round(newQuantity/this.productData.product_quantity_min))
       if( this.productData.is_counted==1 ){
-        let freeProductQuantity=Math.round( 100*(this.productData.product_quantity-this.productData.product_quantity_reserved) )/100
+        let freeProductQuantity=Math.round( 1000*(this.productData.product_quantity-(this.productData.product_quantity_reserved??0)) )/1000
 
         if(isInCorrection){//if order at correction stage
           freeProductQuantity+=parseFloat(this.productData.entry_quantity)
@@ -253,10 +269,10 @@ export default{
     currentQuantity(){
       if( this.productItem ){
         //If buttons are in storeview
-        return Math.round(100*(heap.state.cartProductWatchList[this.productData.product_id]||0))/100;
+        return Math.round(1000*(heap.state.cartProductWatchList[this.productData.product_id]||0))/1000;
       }
       //if buttons are in orderview or cartview
-      return Math.round(100*this.productData.entry_quantity)/100;
+      return Math.round(1000*this.productData.entry_quantity)/1000;
     },
     componentLayout(){
       if(this.display=='inline'){

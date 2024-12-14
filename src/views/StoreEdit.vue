@@ -55,11 +55,10 @@
         Удалено
         <ion-toggle slot="end" v-model="is_deleted" color="danger" @ionChange="itemDelete($event.target.checked?1:0)"></ion-toggle>
       </ion-item>
-      <ion-item>
+      <!-- <ion-item>
         <ion-icon :src="flagOutline" color="primary" slot="start"/>
-        Опорное
-        <ion-toggle slot="end" v-model="is_primary" @ionChange="save('is_primary',$event.target.checked?1:0)"></ion-toggle>
-      </ion-item>
+        <ion-toggle slot="end" v-model="is_primary" @ionChange="save('is_primary',$event.target.checked?1:0)">Опорное</ion-toggle>
+      </ion-item> -->
       <ion-item>
         <ion-icon :src="ribbonOutline" color="primary" slot="start"/>
         На модерации
@@ -117,8 +116,7 @@
           </ion-text>
         </ion-item>
         <ion-item v-if="is_name_edited||!storeItem.store_name">
-          <ion-label position="stacked" color="primary">Название непроверенное *</ion-label>
-          <ion-input v-model="storeItem.store_name_new" name="store_name_new"/>
+          <ion-input v-model="storeItem.store_name_new" name="store_name_new" label="Название непроверенное *" label-placement="stacked"/>
           <ion-icon v-if="isAdmin" :icon="checkmarkCircleOutline" slot="end" color="success" @click="fieldApprove('store_name')"/>
         </ion-item>
 
@@ -132,14 +130,12 @@
           </ion-text>
         </ion-item>
         <ion-item v-if="is_desc_edited||!storeItem.store_description">
-          <ion-label position="stacked" color="primary">Описание непроверенное *</ion-label>
-          <ion-textarea v-model="storeItem.store_description_new" name="store_description_new" rows="6"></ion-textarea>
+          <ion-textarea v-model="storeItem.store_description_new" name="store_description_new" rows="6" label="Описание непроверенное *" label-placement="stacked"></ion-textarea>
           <ion-icon v-if="isAdmin" :icon="checkmarkCircleOutline" slot="end" color="success" @click="fieldApprove('store_description')"/>
         </ion-item>
 
         <ion-item>
-          <ion-label position="stacked" color="primary">ИНН *</ion-label>
-          <ion-input v-model="storeItem.store_tax_num" name="store_tax_num"></ion-input>
+          <ion-input v-model="storeItem.store_tax_num" name="store_tax_num" label="ИНН *" label-placement="stacked"></ion-input>
         </ion-item>
         <ion-item v-if="storeItem.store_company_name">
           <ion-label position="stacked" color="primary">Название предприятия (ООО, ИП и т.д.)</ion-label>
@@ -151,12 +147,10 @@
           </ion-text>
         </ion-item>
         <ion-item v-if="storeItem.store_company_name_new||!storeItem.store_company_name">
-          <ion-label position="stacked" color="primary">Название предприятия непроверенное *</ion-label>
-          <ion-textarea v-model="storeItem.store_company_name_new" name="store_company_name_new"></ion-textarea>
+          <ion-textarea v-model="storeItem.store_company_name_new" name="store_company_name_new" label="Название предприятия непроверенное *" label-placement="stacked"></ion-textarea>
           <ion-icon v-if="isAdmin" :icon="checkmarkCircleOutline" slot="end" color="success" @click="fieldApprove('store_company_name')"/>
         </ion-item>
         <ion-item>
-          <ion-label position="stacked" color="primary">Телефон *</ion-label>
           <ion-input
             v-model="storeItem.store_phone"
             name="store_phone"
@@ -166,11 +160,11 @@
             @ionChange="phoneFormat()"
             spellcheck="false"
             autocapitalize="off"
+            label="Телефон *" label-placement="stacked"
           ></ion-input>
         </ion-item>
         <ion-item>
-          <ion-label position="stacked" color="primary">Электронная почта</ion-label>
-          <ion-input v-model="storeItem.store_email" name="store_email"/>
+          <ion-input v-model="storeItem.store_email" name="store_email" label="Электронная почта" label-placement="stacked"/>
         </ion-item>
       </ion-item-group>
       </ion-list>
@@ -182,12 +176,12 @@
       <ion-item>
           <ion-icon :icon="cartOutline" slot="start" color="primary"></ion-icon>
           <ion-text>Подготовка (минут)*</ion-text>
-          <ion-input slot="end" v-model="storeItem.store_time_preparation" name="store_time_preparation" style="width:100px;"/>
+          <ion-input slot="end" v-model="storeItem.store_time_preparation" name="store_time_preparation" style="width:100px;" label=""/>
       </ion-item>
       <ion-item>
           <ion-icon :icon="cartOutline" slot="start" color="primary"></ion-icon>
           <ion-text>Мин. заказ ({{$heap.state.currencySign}})*</ion-text>
-          <ion-input slot="end" v-model="storeItem.store_minimal_order" name="store_minimal_order" style="width:100px;"/>
+          <ion-input slot="end" v-model="storeItem.store_minimal_order" name="store_minimal_order" style="width:100px;" label=""/>
       </ion-item>
       <ion-item>
           <ion-icon :icon="storefrontOutline" slot="start" color="primary"></ion-icon>
@@ -202,11 +196,11 @@
       <div v-if="storeItem.store_delivery_allow==1">
         <ion-item lines="none">
             <ion-text>Минимальная стоимость доставки ({{$heap.state.currencySign}})</ion-text>
-            <ion-input slot="end" v-model="storeItem.store_delivery_cost" name="store_delivery_cost" placeholder="бесплатно" style="width:100px;"/>
+            <ion-input slot="end" v-model="storeItem.store_delivery_cost" name="store_delivery_cost" placeholder="бесплатно" style="width:100px;" label=""/>
         </ion-item>
         <ion-item lines="none">
             <ion-text>Максимальный радиус доставки (км)</ion-text>
-            <ion-input slot="end" v-model="storeItem.store_delivery_radius" name="store_delivery_radius" placeholder="по умолчанию" style="width:100px;"/>
+            <ion-input slot="end" v-model="storeItem.store_delivery_radius" name="store_delivery_radius" placeholder="по умолчанию" style="width:100px;" label=""/>
         </ion-item>
         <ion-item lines="none" :color="storeItem.store_delivery_methods?'':'warning'">
             <ion-text>Условия доставки</ion-text>
@@ -266,7 +260,7 @@
         </ion-button>
       </ion-list>
 
-      <ion-list>
+      <ion-list lines="full">
       <ion-item-group class="schedule">
         <ion-item-divider>
           <ion-label>Время работы *</ion-label>
@@ -276,9 +270,9 @@
             Понедельник
             <ion-label v-show="!storeItem.store_time_opens_0&&!storeItem.store_time_closes_0">(выходной)</ion-label>
           </ion-label>
-          <ion-input placeholder="от" v-model="storeItem.store_time_opens_0" name="store_time_opens_0"/>
-          <ion-input placeholder="до" v-model="storeItem.store_time_closes_0" name="store_time_closes_0"/>
-          <ion-icon :src="closeCircle" 
+          <ion-input placeholder="от" v-model="storeItem.store_time_opens_0" name="store_time_opens_0" label=""/>
+          <ion-input placeholder="до" v-model="storeItem.store_time_closes_0" name="store_time_closes_0" label=""/>
+          <ion-icon slot="end" :src="closeCircle" 
             @click="storeItem.store_time_opens_0=storeItem.store_time_closes_0=null;saveSchedule('0')" 
             v-show="storeItem.store_time_closes_0"
           />
@@ -288,9 +282,9 @@
             Вторник
             <ion-label v-show="!storeItem.store_time_opens_1&&!storeItem.store_time_closes_1">(выходной)</ion-label>
           </ion-label>
-          <ion-input placeholder="от" v-model="storeItem.store_time_opens_1" name="store_time_opens_1"/>
-          <ion-input placeholder="до" v-model="storeItem.store_time_closes_1" name="store_time_closes_1"/>
-          <ion-icon :src="closeCircle" 
+          <ion-input placeholder="от" v-model="storeItem.store_time_opens_1" name="store_time_opens_1" label=""/>
+          <ion-input placeholder="до" v-model="storeItem.store_time_closes_1" name="store_time_closes_1" label=""/>
+          <ion-icon slot="end" :src="closeCircle" 
             @click="storeItem.store_time_opens_1=storeItem.store_time_closes_1=null;saveSchedule('1')" 
             v-show="storeItem.store_time_closes_1"
           />
@@ -300,9 +294,9 @@
             Среда
             <ion-label v-show="!storeItem.store_time_opens_2&&!storeItem.store_time_closes_2">(выходной)</ion-label>
           </ion-label>
-          <ion-input placeholder="от" v-model="storeItem.store_time_opens_2" name="store_time_opens_2"/>
-          <ion-input placeholder="до" v-model="storeItem.store_time_closes_2" name="store_time_closes_2"/>
-          <ion-icon :src="closeCircle" 
+          <ion-input placeholder="от" v-model="storeItem.store_time_opens_2" name="store_time_opens_2" label=""/>
+          <ion-input placeholder="до" v-model="storeItem.store_time_closes_2" name="store_time_closes_2" label=""/>
+          <ion-icon slot="end" :src="closeCircle" 
             @click="storeItem.store_time_opens_2=storeItem.store_time_closes_2=null;saveSchedule('2')" 
             v-show="storeItem.store_time_closes_2"
           />
@@ -312,9 +306,9 @@
             Четверг
             <ion-label v-show="!storeItem.store_time_opens_3&&!storeItem.store_time_closes_3">(выходной)</ion-label>
           </ion-label>
-          <ion-input placeholder="от" v-model="storeItem.store_time_opens_3" name="store_time_opens_3"/>
-          <ion-input placeholder="до" v-model="storeItem.store_time_closes_3" name="store_time_closes_3"/>
-          <ion-icon :src="closeCircle" 
+          <ion-input placeholder="от" v-model="storeItem.store_time_opens_3" name="store_time_opens_3" label=""/>
+          <ion-input placeholder="до" v-model="storeItem.store_time_closes_3" name="store_time_closes_3" label=""/>
+          <ion-icon slot="end" :src="closeCircle" 
             @click="storeItem.store_time_opens_3=storeItem.store_time_closes_3=null;saveSchedule('3')" 
             v-show="storeItem.store_time_closes_3"
           />
@@ -324,9 +318,9 @@
             Пятница
             <ion-label v-show="!storeItem.store_time_opens_4&&!storeItem.store_time_closes_4">(выходной)</ion-label>
           </ion-label>
-          <ion-input placeholder="от" v-model="storeItem.store_time_opens_4" name="store_time_opens_4"/>
-          <ion-input placeholder="до" v-model="storeItem.store_time_closes_4" name="store_time_closes_4"/>
-          <ion-icon :src="closeCircle" 
+          <ion-input placeholder="от" v-model="storeItem.store_time_opens_4" name="store_time_opens_4" label=""/>
+          <ion-input placeholder="до" v-model="storeItem.store_time_closes_4" name="store_time_closes_4" label=""/>
+          <ion-icon slot="end" :src="closeCircle" 
             @click="storeItem.store_time_opens_4=storeItem.store_time_closes_4=null;saveSchedule('4')" 
             v-show="storeItem.store_time_closes_4"
           />
@@ -336,9 +330,9 @@
             Суббота
             <ion-label v-show="!storeItem.store_time_opens_5&&!storeItem.store_time_closes_5">(выходной)</ion-label>
           </ion-label>
-          <ion-input placeholder="от" v-model="storeItem.store_time_opens_5" name="store_time_opens_5"/>
-          <ion-input placeholder="до" v-model="storeItem.store_time_closes_5" name="store_time_closes_5"/>
-          <ion-icon :src="closeCircle" 
+          <ion-input placeholder="от" v-model="storeItem.store_time_opens_5" name="store_time_opens_5" label=""/>
+          <ion-input placeholder="до" v-model="storeItem.store_time_closes_5" name="store_time_closes_5" label=""/>
+          <ion-icon slot="end" :src="closeCircle" 
             @click="storeItem.store_time_opens_5=storeItem.store_time_closes_5=null;saveSchedule('5')" 
             v-show="storeItem.store_time_closes_5"
           />
@@ -348,9 +342,9 @@
             Воскресенье
             <ion-label v-show="!storeItem.store_time_opens_6&&!storeItem.store_time_closes_6">(выходной)</ion-label>
           </ion-label>
-          <ion-input placeholder="от" v-model="storeItem.store_time_opens_6" name="store_time_opens_6"/>
-          <ion-input placeholder="до" v-model="storeItem.store_time_closes_6" name="store_time_closes_6"/>
-          <ion-icon :src="closeCircle" 
+          <ion-input placeholder="от" v-model="storeItem.store_time_opens_6" name="store_time_opens_6" label=""/>
+          <ion-input placeholder="до" v-model="storeItem.store_time_closes_6" name="store_time_closes_6" label=""/>
+          <ion-icon slot="end" :src="closeCircle" 
             @click="storeItem.store_time_opens_6=storeItem.store_time_closes_6=null;saveSchedule('6')" 
             v-show="storeItem.store_time_closes_6"
           />
