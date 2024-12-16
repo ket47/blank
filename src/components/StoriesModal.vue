@@ -168,13 +168,16 @@ ion-modal{
                         <ion-button @click="closeModal()" fill="clear" color="light"><ion-icon slot="icon-only" :icon="closeOutline" size="large"></ion-icon></ion-button>
                       </div>
                       <div class="story-nav">
-                          <div @mouseover="action = 'prev'" class="prev-story"></div>
-                          <div @mouseover="action = 'next'"  class="next-story"></div>
+                          <div @mouseover="action = 'prev'" @touchstart="action = 'prev'" class="prev-story"></div>
+                          <div @mouseover="action = 'next'" @touchstart="action = 'next'" class="next-story"></div>
                       </div>
                       <div class="slide-content">
                           <h2 style="margin: 0">{{story.post_title}}</h2>
                           <p style="margin: 0">{{story.post_content}}</p>
-                          <ion-button v-if="story.post_route" @mouseover="action = 'link'; actionData = story.post_route">Подробнее<ion-icon :icon="chevronForwardOutline"></ion-icon></ion-button>
+                          <ion-button v-if="story.post_route" 
+                            @mouseover="action = 'link'; actionData = story.post_route" 
+                            @touchstart="action = 'link'; actionData = story.post_route" 
+                            >Подробнее<ion-icon :icon="chevronForwardOutline"></ion-icon></ion-button>
                       </div>
                       <div class="crop-to-fit">
                         <img class="" :src="`${$heap.state.hostname}image/get.php/${story.image_hash}.1000.1000.webp`"/>
@@ -242,7 +245,6 @@ export default{
   },
   methods: {
     go(link){
-      console.log(link)
       modalController.dismiss();
       if(link.indexOf('tel') !== -1 || link.indexOf('mailto') !== -1) return location.href = link
       if(!link) return
@@ -292,6 +294,7 @@ export default{
       this.resetActiveIndex()
       this.activeStoryIndex = index
       this.groups[this.activeStoryGroupIndex].children[this.activeStoryIndex].isActive = true
+      this.markShown(this.groups[this.activeStoryGroupIndex].children[this.activeStoryIndex].post_id)
     },
     resetActiveIndex(){
       this.groups[this.activeStoryGroupIndex].children.forEach((story, index, stories) => {
@@ -338,6 +341,18 @@ export default{
             stories[index].progress = 0
         }
       })
+    },
+    markShown(id){
+        try{
+            let localShown = JSON.parse(localStorage.storiesShown)
+            localShown = localShown.slice(localShown.length - 100, localShown.length)
+            if(localShown.indexOf(id) === -1){
+              localShown.push(id)
+              localStorage.storiesShown = JSON.stringify(localShown)
+            }
+        }catch(err){
+            console.log('markShown stories error =(')
+        }
     },
     resetStories(){
       this.setActiveIndex(0) 

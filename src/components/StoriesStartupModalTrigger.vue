@@ -18,17 +18,13 @@ export default{
     return {
       isOpen: false,
       storyGroups: [],
-      delaySeconds: 7200
+      delaySeconds: 0,
+      localShown: []
     };
   },
   created(){
-    if(localStorage.storiesStartupModalShown){
-      let diff = Date.now() - localStorage.storiesStartupModalShown
-      if(diff < this.delaySeconds*1000 ) return
-    }
     this.$topic.on('userGet',user=>{
-        if( !User.isAdmin() ) return
-        this.listGet()
+        if( User.isAdmin() ) this.listGet()
     })
   },
   methods: {
@@ -36,7 +32,9 @@ export default{
       try{
         const response=await jQuery.post( this.$heap.state.hostname+"Post/listGet", { is_actual: 1, is_popup: 1, is_active: 1, post_type: "story", is_promoted: 1 })
         this.storyGroups = this.composeSlides(response.post_list)
-        this.preloadFirstImage(this.storyGroups[0].children[0].image_hash);
+        if(this.storyGroups.length > 0){
+          this.preloadFirstImage(this.storyGroups[0].children[0].image_hash);
+        }
       }catch(err){
         console.log('get post error')
       }
@@ -51,6 +49,9 @@ export default{
     },
     composeSlides(storiesRaw){
       const result = []
+      if(this.getShown()){
+        storiesRaw = storiesRaw.filter(item => this.localShown.indexOf(item.post_id) === -1);
+      }
       let groups = storiesRaw.reduce(function(rv, x) {
         (rv[x['post_holder_id']] = rv[x['post_holder_id']] || []).push(x);
         return rv;
@@ -59,12 +60,26 @@ export default{
         holder_id: holder_id,
         is_shown: false,
         holder_name: groups[holder_id][0].meta.holder_name,
-        holder: groups[holder_id][0].meta.holder,
+        holder: groups[holder_id][0].post_holder,
         avatar_hash: groups[holder_id][0].meta.avatar_hash,
         children: groups[holder_id]
       })
       return result
-    }
+    },
+    getShown(){
+        if(!localStorage.storiesShown){
+            localStorage.storiesShown = '[]'
+            return false
+        }
+        try{
+            this.localShown = JSON.parse(localStorage.storiesShown)
+            return true
+        }catch(err){
+            console.log('startup modal stories parse error =(')
+            return false;
+        }
+        
+    },
   }
 };
 </script>

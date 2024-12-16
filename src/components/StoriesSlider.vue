@@ -78,8 +78,7 @@ export default{
   },
   mounted(){
     this.$topic.on('userGet',user=>{
-        if( !User.isAdmin() ) return
-        this.listGet()
+        if( User.isAdmin() ) this.listGet()
     })
   },
   methods: {
@@ -102,7 +101,7 @@ export default{
         holder_id: holder_id,
         is_shown: false,
         holder_name: groups[holder_id][0].meta.holder_name,
-        holder: groups[holder_id][0].meta.holder,
+        holder: groups[holder_id][0].post_holder,
         avatar_hash: groups[holder_id][0].meta.avatar_hash,
         children: groups[holder_id]
       })
@@ -111,7 +110,7 @@ export default{
     showModal(story_group, index){
         this.modalStartIndex = index
         this.modalIsOpen = true
-        this.markShown(story_group.holder_id)
+        this.checkShown()
     },
     checkShown(){
         if(!localStorage.storiesShown){
@@ -120,31 +119,22 @@ export default{
         }
         try{
             this.localShown = JSON.parse(localStorage.storiesShown)
-            this.localShown = this.localShown.slice(this.localShown.length - 100, this.localShown.length)
-        }catch(err){
-            console.log('local stories parse error =(')
-        }
-        for(var i in this.storyGroups){
-            for(var k in this.storyGroups[i].children){
-                let story = this.storyGroups[i].children[k]
-                if(this.localShown.includes(story.post_id*1)){
-                    this.storyGroups[i].is_shown = true
+            
+            for(var i in this.storyGroups){
+                for(var k in this.storyGroups[i].children){
+                    let story = this.storyGroups[i].children[k]
+                    if(this.localShown.includes(story.post_id)){
+                        this.storyGroups[i].is_shown = true
+                    }
                 }
             }
+        }catch(err){
+            console.log('local stories parse error =(')
         }
     },
     closeModal(){
         this.modalIsOpen = false
     },
-    markShown(id){
-        for(var i in this.storyGroups) {
-            if(this.storyGroups[i].holder_id == id){ 
-                let story_ids = this.storyGroups[i].children.map(e => e.post_id*1);
-                localStorage.storiesShown = JSON.stringify(this.localShown.concat(story_ids));
-                return this.storyGroups[i].is_shown = true 
-            }
-        }
-    }
   }
 };
 </script>
