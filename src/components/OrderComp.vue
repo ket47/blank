@@ -150,6 +150,16 @@
                 </p>
             </ion-card-content>
         </ion-card>
+        <ion-card v-if="orderData?.stage_current=='system_start' && ['supplier','admin'].includes(orderData?.user_role)" color="medium">
+            <ion-card-header>
+                <ion-card-title>Начните подготовку</ion-card-title>
+            </ion-card-header>
+            <ion-card-content>
+                <p>
+                    Нажмите кнопку "Начать подготовку", иначе клиент все еще может отменить заказ.
+                </p>
+            </ion-card-content>
+        </ion-card>
 
         <ion-card v-if="orderData?.info?.payment_card_fixate_sum>orderData?.order_sum_total && ['customer'].includes(orderData?.user_role)" color="medium">
             <ion-card-header>
