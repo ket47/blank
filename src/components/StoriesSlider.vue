@@ -6,7 +6,10 @@
     text-align: center;
 }
 .story-block label{
+    margin: 0 auto;
     font-size: 12px;
+    max-width: 60px;
+    display: block;
 }
 .story-block .story-circle{
     border: 2px solid white;
@@ -30,9 +33,9 @@
         <div class="horizontalScroller">
             <div  v-for="(story_group, index) in storyGroups"  :key="index" class="story-block">
                 <ion-avatar @click="showModal(story_group, index)" :class="`story-circle ${(story_group.is_shown) ? 'story-shown' : ''}`">
-                    <img :alt="story_group.holder_title" :src="`${$heap.state.hostname}image/get.php/${story_group.avatar_hash}.400.400.webp`" />
+                    <img :alt="story_group.holder_name" :src="`${$heap.state.hostname}image/get.php/${story_group.avatar_hash}.400.400.webp`" />
                 </ion-avatar>
-                <label><b>{{ story_group.holder_title }}</b></label>
+                <label class="max-one-line-ellipsis">{{ story_group.holder_name }}</label>
             </div>
         </div>
         <stories-modal :story-groups="storyGroups" :start-index="modalStartIndex" :is-open="modalIsOpen" @on-close="closeModal" :slide-duration="4000"/>
@@ -91,33 +94,8 @@ export default{
     },
     composeSlides(storiesRaw){
       const result = []
-      /*REDO!*/
-      const holders = [
-        {
-          holder_id: 1,
-          holder: '',
-          holder_name: 'Tezkel',
-          avatar_hash: '079cc810e1b1813474e727e9d23d2c6f'
-        }, 
-        {
-          holder_id: 2,
-          holder: 'store',
-          holder_name: 'Yaem',
-          avatar_hash: '11847ffd9b06d9c9d8298579a4692cce'
-        }
-      ];
-      const list = []
-      for(const story of storiesRaw){
-        let slide = story
-        let activeHolder = holders[Math.floor(Math.random() * 2)];
-        slide.holder_id = activeHolder.holder_id
-        slide.holder = activeHolder.holder
-        slide.meta = activeHolder
-        list.push(slide)
-      }
-      /*REDO!*/
-      let groups = list.reduce(function(rv, x) {
-        (rv[x['holder_id']] = rv[x['holder_id']] || []).push(x);
+      let groups = storiesRaw.reduce(function(rv, x) {
+        (rv[x['post_holder_id']] = rv[x['post_holder_id']] || []).push(x);
         return rv;
       }, {});
       for (const holder_id in groups) result.push({
