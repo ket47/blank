@@ -47,6 +47,11 @@ export default{
       currentClass:'activecart'
     }
   },
+  mounted(){
+    this.$topic.on('cartOpen',()=>{
+      this.openCartList()
+    })
+  },
   computed:{
     cartListTotal(){
       return this.$Order.cart.listTotalGet()

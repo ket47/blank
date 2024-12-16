@@ -9,7 +9,7 @@
         <ion-title v-if="pageTitle" size="small"><div style="line-height: 1.5;max-height:3em;text-overflow: ellipsis;overflow: hidden;font-weight: bold;">{{ pageTitle }}</div></ion-title>
         <ion-icon  v-if="pageLogo" class="toolbar_svg_logo" style="color: var(--ion-color-primary)" :icon="pageLogo"/>
         <div slot="end">
-          <cart-header slot="end"></cart-header>
+          <cart-header slot="end" ref="cardWidget"></cart-header>
         </div>
       </ion-toolbar>  
     </ion-header>

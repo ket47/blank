@@ -121,6 +121,47 @@
             <ion-card-content>Рекомендуем делать фотографии товара до упаковки.  Ответственность, в случае претензий со стороны Покупателя к качеству и комплектности, лежит на <b>Продавце</b>.</ion-card-content>
         </ion-card>
 
+        <ion-card v-if="orderData?.stage_current=='customer_disputed' && ['supplier','admin'].includes(orderData?.user_role)" color="medium">
+            <ion-card-header>
+                <ion-card-title>Спор</ion-card-title>
+            </ion-card-header>
+            <ion-card-content>
+                <p>
+                    Вы можете откорректировать заказ, если согласны с возражением клиента <b>{{ orderData.customer.user_name }}</b> <ion-chip><a :href="`tel:+${orderData.customer.user_phone}`" style="color:white">+{{ orderData.customer.user_phone }}</a></ion-chip>
+                </p>
+            </ion-card-content>
+        </ion-card>
+
+        <ion-card v-if="orderData?.stage_current=='supplier_corrected' && ['supplier','admin'].includes(orderData?.user_role)" color="medium">
+            <ion-card-header>
+                <ion-card-title>Корректировка заказа</ion-card-title>
+            </ion-card-header>
+            <ion-card-content>
+                <p>
+                    Вы можете <ion-icon slot="start" :src="addCircle" size="small" style="vertical-align: bottom;" />добавлять, 
+                    <ion-icon slot="start" :src="trashSharp" size="small" style="vertical-align: bottom;" />удалять товар а так же 
+                    <ion-icon slot="start" :src="backspaceSharp" size="small" style="vertical-align: bottom;" />изменять количество в заказе. 
+                </p>
+                <p>
+                    Созвонитесь с клиентом <b>{{ orderData.customer.user_name }}</b> <ion-chip><a :href="`tel:+${orderData.customer.user_phone}`" style="color:white">+{{ orderData.customer.user_phone }}</a></ion-chip>
+                </p>
+                <p v-if="orderData?.info?.payment_card_fixate_sum">
+                    Предоплата клиента {{ orderData?.info?.payment_card_fixate_sum }}{{$heap.state.currencySign}}.
+                </p>
+            </ion-card-content>
+        </ion-card>
+
+        <ion-card v-if="orderData?.info?.payment_card_fixate_sum>orderData?.order_sum_total && ['customer'].includes(orderData?.user_role)" color="medium">
+            <ion-card-header>
+                <ion-card-title>Сдача</ion-card-title>
+            </ion-card-header>
+            <ion-card-content>
+                <p>
+                    {{ orderData.customer.user_name }}, сдача по этому заказу {{Number(orderData?.info?.payment_card_fixate_sum-orderData?.order_sum_total).toFixed(2)}}{{$heap.state.currencySign}} вернется на вашу карту после нажатия кнопки ✅Принять.
+                </p>
+            </ion-card-content>
+        </ion-card>
+
 
         <div class="ion-padding" v-if="isEditable">
             <ion-textarea style="background-color:var(--ion-color-light-tint);border-radius:10px" label="" rows="2" placeholder="комментарий к заказу" @ionChange="orderDescriptionChanged($event.target.value)" :value="orderData.order_description"></ion-textarea>
@@ -221,9 +262,10 @@ import {
     alertController,
 }                       from '@ionic/vue';
 import { 
-    add,
+    addCircle,
+    trashSharp,
+    backspaceSharp,
     remove, 
-    trash, 
     rocketOutline, 
     storefrontOutline,
     checkmarkOutline,
@@ -267,9 +309,10 @@ export default({
     },
     setup() {
         return { 
-            add, 
+            addCircle,
+            trashSharp,
+            backspaceSharp,
             remove, 
-            trash, 
             rocketOutline, 
             storefrontOutline, 
             checkmarkOutline,    
