@@ -46,13 +46,13 @@
         <ion-radio-group v-model="postItem.post_type" @ionChange="saveForm" name="post_type">
           <ion-item v-for="type in postTypes" :key="type.post_type" @click="itemImageParamsSet()">
             {{type.post_type_name}}
-            <ion-radio color="primary" slot="end" :value="type.post_type"></ion-radio>
+            <ion-radio color="primary" slot="end" :value="type.post_type" :disabled="!!postItem.post_type"></ion-radio>
           </ion-item>
         </ion-radio-group>
       </ion-list>
       <ion-list v-if="imageParams">
         <ion-item-divider>
-          <ion-label>Изображения*</ion-label>
+          <ion-label>Изображения</ion-label>
         </ion-item-divider>
         <image-tile-comp :images="postItem.images" :image_holder_id="postItem.post_id" :params="imageParams" title="Фото поста" controller="Post" ref="postImgs"></image-tile-comp>
         <ion-button @click="$refs.postImgs.take_photo()" color="light" expand="block">
@@ -61,7 +61,7 @@
       </ion-list>
       <ion-list>
           <ion-item-divider>
-            <ion-label>Holder*</ion-label>
+            <ion-label>Автор</ion-label>
           </ion-item-divider>
           <ion-item v-if="pickedStore" button @click="storePick()" color="primary">
               <ion-icon slot="start" :src="storefrontOutline"/>
