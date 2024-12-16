@@ -49,6 +49,10 @@ export default{
   },
   mounted(){
     this.$topic.on('cartOpen',()=>{
+      if(this.$heap.state.cart_is_open==1){
+        return
+      }
+      this.$heap.state.cart_is_open=1
       this.openCartList()
     })
   },
@@ -74,7 +78,9 @@ export default{
         modal.dismiss();
       };
       Topic.on('dismissModal',dismissFn);
-      return modal.present();
+      modal.present();
+      await modal.onDidDismiss();
+      this.$heap.state.cart_is_open=0
     }
   },
   watch:{

@@ -112,7 +112,7 @@
             </div>
         </div>
 
-        <ion-card v-if="cartListTotal && orderList && orderType=='active'" @click="$topic.publish('cartOpen')" color="light">
+        <ion-card v-if="cartListTotal && orderList && orderType=='active'" @click="$topic.publish('cartOpen');" color="light">
             <ion-card-content style="text-align:center">
                 У вас есть не оформленные товары в корзине. Успейте купить!
                 <ion-button expand="block" fill="clear">
