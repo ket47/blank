@@ -75,8 +75,6 @@ import {
 
 import StoriesModal         from "@/components/StoriesModal";
 
-import User    from '@/scripts/User.js';
-
 import {
   closeOutline,
   chevronForwardOutline
@@ -106,6 +104,9 @@ export default{
   },
   mounted(){
     this.listGet()
+  },
+  created(){
+      this.$topic.on('dismissModal',()=>this.modalIsOpen=false);
   },
   methods: {
     async listGet(){

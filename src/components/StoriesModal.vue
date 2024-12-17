@@ -243,9 +243,6 @@ export default{
       touchStartTimestamp: 0,
     };
   },
-  created(){
-      this.$topic.on('dismissModal',this.closeModal);
-  },
   methods: {
     go(link){
       modalController.dismiss();
