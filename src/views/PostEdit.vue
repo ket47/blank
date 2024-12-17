@@ -30,7 +30,7 @@
       </ion-item>
       <ion-item>
         <ion-icon :src="ribbonOutline" color="primary" slot="start"/>
-        <ion-toggle v-model="is_promoted" @ionChange="save('is_promoted',is_promoted)">Promoted</ion-toggle>
+        <ion-toggle v-model="is_promoted" @ionChange="save('is_promoted',is_promoted)">Приоритет</ion-toggle>
       </ion-item>
       <ion-item>
         <ion-icon :src="ribbonOutline" color="primary" slot="start"/>
@@ -59,17 +59,18 @@
           <ion-icon :src="cameraOutline" slot="start"/> Добавить фото в пост
         </ion-button>
       </ion-list>
-      <ion-list>
+      <ion-list v-if="imageParams">
           <ion-item-divider>
             <ion-label>Автор</ion-label>
           </ion-item-divider>
-          <ion-item v-if="pickedStore" button @click="storePick()" color="primary">
-              <ion-icon slot="start" :src="storefrontOutline"/>
-              <ion-label>{{pickedStore.store_name}}</ion-label>
+          <ion-item v-if="pickedStore" button>
+              <ion-icon @click="storePick()" slot="start" :src="storefrontOutline"/>
+              <ion-label @click="storePick()">{{pickedStore.store_name}}</ion-label>
+              <ion-icon slot="end" :src="trashOutline" @click="storeReset()"/>
           </ion-item>
-          <ion-item v-else button @click="storePick()" color="warning">
-              <ion-icon slot="start" :src="storefrontOutline"/>
-              <ion-label>Выбрать продавца</ion-label>
+          <ion-item v-else button @click="storePick()">
+              <ion-icon slot="start" :src="addOutline"/>
+              <ion-label>Добавить автора</ion-label>
           </ion-item>
       </ion-list>
       <ion-list v-if="imageParams" lines="full">
@@ -289,6 +290,8 @@ export default  {
         this.itemImageParamsSet()
         if(postItem.post_holder=='store'){
           this.pickedStore=postItem.holder;
+        } else {
+          this.pickedStore=null;
         }
       }catch(err){
         //console.log(err);
@@ -406,6 +409,15 @@ export default  {
           post_id:this.postItem.post_id,
           post_holder:'store',
           post_holder_id:item.data.store_id
+        }
+        await this.itemUpdate(request)
+        await this.itemGet()
+    },
+    async storeReset(){
+        const request={
+          post_id:this.postItem.post_id,
+          post_holder:'',
+          post_holder_id:0
         }
         await this.itemUpdate(request)
         await this.itemGet()
