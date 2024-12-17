@@ -31,9 +31,9 @@
     <div v-if="storyGroups.length > 0" class="ion-padding-horizontal ion-padding-bottom">
         <h5>Истории</h5>
         <div class="horizontalScroller">
-            <div  v-for="(story_group, index) in storyGroups"  :key="index" class="story-block">
+            <div v-for="(story_group, index) in storyGroups"  :key="index" class="story-block">
                 <ion-avatar @click="showModal(story_group, index)" :class="`story-circle ${(story_group.is_shown) ? 'story-shown' : ''}`">
-                    <img :alt="story_group.holder_name" :src="`${$heap.state.hostname}image/get.php/${story_group.avatar_hash}.400.400.webp`" />
+                    <img :alt="story_group.holder_name" :src="`${$heap.state.hostname}image/get.php/${(story_group.avatar_hash) ? story_group.avatar_hash : story_group.children[0].image_hash}.400.400.webp`" />
                 </ion-avatar>
                 <label class="max-one-line-ellipsis">{{ story_group.holder_name }}</label>
             </div>
@@ -78,8 +78,7 @@ export default{
   },
   mounted(){
     this.$topic.on('userGet',user=>{
-        if( !User.isAdmin() ) return
-        this.listGet()
+        if( User.isAdmin() ) this.listGet()
     })
   },
   methods: {
@@ -95,23 +94,23 @@ export default{
     composeSlides(storiesRaw){
       const result = []
       let groups = storiesRaw.reduce(function(rv, x) {
-        (rv[x['post_holder_id']] = rv[x['post_holder_id']] || []).push(x);
+        (rv[x.post_holder_id ?? 0] = rv[x.post_holder_id ?? 0] || []).push(x);
         return rv;
       }, {});
       for (const holder_id in groups) result.push({
         holder_id: holder_id,
-        is_shown: false,
-        holder_name: groups[holder_id][0].meta.holder_name,
-        holder: groups[holder_id][0].meta.holder,
-        avatar_hash: groups[holder_id][0].meta.avatar_hash,
-        children: groups[holder_id]
+        holder: groups[holder_id][0].post_holder,
+        holder_name: groups[holder_id][0].meta?.holder_name ?? 'Избранное',
+        avatar_hash: groups[holder_id][0].meta?.avatar_hash ?? '',
+        children: groups[holder_id],
+        is_shown: false
       })
       return result
     },
     showModal(story_group, index){
         this.modalStartIndex = index
         this.modalIsOpen = true
-        this.markShown(story_group.holder_id)
+        this.checkShown()
     },
     checkShown(){
         if(!localStorage.storiesShown){
@@ -120,31 +119,22 @@ export default{
         }
         try{
             this.localShown = JSON.parse(localStorage.storiesShown)
-            this.localShown = this.localShown.slice(this.localShown.length - 100, this.localShown.length)
-        }catch(err){
-            console.log('local stories parse error =(')
-        }
-        for(var i in this.storyGroups){
-            for(var k in this.storyGroups[i].children){
-                let story = this.storyGroups[i].children[k]
-                if(this.localShown.includes(story.post_id*1)){
-                    this.storyGroups[i].is_shown = true
+            
+            for(var i in this.storyGroups){
+                for(var k in this.storyGroups[i].children){
+                    let story = this.storyGroups[i].children[k]
+                    if(this.localShown.includes(story.post_id)){
+                        this.storyGroups[i].is_shown = true
+                    }
                 }
             }
+        }catch(err){
+            console.log('local stories parse error =(')
         }
     },
     closeModal(){
         this.modalIsOpen = false
     },
-    markShown(id){
-        for(var i in this.storyGroups) {
-            if(this.storyGroups[i].holder_id == id){ 
-                let story_ids = this.storyGroups[i].children.map(e => e.post_id*1);
-                localStorage.storiesShown = JSON.stringify(this.localShown.concat(story_ids));
-                return this.storyGroups[i].is_shown = true 
-            }
-        }
-    }
   }
 };
 </script>
