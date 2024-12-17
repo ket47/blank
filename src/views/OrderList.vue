@@ -25,8 +25,8 @@
                     <ion-avatar slot="start" v-if="order.image_hash">
                         <ion-img style="border-radius:16px;" :src="`${$heap.state.hostname}image/get.php/${order.image_hash}.150.150.webp`"/>
                     </ion-avatar>
-                    <ion-label v-if="order.is_shipment==1">Посылка {{order.store_name}}</ion-label>
-                    <ion-label v-else>{{order.store_name}}</ion-label>
+                    <ion-label v-if="order.is_shipment==1"><b>Посылка {{order.store_name}}</b></ion-label>
+                    <ion-label v-else><b>{{order.store_name}}</b></ion-label>
                     <ion-chip slot="end" :color="order.stage_color" v-if="order.stage_current_name">
                         <ion-icon v-if="order.is_canceled==1" :icon="banOutline"></ion-icon>
                         <ion-icon v-else :icon="checkmarkOutline"></ion-icon>
