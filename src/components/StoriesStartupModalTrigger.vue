@@ -53,16 +53,16 @@ export default{
         storiesRaw = storiesRaw.filter(item => this.localShown.indexOf(item.post_id) === -1);
       }
       let groups = storiesRaw.reduce(function(rv, x) {
-        (rv[x['post_holder_id']] = rv[x['post_holder_id']] || []).push(x);
+        (rv[x.post_holder_id ?? 0] = rv[x.post_holder_id ?? 0] || []).push(x);
         return rv;
       }, {});
       for (const holder_id in groups) result.push({
         holder_id: holder_id,
-        is_shown: false,
-        holder_name: groups[holder_id][0].meta.holder_name,
         holder: groups[holder_id][0].post_holder,
-        avatar_hash: groups[holder_id][0].meta.avatar_hash,
-        children: groups[holder_id]
+        holder_name: groups[holder_id][0].meta?.holder_name ?? 'Избранное',
+        avatar_hash: groups[holder_id][0].meta?.avatar_hash ?? '',
+        children: groups[holder_id],
+        is_shown: false
       })
       return result
     },

@@ -31,9 +31,9 @@
     <div v-if="storyGroups.length > 0" class="ion-padding-horizontal ion-padding-bottom">
         <h5>Истории</h5>
         <div class="horizontalScroller">
-            <div  v-for="(story_group, index) in storyGroups"  :key="index" class="story-block">
+            <div v-for="(story_group, index) in storyGroups"  :key="index" class="story-block">
                 <ion-avatar @click="showModal(story_group, index)" :class="`story-circle ${(story_group.is_shown) ? 'story-shown' : ''}`">
-                    <img :alt="story_group.holder_name" :src="`${$heap.state.hostname}image/get.php/${story_group.avatar_hash}.400.400.webp`" />
+                    <img :alt="story_group.holder_name" :src="`${$heap.state.hostname}image/get.php/${(story_group.avatar_hash) ? story_group.avatar_hash : story_group.children[0].image_hash}.400.400.webp`" />
                 </ion-avatar>
                 <label class="max-one-line-ellipsis">{{ story_group.holder_name }}</label>
             </div>
@@ -94,16 +94,16 @@ export default{
     composeSlides(storiesRaw){
       const result = []
       let groups = storiesRaw.reduce(function(rv, x) {
-        (rv[x['post_holder_id']] = rv[x['post_holder_id']] || []).push(x);
+        (rv[x.post_holder_id ?? 0] = rv[x.post_holder_id ?? 0] || []).push(x);
         return rv;
       }, {});
       for (const holder_id in groups) result.push({
         holder_id: holder_id,
-        is_shown: false,
-        holder_name: groups[holder_id][0].meta.holder_name,
         holder: groups[holder_id][0].post_holder,
-        avatar_hash: groups[holder_id][0].meta.avatar_hash,
-        children: groups[holder_id]
+        holder_name: groups[holder_id][0].meta?.holder_name ?? 'Избранное',
+        avatar_hash: groups[holder_id][0].meta?.avatar_hash ?? '',
+        children: groups[holder_id],
+        is_shown: false
       })
       return result
     },
