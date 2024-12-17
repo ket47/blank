@@ -6,22 +6,22 @@
 <template>
     <base-layout pageDefaultBackLink="/user" page-title="Элементы">
         <ion-segment :scrollable="true" v-model="moderationType" @ionChange="listTypeChanged($event)">
-            <ion-segment-button value="images">
+            <ion-segment-button value="images" @click="item_type='disabled'">
                 Картинки
             </ion-segment-button>
-            <ion-segment-button value="posts">
+            <ion-segment-button value="posts" @click="item_type='disabled'">
                 Посты
             </ion-segment-button>
-            <ion-segment-button value="products">
+            <ion-segment-button value="products" @click="item_type='disabled'">
                 Товары
             </ion-segment-button>
-            <ion-segment-button value="stores">
+            <ion-segment-button value="stores" @click="item_type='disabled'">
                 Магазины
             </ion-segment-button>
             <ion-segment-button value="users" @click="item_type='active'">
                 Пользователи
             </ion-segment-button>
-            <ion-segment-button value="couriers">
+            <ion-segment-button value="couriers" @click="item_type='disabled'">
                 Курьеры
             </ion-segment-button>
         </ion-segment>
@@ -232,6 +232,7 @@ export default {
                 if(this.moderationType=='products'){
                     request.name_query_fields='product_name,product_description,product_barcode,product_code'
                     request.reverse='validity'
+                    request.is_hidden=0
                     const products=await jquery.post(`${this.$heap.state.hostname}Product/listGet`,request)
                     items=products.product_list
                 } else
