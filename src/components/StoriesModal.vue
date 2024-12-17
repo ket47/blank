@@ -173,7 +173,7 @@ ion-modal{
                       </div>
                       <div class="slide-content">
                           <h2 style="margin: 0">{{story.post_title}}</h2>
-                          <p style="margin: 0">{{story.post_content}}</p>
+                          <p>{{story.post_content}}</p>
                           <ion-button v-if="story.post_route" 
                             @mouseover="action = 'link'; actionData = story.post_route" 
                             @touchstart="action = 'link'; actionData = story.post_route" 
@@ -243,6 +243,9 @@ export default{
       touchStartTimestamp: 0,
     };
   },
+  created(){
+      this.$topic.on('dismissModal',this.closeModal);
+  },
   methods: {
     go(link){
       modalController.dismiss();
@@ -271,6 +274,7 @@ export default{
       }, self.slideDuration / autoplaySteps+3 );
     },
     nextSlide(){
+      if(!this.$refs.storiesSlider) return
       if(this.activeStoryIndex >= this.groups[this.activeStoryGroupIndex].children.length-1) {
         if(this.activeStoryGroupIndex >= this.groups.length-1){
           return this.closeModal()
@@ -281,6 +285,7 @@ export default{
       this.startAutoplay()
     },
     prevSlide(){
+      if(!this.$refs.storiesSlider) return
       clearTimeout(this.changeTimeout)
       if(this.activeStoryIndex <= 0){
         if(this.activeStoryGroupIndex <= 0){

@@ -5,11 +5,11 @@
 .story-block{
     text-align: center;
 }
-.story-block label{
-    margin: 0 auto;
-    font-size: 12px;
+.story-block label b{
+    margin: 5px auto;
+    font-size: 10px;
     max-width: 60px;
-    display: block;
+    text-wrap: auto;
 }
 .story-block .story-circle{
     border: 2px solid white;
@@ -28,22 +28,48 @@
 </style>
 
 <template>
+  <div v-if="!isLoading">
     <div v-if="storyGroups.length > 0" class="ion-padding-horizontal ion-padding-bottom">
         <h5>Истории</h5>
         <div class="horizontalScroller">
             <div v-for="(story_group, index) in storyGroups"  :key="index" class="story-block">
                 <ion-avatar @click="showModal(story_group, index)" :class="`story-circle ${(story_group.is_shown) ? 'story-shown' : ''}`">
-                    <img :alt="story_group.holder_name" :src="`${$heap.state.hostname}image/get.php/${(story_group.avatar_hash) ? story_group.avatar_hash : story_group.children[0].image_hash}.400.400.webp`" />
+                    <img :src="`${$heap.state.hostname}image/get.php/${(story_group.avatar_hash) ? story_group.avatar_hash : story_group.children[0].image_hash}.80.80.webp`" />
                 </ion-avatar>
-                <label class="max-one-line-ellipsis">{{ story_group.holder_name }}</label>
+                <label><b class="max-two-lines">{{ story_group.holder_name }}</b></label>
             </div>
         </div>
         <stories-modal :story-groups="storyGroups" :start-index="modalStartIndex" :is-open="modalIsOpen" @on-close="closeModal" :slide-duration="4000"/>
     </div>
+  </div>
+  <div v-else class="ion-padding-horizontal ion-padding-bottom">
+    <h5><ion-skeleton-text style="width: 50%" :animated="true"></ion-skeleton-text></h5>
+    <div class="horizontalScroller">
+        <div class="story-block">
+          <ion-avatar  class="story-circle story-shown">
+            <ion-skeleton-text :animated="true"></ion-skeleton-text>
+          </ion-avatar>
+          <label><b class="max-two-lines"><ion-skeleton-text :animated="true"></ion-skeleton-text></b></label>
+        </div>
+        <div class="story-block">
+          <ion-avatar  class="story-circle story-shown">
+            <ion-skeleton-text :animated="true"></ion-skeleton-text>
+          </ion-avatar>
+          <label><b class="max-two-lines"><ion-skeleton-text :animated="true"></ion-skeleton-text></b></label>
+        </div>
+        <div class="story-block">
+          <ion-avatar  class="story-circle story-shown">
+            <ion-skeleton-text :animated="true"></ion-skeleton-text>
+          </ion-avatar>
+          <label><b class="max-two-lines"><ion-skeleton-text :animated="true"></ion-skeleton-text></b></label>
+        </div>
+    </div>
+  </div>
 </template>
 
 <script>
 import {
+  IonSkeletonText,
   IonAvatar
 }                           from "@ionic/vue";
 
@@ -61,6 +87,7 @@ import 'swiper/css/pagination';
 
 export default{
   components: {
+    IonSkeletonText,
     IonAvatar,
     StoriesModal
   },
@@ -73,20 +100,21 @@ export default{
       modalStartIndex: 0,
       modalIsOpen: false,
       localShown: [],
+      isLoading: true
       
     };
   },
   mounted(){
-    this.$topic.on('userGet',user=>{
-        if( User.isAdmin() ) this.listGet()
-    })
+    this.listGet()
   },
   methods: {
     async listGet(){
         try{
+            this.isLoading = true
             const response=await jQuery.post( this.$heap.state.hostname+"Post/listGet", { is_actual: 1, is_active: 1, post_type: "story" })
             this.storyGroups  = this.composeSlides(response.post_list)
             this.checkShown()
+            this.isLoading = false
         }catch(err){
             console.log('get post error')
         }

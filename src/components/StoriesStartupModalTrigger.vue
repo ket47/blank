@@ -18,14 +18,11 @@ export default{
     return {
       isOpen: false,
       storyGroups: [],
-      delaySeconds: 0,
       localShown: []
     };
   },
   created(){
-    this.$topic.on('userGet',user=>{
-        if( User.isAdmin() ) this.listGet()
-    })
+    this.listGet()
   },
   methods: {
     async listGet(){
