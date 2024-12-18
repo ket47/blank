@@ -5,7 +5,7 @@
 </style>
 <template>
     <base-layout pageDefaultBackLink="/user" page-title="Элементы">
-        <ion-segment :scrollable="true" v-model="moderationType" @ionChange="listTypeChanged($event)">
+        <ion-segment :scrollable="true" v-model="moderationType" @ionChange="listTypeChanged($event)" :disabled="is_loading">
             <ion-segment-button value="images" @click="item_type='disabled'">
                 Картинки
             </ion-segment-button>
@@ -64,7 +64,7 @@
                     <!--POSTS component-->
                     <ion-item button detail @click="itemEdit({post_id:0})">
                         <ion-icon :src="addOutline" slot="start"></ion-icon>
-                        <ion-text>Добавить ноый пост</ion-text>
+                        <ion-text>Добавить новый пост</ion-text>
                     </ion-item>
                     <div v-for="item in listComputed" :key="item.item_id">
                         <ion-item button detail @click="itemEdit(item)" lines="none">
@@ -205,9 +205,13 @@ export default {
         async listReload(){
             this.is_items_left=1
             this.items=[]
-            this.listLoad()
+            await this.listLoad()
         },
         async listLoad(){
+            if( this.is_loading==1 ){
+                return 
+            }
+            this.is_loading=1
             let request={
                 is_disabled: this.item_type=='disabled'?1:0,
                 is_active: this.item_type=='active'?1:0,
@@ -217,7 +221,6 @@ export default {
                 limit:15
             }
             try{
-                this.is_loading=1
                 let items
                 if(this.moderationType=='images'){
                     request.order='updated_at'
@@ -337,7 +340,7 @@ export default {
             if( action.role=='postpone' ){
                 await this.imagePostpone(item)
             }
-            this.listReload()
+            await this.listReload()
         },
         async imageEnable(item){
             await jquery.post(`${this.$heap.state.hostname}Image/itemDisable`,{image_id:item.image_id,is_disabled:0})
