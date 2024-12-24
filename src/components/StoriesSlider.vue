@@ -110,15 +110,15 @@ export default{
   },
   methods: {
     async listGet(){
-        try{
-            this.isLoading = true
+      this.isLoading = true
+      try{
             const response=await jQuery.post( this.$heap.state.hostname+"Post/listGet", { is_actual: 1, is_active: 1, post_type: "story" })
             this.storyGroups  = this.composeSlides(response.post_list)
             this.checkShown()
-            this.isLoading = false
         }catch(err){
-            console.log('get post error')
+            //console.log('get post error')
         }
+        this.isLoading = false
     },
     composeSlides(storiesRaw){
       const result = []

@@ -33,7 +33,7 @@ export default{
           this.preloadFirstImage(this.storyGroups[0].children[0].image_hash);
         }
       }catch(err){
-        console.log('get post error')
+        //console.log('get post error')
       }
     },
     preloadFirstImage(image_hash) {
