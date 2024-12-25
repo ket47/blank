@@ -26,13 +26,30 @@
             </ion-segment-button>
         </ion-segment>
         <div>
-            <ion-item>
+            <!-- <ion-item lines="none">
                 <ion-select v-model="item_type" value="disabled" label="Тип элементов" label-placement="stacked" @ionChange="listReload()">
                     <ion-select-option value="active">активные</ion-select-option>
                     <ion-select-option value="disabled">выключенные</ion-select-option>
                     <ion-select-option value="deleted">удаленные</ion-select-option>
                 </ion-select>
-            </ion-item>
+            </ion-item> -->
+            <ion-card>
+                <ion-card-content>
+                    <ion-segment mode="ios" :scrollable="true"  v-model="item_type" value="disabled" label="Тип элементов" label-placement="stacked" @ionChange="listReload()" color="primary">
+                        <ion-segment-button value="active">
+                            активные
+                        </ion-segment-button>
+                        <ion-segment-button value="disabled">
+                            выключенные
+                        </ion-segment-button>
+                        <ion-segment-button value="deleted">
+                            удаленные
+                        </ion-segment-button>
+                    </ion-segment>                    
+                </ion-card-content>
+            </ion-card>
+
+
             <ion-searchbar v-if="moderationType=='posts' || moderationType=='stores' || moderationType=='products' || moderationType=='couriers' || moderationType=='users'" placeholder="Фильтр" v-model="filter"/>
 
 
@@ -73,6 +90,31 @@
                             </ion-thumbnail>
                             <ion-text>{{item.item_name}}</ion-text>
                             <ion-label slot="end">{{item.date_dmy}}</ion-label>
+                        </ion-item>
+                    </div>
+                </ion-list>
+                <ion-list v-else-if="moderationType=='products'">
+                    <!--PRODUCT component-->
+                    <ion-item>
+                        <ion-segment :scrollable="true" v-model="productType" mode="ios" @ionChange="listReload()">
+                            <ion-segment-button value="all">
+                                все
+                            </ion-segment-button>
+                            <ion-segment-button value="promo">
+                                акция
+                            </ion-segment-button>
+                        </ion-segment>
+                    </ion-item>
+                    <div v-for="item in listComputed" :key="item.item_id">
+                        <ion-item button @click="itemEdit(item)" lines="none">
+                            <ion-thumbnail slot="start" :class="item.class" v-if="item.image_hash">
+                                <ion-img :src="`${$heap.state.hostname}image/get.php/${item.image_hash}.150.150.webp`"/>
+                            </ion-thumbnail>
+                            <ion-text>
+                                {{item.item_name}}
+                                <ion-chip v-if="item.product_price!=item.product_final_price" color="success">Акция</ion-chip>
+                            </ion-text>
+                            <ion-chip slot="end" color="light">{{ item.validity }}%</ion-chip>
                         </ion-item>
                     </div>
                 </ion-list>
@@ -170,6 +212,7 @@ export default {
             is_loading:0,
             is_items_left:1,
             moderationType:localStorage.listModerationLastType||"images",
+            productType:'all',
             holders:{
                 'store':'Поставщик',
                 'courier':'Курьер',
@@ -236,6 +279,9 @@ export default {
                     request.name_query_fields='product_name,product_description,product_barcode,product_code'
                     request.reverse='validity'
                     request.is_hidden=0
+                    if(this.productType=='promo'){
+                        request.is_promo=1
+                    }
                     const products=await jquery.post(`${this.$heap.state.hostname}Product/listGet`,request)
                     items=products.product_list
                 } else
