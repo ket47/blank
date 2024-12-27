@@ -112,7 +112,7 @@
                             </ion-thumbnail>
                             <ion-text>
                                 {{item.item_name}}
-                                <ion-chip v-if="item.product_price!=item.product_final_price" color="success">Акция</ion-chip>
+                                <ion-chip v-if="item.product_price!=item.product_final_price" color="success">%</ion-chip>
                             </ion-text>
                             <ion-chip slot="end" color="light">{{ item.validity }}%</ion-chip>
                         </ion-item>
