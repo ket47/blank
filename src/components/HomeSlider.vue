@@ -82,7 +82,7 @@
             const response = await jQuery.post( this.$heap.state.hostname+"Post/listGet", { is_actual: 1, is_active: 1, post_type: "homeslide" })
             this.slides = response.post_list
           }catch(err){
-            console.log('get post error')
+            //console.log('get post error')
           }
         },
         go(link){

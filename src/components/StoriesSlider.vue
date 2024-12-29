@@ -34,7 +34,7 @@
         <div class="horizontalScroller">
             <div v-for="(story_group, index) in storyGroups"  :key="index" class="story-block">
                 <ion-avatar @click="showModal(story_group, index)" :class="`story-circle ${(story_group.is_shown) ? 'story-shown' : ''}`">
-                    <img :src="`${$heap.state.hostname}image/get.php/${(story_group.avatar_hash) ? story_group.avatar_hash : story_group.children[0].image_hash}.200.200.webp`" />
+                    <img :src="`${$heap.state.hostname}image/get.php/${(story_group.avatar_hash) ? story_group.avatar_hash : story_group.children[0].image_hash}.180.180.webp`" />
                 </ion-avatar>
                 <label><b class="max-two-lines">{{ story_group.holder_name }}</b></label>
             </div>
@@ -110,15 +110,15 @@ export default{
   },
   methods: {
     async listGet(){
-        try{
-            this.isLoading = true
+      this.isLoading = true
+      try{
             const response=await jQuery.post( this.$heap.state.hostname+"Post/listGet", { is_actual: 1, is_active: 1, post_type: "story" })
             this.storyGroups  = this.composeSlides(response.post_list)
             this.checkShown()
-            this.isLoading = false
         }catch(err){
-            console.log('get post error')
+            //console.log('get post error')
         }
+        this.isLoading = false
     },
     composeSlides(storiesRaw){
       const result = []
