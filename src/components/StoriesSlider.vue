@@ -34,7 +34,7 @@
         <div class="horizontalScroller">
             <div v-for="(story_group, index) in storyGroups"  :key="index" class="story-block">
                 <ion-avatar @click="showModal(story_group, index)" :class="`story-circle ${(story_group.is_shown) ? 'story-shown' : ''}`">
-                    <img :src="`${$heap.state.hostname}image/get.php/${(story_group.avatar_hash) ? story_group.avatar_hash : story_group.children[0].image_hash}.80.80.webp`" />
+                    <img :src="`${$heap.state.hostname}image/get.php/${(story_group.avatar_hash) ? story_group.avatar_hash : story_group.children[0].image_hash}.200.200.webp`" />
                 </ion-avatar>
                 <label><b class="max-two-lines">{{ story_group.holder_name }}</b></label>
             </div>

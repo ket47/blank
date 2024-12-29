@@ -64,6 +64,63 @@ const Utils={
         },
         isoToDmy( iso ){
             return iso.split('-').reverse().join('.')
+        },
+        humanize( unixTime, mode = 'both' ){
+            const now = Math.floor(Date.now() / 1000);
+            const diff = unixTime - now;
+            if (mode === 'future' && diff <= 0) {
+                return 'С минуты на минуту';
+            } else if (mode === 'past' && diff > 0) {
+                return 'Еще не наступило';
+            }
+            const date = new Date(unixTime * 1000);
+            const year = date.getFullYear();
+            const month = (date.getMonth() + 1).toString().padStart(2, '0');
+            const day = date.getDate().toString().padStart(2, '0');
+
+            if (diff > 0) {
+                const minutes = diff / 60;
+                const hours = diff / 3600;
+                const days = diff / 86400;
+
+                if (days >= 1) {
+                    return `Завтра, в ${hours}:${minutes}`;
+                } else if (hours >= 3) {
+                    return `Через ${Math.floor(hours)} часов`;
+                } else if (hours >= 2.5) {
+                    return 'Менее 3 часов';
+                } else if (hours >= 2) {
+                    return 'Менее 2,5 часов';
+                } else if (hours >= 1.5) {
+                    return 'Менее 2 часов';
+                } else if (hours >= 1) {
+                    return 'Менее 1,5 часов';
+                } else if (minutes >= 30) {
+                    return 'Менее часа';
+                } else if (minutes >= 10) {
+                    return 'Менее 30 минут';
+                } else {
+                    return 'Менее 10 минут';
+                }
+            } else {
+                const pastDiff = Math.abs(diff);
+                const pastMinutes = pastDiff / 60;
+                const pastHours = pastDiff / 3600;
+                const pastDays = pastDiff / 86400;
+                if (pastDays >= 1) {
+                    if (pastDays < 2) {
+                        return `Вчера, в ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`;
+                    } else {
+                        return `${day}.${month}.${year}`;
+                    }
+                } else if (pastHours >= 1) {
+                    return `${Math.floor(pastHours)} час${Math.floor(pastHours) === 1 ? '' : 'а'} назад`;
+                } else if (pastMinutes >= 1) {
+                    return `${Math.floor(pastMinutes)} минут${Math.floor(pastMinutes) === 1 ? 'у' : 'ы'} назад`;
+                } else {
+                    return 'Меньше минуты назад';
+                }
+            }
         }
     },
     //////////////////////////////////////////////////////

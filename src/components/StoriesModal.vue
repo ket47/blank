@@ -1,4 +1,7 @@
 <style scoped>
+.swiper-wrapper{
+  transform: none !important;
+}
 ion-modal{
   --background: transparent;
   backdrop-filter: blur(3px);
@@ -55,6 +58,8 @@ ion-modal{
   height: 80%;
   width: 100%;
   z-index: 10;
+  -webkit-transform:translate3d(0,0,200px);
+  transform: translate3d(0, 0, 200px);
 }
 .story-nav > .prev-story{
   width: 30%;
@@ -71,6 +76,8 @@ ion-modal{
   padding: 16px;
   color: white;
   z-index: 100;
+  -webkit-transform:translate3d(0,0,200px);
+  transform: translate3d(0, 0, 200px);
 }
 .slide-container:before{
   content: "";
@@ -107,14 +114,9 @@ ion-modal{
 }
 .autoplay-progress > .progress-container > .progress{
   display: block;
-  /*animation-duration: 0s !important;*/
 }
 .autoplay-progress > .progress-container > .progress.active{
   transition: 0.2s all;
-}
-@keyframes progress {
-  from {width: 0%}
-  to {width: 100%}
 }
 @media screen and (max-width: 740px) {
   .crop-to-fit{
@@ -122,7 +124,7 @@ ion-modal{
     height: 100vh;
   }
 }
-@media screen and (min-width: 600px) {
+@media screen and (min-width: 740px) {
   ion-modal {
     --height: 90vh;
     --width: calc(90vh / 2.13);
@@ -136,14 +138,6 @@ ion-modal{
         <swiper 
             ref="storiesSlider"
             v-if="groups"
-            :modules="modules" 
-            :effect="'cube'"
-            :cubeEffect="{
-              shadow: true,
-              slideShadows: true,
-              shadowOffset: 20,
-              shadowScale: 0.94,
-            }"
             :pagination="{clickable: true}"
             @slideChange="onSlideChange"
             @touchStart="touchStart"
@@ -204,8 +198,6 @@ import {
   closeOutline,
   chevronForwardOutline
   }                         from 'ionicons/icons';
-import jQuery               from 'jquery';
-import { EffectCube } from 'swiper';
 import { Swiper, SwiperSlide } from 'swiper/vue';
 
 import 'swiper/css/pagination';
@@ -226,7 +218,7 @@ export default{
       const closeModal = function(){
           modalController.dismiss();
       };
-      return {  modules: [EffectCube], closeModal, closeOutline, chevronForwardOutline};
+      return {  closeModal, closeOutline, chevronForwardOutline};
   },
   data(){
     return {
