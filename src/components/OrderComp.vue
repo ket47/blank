@@ -14,7 +14,7 @@
         </ion-item>
         <ion-card color="primary"  v-if="orderData?.finish_plan_scheduled" @click="timePlanInfo()">
             <ion-card-content>
-                <small>Запланированое время доставки</small> <b>{{orderData?.finish_plan_scheduled}}</b>
+                ⏰⏰⏰ Запланированный заказ
             </ion-card-content>
         </ion-card>
 

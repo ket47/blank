@@ -6,6 +6,9 @@
 <template>
     <base-layout pageDefaultBackLink="/user" page-title="Бухгалтерия">
         <ion-segment swipe-gesture="true" v-model="activeTab" @ionInput="listTypeChanged($event)">
+            <ion-segment-button value="reports">
+                Баланс
+            </ion-segment-button>
             <ion-segment-button value="ledger">
                 Проводки
             </ion-segment-button>
@@ -13,6 +16,14 @@
                 Отчет
             </ion-segment-button>
         </ion-segment>
+        <div v-if="activeTab=='reports'">
+            <ion-list>
+                <ion-item button @click="reportSupplierBalanceExport()">
+                    <ion-icon slot="start" :src="downloadOutline"/>
+                    <ion-label>Скачать баланс продавцов</ion-label>
+                </ion-item>
+            </ion-list>
+        </div>
         <div v-if="activeTab=='ledger'">
             <ion-list>
                 <ion-item button @click="itemCreate()">
@@ -51,10 +62,12 @@ import {
     addOutline,
     refreshOutline,
     storefrontOutline,
+    downloadOutline
  }                          from "ionicons/icons";
 import LedgerComp           from '@/components/LedgerComp.vue';
 import StatisticsSellerReport from "@/components/StatisticsSellerReport.vue";
 import ItemPicker             from '@/components/ItemPicker.vue'
+import jquery                 from "jquery";
 
 export default {
     components: {
@@ -72,6 +85,7 @@ export default {
             addOutline,
             refreshOutline,
             storefrontOutline,
+            downloadOutline
         }
     },
     data(){
@@ -105,6 +119,21 @@ export default {
             }
             this.pickedStore=item.data
         },
+        async reportSupplierBalanceExport(){
+            try {
+                const request={
+                    output:'xlsx'
+                }
+                const response= await jquery.post(`${this.$heap.state.hostname}Statistics/statSupplierBalanceReport`,request)
+                const reportUrl=`${this.$heap.state.hostname}Statistics/download/${response}/supplierBalance.xlsx`
+                const anchor = document.createElement('a')
+                anchor.href =reportUrl
+                anchor.download='download'
+                anchor.click()
+            } catch (err) {
+                return false;
+            }
+        }
     },
     ionViewDidEnter(){
         this.$refs.ledger.listGet()
