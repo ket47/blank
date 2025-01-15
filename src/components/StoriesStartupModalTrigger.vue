@@ -1,14 +1,12 @@
 <template>
   <div>
-    <stories-modal :story-groups="storyGroups" :start-index="0" :is-open="isOpen" :slide-duration="4000"/>
+    <stories-modal :story-groups="storyGroups" :start-index="0" :is-open="isOpen" :slide-duration="4000" :is-editable="true"/>
   </div>
 </template>
 
 <script>
 import jQuery               from 'jquery';
 import StoriesModal         from "@/components/StoriesModal";
-
-import User    from '@/scripts/User.js';
 
 export default{
   components: {

@@ -20,12 +20,14 @@
 
         <ion-list>
             <ion-item lines="full">
-                <ion-label v-if="orderData.order_id>0" color="medium">
+                <ion-chip  slot="start" color="primary" v-if="orderData?.time_plan.start_plan" @click="timePlanInfo()" >
+                    <ion-icon :icon="flagOutline"></ion-icon>
+                    <ion-label color="dark">{{ arrivalTime }}</ion-label>
+                </ion-chip>
+                
+                <ion-label v-if="orderData.order_id>0" color="medium"></ion-label>
 
-                </ion-label>
-                <ion-label v-else color="medium">
-                Корзина
-                </ion-label>
+                <ion-label v-else color="medium">Корзина</ion-label>
 
                 <ion-chip color="primary" slot="end" v-if="orderData.stage_current_name">
                     <ion-icon :icon="checkmarkOutline"></ion-icon>
@@ -286,10 +288,12 @@ import {
     cardOutline,
     ribbonOutline,
     chatboxEllipsesOutline,
+    flagOutline
 }                       from 'ionicons/icons';
 import CartAddButtons   from '@/components/CartAddButtons.vue';
 import jQuery           from "jquery";
 import Order            from "@/scripts/Order.js"
+import Utils        from '@/scripts/Utils.js'
 export default({
     props:['orderData'],
     components: {
@@ -333,6 +337,7 @@ export default({
             cardOutline,
             ribbonOutline,
             chatboxEllipsesOutline,
+            flagOutline
         };
     },
     data(){
@@ -391,6 +396,12 @@ export default({
             } 
             return buttons;
         },
+        arrivalTime(){
+            return Utils.date.humanize(this.orderData?.time_plan.start_plan + this.orderData?.time_plan.finish_arrival_time, "future")
+        },
+        arrivalScheduled(){
+            return Utils.date.humanize(this.orderData?.time_plan.finish_plan_scheduled, "future")
+        }
     },
     methods:{
         storeOpen(){
@@ -486,7 +497,6 @@ export default({
             }
             return false
         },
-
     }
 })
 </script>
