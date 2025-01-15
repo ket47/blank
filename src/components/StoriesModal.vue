@@ -145,11 +145,11 @@ ion-modal{
             style="max-width: 100%;">
             <swiper-slide v-for="(slideGroup, slideGroupIndex) in groups" :key="slideGroupIndex" >
               <div class="stories">
-                <div class="autoplay-progress">
-                  <div class="progress-container" v-for="story in slideGroup.children" :key="`pr_${story.title}`" >
-                    <div :class="`progress ${story.progressClass}`" :style="`width: ${(story.isActive) ? autoplayProgress : story.progress}%`" ></div>
+                  <div class="autoplay-progress">
+                    <div class="progress-container" v-for="story in slideGroup.children" :key="`pr_${story.title}`" >
+                      <div :class="`progress ${story.progressClass}`" :style="`width: ${(story.isActive) ? autoplayProgress : story.progress}%`" ></div>
+                    </div>
                   </div>
-                </div>
                   <div :class="`story ${(story.isActive) ? 'is-active' : ''}`" v-for="story in slideGroup.children" :key="story.title">
                     <div class="slide-container">
                       <div class="story-toolbar">
@@ -159,7 +159,10 @@ ion-modal{
                           </ion-avatar>
                           <ion-label><b>{{slideGroup.holder_name}}</b></ion-label>
                         </div>
-                        <ion-button @click="closeModal()" fill="clear" color="light"><ion-icon slot="icon-only" :icon="closeOutline" size="large"></ion-icon></ion-button>
+                        <ion-buttons>
+                          <ion-button v-if="story.is_writable && isEditable" @click="closeModal(); editStory(story.post_id)" fill="clear" color="light"><ion-icon slot="icon-only" :icon="settingsSharp" size="large"></ion-icon></ion-button>
+                          <ion-button @click="closeModal()" fill="clear" color="light"><ion-icon slot="icon-only" :icon="closeOutline" size="large"></ion-icon></ion-button>
+                        </ion-buttons>
                       </div>
                       <div class="story-nav">
                           <div @mouseover="action = 'prev'" @touchstart="action = 'prev'" class="prev-story"></div>
@@ -182,6 +185,7 @@ ion-modal{
             </swiper-slide>
         </swiper>
     </ion-modal>
+    <story-edit-modal :is-open="modalEditIsOpen" :post-id="activePostId" @on-close="modalEditIsOpen = false; onChange()"/>
   </div>
 </template>
 
@@ -192,13 +196,16 @@ import {
   IonAvatar,
   IonLabel,
   IonModal,
-  IonButton
+  IonButton,
+  IonButtons
 }                           from "@ionic/vue";
 import {
   closeOutline,
-  chevronForwardOutline
+  chevronForwardOutline,
+  settingsSharp
   }                         from 'ionicons/icons';
 import { Swiper, SwiperSlide } from 'swiper/vue';
+import StoryEditModal         from "@/components/StoryEditModal";
 
 import 'swiper/css/pagination';
 
@@ -207,18 +214,20 @@ export default{
     IonIcon,
     IonModal,
     IonButton,
+    IonButtons,
     IonAvatar,
     IonLabel,
     Swiper,
     SwiperSlide,
+    StoryEditModal
   },
-  emits: ['onClose'],
-  props: ['storyGroups', 'isOpen', 'slideDuration', 'startIndex'],
+  emits: ['onClose', 'onChange'],
+  props: ['storyGroups', 'isOpen', 'slideDuration', 'startIndex', 'isEditable'],
   setup() {
       const closeModal = function(){
           modalController.dismiss();
       };
-      return {  closeModal, closeOutline, chevronForwardOutline};
+      return {  closeModal, closeOutline, chevronForwardOutline, settingsSharp};
   },
   data(){
     return {
@@ -233,6 +242,8 @@ export default{
       action: '',
       actionData: '',
       touchStartTimestamp: 0,
+      modalEditIsOpen: false,
+      activePostId: 0
     };
   },
   methods: {
@@ -336,6 +347,10 @@ export default{
         }
       })
     },
+    editStory(postId){
+      this.modalEditIsOpen = true  
+      this.activePostId = postId  
+    },
     markShown(id){
         try{
             let localShown = JSON.parse(localStorage.storiesShown)
@@ -353,6 +368,9 @@ export default{
       clearTimeout(this.changeTimeout)
       this.setProgress()
       this.startAutoplay()
+    },
+    onChange(){
+      this.$emit('onChange', true)
     },
   },
   watch: {

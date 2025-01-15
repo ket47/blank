@@ -21,8 +21,6 @@
         <ion-text color="dark">{{message}}</ion-text>
       </ion-card-content>
     </ion-card>
-
-
     <ion-list>
       <ion-item>
         <ion-icon :src="trashOutline" color="primary" slot="start"/>
@@ -261,17 +259,6 @@ export default  {
         return "pdisabled";
       }
       return 'pactive';
-    },
-    categoryList(){
-      let categories=[];
-      try{
-        let member_of_ids=this.postItem.member_of_groups.group_ids.split(',');
-        let member_of_names=this.postItem.member_of_groups.group_names.split(',');
-        for( let i in member_of_ids){
-          categories.push({group_id:member_of_ids[i],group_name:member_of_names[i]})
-        }
-      }catch{/** */}
-      return categories;
     }
   },
   created(){

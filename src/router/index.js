@@ -259,15 +259,13 @@ const routes = [
         component: () => import('@/views/admin/AnalyticsView.vue')
       },
 
-
-
-
-
-
-
       {
         path: '/wall/post-edit-:id',
         component: () => import('@/views/PostEdit.vue')
+      },
+      {
+        path: '/stories/story-edit-:id',
+        component: () => import('@/components/StoryEditModal.vue')
       },
   ]
   },

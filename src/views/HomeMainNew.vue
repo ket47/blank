@@ -45,8 +45,8 @@
   <base-layout :pageLogo="mainLogo" hideBackLink="true" :contentOnScroll="onScroll">
     <div ref="topMarker"></div>
     <user-address-widget :deliveryTime="primaryDeliveryTime" />
-    <home-slider/>
-    <stories-slider/>
+    <home-slider :is-editable="isAdmin" :is-promoted="true"/>
+    <stories-slider :is-editable="isAdmin" :is-promoted="true"/>
     <!-- <home-primary-category-widget @deliveryTimeGet="deliveryTime=>{primaryDeliveryTime=deliveryTime}"/> -->
     <div class="special-grid">
       <home-promo-counter />
@@ -89,6 +89,7 @@ import StoriesSlider              from "@/components/StoriesSlider";
 import standartLogo               from "@/assets/icons/tezkel_logo_text.svg";
 
 import Utils                      from '@/scripts/Utils.js'
+import User                     from '@/scripts/User.js';
 
 import {
   IonIcon,
@@ -143,6 +144,7 @@ export default {
       hiddenCount:null,
       storeSliderLoadQueue: 100,
       mounted_at:0,
+      isAdmin: false
     }
   },
   computed: {
@@ -152,6 +154,14 @@ export default {
       }
       return this.$heap.state.user.location_current.location_address
     }
+  },
+  mounted(){
+    this.isAdmin = User.isAdmin()
+  },
+  created(){
+    this.$topic.on('userGet',user=>{
+      this.isAdmin = User.isAdmin()
+    })
   },
   methods: {
     async listLoadMore(ev){

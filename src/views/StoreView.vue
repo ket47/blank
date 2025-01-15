@@ -336,6 +336,9 @@ ion-chip .active-chip {
         </div>
     </div>
 
+    <home-slider :is-editable="storeItem.is_writable"/>
+    <stories-slider :holder-id="storeId" group-by="post_id" :is-editable="storeItem.is_writable"/>
+
     <div v-if="storeGroupsFiltered" ref="groupFixedBlock" class="group-fixed-block hidden-block">
       <ion-segment v-model="groupSelectedParentId" scrollable style="scrollbar-width: none;" class="groups-container">
         <ion-segment-button
@@ -473,6 +476,8 @@ import Utils              from "@/scripts/Utils.js";
 import ReactionThumbs     from '@/components/ReactionThumbs.vue'
 import ReactionComment    from '@/components/ReactionComment.vue'
 import ReactionShare      from '@/components/ReactionShare.vue'
+import StoriesSlider      from "@/components/StoriesSlider";
+import HomeSlider         from "@/components/HomeSlider";
 
 export default{
   components: {
@@ -500,6 +505,8 @@ export default{
     ReactionThumbs,
     ReactionComment,
     ReactionShare,
+    StoriesSlider,
+    HomeSlider
   },
   setup() {
     return {
