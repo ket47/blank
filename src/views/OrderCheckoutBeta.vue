@@ -31,13 +31,7 @@
 <template>
 <base-layout :pageTitle="`Оформление заказа из ${order?.store?.store_name||''}`" :pageDefaultBackLink="`/order/order-${order_id}`" ref="page">
     <div v-if="is_checkout_data_loaded">
-
-
         <ion-list lines="none" v-if="isNoFatalError">
-
-
-
-
             <ion-item-divider style="margin-top:0px;box-shadow:none;">Доставка</ion-item-divider>
             <ion-radio-group v-model="deliveryType">
                 <ion-item button detail="false" @click="tariffRuleSet(deliveryByCourierRule)" v-if="deliveryByCourierRule">
@@ -58,21 +52,27 @@
             <div v-if="tariffRule?.routePlan" class="ion-padding-top ion-padding-bottom">
                 <ion-card v-if="tariffRule.routePlan?.start_plan_mode=='scheduled'" color="light">
                     <ion-card-content>
-                        <p>Продавец или курьерская служба уже не работают.</p> <p>Вы можете выбрать время доставки.</p>
+                        <div style="display:grid;grid-template-columns:30% 70%">
+                            <div><img src="../assets/icons/sleeping_wolf.png" style="height:60px"/></div>
+                            <p>Получить заказ в ближайшее время не удастся. <br/> Выберите когда вам удобно.</p>
+                        </div>
                     </ion-card-content>
                 </ion-card>
                 <div></div>
                 <ion-item>
                     <ion-segment mode="ios" v-model="routePlanMode">
                         <ion-segment-button v-if="tariffRule.routePlan?.start_plan_mode=='inited'" value="inited" @click="deliveryFinishScheduled=null">
+                            <ion-icon :icon="rocketOutline"></ion-icon>
                             <ion-label>Привезти сразу</ion-label>
                             <span>как можно скорее</span>
                         </ion-segment-button>
                         <ion-segment-button v-else-if="tariffRule.routePlan?.start_plan_mode=='awaited'" value="awaited" @click="deliveryFinishScheduled=null">
+                            <ion-icon :icon="timeOutline"></ion-icon>
                             <ion-label>Подождать</ion-label>
                             <span>заказ в очереди</span>
                         </ion-segment-button>
                         <ion-segment-button value="scheduled" @click="datetimePick()">
+                            <ion-icon :icon="alarmOutline"></ion-icon>
                             <ion-label><b>Запланировать</b></ion-label>
                             <span v-if="routePlanLocal">{{routePlanLocal}}</span>
                             <span v-else>выберите день и время</span>
@@ -205,7 +205,10 @@
         </ion-card>
 
         <ion-button v-if="!isNoFatalError" expand="block" @click="$router.replace('/order/order-'+order_id)">Назад</ion-button>
-        <ion-button v-else-if="routePlanMode=='scheduled' && !deliveryFinishScheduled" expand="block" @click="datetimePick()" color="medium">Выбрать время</ion-button>
+        <ion-button v-else-if="routePlanMode=='scheduled' && !deliveryFinishScheduled" expand="block" @click="datetimePick()" color="medium">
+            <ion-icon :icon="alarmOutline" slot="start"></ion-icon>
+            Выбрать время
+        </ion-button>
         <ion-button v-else-if="paymentType=='use_card' || paymentType=='use_card_recurrent'" expand="block" @click="proceed()" :disabled="checkoutError">Оплатить заказ</ion-button>
         <ion-button v-else expand="block" @click="proceed()" :disabled="checkoutError">Заказать</ion-button>
     </div>
@@ -240,6 +243,8 @@ import {
     rocketOutline,
     documentTextOutline,
     addOutline,
+    alarmOutline,
+    timeOutline,
     }                           from 'ionicons/icons';
 import { 
     alertController,
@@ -307,7 +312,9 @@ export default({
             rocketOutline,
             documentTextOutline,
             addOutline,
-            };
+            alarmOutline,
+            timeOutline,
+        };
     },
     data(){
         return {

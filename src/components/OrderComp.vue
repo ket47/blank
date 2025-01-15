@@ -12,6 +12,12 @@
             <ion-icon v-else slot="start" :icon="storefrontOutline"></ion-icon>
             <ion-label>{{orderData?.store?.store_name}}</ion-label>
         </ion-item>
+        <ion-card color="primary"  v-if="orderData?.finish_plan_scheduled" @click="timePlanInfo()">
+            <ion-card-content>
+                ⏰⏰⏰ Запланированный заказ
+            </ion-card-content>
+        </ion-card>
+
         <ion-list>
             <ion-item lines="full">
                 <ion-chip  slot="start" color="primary" v-if="orderData?.time_plan.start_plan" @click="timePlanInfo()" >
