@@ -108,7 +108,7 @@
           <ion-card @click="$router.replace(`product-edit-${option.product_id}?refreshOptions=1`)" v-for="option in optionData.children" :key="option.product_id" :color="productItem.product_id==option.product_id?'primary':''">
             <ion-card-content>
               <div v-if="productItem.product_id==option.product_id">
-                <ion-item :color="productItem.deleted_at?'danger':''">
+                <ion-item :color="productItem.deleted_at?'danger':'light'">
                   <ion-input label="Вариант*" label-placement="stacked" placeholder="напишите вариант" name="product_option" v-model="productItem.product_option"/>
                 </ion-item>
                 <ion-item v-if="productItem.image_hash">

@@ -68,7 +68,7 @@ export default {
             }
         },
         async itemDelete(tariff_id){
-            if(!confirm("Вы уверенны")){
+            if(!confirm("Вы уверены")){
                 return
             }
             let request={

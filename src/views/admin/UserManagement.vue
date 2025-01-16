@@ -414,7 +414,7 @@ export default  {
       }
     },
     async itemDelete( is_deleted ){
-      if(!confirm("Вы уверенны?")){
+      if(!confirm("Вы уверены?")){
         return
       }
       const remoteFunction=is_deleted?'itemDelete':'itemUnDelete'

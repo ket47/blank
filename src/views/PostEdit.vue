@@ -309,7 +309,7 @@ export default  {
     },
     async itemCreate(){
       const draft={
-        post_title:'Черновик'
+        post_title:''
       }
       try{
         const post_id=await jQuery.post(`${this.$heap.state.hostname}Post/itemCreate`, draft)

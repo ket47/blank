@@ -143,7 +143,7 @@ export default {
             } catch{/** */}
         },
         async itemDelete(card_id){
-            if(!confirm("Вы уверенны?")){
+            if(!confirm("Вы уверены?")){
                 return
             }
             const request={

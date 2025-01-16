@@ -395,7 +395,7 @@ export default {
             }
         },
         async itemDelete(){
-            if(!confirm('Вы уверенны?')){
+            if(!confirm('Вы уверены?')){
                 return
             }
             const request={

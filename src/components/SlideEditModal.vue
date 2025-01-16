@@ -357,7 +357,7 @@ export default  {
     },
     async itemCreate(){
       const draft={
-        post_title:'Черновик',
+        post_title:'',
         post_type:	"slide"
       }
       try{
@@ -453,7 +453,7 @@ export default  {
       if(!this.postItem) return true;
       if(this.postItem.is_disabled == 0) return true;
       const actionSheet = await actionSheetController.create({
-        header: 'Слайд будет удалён. Вы уверенны?',
+        header: 'Слайд будет удалён. Вы уверены?',
         buttons: [
           {
             text: 'Да',

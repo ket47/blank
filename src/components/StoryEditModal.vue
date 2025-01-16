@@ -392,7 +392,7 @@ export default  {
     },
     async itemCreate(){
       const draft={
-        post_title:'Черновик',
+        post_title:'',
         post_type:	"story"
       }
       try{
@@ -498,7 +498,7 @@ export default  {
       if(!this.postItem) return true;
       if(this.postItem.is_disabled == 0) return true;
       const actionSheet = await actionSheetController.create({
-        header: 'История будет удалена. Вы уверенны?',
+        header: 'История будет удалена. Вы уверены?',
         buttons: [
           {
             text: 'Да',

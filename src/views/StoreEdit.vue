@@ -982,7 +982,7 @@ export default  {
       }
     },
     async tariffDelete(tariff_id){
-      if(!confirm("Вы уверенны?")){
+      if(!confirm("Вы уверены?")){
         return
       }
       const request={
