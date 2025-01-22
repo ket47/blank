@@ -138,8 +138,8 @@
                     <ion-icon :icon="personOutline" color="light"></ion-icon>
                   </ion-chip>
                   <ion-chip @click="popovers.link=1">
-                    <ion-label v-if="postItem?.post_route" color="primary">Товар</ion-label>
-                    <ion-label v-else color="light">Ссылка</ion-label>
+                    <ion-label v-if="postItem?.post_route" color="primary">Ссылка</ion-label>
+                    <ion-label v-else color="light">Нет ссылки</ion-label>
                     <ion-icon :icon="linkOutline" color="light"></ion-icon>
                   </ion-chip>
                   <ion-chip @click="popovers.date=1">
