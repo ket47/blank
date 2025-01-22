@@ -338,8 +338,8 @@ ion-chip .active-chip {
 
     <div v-if="storeItem.store_id">
       <!-- load after store is done-->
-      <home-slider :is-editable="storeItem.is_writable"/>
-      <stories-slider :holder-id="storeId" group-by="post_id" :is-editable="storeItem.is_writable"/>
+      <home-slider :holderId="storeItem.store_id" :is-editable="storeItem.is_writable"/>
+      <stories-slider :holderId="storeItem.store_id" group-by="post_id" :is-editable="storeItem.is_writable"/>
     </div>
 
     <div v-if="storeGroupsFiltered" ref="groupFixedBlock" class="group-fixed-block hidden-block">

@@ -75,6 +75,7 @@
         <ion-icon :icon="chevronUpOutline"></ion-icon>
       </ion-fab-button>
     </ion-fab>
+    <stories-startup-modal-trigger/>
   </base-layout>
 </template>
 
@@ -85,6 +86,7 @@ import HomePromoCounter           from "@/components/HomePromoCounter";
 import UserAddressWidget          from "@/components/UserAddressWidget";
 import ProductListHomeInfinite    from "@/components/ProductListHomeInfinite";
 import StoriesSlider              from "@/components/PostStoriesSlider";
+import StoriesStartupModalTrigger from "@/components/PostStoriesStartupModalTrigger.vue"
 
 import standartLogo               from "@/assets/icons/tezkel_logo_text.svg";
 
@@ -134,7 +136,8 @@ export default {
     ProductListHomeInfinite,
     IonInfiniteScroll, 
     IonInfiniteScrollContent,
-    StoriesSlider
+    StoriesSlider,
+    StoriesStartupModalTrigger
   },
   data(){
     return {

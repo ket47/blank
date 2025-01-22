@@ -101,6 +101,7 @@ export default defineComponent({
     };
   },
   mounted(){
+    console.log(this.holderId)
     this.listGet();
   },
   methods: {
