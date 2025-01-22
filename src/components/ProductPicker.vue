@@ -9,7 +9,7 @@
       </ion-toolbar>
   </ion-header>
   <ion-content>
-    <ion-searchbar v-model="query" :debounce="100" @ionChange="listGet()" />
+    <ion-searchbar v-model="query" :debounce="300" @ionInput="listGet()" />
     <ion-list v-if="productList">
         <ion-item v-for="product in productList" :key="product.product_id" button detail @click="itemPick(product.product_id)">
             <ion-img slot="start" :src="`${$heap.state.hostname}image/get.php/${product.image_hash}.50.50.webp`"/>
