@@ -46,7 +46,7 @@
     <div ref="topMarker"></div>
     <user-address-widget :deliveryTime="primaryDeliveryTime" />
     <home-slider :is-editable="isAdmin" :is-promoted="true"/>
-    <stories-slider :is-editable="isAdmin" :is-promoted="true"/>
+    <stories-slider :is-editable="isAdmin"/>
     <!-- <home-primary-category-widget @deliveryTimeGet="deliveryTime=>{primaryDeliveryTime=deliveryTime}"/> -->
     <div class="special-grid">
       <home-promo-counter />

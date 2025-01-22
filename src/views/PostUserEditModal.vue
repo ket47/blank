@@ -315,7 +315,7 @@ import ImageTileComp  from '@/components/ImageTileComp.vue'
 import jQuery         from "jquery";
 
 import ItemPicker     from '@/components/ItemPicker.vue'
-import ProductPicker     from '@/components/ProductPicker.vue'
+import ProductPicker  from '@/components/ProductPicker.vue'
 
 import User           from "@/scripts/User.js";
 
@@ -424,7 +424,7 @@ export default  {
         const request={
           image_id:post_image.image_id
         }
-        this.$flash("Удаляем предидущее фото")
+        this.$flash("Удаляем предыдущее фото")
         await jQuery.post(`${this.$heap.state.hostname}Image/itemDelete`,request)
       } catch{/** */}
     },

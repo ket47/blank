@@ -74,7 +74,7 @@ export default {
         async listGet(){
             const request={
                 name_query:this.query,
-                name_query_fields:'product_name,product_article',
+                name_query_fields:'product_name,product_code',
                 store_id:this.store_id,
                 limit:10
             }

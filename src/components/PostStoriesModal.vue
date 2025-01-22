@@ -155,7 +155,7 @@ ion-modal{
                       <div class="story-toolbar">
                         <div @click="(slideGroup.holder == 'store') ? go(`/catalog/store-${slideGroup.holder_id}`) : null">
                           <ion-avatar v-if="slideGroup.avatar_hash">
-                            <img :src="`${$heap.state.hostname}image/get.php/${slideGroup.avatar_hash}.50.50.webp`" />
+                            <img :src="`${$heap.state.hostname}image/get.php/${slideGroup.avatar_hash}.150.150.webp`" />
                           </ion-avatar>
                           <ion-label><b>{{slideGroup.holder_name}}</b></ion-label>
                         </div>
