@@ -6,7 +6,7 @@
 
 <script>
 import jQuery               from 'jquery';
-import StoriesModal         from "@/components/StoriesModal";
+import StoriesModal         from "@/components/PostStoriesModal";
 
 export default{
   components: {

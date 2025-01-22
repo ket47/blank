@@ -336,8 +336,11 @@ ion-chip .active-chip {
         </div>
     </div>
 
-    <home-slider :is-editable="storeItem.is_writable"/>
-    <stories-slider :holder-id="storeId" group-by="post_id" :is-editable="storeItem.is_writable"/>
+    <div v-if="storeItem.store_id">
+      <!-- load after store is done-->
+      <home-slider :is-editable="storeItem.is_writable"/>
+      <stories-slider :holder-id="storeId" group-by="post_id" :is-editable="storeItem.is_writable"/>
+    </div>
 
     <div v-if="storeGroupsFiltered" ref="groupFixedBlock" class="group-fixed-block hidden-block">
       <ion-segment v-model="groupSelectedParentId" scrollable style="scrollbar-width: none;" class="groups-container">
@@ -476,7 +479,7 @@ import Utils              from "@/scripts/Utils.js";
 import ReactionThumbs     from '@/components/ReactionThumbs.vue'
 import ReactionComment    from '@/components/ReactionComment.vue'
 import ReactionShare      from '@/components/ReactionShare.vue'
-import StoriesSlider      from "@/components/StoriesSlider";
+import StoriesSlider      from "@/components/PostStoriesSlider";
 import HomeSlider         from "@/components/HomeSlider";
 
 export default{
@@ -787,10 +790,10 @@ export default{
     this.itemGet()
     this.productListGet()
   },
-  watch: {
-    $route(currentRoute) {
-      this.storeId = currentRoute.params.id;
-    },
-  },
+  // watch: {
+  //   $route(currentRoute) {
+  //     this.storeId = currentRoute.params.id;
+  //   },
+  // },
 }
 </script>

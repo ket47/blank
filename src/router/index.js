@@ -258,16 +258,16 @@ const routes = [
         path: '/admin/analytics',
         component: () => import('@/views/admin/AnalyticsView.vue')
       },
-
+      //wall tab mustakbel
       {
         path: '/wall/post-edit-:id',
         component: () => import('@/views/PostEdit.vue')
       },
-      {
-        path: '/stories/story-edit-:id',
-        component: () => import('@/components/StoryEditModal.vue')
-      },
   ]
+  },
+  {
+    path: '/wall/post-user-edit-:id',
+    component: () => import('@/views/PostUserEditModal.vue')
   },
   {
     path: '/modal/store-dmethods-:id',

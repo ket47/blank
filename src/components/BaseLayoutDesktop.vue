@@ -65,7 +65,7 @@ import {
 import FooterDesktop  from "@/components/FooterDesktop";
 import CartHeader     from "@/components/CartHeader";
 import Order          from '@/scripts/Order.js'
-import StoriesStartupModalTrigger   from "@/components/StoriesStartupModalTrigger.vue"
+import StoriesStartupModalTrigger   from "@/components/PostStoriesStartupModalTrigger.vue"
 
 export default {
   setup() {

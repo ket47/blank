@@ -106,15 +106,18 @@ export default {
             }
         },
         async storesGet(){
-            const request={
+            let request={
                 name_query:this.query,
                 name_query_fields:'store_name',
                 limit:10
             }
+            if( this.filter ){
+                request=Object.assign(request,this.filter)
+            }
             try{
                 let result=await jQuery.post(`${this.$heap.state.hostname}Store/listGet`,request)
                 this.itemList=result.map(item=>{
-                    item.name=`продавец ${item.store_name}`;
+                    item.name=`продавец ${item.store_name??item.store_name_new}`;
                     item.id=item.store_id
                     return item
                     })

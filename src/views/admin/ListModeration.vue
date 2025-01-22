@@ -85,11 +85,13 @@
                     </ion-item>
                     <div v-for="item in listComputed" :key="item.item_id">
                         <ion-item button detail @click="itemEdit(item)" lines="none">
-                            <ion-thumbnail slot="start" :class="item.class" v-if="item.image_hash">
+                            <!-- <ion-thumbnail>
                                 <ion-img :src="`${$heap.state.hostname}image/get.php/${item.image_hash}.150.150.webp`"/>
-                            </ion-thumbnail>
+                            </ion-thumbnail> -->
+
+                            <ion-img v-if="item.image_hash" slot="start" :class="item.class" :src="`${$heap.state.hostname}image/get.php/${item.image_hash}.50.50.webp`"/>
                             <ion-text>{{item.item_name}}</ion-text>
-                            <ion-label slot="end">{{item.date_dmy}}</ion-label>
+                            <ion-label slot="end">до {{item.date_dmy}}</ion-label>
                         </ion-item>
                     </div>
                 </ion-list>
@@ -341,7 +343,7 @@ export default {
                 this.imageEdit(item)
             }
             if( this.moderationType=='posts' ){
-                this.$go('/wall/post-edit-'+item.post_id)
+                this.$go('/wall/post-user-edit-'+item.post_id)
             }
             if( this.moderationType=='products' ){
                 this.$go('/catalog/product-edit-'+item.product_id)

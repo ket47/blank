@@ -3,7 +3,7 @@
 </style>
 <template>
   <ion-header>
-      <ion-toolbar color="secondary">
+      <ion-toolbar>
           <ion-title>Выбрать товар</ion-title>
           <ion-icon :icon="closeOutline" @click="closeModal();" slot="end" size="large"></ion-icon>
       </ion-toolbar>

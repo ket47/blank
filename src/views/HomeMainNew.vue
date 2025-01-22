@@ -84,12 +84,12 @@ import StoreListNew               from "@/components/StoreListNew";
 import HomePromoCounter           from "@/components/HomePromoCounter";
 import UserAddressWidget          from "@/components/UserAddressWidget";
 import ProductListHomeInfinite    from "@/components/ProductListHomeInfinite";
-import StoriesSlider              from "@/components/StoriesSlider";
+import StoriesSlider              from "@/components/PostStoriesSlider";
 
 import standartLogo               from "@/assets/icons/tezkel_logo_text.svg";
 
 import Utils                      from '@/scripts/Utils.js'
-import User                     from '@/scripts/User.js';
+import User                       from '@/scripts/User.js';
 
 import {
   IonIcon,

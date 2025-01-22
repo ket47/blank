@@ -14,19 +14,18 @@
     }"
     class="home-swiper">
     
-   
-    <swiper-slide v-for="slide in slides" :key="slide.title" >
-      <img :src="`${$heap.state.hostname}image/get.php/${slide.image_hash}.1000.1000.webp`" class="home_slide_img" @click="go(slide.post_route)"/>
-      <ion-button size="small" v-if="isEditable" color="primary" @click="editSlide(slide.post_id)"  style="position: absolute; top: 10px; right: 10px;z-index: 10">
-        <ion-icon  slot="icon-only" :icon="settingsOutline"></ion-icon>
-      </ion-button>
+    <swiper-slide  v-if="isEditable"  @click="editSlide()" class="add-post">
+      <ion-icon slot="start"  :icon="addOutline"></ion-icon>
+      Добавить слайд
+    </swiper-slide>
+    <swiper-slide v-for="slide in slides" :key="slide.title">
+      <img v-if="slide.is_published==0 || slide.is_disabled==1" style="filter: grayscale(1);" :src="`${$heap.state.hostname}image/get.php/${slide.image_hash}.1000.1000.webp`" class="home_slide_img" @click="go(slide.post_route)"/>
+      <img v-else :src="`${$heap.state.hostname}image/get.php/${slide.image_hash}.1000.1000.webp`" class="home_slide_img" @click="go(slide.post_route)"/>
+      <div v-if="isEditable" color="light" @click="editSlide(slide.post_id)" style="position: absolute; top: 10px; right: 10px;z-index: 10">
+        <ion-icon  slot="icon-only" :icon="settingsSharp" color="primary"></ion-icon>
+      </div>
     </swiper-slide>
   </swiper>
-  <ion-button v-if="isEditable" fill="outline" expand="block" color="medium" @click="editSlide()" style="--border-radius: 10px; margin: 5px 10px;">
-    <ion-icon slot="start"  :icon="addOutline"></ion-icon>
-    Добавить слайд
-  </ion-button>
-  <slide-edit-modal :is-open="modalEditIsOpen" :post-id="activePostId" @on-close="closeEditModal"/>
 </template>
 
 <style scoped>
@@ -56,59 +55,41 @@
   transform: scale(0.9);
 }
 .add-post{
-  min-width: 100px;
-  display: grid;
-  padding: 1px;
-  align-self: center;
-}
-.add-post > div{
-  width: 100%;
+  border-radius: 10px;
+  background-color:var(--ion-color-light);
+  min-height:120px;
   height: 100%;
   display: flex;
-  flex-direction: column;
-  align-items: center;
   justify-content: center;
-  background: rgba(var(--ion-color-medium-rgb), 0.08);
-  color: var(--ion-color-medium-shade);
-  border-radius: 10px;
-  border: 2px solid white;
-  box-shadow:  0px 0px 0px 1px var(--ion-color-medium);
-  padding: 1em;
-}
-.add-post ion-icon{
-  font-size: 2.3em;
+  align-items: center;
 }
 </style>
 
 
 <script>
-import jQuery from "jquery";
 import {
   IonIcon,
-  IonButton,
-}                           from "@ionic/vue";
-import { defineComponent, } from 'vue';
-import { Autoplay }         from 'swiper';
-import {  Swiper, SwiperSlide }  from 'swiper/vue';
-
+}                               from "@ionic/vue";
 import {
   addOutline,
-  settingsOutline
-}                   from 'ionicons/icons';
+  settingsSharp
+}                               from 'ionicons/icons';
+import { defineComponent, }     from 'vue';
+import { Autoplay }             from 'swiper';
+import { Swiper, SwiperSlide }  from 'swiper/vue';
+
+import jQuery                   from "jquery";
 import 'swiper/css/bundle';
-import SlideEditModal         from "@/components/SlideEditModal";
 
 export default defineComponent({
   components: {
     Swiper,
     SwiperSlide,
-    IonButton,
     IonIcon,
-    SlideEditModal
   },
   setup() {
     return {
-      modules: [Autoplay], addOutline, settingsOutline
+      modules: [Autoplay], addOutline, settingsSharp
     };
   },
   props: ['holderId','isEditable','isPromoted'],
@@ -149,8 +130,7 @@ export default defineComponent({
         this.$go(link)
       },
       editSlide(postId = 0){
-        this.activePostId = postId
-        this.modalEditIsOpen = true  
+        this.$go(`/wall/post-user-edit-${postId}`)
       },
       closeEditModal(){
         this.modalEditIsOpen = false; 

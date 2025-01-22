@@ -84,7 +84,7 @@ import {
 import CartHeader           from "@/components/CartHeader";
 import { defineComponent }  from "@vue/runtime-core";
 import TezkelLoader         from "@/components/TezkelLoader.vue"
-import StoriesStartupModalTrigger         from "@/components/StoriesStartupModalTrigger.vue"
+import StoriesStartupModalTrigger         from "@/components/PostStoriesStartupModalTrigger.vue"
 
 import {
   arrowBackOutline,

@@ -23,6 +23,10 @@
     </ion-card>
     <ion-list>
       <ion-item>
+        <ion-icon :src="checkmark" color="primary" slot="start"/>
+        <ion-toggle v-model="is_published" @ionChange="itemPublish($event.target.checked?1:0)">Опубликован</ion-toggle>
+      </ion-item>
+      <ion-item>
         <ion-icon :src="trashOutline" color="primary" slot="start"/>
         <ion-toggle v-model="is_deleted" color="danger" @ionChange="itemDelete($event.target.checked?1:0)">Удален</ion-toggle>
       </ion-item>
@@ -157,6 +161,7 @@ import {
   ribbonOutline,
   eyeOffOutline,
   storefrontOutline,
+  checkmark,
 }                     from 'ionicons/icons'
 import imageTileComp  from '@/components/ImageTileComp.vue'
 import jQuery         from "jquery";
@@ -285,13 +290,14 @@ export default  {
       }
     },
     itemImageParamsSet(){
-        if(this.postItem.post_type){
-          for(let type of this.postTypes){
-            if(type.post_type==this.postItem.post_type){
-              this.imageParams={image_width:type.image_width,image_height:type.image_height}
-            }
-          }
-        }
+      this.imageParams={post_type:this.postType}
+        // if(this.postItem.post_type){
+        //   for(let type of this.postTypes){
+        //     if(type.post_type==this.postItem.post_type){
+        //       this.imageParams={image_width:type.image_width,image_height:type.image_height}
+        //     }
+        //   }
+        // }
     },
     itemPrepare(postItem){
       if(postItem.started_at){

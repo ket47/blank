@@ -185,7 +185,6 @@ ion-modal{
             </swiper-slide>
         </swiper>
     </ion-modal>
-    <story-edit-modal :is-open="modalEditIsOpen" :post-id="activePostId" @on-close="modalEditIsOpen = false; onChange()"/>
   </div>
 </template>
 
@@ -198,14 +197,13 @@ import {
   IonModal,
   IonButton,
   IonButtons
-}                           from "@ionic/vue";
+}                               from "@ionic/vue";
 import {
   closeOutline,
   chevronForwardOutline,
   settingsSharp
-  }                         from 'ionicons/icons';
-import { Swiper, SwiperSlide } from 'swiper/vue';
-import StoryEditModal         from "@/components/StoryEditModal";
+  }                             from 'ionicons/icons';
+import { Swiper, SwiperSlide }  from 'swiper/vue';
 
 import 'swiper/css/pagination';
 
@@ -219,7 +217,6 @@ export default{
     IonLabel,
     Swiper,
     SwiperSlide,
-    StoryEditModal
   },
   emits: ['onClose', 'onChange'],
   props: ['storyGroups', 'isOpen', 'slideDuration', 'startIndex', 'isEditable'],
@@ -348,8 +345,7 @@ export default{
       })
     },
     editStory(postId){
-      this.modalEditIsOpen = true  
-      this.activePostId = postId  
+      this.$go(`/wall/post-user-edit-${postId}`)
     },
     markShown(id){
         try{
