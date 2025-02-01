@@ -208,18 +208,18 @@
           </ion-item>
           <ion-item>
             <ion-input
-              v-model="user_email"
-              type="email"
+              v-model="user_birthday"
+              type="date"
               placeholder=""
               required
-              label="Электронная почта (желательно заполнить)"
+              label="День рождения"
               label-placement="stacked"
             ></ion-input>
           </ion-item>
           <ion-item>
             <ion-input
-              v-model="user_birthday"
-              type="date"
+              v-model="user_email"
+              type="email"
               placeholder=""
               required
               label="День рождения (желательно заполнить)"
