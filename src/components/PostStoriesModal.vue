@@ -258,7 +258,7 @@ export default{
       clearInterval(this.changeTimeout)
       this.autoplayProgress = progress
       const self = this
-      const autoplaySteps = 50
+      const autoplaySteps = 120
       const totalWidth = self.slideDurationfalse;
       this.changeTimeout = setInterval(function() {
         if(self.autoplayProgress >= 100){
