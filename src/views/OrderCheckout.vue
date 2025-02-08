@@ -11,47 +11,87 @@
         width:24px;
         height: auto;
     }
+    ion-segment{
+        --background: var(--ion-color-light);
+    }
+    ion-segment ion-segment-button{
+        padding: 10px;
+        --color: var(--ion-color-medium);
+        --color-checked: #fff;
+        --indicator-color: var(--ion-color-primary-shade);
+    }
+    ion-segment ion-segment-button ion-label{
+        font-weight: bold;
+        --color:#000
+    }
+    ion-segment ion-segment-button span{
+        font-size:0.8em;
+    }
 </style>
 <template>
-<base-layout :pageTitle="`Оформление заказа из ${order?.store?.store_name||''}`" :pageDefaultBackLink="`/order/order-${order_id}`">
+<base-layout :pageTitle="`Оформление заказа из ${order?.store?.store_name||''}`" :pageDefaultBackLink="`/order/order-${order_id}`" ref="page">
     <div v-if="is_checkout_data_loaded">
-
-
-        <ion-list lines="none">
-            <ion-item-divider v-if="storeIsReady" style="margin-top:0px;box-shadow:none;">Адрес доставки заказа</ion-item-divider>
-            <order-checkout-address :deliveryTime="deliveryTime" deliveryAddressOnly="1" showComment="1" :nextRoute="`/modal/order-checkout-${order_id}`"></order-checkout-address>
-            <!-- <ion-item-divider>Заказ #{{order?.order_id}} из "{{order?.store?.store_name}}"</ion-item-divider>
-            
-            <ion-item>
-                <ion-checkbox v-model="storeCorrectionAllow">
-                    Разрешить изменять заказ
-                </ion-checkbox>
-            </ion-item> -->
-
-            <ion-item-divider v-if="storeIsReady">Способы доставки</ion-item-divider>
+        <ion-list lines="none" v-if="isNoFatalError">
+            <ion-item-divider style="margin-top:0px;box-shadow:none;">Доставка</ion-item-divider>
             <ion-radio-group v-model="deliveryType">
                 <ion-item button detail="false" @click="tariffRuleSet(deliveryByCourierRule)" v-if="deliveryByCourierRule">
-                    <ion-icon :icon="rocketOutline" slot="start" color="medium"></ion-icon>
+                    <!-- <ion-icon :icon="rocketOutline" slot="start" color="medium"></ion-icon> -->
                     <ion-radio value="delivery_by_courier">Доставит <b>{{$heap.state.settings?.app_title}}</b></ion-radio>
                 </ion-item>
                 <ion-item button detail="false" @click="tariffRuleSet(deliveryByStoreRule)" v-if="deliveryByStoreRule">
-                    <ion-icon :icon="rocketOutline" slot="start" color="medium"></ion-icon>
-                    <ion-radio value="delivery_by_store">Доставит <b>{{order?.store?.store_name}}</b></ion-radio>
+                    <!-- <ion-icon :icon="rocketOutline" slot="start" color="medium"></ion-icon> -->
+                    <ion-radio value="delivery_by_store">
+                        Доставит <b>{{order?.store?.store_name}}</b> <a @click.stop="$go(`/modal/store-dmethods-${order?.store?.store_id}`)">(условия)</a>
+                    </ion-radio>
                 </ion-item>
                 <ion-item button detail="false" @click="tariffRuleSet(pickupByCustomerRule)" v-if="pickupByCustomerRule">
-                    <ion-icon :icon="storefrontOutline" slot="start" color="medium"></ion-icon>
+                    <!-- <ion-icon :icon="storefrontOutline" slot="start" color="medium"></ion-icon> -->
                     <ion-radio value="pickup_by_customer">Самовывоз</ion-radio>
                 </ion-item>
             </ion-radio-group>
-            <ion-item  v-if="deliveryType=='delivery_by_store'" detail="" @click="$go(`/modal/store-dmethods-${order?.store?.store_id}`)">
-                <ion-text style="font-size:0.9em">
+            <div v-if="tariffRule?.routePlan" class="ion-padding-top ion-padding-bottom">
+                <ion-card v-if="tariffRule.routePlan?.start_plan_mode=='scheduled'" color="light">
+                    <ion-card-content>
+                        <div style="display:grid;grid-template-columns:30% 70%">
+                            <div><img src="../assets/icons/sleeping_wolf.png" style="height:60px"/></div>
+                            <p>Получить заказ в ближайшее время не удастся. <br/> Выберите когда вам удобно.</p>
+                        </div>
+                    </ion-card-content>
+                </ion-card>
+                <div></div>
+                <ion-item>
+                    <ion-segment mode="ios" v-model="routePlanMode">
+                        <ion-segment-button v-if="tariffRule.routePlan?.start_plan_mode=='inited'" value="inited" @click="deliveryFinishScheduled=null">
+                            <ion-icon :icon="rocketOutline"></ion-icon>
+                            <ion-label>Привезти сразу</ion-label>
+                            <span>как можно скорее</span>
+                        </ion-segment-button>
+                        <ion-segment-button v-else-if="tariffRule.routePlan?.start_plan_mode=='awaited'" value="awaited" @click="deliveryFinishScheduled=null">
+                            <ion-icon :icon="timeOutline"></ion-icon>
+                            <ion-label>Подождать</ion-label>
+                            <span>заказ в очереди</span>
+                        </ion-segment-button>
+                        <ion-segment-button value="scheduled" @click="datetimePick()">
+                            <ion-icon :icon="alarmOutline"></ion-icon>
+                            <ion-label><b>Запланировать</b></ion-label>
+                            <span v-if="routePlanLocal">{{routePlanLocal}}</span>
+                            <span v-else>выберите день и время</span>
+                        </ion-segment-button>
+                    </ion-segment>
+                </ion-item>
+            </div>
+            <order-checkout-address v-if="deliveryType=='delivery_by_store' || deliveryType=='delivery_by_courier'" :deliveryTime="deliveryTime" deliveryAddressOnly="1" :nextRoute="`/modal/order-checkout-${order_id}`"></order-checkout-address>
+
+            <!-- <ion-item  v-if="deliveryType=='delivery_by_store'" button detail="" @click="$go(`/modal/store-dmethods-${order?.store?.store_id}`)">
+                <ion-icon :icon="documentTextOutline" slot="start" color="medium"></ion-icon>
+                <ion-text style="font-size:0.9em" color="medium">
                     Условия доставки {{order?.store?.store_name}}
                 </ion-text>
-            </ion-item>
+            </ion-item> -->
 
 
 
-            <ion-item-divider v-if="storeIsReady">Способы оплаты</ion-item-divider>
+            <ion-item-divider v-if="storeIsReady">Оплата</ion-item-divider>
             <ion-radio-group v-model="paymentType">
                 <ion-item button detail="false" v-if="tariffRule.paymentByCash==1">
                     <ion-icon :icon="cashOutline" slot="start" color="medium"></ion-icon>
@@ -146,30 +186,6 @@
                 </ion-accordion>
             </ion-accordion-group>
 
-
-            <!-- <ion-item>
-                <ion-icon :icon="cubeOutline" slot="start" color="medium"></ion-icon>
-                Сумма заказа 
-                <ion-text slot="end">{{order.order_sum_product}}{{$heap.state.currencySign}}</ion-text>
-            </ion-item>
-            <ion-item v-if="order_sum_delivery>0">
-                <ion-icon :icon="rocketOutline" slot="start" color="medium"></ion-icon>
-                <div>
-                    Доставка
-                    <div v-if="tariffRule.deliveryHeavyCost" style="font-size:0.75em;color:#666">{{order_sum_delivery-tariffRule.deliveryHeavyCost}}+{{tariffRule.deliveryHeavyCost}} (непогода или высокая загруженность)</div>
-                </div>
-                <ion-text slot="end">{{order_sum_delivery??0}}{{$heap.state.currencySign}}</ion-text>
-            </ion-item>
-            <ion-item v-if="order_sum_total>0">
-                <ion-icon :icon="walletOutline" slot="start" color="medium"></ion-icon>
-                Итого к оплате
-                <ion-text slot="end"><b>{{order_sum_total}}</b>{{$heap.state.currencySign}}</ion-text> 
-            </ion-item> -->
-
-
-            <ion-item>
-                <ion-textarea style="background-color:var(--ion-color-light-tint);border-radius:10px" label="" rows="2" placeholder="комментарий к заказу" @change="orderDescriptionChanged()" v-model="order.order_description"></ion-textarea>
-            </ion-item>
             <ion-item v-if="deliveryType=='delivery_by_courier'">
                 <ion-text style="font-size:0.9em">
                     Я согласен(на) с <router-link to="/page/rules-customer">офертой об оказании услуг доставки</router-link>
@@ -188,8 +204,13 @@
             <ion-card-content>{{checkoutError}}</ion-card-content>
         </ion-card>
 
-        <ion-button v-if="paymentType=='use_card' || paymentType=='use_card_recurrent'" expand="block" @click="proceed()" :disabled="checkoutError">Оплатить картой</ion-button>
-        <ion-button v-else expand="block" @click="proceed()" :disabled="checkoutError">Послать заказ</ion-button>
+        <ion-button v-if="!isNoFatalError" expand="block" @click="$router.replace('/order/order-'+order_id)">Назад</ion-button>
+        <ion-button v-else-if="routePlanMode=='scheduled' && !deliveryFinishScheduled" expand="block" @click="datetimePick()" color="medium">
+            <ion-icon :icon="alarmOutline" slot="start"></ion-icon>
+            Выбрать время
+        </ion-button>
+        <ion-button v-else-if="paymentType=='use_card' || paymentType=='use_card_recurrent'" expand="block" @click="proceed()" :disabled="checkoutError">Оплатить заказ</ion-button>
+        <ion-button v-else expand="block" @click="proceed()" :disabled="checkoutError">Заказать</ion-button>
     </div>
     <div v-else>
         <ion-item lines="none">
@@ -207,10 +228,7 @@
 
 <script>
 import Order    from '@/scripts/Order.js';
-import Utils    from '@/scripts/Utils.js';
 import Topic    from '@/scripts/Topic.js';
-import User    from '@/scripts/User.js';
-//import router   from '@/router';
 import jQuery   from 'jquery';
 
 import ordersIcon   from "@/assets/icons/orders.svg";
@@ -225,11 +243,12 @@ import {
     rocketOutline,
     documentTextOutline,
     addOutline,
+    alarmOutline,
+    timeOutline,
     }                           from 'ionicons/icons';
 import { 
     alertController,
     modalController,
-    IonTextarea,
     IonItemDivider,
     IonIcon,
     IonItem,
@@ -247,15 +266,19 @@ import {
     IonRadio,
     IonAccordion,
     IonAccordionGroup,
+    IonSegmentButton,
+    IonSegment,
 }                               from "@ionic/vue";
 import OrderCheckoutAddress     from '@/components/OrderCheckoutAddress.vue';
 import OrderPaymentCardModal    from '@/components/OrderPaymentCardModal.vue';
 import PromoPickerComp          from '@/components/PromoPickerComp.vue'
+import DateRangePicker          from '@/components/DateRangePicker.vue'
+
+//import { Browser } from '@capacitor/browser';
 
 export default({
     components: { 
     OrderCheckoutAddress,
-    IonTextarea,
     IonItemDivider,
     IonIcon,
     IonItem,
@@ -273,6 +296,8 @@ export default({
     IonRadio,
     IonAccordion,
     IonAccordionGroup,
+    IonSegmentButton,
+    IonSegment,
     },
     setup(){
         return {
@@ -287,7 +312,9 @@ export default({
             rocketOutline,
             documentTextOutline,
             addOutline,
-            };
+            alarmOutline,
+            timeOutline,
+        };
     },
     data(){
         return {
@@ -295,7 +322,7 @@ export default({
             can_load_at:0,
 
             order_id:this.$route.params.id,
-            order:null,
+            order:{},
             order_sum_delivery:0,
 
             storeCorrectionAllow:1,//(localStorage.storeCorrectionAllow==0?0:1),
@@ -312,12 +339,46 @@ export default({
             paymentType:'use_card',
             deliveryType:'delivery_by_courier',
             bankCard:null,
-            recurrentPaymentAllow:this.$heap.state.settings?.other?.recurrentPaymentAllow==1?1:0,
+
             tariffRule:{},
             tariffRuleList:[],
+            recurrentPaymentAllow:this.$heap.state.settings?.other?.recurrentPaymentAllow==1?1:0,
+
+            deliveryFinishScheduled:null,
+            routePlanMode:'inited',
+            scheduleRange:null,
         }
     },
     computed:{
+        routePlanLocal(){
+            if(!this.deliveryFinishScheduled){
+                return null
+            }
+            const options = { month: 'short', day: 'numeric', hour:'numeric', minute:'numeric' };
+            const d = new Date(Date.parse(this.deliveryFinishScheduled));
+            return d.toLocaleDateString(undefined, options);
+        },
+        // routePlanRange(){
+        //     const finish_plan=this.routePlan.start_plan*1+this.routePlan.finish_arrival*1
+        //     if( !finish_plan ){
+        //         return null
+        //     }
+        //     const delta=900//round to 15 minutes
+        //     const finish_plan_from=Math.floor(finish_plan/delta)*delta
+        //     const finish_plan_to=finish_plan_from+delta
+        //     const from = new Date(finish_plan_from*1000);
+        //     const to   = new Date(finish_plan_to*1000);
+        //     try{
+        //         return `${from.getHours()}:${String(from.getMinutes()).padStart(2, '0')}-${to.getHours()}:${String(to.getMinutes()).padStart(2, '0')}`
+        //     } catch{/***/}
+        //     return null
+        // },
+        isAtonceEnabled(){
+            return ['inited'].includes(this.routePlan.start_plan_mode)
+        },
+        isNoFatalError(){
+            return !(this.errTooFar==1 || this.storeIsReady==0 || this.errNoTariff==1 || this.errNotfound==1)
+        },
         checkoutError(){
             if( !this.order ){
                 return false
@@ -339,9 +400,6 @@ export default({
             }
             if( this.termsAccepted==0 ){
                 return `К сожалению, мы не можем доставить вам заказ, без согласия с условиями`
-            }
-            if( this.tariffRule.deliveryByCourier==1 && (this.tariffRule.deliveryIsReady==0 || this.tariffRule.deliveryIsReady=='idle') ){
-                return `К сожалению, нет доступных курьеров`;
             }
             if(this.promo){
                 const min_order_sum_product=this.promo?.min_order_sum_product??0;
@@ -365,7 +423,7 @@ export default({
         },
 
         order_sum_total(){
-            return Math.round( (this.order.order_sum_product-this.order.order_sum_promo+this.order_sum_delivery)*100 ) / 100
+            return Math.round( (this.order.order_sum_product*1-this.order.order_sum_promo*1+this.order_sum_delivery*1)*100 ) / 100
         },
 
         deliveryByCourierRule(){
@@ -397,22 +455,16 @@ export default({
         }
     },
     mounted(){
-        /**
-         * temporary fix
-         */
-        if( User.isAdmin() ){
-            this.$go('/modal/order-checkout-beta-'+this.order_id)
-        }
-        this.checkoutDataGet();
+        this.itemCheckoutDataGet();
     },
     created(){
         this.$topic.on('userMainLocationSet',()=>{
             this.can_load_at=0
-            this.checkoutDataGet();
+            this.itemCheckoutDataGet();
         })        
         this.$topic.on('userMainPaymentMethodSet',()=>{
             this.can_load_at=0
-            this.checkoutDataGet();
+            this.itemCheckoutDataGet();
         })        
         this.$topic.on('settingsGet',(settings)=>{
             this.can_load_at=0
@@ -420,50 +472,35 @@ export default({
         })        
     },
     ionViewDidEnter(){
-        this.checkoutDataGet();
+        this.itemCheckoutDataGet();
     },
     methods:{
-        async itemLoad(){
-            try{
-                this.order=await jQuery.post(`${this.$heap.state.hostname}Order/itemGet`,{order_id:this.order_id})
-                if( this.order_sum_delivery==0 ){
-                    this.order_sum_delivery==this.order.order_sum_delivery
-                }
-                this.$heap.commit('setCurrentOrder',this.order)
-            }catch(err){
-                this.$flash("Заказ не найден")
-                this.$go('/order/order-list')
-            }
-        },
         debounce(){
-            const now=Date.now
+            const now=Date.now()
             let reject=false
             if(this.can_load_at>now){
                 reject=true
             }
-            this.can_load_at=now+300
+            this.can_load_at=now+1000
             return reject
         },
-        async checkoutDataGet(){
-            this.order=this.$heap.state.currentOrder;
+        async itemCheckoutDataGet(){
             if(this.debounce()){
                 return
             }
-
-            if( !this.order ){
-                await this.itemLoad()
-            }
-            if( !this.order ){
-                this.$flash("Заказ не найден");
-                //this.$go('/order/order-list')
-                return
-            }
-            if( this.order.stage_current!="customer_confirmed" ){
-                this.$router.replace('/order/order-'+this.order.order_id);
-                return;
-            }
             try{
-                const bulkResponse=await jQuery.post(`${this.$heap.state.hostname}Order/itemCheckoutDataGet`,{order_id:this.order.order_id})
+                const request={
+                    order_id:this.order_id,
+                    features:"schedule",
+                }
+
+                const bulkResponse=await jQuery.post(`${this.$heap.state.hostname}Order/itemCheckoutDataGet`,request)
+                this.order=bulkResponse.order||{}
+                if( this.order.stage_current!="customer_confirmed" ){
+                    this.$router.replace('/order/order-'+this.order.order_id);
+                    return;
+                }
+
                 this.promo=bulkResponse.Promo_itemLinkGet
                 this.promoCount=bulkResponse.Promo_listGet
                 this.storeIsReady=Array.isArray(bulkResponse.Store_deliveryOptions)?1:0
@@ -472,15 +509,18 @@ export default({
                 this.errNotfound=0
                 this.bankCard=bulkResponse?.bankCard;
                 this.tariffRuleList=bulkResponse.Store_deliveryOptions
-                this.tariffRuleSet(this.tariffRuleList[0]||{})
-                this.is_checkout_data_loaded=1
-
-
-                if(this.tariffRule.deliveryIsReady=='ready'){
-                    this.deliveryTime=Utils.deliveryTimeCalculate(bulkResponse.Location_distanceHolderGet,bulkResponse.Store_preparationTime)
-                } else {
-                    this.deliveryTime={}
+                if( !this.tariffRule.tariff_id ){//if not set already
+                    this.tariffRuleSet(this.tariffRuleList[0]||{})
                 }
+                this.is_checkout_data_loaded=1
+                if( this.order_sum_delivery==0 ){//????
+                    this.order_sum_delivery=this.order.order_sum_delivery
+                }
+                // if(this.tariffRule.deliveryIsReady=='ready'){
+                //     this.deliveryTime=Utils.deliveryTimeCalculate(bulkResponse.Location_distanceHolderGet,bulkResponse.Store_preparationTime)
+                // } else {
+                //     this.deliveryTime={}
+                // }
             }
             catch(err){
                 this.is_checkout_data_loaded=1
@@ -497,6 +537,9 @@ export default({
                         break;
                     default:
                         this.errNotfound=1
+                        this.$flash("Заказ не найден")
+                        this.$go('/order/order-list')
+                        break;
                 }
                 return false
             }
@@ -548,6 +591,7 @@ export default({
                 this.promoLink({order_id:this.order_id})//unlinking promo if exists
                 this.promo=null
             }
+            this.routePlanMode=tariffRule.routePlan?.start_plan_mode
         },
         tariffMerge( tariffArray ){//merge payment options for same delivery option
             if( !tariffArray?.length ){
@@ -589,12 +633,41 @@ export default({
                 this.tariffRule=tariff
             }
         },
-        async orderDescriptionChanged(){
-            const request={
-                order_id:this.order.order_id,
-                order_description:this.order.order_description
-            };
-            Order.api.itemUpdate(request);
+        async scheduleRangeGet(){
+            try{
+                const finish_plan_timetable=this.tariffRule?.routePlan?.finish_plan_timetable;
+                if( !finish_plan_timetable ){
+                    return
+                }
+                const request={
+                    timetable:JSON.stringify(finish_plan_timetable)
+                }
+                this.scheduleRange=await jQuery.post(`${this.$heap.state.hostname}Order/itemScheduleRangeGet`,request)
+                this.deliveryFinishScheduled=this.scheduleRange.nearest
+            }catch{/** */}
+        },
+        async datetimePick(){
+            if( !this.scheduleRange ){
+                await this.scheduleRangeGet();
+            }
+
+            const modal = await modalController.create({
+                component: DateRangePicker,
+                presentingElement:this.$refs.page.$el,
+                initialBreakpoint:'0.6',
+                showBackdrop:true,
+                canDismiss:true,
+                componentProps:{dateRange:this.scheduleRange.range,defaultDatetime:this.scheduleRange.nearest},
+            });
+            modal.present()
+            this.routePlanMode='scheduled'
+            const data=await modal.onDidDismiss()
+            if(data.role=="confirm"){
+                this.deliveryFinishScheduled=data.data
+            } else {
+                this.deliveryFinishScheduled=null
+                this.routePlanMode=this.tariffRule?.routePlan?.start_plan_mode
+            }
         },
         async proceed(){
             // if( this.tariffRule.deliveryIsReady=='busy' && !await this.heavyLoadConfirm() ){
@@ -609,6 +682,7 @@ export default({
                 tariff_id:this.tariffRule.tariff_id,
                 deliveryByStore:this.deliveryByStoreRuleChecked?1:0 ,
                 deliveryByCourier:this.deliveryByCourierRuleChecked?1:0,
+                deliveryFinishScheduled:this.deliveryFinishScheduled,
                 pickupByCustomer:this.pickupByCustomerRuleChecked?1:0,
                 paymentByCard:this.paymentType=='use_card'?1:0,
                 paymentByCardRecurrent:this.paymentType=='use_card_recurrent'?1:0,
@@ -676,7 +750,6 @@ export default({
                 }
             }
             try{
-                await Order.api.itemStageCreate(this.order.order_id,'customer_start');
                 this.$router.replace('/order/order-'+this.order.order_id);
             } catch(err){
                     const exception_code=err?.responseJSON?.messages?.error;
@@ -737,54 +810,6 @@ export default({
                 this.$router.replace('/order/order-'+this.order.order_id);
             }
         },
-        // async deliveryAddressCheck(){
-        //     if( heap.state?.user?.location_main && heap.state.user.location_main.is_default!=1 && heap.state.user.location_main.group_name!='Current' ){
-        //         return true
-        //     }
-        //     const alert = await alertController.create({
-        //         header: 'Нет адреса доставки',
-        //         message:"Нам нужно знать точный адрес, куда доставить заказ. ",
-        //         buttons: [
-        //           {
-        //             text: 'Изменить',
-        //             role: 'cancel',
-        //           },
-        //           {
-        //             text: 'Верно',
-        //             role: 'confirm',
-        //           },
-        //         ],
-        //     });
-        //     await alert.present();
-        //     const { role } = await alert.onDidDismiss();
-        //     if( role=='confirm' ){
-        //         return true
-        //     }
-        //     this.$go('/modal/user-addresses');
-        //     return false
-        // },
-        async heavyLoadConfirm(){
-            const alert = await alertController.create({
-                header: 'Высокая загруженность',
-                message:'Доставка может занять больше времени',
-                buttons: [
-                  {
-                    text: 'Отменить',
-                    role: 'cancel',
-                  },
-                  {
-                    text: 'Я подожду',
-                    role: 'confirm',
-                  },
-                ],
-            });
-            await alert.present();
-            const { role } = await alert.onDidDismiss();
-            if( role=='confirm' ){
-                return true
-            }
-            return false
-        },
         async deliveryAddressConfirm(){
             const alert = await alertController.create({
                 header: 'Адрес доставки',
@@ -838,7 +863,7 @@ export default({
                     order_id:this.order.order_id
                 }
                 await jQuery.post(`${this.$heap.state.hostname}Promo/itemLink`,request)
-                this.itemLoad()
+                this.itemCheckoutDataGet()
             } catch(err){
                 //
             }

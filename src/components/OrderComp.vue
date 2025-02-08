@@ -20,18 +20,18 @@
 
         <ion-list>
             <ion-item lines="full">
-                <ion-chip  slot="start" color="primary" v-if="orderData?.time_plan.start_plan" @click="timePlanInfo()" >
-                    <ion-icon :icon="flagOutline"></ion-icon>
-                    <ion-label color="dark">{{ arrivalTime }}</ion-label>
+                <ion-chip :color="arrivalTimeColor" v-if="orderData?.time_plan?.start_plan" @click="timePlanInfo()" >
+                    <!-- <ion-icon :icon="flagOutline"></ion-icon> -->
+                    <ion-label>{{ arrivalTime }}</ion-label>
                 </ion-chip>
                 
-                <ion-label v-if="orderData.order_id>0" color="medium"></ion-label>
+                <!-- <ion-label v-if="orderData.order_id>0" color="medium"></ion-label>
 
-                <ion-label v-else color="medium">Корзина</ion-label>
+                <ion-label v-else color="medium">Корзина</ion-label> -->
 
                 <ion-chip color="primary" slot="end" v-if="orderData.stage_current_name">
                     <ion-icon :icon="checkmarkOutline"></ion-icon>
-                    <ion-label color="dark">{{orderData.stage_current_name}}</ion-label>
+                    <ion-label>{{orderData.stage_current_name}}</ion-label>
                 </ion-chip>
             </ion-item>
             <ion-item v-for="entry in orderData?.entries"  :key="entry.product_id" :class="entry.deleted_at?'entry-deleted':''" lines="full" style="padding-top:10px;">
@@ -158,7 +158,7 @@
             </ion-card-header>
             <ion-card-content>
                 <p>
-                    Нажмите кнопку "Начать подготовку", иначе клиент все еще может отменить заказ.
+                    Нажмите кнопку "Начать подготовку". Клиент все еще может отменить заказ.
                 </p>
             </ion-card-content>
         </ion-card>
@@ -396,11 +396,30 @@ export default({
             } 
             return buttons;
         },
-        arrivalTime(){
-            return Utils.date.humanize(this.orderData?.time_plan.start_plan + this.orderData?.time_plan.finish_arrival_time, "future")
+        arrivalTimeStatusCorrect(){
+            let arrival_time=this.orderData?.time_plan?.start_plan + this.orderData?.time_plan?.finish_arrival_time;
+            if( this.orderData.stage_current!=='delivery_start' ){
+                const now = Math.floor(Date.now() / 1000);
+                const delivery_offset=20*60//if delivery not started show delivery_finish as 20 min away
+                arrival_time=Math.max(arrival_time,now+delivery_offset)
+            }
+            return arrival_time
         },
-        arrivalScheduled(){
-            return Utils.date.humanize(this.orderData?.time_plan.finish_plan_scheduled, "future")
+        arrivalTime(){
+            return Utils.date.humanize(this.arrivalTimeStatusCorrect, "future")
+        },
+        arrivalTimeColor(){
+            const now = Math.floor(Date.now() / 1000);
+            if( this.arrivalTimeStatusCorrect > (now+120*60) ){
+                return 'danger'
+            }
+            if( this.arrivalTimeStatusCorrect > (now+90*60) ){
+                return 'warning'
+            }
+            if( this.arrivalTimeStatusCorrect < (now+30*60) ){
+                return 'success'
+            }
+            return 'medium'
         }
     },
     methods:{

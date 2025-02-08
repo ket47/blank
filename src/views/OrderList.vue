@@ -20,7 +20,7 @@
         </ion-segment>
     </div>
         <ion-list v-if="orderList?.length>0">
-            <div v-for="order in orderListComputed" :key="order.order_id" @click="itemClick(order)">
+            <div v-for="order in orderListComputed" :key="order.order_id" @click="itemOpen(order.order_id,order.is_shipment)">
                 <ion-item lines="none">
                     <ion-avatar slot="start" v-if="order.image_hash">
                         <ion-img style="border-radius:16px;" :src="`${$heap.state.hostname}image/get.php/${order.image_hash}.150.150.webp`"/>
@@ -56,7 +56,7 @@
                 </ion-item>
                 <div v-for="(job) in route.jobs" :key="job.job_id" @click="itemClickConfirm(job)">
                     <ion-item lines="none" style="--inner-padding-bottom:0px">
-                        <ion-icon v-if="job.finish_plan_scheduled_date" :icon="timeOutline" slot="start"></ion-icon>
+                        <ion-icon v-if="job.finish_plan_scheduled_date" :icon="alarmOutline" slot="start" color="danger"></ion-icon>
                         <ion-text>
                             {{job.job_name}}
                         </ion-text>
@@ -160,7 +160,7 @@ import {
     storefrontOutline,
     sparklesOutline,
     informationOutline,
-    timeOutline,
+    alarmOutline,
     rocketOutline,
     ribbonOutline,
     checkmarkOutline,
@@ -171,8 +171,8 @@ import {
 }                           from 'ionicons/icons';
 import ordersIcon           from "@/assets/icons/orders.svg";
 import Order                from '@/scripts/Order.js';
-import Topic                from '@/scripts/Topic.js';
-import CourierJobPreview    from '@/components/CourierJobPreview.vue';
+// import Topic                from '@/scripts/Topic.js';
+// import CourierJobPreview    from '@/components/CourierJobPreview.vue';
 import DeliveryJobPreview   from '@/components/DeliveryJobPreview.vue';
 import jQuery               from 'jquery'
 
@@ -199,7 +199,7 @@ export default {
     IonCardContent,
     },
     setup() {
-      return { sparklesOutline,storefrontOutline,timeOutline,ordersIcon,rocketOutline,ribbonOutline,checkmarkOutline,informationOutline,banOutline,square,
+      return { sparklesOutline,storefrontOutline,alarmOutline,ordersIcon,rocketOutline,ribbonOutline,checkmarkOutline,informationOutline,banOutline,square,
                 cubeOutline,
                 cartOutline,
             };
@@ -279,7 +279,7 @@ export default {
                 job.is_courier_job=1
                 if(job.finish_plan_scheduled>0){
                     const finish_plan_scheduled = new Date(job.finish_plan_scheduled*1000)
-                    job.finish_plan_scheduled_date=finish_plan_scheduled.toLocaleDateString(undefined, { month: 'numeric', day: 'numeric',hour:'numeric',minute:'numeric' })
+                    job.finish_plan_scheduled_date=finish_plan_scheduled.toLocaleTimeString(undefined, { hour:'numeric',minute:'numeric' })
                 }
                 if( !job.courier_id ){
                     job.courier_id=0
@@ -405,22 +405,22 @@ export default {
         /**
          * deprecated
          */
-        async itemClick(order){
-            if( order.is_courier_job ){
-                const modal = await modalController.create({
-                    component: CourierJobPreview,
-                    componentProps:{orderData:order},
-                    initialBreakpoint: 0.75,
-                    breakpoints: [0.5]
-                    });
-                const dismissFn=function(){
-                    modal.dismiss();
-                };
-                Topic.on('dismissModal',dismissFn);
-                return modal.present();
-            }
-            this.itemOpen(order.order_id,order.is_shipment);
-        },
+        // async itemClick(order){
+        //     // if( order.is_courier_job ){
+        //     //     const modal = await modalController.create({
+        //     //         component: CourierJobPreview,
+        //     //         componentProps:{orderData:order},
+        //     //         initialBreakpoint: 0.75,
+        //     //         breakpoints: [0.5]
+        //     //         });
+        //     //     const dismissFn=function(){
+        //     //         modal.dismiss();
+        //     //     };
+        //     //     Topic.on('dismissModal',dismissFn);
+        //     //     return modal.present();
+        //     // }
+        //     this.itemOpen(order.order_id,order.is_shipment);
+        // },
         itemOpen(order_id,is_shipment){
             if(is_shipment==1){
                 this.$go(`/order/shipment-${order_id}`);

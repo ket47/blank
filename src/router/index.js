@@ -273,10 +273,10 @@ const routes = [
     path: '/modal/store-dmethods-:id',
     component: () => import('@/views/StoreDeliveryMethods.vue')
   },
-  {
-    path: '/modal/order-checkout-beta-:id',
-    component: () => import('@/views/OrderCheckoutBeta.vue')
-  },
+  // {
+  //   path: '/modal/order-checkout-beta-:id',
+  //   component: () => import('@/views/OrderCheckoutBeta.vue')
+  // },
   {
     path: '/modal/order-checkout-:id',
     component: OrderCheckout

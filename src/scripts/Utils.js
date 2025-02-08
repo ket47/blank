@@ -69,7 +69,7 @@ const Utils={
             const now = Math.floor(Date.now() / 1000);
             const diff = unixTime - now;
             if (mode === 'future' && diff <= 0) {
-                return 'С минуты на минуту';
+                return 'Почти на месте';
             } else if (mode === 'past' && diff > 0) {
                 return 'Еще не наступило';
             }
@@ -86,7 +86,7 @@ const Utils={
                 if (days >= 1) {
                     return `Завтра, в ${hours}:${minutes}`;
                 } else if (hours >= 3) {
-                    return `Через ${Math.floor(hours)} часов`;
+                    return `Через ${Math.floor(hours)} ч.`;
                 } else if (hours >= 2.5) {
                     return 'Менее 3 часов';
                 } else if (hours >= 2) {
