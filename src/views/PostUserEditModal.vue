@@ -257,7 +257,7 @@
           <ion-segment mode="ios" v-model="postItem.post_type" style="height: 70px;" @ionChange="itemImageDelete()">
               <ion-segment-button value="story">
                   <ion-icon :icon="phonePortraitOutline"></ion-icon>
-                  <ion-label>История 1500х3200</ion-label>
+                  <ion-label>История 1080х1920</ion-label>
               </ion-segment-button>
               <ion-segment-button value="slide">
                   <ion-icon :icon="phoneLandscapeOutline"></ion-icon>

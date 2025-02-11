@@ -642,22 +642,25 @@ export default({
                 const request={
                     timetable:JSON.stringify(finish_plan_timetable)
                 }
-                this.scheduleRange=await jQuery.post(`${this.$heap.state.hostname}Order/itemScheduleRangeGet`,request)
-                this.deliveryFinishScheduled=this.scheduleRange.nearest
-            }catch{/** */}
+                return await jQuery.post(`${this.$heap.state.hostname}Order/itemScheduleRangeGet`,request)
+            }catch{
+                return null
+            }
         },
         async datetimePick(){
-            if( !this.scheduleRange ){
-                await this.scheduleRangeGet();
+            const scheduleRange=await this.scheduleRangeGet()
+            if( !scheduleRange ){
+                this.$flash("Не удается получить рассписание")
+                return 
             }
-
+            this.deliveryFinishScheduled=scheduleRange.nearest
             const modal = await modalController.create({
                 component: DateRangePicker,
                 presentingElement:this.$refs.page.$el,
                 initialBreakpoint:'0.6',
                 showBackdrop:true,
                 canDismiss:true,
-                componentProps:{dateRange:this.scheduleRange.range,defaultDatetime:this.scheduleRange.nearest},
+                componentProps:{dateRange:scheduleRange.range,defaultDatetime:scheduleRange.nearest},
             });
             modal.present()
             this.routePlanMode='scheduled'
