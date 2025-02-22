@@ -54,7 +54,16 @@
                     <ion-card-content>
                         <div style="display:grid;grid-template-columns:30% 70%">
                             <div><img src="../assets/icons/sleeping_wolf.png" style="height:60px"/></div>
-                            <p>Получить заказ в ближайшее время не удастся. <br/> Выберите когда вам удобно.</p>
+                            <div>
+                                <span v-if="tariffRule.storeIsReady==0">
+                                    <b>{{ order.store.store_name }}</b> сейчас не принимает заказы. 
+                                </span>
+                                <span v-else-if="tariffRule.deliveryIsReady!='ready'">
+                                    Курьерская служба сейчас не работает. 
+                                </span>
+                                <span v-else>Получить заказ в ближайшее время не удастся. </span>
+                                Доставим, когда Вам будет удобно.
+                            </div>
                         </div>
                     </ion-card-content>
                 </ion-card>
