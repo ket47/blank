@@ -127,7 +127,7 @@ ion-modal{
 @media screen and (min-width: 740px) {
   ion-modal {
     --height: 90vh;
-    --width: calc(90vh / 2.13);
+    --width: calc(90vh / 1.77);
   }
 }
 </style>
@@ -177,7 +177,7 @@ ion-modal{
                             >Подробнее<ion-icon :icon="chevronForwardOutline"></ion-icon></ion-button>
                       </div>
                       <div class="crop-to-fit">
-                        <img class="" :src="`${$heap.state.hostname}image/get.php/${story.image_hash}.1000.1000.webp`"/>
+                        <img class="" :src="`${$heap.state.hostname}image/get.php/${story.image_hash}.3000.2000.webp`"/>
                       </div>
                     </div>
                   </div>

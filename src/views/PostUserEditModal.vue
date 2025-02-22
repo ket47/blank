@@ -12,18 +12,24 @@
     background-color: var(--ion-color-success-shade);
   }
   .post-preview{
-    -position: absolute;
+    
+    background-color: var(--ion-color-primary-shade) !important;
+  }
+  .post-preview{
+    position: absolute;
     width: 100%;
     height: 100vh;
     top: 0;
     left: 0;
     overflow: hidden;
-    background-color: var(--ion-color-primary-shade);
+     
   }
   .slide-container{
     position: relative;
     overflow: hidden;
     height: 100%;
+    max-width:500px;
+    margin:auto;
   }
   .crop-to-fit{
     display: flex;
@@ -55,7 +61,7 @@
   .slide-content{
     position: absolute;
     left: 0;
-    bottom: 50px;
+    bottom: 30px;
     padding: 16px;
     z-index: 100;
     width: 100%;
@@ -78,20 +84,19 @@
   }
   @media screen and (max-width: 740px) {
     .crop-to-fit{
-      width: 100vw;
-      height: 100vh;
+
     }
   }
   @media screen and (min-width: 740px) {
     ion-modal {
       --height: 90vh;
-      --width: calc(90vh / 2.13);
+      --width: calc(90vh / 1.77);
     }
   }
 </style>
 
 <template>
-  <base-layout :page-title="postItem?.post_type=='story'?'История': (postItem?.post_type=='slide'?'Слайд':'Пост')">
+  <base-layout :hideTitle="1">
       <div v-if="postItem==null" style="position:relative;">
         <div class="post-preview">
           <div class="slide-container">
@@ -117,7 +122,7 @@
             <div class="story-toolbar">
               <div>
                 <ion-avatar v-if="pickedStore?.avatar_hash">
-                  <img :src="`${$heap.state.hostname}image/get.php/${pickedStore.avatar_hash}.50.50.webp`" />
+                  <img :src="`${$heap.state.hostname}image/get.php/${pickedStore.avatar_hash}.150.150.webp`" />
                 </ion-avatar>
                 <ion-label><b>{{pickedStore?.store_name}}</b></ion-label>
               </div>
@@ -134,7 +139,7 @@
                   </ion-chip>
                   <ion-chip @click="popovers.holder=1">
                     <ion-label v-if="postItem?.holder?.store_name" color="light">{{ postItem.holder.store_name }}</ion-label>
-                    <ion-label v-else color="light">Автор</ion-label>
+                    <ion-label v-else color="danger">Автор</ion-label>
                     <ion-icon :icon="personOutline" color="light"></ion-icon>
                   </ion-chip>
                   <ion-chip @click="popovers.link=1">
@@ -193,7 +198,7 @@
               <ion-button color="light" expand="block" @click="$router.go(-1)"><ion-icon :icon="closeOutline" slot="start"></ion-icon>Закрыть</ion-button>
             </div>
             <div class="crop-to-fit">
-              <img :src="`${$heap.state.hostname}image/get.php/${postItem.images[0]?.image_hash}.1000.1000.webp`"/>
+              <img :src="`${$heap.state.hostname}image/get.php/${postItem.images[0]?.image_hash}.1500.1000.webp`"/>
             </div>
           </div>
         </div>
