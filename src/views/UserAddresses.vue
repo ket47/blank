@@ -18,19 +18,18 @@
         <ion-card v-else>
           <ion-card-header>
             <ion-card-title>
-              Адрес не установлен
+              Добавьте адрес
             </ion-card-title>
           </ion-card-header>
           <ion-card-content>
-            <p>Вы пока не добавили адрес доставки заказа.</p>
-            <p>Для поиска ресторанов и магазинов будет использоваться адрес по умолчанию.</p>
+            <p>Нам нужно знать куда привезти ваш заказ</p>
           </ion-card-content>
         </ion-card>
 
         <ion-list v-if="locationList.length" lines="none">
           <div v-for="(location,i) in locationList" :key="location.location_id">
             <ion-item button detail @click="locationSetMain(`${location.location_id}`,`${i}`)">
-                <ion-img slot="start" alt="location icon" :src="`${$heap.state.hostname}/image/get.php/${location.image_hash}.60.60.png`" style="height:24px" />
+                <ion-img slot="start" alt="" :src="`${$heap.state.hostname}/image/get.php/${location.image_hash}.60.60.png`" style="height:24px" />
                 <ion-label style="white-space:normal;cursor:pointer;"  :class="location.is_main==1?'is_main':''">
                   {{ location.location_address }}
                 </ion-label>
@@ -54,16 +53,10 @@
           </div>
         </ion-list>
 
-        <ion-list>
-          <ion-list-header>
-            <ion-label>Добавить адрес</ion-label>
-          </ion-list-header>
-          <ion-item  v-for="location in locationGroupList" :key="location.group_id" @click="modalLocationCreate(`${location.group_id}`,`${location.group_name}`)" style="cursor:pointer">
-              <ion-img :src="`${$heap.state.hostname}/image/get.php/${location.image_hash}.60.60.png`" style="height:24px"  slot="start"/>
-              <ion-label>{{ location.group_name }}</ion-label>
-              <ion-icon :src="addOutline" slot="end"/>
-          </ion-item>
-        </ion-list>
+        <div class="ion-padding">
+          <ion-button expand="block" @click="modalLocationCreate()"><ion-icon :src="locationOutline" slot="start"/> Добавить адрес</ion-button>
+          <ion-button @click="$router.go(-1)" color="light" expand="block">Назад</ion-button>
+        </div>
   </base-layout>
 </template>
 
@@ -74,7 +67,6 @@ import {
   IonLabel,
   IonItem,
   IonList,
-  IonListHeader,
   IonIcon,
   IonCard,
   IonCardHeader,
@@ -83,6 +75,7 @@ import {
   modalController,
   loadingController,
   IonChip,
+  IonButton,
   alertController,
 }                         from "@ionic/vue";
 import router             from '@/router';
@@ -91,7 +84,7 @@ import User               from '@/scripts/User.js'
 import jQuery             from 'jquery';
 import UserAddressPicker  from '@/components/UserAddressPicker.vue';
 
-import { locationOutline,trashOutline,addOutline,callOutline, }          from 'ionicons/icons';
+import { locationOutline,trashOutline,addOutline,callOutline }          from 'ionicons/icons';
 
 
 export default{
@@ -101,16 +94,16 @@ export default{
   IonLabel,
   IonItem,
   IonList,
-  IonListHeader,
   IonIcon,
   IonCard,
   IonCardHeader,
   IonCardContent,
   IonCardTitle,
   IonChip,
+  IonButton,
   },
   setup(){
-    return { locationOutline,trashOutline,addOutline,callOutline, };
+    return { locationOutline,trashOutline,addOutline,callOutline };
   },
   mounted(){
     this.locationListGet();
@@ -121,23 +114,26 @@ export default{
     }
   },
   methods:{
-    async modalLocationCreate( location_group_id, location_group_name ) {
+    async modalLocationCreate() {
       if(!heap.getters.userIsLogged){
         if( confirm('Чтобы добавленный адрес сохранился, необходимо авторизироваться') ){
           this.$go('/modal/user-authorize');
         }
         return;
       }
-      var location_group_name_low=String(location_group_name).toLowerCase();
       const modal = await modalController.create({
         component: UserAddressPicker,
         showBackdrop:true,
         componentProps:{
-          location_group_name_low
+          locationGroupList:this.locationGroupList
         },
       });
-      modal.onDidDismiss().then(location => {
-        this.locationCreate(location_group_id,location.data);
+      modal.onDidDismiss().then(result => {
+        const location=result.data
+        if( !location ){
+          return;
+        }
+        this.locationCreate(location);
       });
       return modal.present();
     },
@@ -154,6 +150,9 @@ export default{
           }
         }
         if( !new_location_main ){
+          this.modalLocationCreate()
+        }
+        if( !new_location_main ){
           /**
            * for some reason main location is not present so reload user data
            */
@@ -166,14 +165,11 @@ export default{
         }
       }catch{/** */}
     },
-    async locationCreate(group_id,location){
-      if( !location ){
-        return;
-      }
+    async locationCreate(location){
       let request={
         location_holder:'user',
         location_holder_id:heap.state.user.user_id,
-        location_group_id:group_id,
+        location_group_id:location.location_group_id,
         location_address:location.location_address,
         location_latitude:location.location_latitude,
         location_longitude:location.location_longitude,

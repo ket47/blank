@@ -145,7 +145,7 @@
       <section v-if="screen=='enter_createpass'" class="ion-padding">
         <h4>Пароль</h4>
         <p style="color:var(--ion-color-medium);font-size:0.9em;">
-          Вы можете установить пароль, что позволит входить в систему без получения кода подтверждения на телефон
+          Вы можете быстрее входить в профиль, если создадите пароль.
         </p>
 
         <div class="vspace"></div>
@@ -220,9 +220,9 @@
             <ion-input
               v-model="user_email"
               type="email"
-              placeholder=""
+              placeholder="@"
               required
-              label="День рождения (желательно заполнить)"
+              label="Ваш e-mail (желательно заполнить)"
               label-placement="stacked"
             ></ion-input>
           </ion-item>

@@ -41,7 +41,7 @@
       </ion-item>
   </ion-list>
   <ion-list v-else>
-    <ion-item button detail="true" lines="none" @click="selectDeliveryAddress()" color="secondary">Добавить адрес доставки заказа</ion-item>
+    <ion-item button detail="true" lines="none" @click="selectDeliveryAddress()">Добавить адрес доставки</ion-item>
   </ion-list>
 </template>
 

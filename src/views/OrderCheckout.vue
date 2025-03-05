@@ -29,7 +29,7 @@
     }
 </style>
 <template>
-<base-layout :pageTitle="`Оформление заказа из ${order?.store?.store_name||''}`" :pageDefaultBackLink="`/order/order-${order_id}`" ref="page">
+<base-layout :pageTitle="`Оформление`" :pageDefaultBackLink="`/order/order-${order_id}`" ref="page">
     <div v-if="is_checkout_data_loaded">
         <ion-list lines="none" v-if="isNoFatalError">
             <ion-item-divider style="margin-top:0px;box-shadow:none;">Доставка</ion-item-divider>
@@ -134,7 +134,7 @@
                 </div>
             </ion-radio-group>
 
-
+            <div v-if="order_sum_total>0">
             <ion-item-divider>Итог</ion-item-divider>
             <div v-if="deliveryByCourierRuleChecked && (paymentType=='use_card' || paymentType=='use_card_recurrent')">
                 <ion-item v-if="promo" button @click="promoPick()" color="success">
@@ -207,6 +207,7 @@
                 </ion-text>
                 <ion-checkbox slot="end" v-model="termsAccepted" aria-label=""></ion-checkbox>
             </ion-item>
+            </div>
         </ion-list>
 
         <ion-card v-if="checkoutError" color="warning">
@@ -218,7 +219,8 @@
             <ion-icon :icon="alarmOutline" slot="start"></ion-icon>
             Выбрать время
         </ion-button>
-        <ion-button v-else-if="paymentType=='use_card' || paymentType=='use_card_recurrent'" expand="block" @click="proceed()" :disabled="checkoutError">Оплатить заказ</ion-button>
+        <ion-button v-else-if="errTooFar==1" expand="block" @click="$go('/modal/user-addresses/');$heap.state.next_route=`/modal/order-checkout-${order_id}`">Выбрать адрес</ion-button>
+        <ion-button v-else-if="paymentType=='use_card' || paymentType=='use_card_recurrent'" expand="block" @click="proceed()" :disabled="checkoutError">Оплатить</ion-button>
         <ion-button v-else expand="block" @click="proceed()" :disabled="checkoutError">Заказать</ion-button>
     </div>
     <div v-else>
@@ -386,7 +388,7 @@ export default({
             return ['inited'].includes(this.routePlan.start_plan_mode)
         },
         isNoFatalError(){
-            return !(this.errTooFar==1 || this.storeIsReady==0 || this.errNoTariff==1 || this.errNotfound==1)
+            return !(this.storeIsReady==0 || this.errNoTariff==1 || this.errNotfound==1)//this.errTooFar==1 || 
         },
         checkoutError(){
             if( !this.order ){
@@ -469,7 +471,7 @@ export default({
     created(){
         this.$topic.on('userMainLocationSet',()=>{
             this.can_load_at=0
-            this.itemCheckoutDataGet();
+            //this.itemCheckoutDataGet();//causes redirection on user dashboard to order
         })        
         this.$topic.on('userMainPaymentMethodSet',()=>{
             this.can_load_at=0
@@ -507,6 +509,9 @@ export default({
                 this.order=bulkResponse.order||{}
                 if( this.order.stage_current!="customer_confirmed" ){
                     this.$router.replace('/order/order-'+this.order.order_id);
+                    
+            
+                    console.log('catch')
                     return;
                 }
 
@@ -535,7 +540,7 @@ export default({
                 this.is_checkout_data_loaded=1
                 const exception_code=err?.responseJSON?.messages?.error;
                 switch(exception_code){
-                    case 'too_far':
+                    case 'too_far'://too far or address is missing
                         this.errTooFar=1
                         break;
                     case 'not_ready':
