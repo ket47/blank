@@ -5,10 +5,20 @@
 </style>
 <template>
   <base-layout page-title="Мои адреса" ref="UserAddressPage">
-        <ion-card v-if="mainAddress">
+        <ion-card v-if="locationList==null">
           <ion-card-header>
             <ion-card-title>
-              Адрес доставки заказа
+              <ion-skeleton-text animated style="width:190px;height:30px"></ion-skeleton-text>
+            </ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            <p><ion-skeleton-text animated style="width:250px"></ion-skeleton-text> <ion-skeleton-text animated></ion-skeleton-text></p>
+          </ion-card-content>
+        </ion-card>
+        <ion-card v-else-if="mainAddress">
+          <ion-card-header>
+            <ion-card-title>
+              Адрес доставки
             </ion-card-title>
           </ion-card-header>
           <ion-card-content>
@@ -26,7 +36,24 @@
           </ion-card-content>
         </ion-card>
 
-        <ion-list v-if="locationList.length" lines="none">
+        <ion-list v-if="locationList==null" lines="none">
+          <div v-for="i in [1,2,3]" :key="i" style="padding:5px;">
+            <ion-item button detail>
+                <ion-skeleton-text slot="start" style="height:30px;width:30px;" animated></ion-skeleton-text>
+                <ion-skeleton-text animated></ion-skeleton-text>
+            </ion-item>
+            <ion-item  lines="full" v-if="i==1">
+                <div>
+                    <ion-chip color="medium">
+                        <ion-icon :src="addOutline"/><ion-label><ion-skeleton-text style="width:70px;" animated></ion-skeleton-text></ion-label>
+                    </ion-chip>
+                    <ion-chip color="medium"><ion-icon :src="addOutline"/><ion-label><ion-skeleton-text style="width:70px;" animated></ion-skeleton-text></ion-label></ion-chip>
+                </div>
+                <ion-skeleton-text  slot="end" style="height:30px;width:30px;border-radius:40px;" animated></ion-skeleton-text>
+            </ion-item>
+          </div>
+        </ion-list>
+        <ion-list v-else-if="locationList.length" lines="none">
           <div v-for="(location,i) in locationList" :key="location.location_id">
             <ion-item button detail @click="locationSetMain(`${location.location_id}`,`${i}`)">
                 <ion-img slot="start" alt="" :src="`${$heap.state.hostname}/image/get.php/${location.image_hash}.60.60.png`" style="height:24px" />
@@ -44,7 +71,7 @@
                     </ion-chip>
 
                     <ion-chip v-if="location.location_phone>0" color="medium" @click="locationPhoneEdit('locationStart')">
-                        <ion-icon :src="callOutline"/><ion-label>{{location.location_phone}}</ion-label>
+                        <ion-icon :src="callOutline"/><ion-label>+{{location.location_phone}}</ion-label>
                     </ion-chip>
                     <ion-chip v-else color="medium" @click="locationPhoneEdit('locationStart')"><ion-icon :src="addOutline"/><ion-label>телефон</ion-label></ion-chip>
                 </div>
@@ -77,6 +104,7 @@ import {
   IonChip,
   IonButton,
   alertController,
+  IonSkeletonText,
 }                         from "@ionic/vue";
 import router             from '@/router';
 import heap               from '@/heap';
@@ -101,9 +129,17 @@ export default{
   IonCardTitle,
   IonChip,
   IonButton,
+  IonSkeletonText,
   },
   setup(){
     return { locationOutline,trashOutline,addOutline,callOutline };
+  },
+  data(){
+    return{
+      locationList:null,
+      locationGroupList:[],
+      is_loading:0
+    }
   },
   mounted(){
     this.locationListGet();
@@ -141,7 +177,7 @@ export default{
       try{
         let new_location_main=null
         const response=await jQuery.get(heap.state.hostname + "User/locationListGet",{includeGroupList:1})
-        this.locationList=response.location_list;
+        this.locationList=response.location_list||[];
         this.locationGroupList=response.location_group_list;
         if(this.locationList){
           for(let loc of this.locationList){
@@ -194,23 +230,24 @@ export default{
       }
     },
     async locationSetMain( location_id, index ){
+      if(this.$heap.state.next_route){
+        this.$go(this.$heap.state.next_route)
+        this.$heap.state.next_route=null
+      }
       const loc=this.locationList[index];
       heap.state.user.location_main={
         location_id:loc.location_id,
         location_latitude:loc.location_latitude,
         location_longitude:loc.location_longitude,
         location_address:loc.location_address,
+        location_phone:loc.location_phone,
+        location_comment:loc.location_comment,
         image_hash:loc.image_hash
       };
-      await jQuery.post(heap.state.hostname + "User/locationSetMain",{location_id});
       this.$topic.publish('userMainLocationSet',heap.state.user.location_main)
+      await jQuery.post(heap.state.hostname + "User/locationSetMain",{location_id});
       this.$flash("Адрес доставки изменен")
-      if(this.$heap.state.next_route){
-        this.$go(this.$heap.state.next_route)
-        this.$heap.state.next_route=null
-      } else {
-        this.locationListGet()
-      }
+      this.locationListGet()
     },
     async locationDelete( location_id, index ){
       if(!confirm("Удалить адрес доставки?")){
@@ -336,12 +373,6 @@ export default{
 
 
 
-  },
-  data(){
-    return{
-      locationList:[],
-      locationGroupList:[]
-    }
   }
 }
 </script>

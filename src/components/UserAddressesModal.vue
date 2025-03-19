@@ -21,16 +21,10 @@
           </ion-item>
         </ion-list>
 
-        <ion-list>
-          <ion-list-header>
-            <ion-label>Добавить адрес</ion-label>
-          </ion-list-header>
-          <ion-item  v-for="location in locationGroupList" :key="location.group_id" @click="modalLocationCreate(`${location.group_id}`,`${location.group_name}`)" style="cursor:pointer">
-              <ion-img :src="`${$heap.state.hostname}/image/get.php/${location.image_hash}.60.60.png`" style="height:24px"  slot="start"/>
-              <ion-label>{{ location.group_name }}</ion-label>
-              <ion-icon :src="addOutline" slot="end"/>
-          </ion-item>
-        </ion-list>
+        <div class="ion-padding">
+          <ion-button expand="block" @click="modalLocationCreate()"><ion-icon :src="locationOutline" slot="start"/> Добавить адрес</ion-button>
+          <ion-button @click="modalClose();" color="light" expand="block">Назад</ion-button>
+        </div>
   </ion-content>
 </template>
 
@@ -41,7 +35,7 @@ import {
   IonLabel,
   IonItem,
   IonList,
-  IonListHeader,
+  IonButton,
   IonIcon,
   IonHeader,
   IonToolbar,
@@ -68,7 +62,7 @@ export default{
   IonLabel,
   IonItem,
   IonList,
-  IonListHeader,
+  IonButton,
   IonIcon,
   IonHeader,
   IonToolbar,
@@ -109,16 +103,19 @@ export default{
         }
         return;
       }
-      var location_group_name_low=String(location_group_name).toLowerCase();
       const modal = await modalController.create({
         component: UserAddressPicker,
         showBackdrop:true,
         componentProps:{
-          location_group_name_low
+          locationGroupList:this.locationGroupList
         },
       });
-      modal.onDidDismiss().then(location => {
-        this.locationCreate(location_group_id,location.data);
+      modal.onDidDismiss().then(result => {
+        const location=result.data
+        if( !location ){
+          return;
+        }
+        this.locationCreate(location);
       });
       return modal.present();
     },
@@ -143,21 +140,20 @@ export default{
         }
       }catch{/** */}
     },
-    async locationCreate(group_id,location){
-      if( !location ){
-        return;
-      }
+    async locationCreate(location){
       let request={
         location_holder:'user',
         location_holder_id:heap.state.user.user_id,
-        location_group_id:group_id,
+        location_group_id:location.location_group_id,
         location_address:location.location_address,
         location_latitude:location.location_latitude,
-        location_longitude:location.location_longitude
+        location_longitude:location.location_longitude,
+        location_comment:location.location_comment
       };
       try{
         await jQuery.post(heap.state.hostname + "User/locationCreate",request)
-        this.locationListGet();
+        await this.locationListGet();
+        this.locationList[0] && this.locationSelect(this.locationList[0])
       } catch(err){
         const exception=err.responseJSON;
         const exception_code=exception.messages.error;

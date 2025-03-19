@@ -28,7 +28,7 @@
           ref="uphone"
           fill="outline" 
           mode="md"
-          placeholder="7 (___) ___ __ __"
+          placeholder="+7(___)___ __ __"
           name="phone"
           type="tel"
           inputmode="tel"
@@ -64,7 +64,7 @@
           ref="uphone"
           fill="outline" 
           mode="md"
-          placeholder="7 (XXX) XXX XX XX"
+          placeholder="+7(___)___ __ __"
           name="phone"
           type="tel"
           inputmode="tel"
@@ -138,7 +138,7 @@
           Смс с кодом не пришла? <ion-chip slot="end" @click="codeSend" color="primary">Послать еще раз</ion-chip>
         </ion-item>
         <div class="vspace"></div>
-        <ion-button @click="screen='enter_phone'" expand="block" fill="clear" color="medium">Изменить номер телефона</ion-button>
+        <ion-button @click="screen='enter_phone'" expand="block" fill="outline" color="medium">Изменить номер телефона</ion-button>
       </section>
 
       <!--USER CREATE PASS-->
@@ -188,7 +188,7 @@
           Вы зарегистрируетесь без пароля
         </p>
         <div class="vspace"></div>
-        <ion-button @click="screen='enter_phone'" expand="block" fill="clear" color="medium">Изменить номер телефона</ion-button>
+        <ion-button @click="screen='enter_phone'" expand="block" fill="outline" color="medium">Изменить номер телефона</ion-button>
       </section>
 
       <!--USER DATA-->
@@ -378,7 +378,7 @@ export default{
         filteredValue=filteredValue.substring(filteredValue.length-11)
       }
       setTimeout(()=>{
-        this.user_phone=filteredValue
+        this.user_phone='+'+filteredValue
       },50)
     },
     async phoneSubmit(){
@@ -571,7 +571,12 @@ export default{
         await jQuery.post( `${this.$heap.state.hostname}User/signInByCode`, request)
         const user=await User.get();
         this.$flash(`Добро пожаловать ${user.user_name}`)
-        this.$router.go(-1);
+        if(this.$heap.state.next_route){
+          this.$go(this.$heap.state.next_route)
+          this.$heap.state.next_route=null
+        } else {
+          this.$router.go(-1);
+        }
       } catch(err){
         const exception_code=err?.responseJSON?.messages?.error
         switch(exception_code){

@@ -120,7 +120,7 @@
             <ion-card-header>
                 <ion-card-title>Фото заказа</ion-card-title>
             </ion-card-header>
-            <ion-card-content>Рекомендуем делать фотографии товара до упаковки.  Ответственность, в случае претензий со стороны Покупателя к качеству и комплектности, лежит на <b>Продавце</b>.</ion-card-content>
+            <ion-card-content>Рекомендуем делать фотографии товара до упаковки.  Ответственность, в случае претензий лежит на <b>Вас</b>.</ion-card-content>
         </ion-card>
 
         <ion-card v-if="orderData?.stage_current=='customer_disputed' && ['supplier','admin'].includes(orderData?.user_role)" color="medium">

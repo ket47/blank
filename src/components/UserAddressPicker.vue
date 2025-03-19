@@ -1,19 +1,28 @@
+<style scoped>
+    ion-searchbar.search{
+        --background:#fff;
+        --padding:15px;
+        --icon-color: var(--ion-color-primary);
+        --placeholder-color: var(--ion-color-primary);
+    }
+</style>
+
 <template>
     <ion-content>
-        <yandex-map ref="harita" @click="onClick($event);" style="height:100%" 
-        :coords="coords"
-        :zoom="16"
-        :settings="settings"
-        :controls="['zoomControl']"
+        <yandex-map v-if="showed" @click="onClick($event);" style="height:100%" 
+            :coords="coords"
+            :zoom="16"
+            :settings="settings"
+            :controls="['zoomControl']"
         >
             <ymap-marker :coords="coords" marker-id="1" :properties="placemarkProperties"/>
         </yandex-map>
-        <div style="position: absolute;top: 30px;width:100%;--ion-item-background: #ffffffdd;border-radius:10px;">
-            <ion-searchbar debounce="500" v-model="addressSearchQuery" @ionInput="suggestionsGet()" placeholder="поиск по адресу" color="light"/>
+        <div style="position: absolute;bottom: 20px;width:100%;--ion-item-background: #ffffffdd;border-radius:10px;">
             <ion-item v-for="(row,i) in suggestions" :key="i" @click="suggestionSelect(`${row.subtitle.text}, ${row.title.text}`,row.uri)" style="margin-right:10px;margin-left:10px">
                 {{row.subtitle.text}} {{row.title.text}} 
                 <span slot="end" style="color:#666">{{row.distance.text}}</span>
             </ion-item>
+            <ion-searchbar debounce="500" v-model="addressSearchQuery" @ionInput="suggestionsGet()" placeholder="поиск по адресу" class="search"/>
         </div>
     </ion-content>
     <ion-toolbar style="--background: white">
@@ -80,7 +89,6 @@ export default({
         locationGroupList: Array
     },
     data(){
-        let locationType=this.location_group_name_low+" адрес"
         let locSettings=this.$heap.state.settings.location;
         let mapCenter=JSON.parse(locSettings.mapCenter)
 
@@ -100,7 +108,8 @@ export default({
             selectedAddress:'',
             selectedCoords:[],
             coords: mapCenter,
-            addressComment:''
+            addressComment:'',
+            showed:1,
         };
     },
     computed:{
@@ -117,12 +126,16 @@ export default({
         async pickAddress(){
             try{
                 if( !this.selectedAddress ){
+                    if( this.suggestions[0]??0 ){
+                        this.suggestionSelect( this.suggestions[0].title.text, this.suggestions[0].uri )
+                    }
                     const result=await window.ymaps.geocode(this.coords)
                     this.selectedAddress=result.geoObjects.get(0)?.getAddressLine();                    
                 }
             } catch(err){
-                //console.log(err)
+                console.log(err)
             }
+
             var location={
                 location_group_id:this.locationGroup.group_id,
                 location_address:this.filterAddress(this.selectedAddress),
@@ -171,6 +184,7 @@ export default({
         },
         async suggestionSelect( address, uri ){
             this.selectedAddress=address
+            this.addressSearchQuery=address
             this.geocode(uri)
         },
         async geocode( uri ){
@@ -187,20 +201,25 @@ export default({
         }
     },
     async mounted(){
-        await loadYmap();
-        const lastStoredPosition=User.geo.lastStoredGet()
-        if( lastStoredPosition?.location_latitude ){
-            this.coords=[lastStoredPosition.location_latitude,lastStoredPosition.location_longitude]
-        }
-        /**
-         * device location got with delay so dont use it if user started search
-         */
-        const geo=await User.geo.get()
-        if(this.markDeviceOnMap && geo){
-            const {coords}=geo
-            this.coords=[coords.latitude,coords.longitude]
-            this.$flash("На карте отмечено ваше местоположение")
-        }
+        this.showed=0
+        setTimeout(async ()=>{
+            await loadYmap();
+            this.showed=1
+            document.querySelectorAll(".search input")[0].focus() 
+            const lastStoredPosition=User.geo.lastStoredGet()
+            if( lastStoredPosition?.location_latitude ){
+                this.coords=[lastStoredPosition.location_latitude,lastStoredPosition.location_longitude]
+            }
+            /**
+             * device location got with delay so dont use it if user started search
+             */
+            const geo=await User.geo.get()
+            if(this.markDeviceOnMap && geo){
+                const {coords}=geo
+                this.coords=[coords.latitude,coords.longitude]
+                this.$flash("На карте отмечено ваше местоположение")
+            }
+        },100)
     }
 });
 </script>

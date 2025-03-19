@@ -38,7 +38,7 @@ export default {
         async itemLoad(){
             try{
                 const storedOrder=JSON.parse(localStorage.shipmentDraft)
-                if(storedOrder){
+                if( storedOrder && this.$heap.getters.userIsLogged ){
                     storedOrder.deliveryCalculation=await this.itemTotalEstimate(storedOrder.order_start_location_id,storedOrder.order_finish_location_id)
                     this.order=storedOrder
                     return

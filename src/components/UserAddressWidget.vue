@@ -31,7 +31,7 @@
 </style>
 
 <template>
-  <ion-list v-if="isMainLocationSet" @click="selectDeliveryAddress()">
+  <ion-list v-if="isMainLocationSet" @click="this.$heap.state.next_route='/catalog';selectDeliveryAddress()">
       <ion-item lines="none">
         <ion-thumbnail v-if="location_shown.image_hash" slot="start" style="width:30px;height:30px">
           <ion-img :src="`${$heap.state.hostname}/image/get.php/${location_shown.image_hash}.32.32.png`" />
@@ -64,16 +64,16 @@
     </ion-card-header>
     <ion-card-content v-if="location_unconfirmed">
       <p>Ваш адрес определился как <span style="color:var(--ion-color-primary)"><b>{{location_unconfirmed.location_address}}</b></span>.</p>
-      <p>Использовать его для поиска продавцов поблизости?</p>
+      <!-- <p>Использовать его для поиска продавцов поблизости?</p> -->
       <ion-button expand="block" @click="confirmCurrentLocation()">Использовать адрес</ion-button>
     </ion-card-content>
     <ion-card-content v-else-if="isSignedIn">
-      <p>Добавьте ваш адрес доставки, чтобы видеть продавцов поблизости.</p>
-      <ion-button expand="block" @click="$go('/modal/user-addresses')">Добавить адрес</ion-button>
+      <p>Добавьте ваш адрес доставки</p>
+      <ion-button expand="block" @click="this.$heap.state.next_route='/catalog';$go('/modal/user-addresses')">Добавить адрес</ion-button>
     </ion-card-content>
     <ion-card-content v-else>
-      Рекомендуем зарегистрироваться и установить верный адрес, чтобы видеть продавцов поблизости
-      <ion-button expand="block" @click="$go('/modal/user-authorize')">Регистрация</ion-button>
+      Зарегистрируйтесь и получите максимум от сервиса
+      <ion-button expand="block" @click="this.$heap.state.next_route='/catalog';$go('/modal/user-authorize')">Регистрация</ion-button>
     </ion-card-content>
   </ion-card>
 </template>

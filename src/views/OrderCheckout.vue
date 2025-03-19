@@ -91,15 +91,6 @@
             </div>
             <order-checkout-address v-if="deliveryType=='delivery_by_store' || deliveryType=='delivery_by_courier'" :deliveryTime="deliveryTime" deliveryAddressOnly="1" :nextRoute="`/modal/order-checkout-${order_id}`"></order-checkout-address>
 
-            <!-- <ion-item  v-if="deliveryType=='delivery_by_store'" button detail="" @click="$go(`/modal/store-dmethods-${order?.store?.store_id}`)">
-                <ion-icon :icon="documentTextOutline" slot="start" color="medium"></ion-icon>
-                <ion-text style="font-size:0.9em" color="medium">
-                    Условия доставки {{order?.store?.store_name}}
-                </ion-text>
-            </ion-item> -->
-
-
-
             <ion-item-divider v-if="storeIsReady">Оплата</ion-item-divider>
             <ion-radio-group v-model="paymentType">
                 <ion-item button detail="false" v-if="tariffRule.paymentByCash==1">
@@ -238,7 +229,6 @@
 </template>
 
 <script>
-import Order    from '@/scripts/Order.js';
 import Topic    from '@/scripts/Topic.js';
 import jQuery   from 'jquery';
 
@@ -507,13 +497,13 @@ export default({
 
                 const bulkResponse=await jQuery.post(`${this.$heap.state.hostname}Order/itemCheckoutDataGet`,request)
                 this.order=bulkResponse.order||{}
-                if( this.order.stage_current!="customer_confirmed" ){
-                    this.$router.replace('/order/order-'+this.order.order_id);
+                // if( this.order.stage_current!="customer_confirmed" ){
+                //     this.$router.replace('/order/order-'+this.order.order_id);
                     
             
-                    console.log('catch')
-                    return;
-                }
+                //     console.log('catch')
+                //     return;
+                // }
 
                 this.promo=bulkResponse.Promo_itemLinkGet
                 this.promoCount=bulkResponse.Promo_listGet
@@ -523,31 +513,29 @@ export default({
                 this.errNotfound=0
                 this.bankCard=bulkResponse?.bankCard;
                 this.tariffRuleList=bulkResponse.Store_deliveryOptions
-                if( !this.tariffRule.tariff_id ){//if not set already
+                //if( !this.tariffRule.tariff_id ){//if not set already
                     this.tariffRuleSet(this.tariffRuleList[0]||{})
-                }
+                //}
                 this.is_checkout_data_loaded=1
                 if( this.order_sum_delivery==0 ){//????
                     this.order_sum_delivery=this.order.order_sum_delivery
                 }
-                // if(this.tariffRule.deliveryIsReady=='ready'){
-                //     this.deliveryTime=Utils.deliveryTimeCalculate(bulkResponse.Location_distanceHolderGet,bulkResponse.Store_preparationTime)
-                // } else {
-                //     this.deliveryTime={}
-                // }
             }
             catch(err){
                 this.is_checkout_data_loaded=1
                 const exception_code=err?.responseJSON?.messages?.error;
                 switch(exception_code){
-                    case 'too_far'://too far or address is missing
-                        this.errTooFar=1
+                    case 'not_confirmed':
+                        this.$router.replace('/order/order-'+this.order_id);
                         break;
                     case 'not_ready':
                         this.storeIsReady=0
                         break;
                     case 'no_tariff':
                         this.errNoTariff=1
+                        break;
+                    case 'too_far'://too far or address is missing
+                        this.errTooFar=1
                         break;
                     default:
                         this.errNotfound=1
@@ -589,7 +577,7 @@ export default({
 
             this.order_sum_delivery=tariffRule.order_sum_delivery
             this.paymentType='use_card'
-            if(this.bankCard?.card_type){
+            if(tariffRule.paymentByCard==1 && this.bankCard?.card_type){
                 this.paymentType='use_card_recurrent'
             } else
             if(tariffRule.paymentByCard==1){

@@ -88,7 +88,6 @@ const heap = createStore({
     }
 });
 heap.state.cartList=heap.getters.cartListRestore;
-//heap.state.cartProductWatchList={};
 
 heap.commit('cartWathcerPrepare',heap.state.cartList);
 export default heap;

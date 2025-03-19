@@ -7,10 +7,10 @@ import { Device }               from '@capacitor/device'
 import { loadYmap }             from "vue-yandex-maps";
 
 import { initializeApp }        from "firebase/app";
-import { 
-    alertController
-  }                           from '@ionic/vue';
-import router                 from '@/router';
+// import { 
+//     alertController
+//   }                           from '@ionic/vue';
+// import router                 from '@/router';
 import { 
     getMessaging, 
     getToken }                  from "firebase/messaging";

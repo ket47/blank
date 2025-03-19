@@ -15,16 +15,6 @@ ion-icon{
           <ion-label>{{ user.user_name }}</ion-label>
           <ion-icon :icon="settingsOutline" color="primary" slot="end"></ion-icon>
         </ion-item>
-        <!--<ion-item v-if="user.user_phone" lines="full">
-          <ion-icon slot="start" :icon="callOutline" color="primary" />
-          <ion-label>{{ user.user_phone }}</ion-label>
-        </ion-item>
-        <ion-item v-if="user.user_emailOutline && user.user_emailOutline !== ''">
-          <ion-thumbnail>
-            <ion-icon :icon="mailOutline"></ion-icon>
-          </ion-thumbnail>
-          <ion-label>{{ user.user_emailOutline }}</ion-label>
-        </ion-item>-->
         <ion-item v-if="isSignedIn" @click="signOut" lines="full" button detail>
             <ion-icon :icon="exitOutline" slot="start" color="primary"></ion-icon>
             <ion-label>Выйти</ion-label>
@@ -33,10 +23,6 @@ ion-icon{
             <ion-icon :icon="logInOutline" slot="start" color="primary"></ion-icon>
             <ion-label>Вход в профиль</ion-label>
         </ion-item>
-        <!-- <ion-item v-if="!isSignedIn" lines="full" button detail @click="$go('/user/sign-up')">
-            <ion-icon :icon="personAddOutline" slot="start" color="primary"></ion-icon>
-            <ion-label>Зарегистрироваться</ion-label>
-        </ion-item> -->
       </ion-list>
     </div>
     <msg-subscription-comp/>
@@ -382,7 +368,7 @@ export default {
   methods: {
     async signOut() {
       await User.signOut();
-      this.user=await User.get();
+      location.reload()
     },
     async courierStatusSet( new_status ){
       try{
