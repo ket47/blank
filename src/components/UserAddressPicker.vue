@@ -19,16 +19,21 @@
         </yandex-map>
         <div style="position: absolute;bottom: 20px;width:100%;--ion-item-background: #ffffffdd;border-radius:10px;">
             <ion-item v-for="(row,i) in suggestions" :key="i" @click="suggestionSelect(`${row.subtitle.text}, ${row.title.text}`,row.uri)" style="margin-right:10px;margin-left:10px">
-                {{row.subtitle.text}} {{row.title.text}} 
+                <p v-if="i==0">
+                    <b>{{row.subtitle.text}} {{row.title.text}} </b>
+                </p>
+                <p v-else>
+                    {{row.subtitle.text}} {{row.title.text}} 
+                </p>
                 <span slot="end" style="color:#666">{{row.distance.text}}</span>
             </ion-item>
-            <ion-searchbar debounce="500" v-model="addressSearchQuery" @ionInput="suggestionsGet()" placeholder="поиск по адресу" class="search"/>
+            <ion-searchbar debounce="500" v-model="addressSearchQuery" @ionInput="suggestionsGet()" @keyup.enter="pickAddress()" placeholder="поиск по адресу" class="search"/>
         </div>
     </ion-content>
     <ion-toolbar style="--background: white">
         <div style="width:100%;">
-            <ion-segment mode="ios" v-model="locationGroup">
-                <ion-segment-button v-for="location in locationGroupList" :key="location.group_id" :value="location">
+            <ion-segment v-if="locationGroups" mode="ios" v-model="locationGroup">
+                <ion-segment-button v-for="location in locationGroups" :key="location.group_id" :value="location">
                     <ion-img :src="`${$heap.state.hostname}/image/get.php/${location.image_hash}.60.60.png`" style="height:24px"/>
                     <ion-label>{{ location.group_name }}</ion-label>
                 </ion-segment-button>
@@ -45,6 +50,7 @@
 
 <script>
 import { 
+    modalController,
     IonContent,
     IonToolbar,
     IonButton,
@@ -52,15 +58,25 @@ import {
     IonIcon,
     IonItem,
     IonTextarea,
-    modalController,
     IonSegment,
     IonSegmentButton,
     IonImg,
     IonLabel,
 }                           from "@ionic/vue";
-import { yandexMap,ymapMarker,loadYmap }         from "vue-yandex-maps";
-import { locationOutline,closeOutline,checkmark }  from 'ionicons/icons';
-import User from '@/scripts/User.js'
+import { 
+    yandexMap,
+    ymapMarker,
+    loadYmap,
+}
+                            from "vue-yandex-maps";
+import { 
+    locationOutline,
+    closeOutline,
+    checkmark,
+}
+                            from 'ionicons/icons';
+import User 
+                            from '@/scripts/User.js'
 
 export default({
     components: {
@@ -84,10 +100,10 @@ export default({
         };
         return { closeModal, locationOutline,closeOutline,checkmark };
     },
-    props: {
-		location_group_name_low: String,
-        locationGroupList: Array
-    },
+    props: [
+		"location_group_name_low",
+        "locationGroupList"
+    ],
     data(){
         let locSettings=this.$heap.state.settings.location;
         let mapCenter=JSON.parse(locSettings.mapCenter)
@@ -102,7 +118,8 @@ export default({
             suggestions:[],
             addressSearchQuery:null,
             markDeviceOnMap:true,
-            locationGroup:this.locationGroupList[0],
+            locationGroup:this.locationGroupList?.[0]??null,
+            locationGroups:this.locationGroupList??null,
             locSettings,
             selectedPlacemark:0,
             selectedAddress:'',
@@ -114,7 +131,10 @@ export default({
     },
     computed:{
         locationType(){
-            return this.locationGroup.group_name+" адрес"
+            if(this.locationGroup){
+                return this.locationGroup.group_name+" адрес"
+            }
+            return this.location_group_name_low??"адрес"
         },
         placemarkProperties(){
             return {
@@ -125,10 +145,12 @@ export default({
     methods:{
         async pickAddress(){
             try{
+                if( this.suggestions[0]??0 ){
+                    console.log(this.coords)
+                    await this.suggestionSelect( this.suggestions[0].title.text, this.suggestions[0].uri )
+                    console.log(this.coords)
+                }
                 if( !this.selectedAddress ){
-                    if( this.suggestions[0]??0 ){
-                        this.suggestionSelect( this.suggestions[0].title.text, this.suggestions[0].uri )
-                    }
                     const result=await window.ymaps.geocode(this.coords)
                     this.selectedAddress=result.geoObjects.get(0)?.getAddressLine();                    
                 }
@@ -137,7 +159,7 @@ export default({
             }
 
             var location={
-                location_group_id:this.locationGroup.group_id,
+                location_group_id:this.locationGroup?.group_id??null,
                 location_address:this.filterAddress(this.selectedAddress),
                 location_latitude:this.coords[0],
                 location_longitude:this.coords[1],
@@ -185,7 +207,7 @@ export default({
         async suggestionSelect( address, uri ){
             this.selectedAddress=address
             this.addressSearchQuery=address
-            this.geocode(uri)
+            await this.geocode(uri)
         },
         async geocode( uri ){
             try{
