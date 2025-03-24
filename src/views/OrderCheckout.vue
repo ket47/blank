@@ -89,7 +89,7 @@
                     </ion-segment>
                 </ion-item>
             </div>
-            <order-checkout-address v-if="deliveryType=='delivery_by_store' || deliveryType=='delivery_by_courier'" :deliveryTime="deliveryTime" deliveryAddressOnly="1" :nextRoute="`/modal/order-checkout-${order_id}`"></order-checkout-address>
+            <order-checkout-address :deliveryTime="deliveryTime" deliveryAddressOnly="1" :nextRoute="`/modal/order-checkout-${order_id}`"></order-checkout-address>
 
             <ion-item-divider v-if="storeIsReady">Оплата</ion-item-divider>
             <ion-radio-group v-model="paymentType">
@@ -681,6 +681,9 @@ export default({
             if( this.deliveryByCourierRuleChecked && !await this.deliveryAddressConfirm() ){
                 return false
             }
+            // if( this.pickupByCustomerRuleChecked && !await this.pickupConfirm() ){
+            //     return false
+            // }
             this.tariffSplit()
             const orderData={
                 order_id:this.order.order_id,
@@ -838,6 +841,28 @@ export default({
             this.$go('/modal/user-addresses');
             return false
         },
+        // async pickupConfirm(){
+        //     const alert = await alertController.create({
+        //         header: 'Самовывоз',
+        //         message:"Заказ надо забрать самостоятельно",
+        //         buttons: [
+        //           {
+        //             text: 'Отмена',
+        //             role: 'cancel',
+        //           },
+        //           {
+        //             text: 'Ок',
+        //             role: 'confirm',
+        //           },
+        //         ],
+        //     });
+        //     await alert.present();
+        //     const { role } = await alert.onDidDismiss();
+        //     if( role=='confirm' ){
+        //         return true
+        //     }
+        //     return false
+        // },
         async promoPick() {
             const modal = await modalController.create({
                 component: PromoPickerComp,

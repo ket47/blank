@@ -203,7 +203,7 @@ export default {
     methods:{
         async itemCreate(){
             const request={
-                subject_template:'Без названия'
+                subject_template:''
             }
             try{
                 const mailing_id=await jQuery.post(`${this.$heap.state.hostname}Admin/Mailing/itemCreate`,request)
@@ -215,7 +215,7 @@ export default {
                 mailing_id
             }
             try{
-                const mailing_id=await jQuery.post(`${this.$heap.state.hostname}Admin/Mailing/itemCopy`,request)
+                await jQuery.post(`${this.$heap.state.hostname}Admin/Mailing/itemCopy`,request)
                 this.listGet()
             }catch{/** */}
         },
@@ -233,7 +233,6 @@ export default {
             }catch{/** */}
         },
         async listGet(){
-            var response
             this.mailingList=await Utils.prePost(`${this.$heap.state.hostname}Admin/Mailing/listGet`,{})
             try{
                 this.mailingList=await Utils.post(`${this.$heap.state.hostname}Admin/Mailing/listGet`,{})
@@ -257,7 +256,6 @@ export default {
             }, {});
         },
         listFilter(){
-            console.log(this.filter)
             this.mailingListActive = this.mailingListGrouped[this.filter.mailing_type.value] 
             for(var i in this.filter){
                 if(this.filter[i] && this.filter[i].value){
@@ -279,8 +277,7 @@ export default {
             var delta = Math.round((+new Date() - new Date(date)) / 1000);
             var minute = 60,
                 hour = minute * 60,
-                day = hour * 24,
-                week = day * 7;
+                day = hour * 24
             var fuzzy;
             if (delta < 30) {
                 fuzzy = 'Только что.';

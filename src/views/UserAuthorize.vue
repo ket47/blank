@@ -132,7 +132,7 @@
 
         <div class="vspace"></div>
         <ion-item v-if="codeResendTime>0" lines="none">
-          Вы получите код в течение {{codeArriveAt}}
+          <p>Вы получите код в течение {{codeArriveAt}}. <b v-if="codeResendTime<90">Может позвонить 🤖 робот и продиктовать код.</b></p>
         </ion-item>
         <ion-item v-else lines="none">
           Смс с кодом не пришла? <ion-chip slot="end" @click="codeSend" color="primary">Послать еще раз</ion-chip>

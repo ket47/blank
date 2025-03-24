@@ -16,67 +16,128 @@ ion-textarea.ion-invalid{
 }
 </style>
 <template>
-    <base-layout pageDefaultBackLink="/admin/mailing-list" page-title="Рассылка">
+    <base-layout pageDefaultBackLink="/admin/mailing-list" page-title="Сообщение">
         <ion-loading message="Dismissing after 3 seconds..."> </ion-loading>
-        <ion-item>
-            <ion-select label="Транспорт" label-placement="stacked" v-model="mailing.transport" @ionChange="itemSave()">
-                <ion-select-option value="push">Push</ion-select-option>
-                <ion-select-option value="email">Email</ion-select-option>
-                <ion-select-option value="sms">Sms</ion-select-option>
-                <ion-select-option value="telegram">Telegram</ion-select-option>
-            </ion-select>
-        </ion-item>
-        <ion-item>
-            <ion-toggle @ionChange="(!$event.target.checked) ? mailing.regular_group = '0' : mailing.regular_group = 'signin'; mailing.is_delayed = false; itemSave()" 
-                :checked="mailing.regular_group != '0'">
-                Регулярная рассылка
-            </ion-toggle>
-        </ion-item>
-        <div v-if="mailing.regular_group == '0'">
+        <ion-list>
             <ion-item>
-                <ion-toggle @ionChange="mailing.is_delayed = $event.target.checked" :checked="mailing.is_delayed">Отправить потом</ion-toggle>
+                <ion-toggle @ionChange="(!$event.target.checked) ? mailing.regular_group = '0' : mailing.regular_group = 'signin'; mailing.is_delayed = false; itemSave()" 
+                    :checked="mailing.regular_group != '0'">
+                    Регулярная рассылка
+                </ion-toggle>
             </ion-item>
-            <ion-item v-if="mailing.is_delayed">
-                <ion-input v-model="mailing.start_at" type="datetime-local" :min="new Date().toISOString().slice(0, -8)" label="Когда отправить?" label-placement="stacked" @ionChange="itemSave()"></ion-input>
-            </ion-item>
-        </div>
-        <div v-else>
+            <div v-if="mailing.regular_group == '0'">
+                <ion-item>
+                    <ion-toggle @ionChange="mailing.is_delayed = $event.target.checked" :checked="mailing.is_delayed">Отправить потом</ion-toggle>
+                </ion-item>
+                <ion-item v-if="mailing.is_delayed">
+                    <ion-input v-model="mailing.start_at" type="datetime-local" :min="new Date().toISOString().slice(0, -8)" label="Когда отправить?" @ionChange="itemSave()"></ion-input>
+                </ion-item>
+            </div>
+            <div v-else>
+                <ion-item>
+                    <ion-select placeholder="Группа рассылок" label="Группа рассылок"  v-model="mailing.regular_group" @ionChange="itemSave()">
+                        <ion-select-option v-for="(translation, code) in regularGroupTranslation" :value="code" :key="translation">{{ translation }}</ion-select-option>
+                    </ion-select>
+                </ion-item>
+                <ion-item>
+                    <ion-input v-model="mailing.start_at" type="time" label="Во сколько отправлять?" @ionChange="itemSave()"></ion-input>
+                </ion-item>
+            </div>
+
+            <ion-item-divider>
+                Фильтр получателей
+            </ion-item-divider>
             <ion-item>
-                <ion-select placeholder="Группа рассылок" label="Группа рассылок"  v-model="mailing.regular_group" @ionChange="itemSave()">
-                    <ion-select-option v-for="(translation, code) in regularGroupTranslation" :value="code" :key="translation">{{ translation }}</ion-select-option>
+                <ion-input v-model="mailing.user_filter.phones" name="user_filter.phones" label="Телефоны" placeholder="xxxxxxxxxxx,..."></ion-input>
+            </ion-item>
+
+            <ion-item>
+                <ion-label>Локация</ion-label>
+                <ion-button v-if="!mailing.user_filter.location" @click="modalLocationCreate()" color="light" expand="block">
+                    <ion-icon :src="locationOutline"/> Добавить адрес
+                </ion-button>
+            </ion-item>
+            <ion-item v-if="mailing.user_filter.location">
+                <ion-icon slot="start" :src="locationOutline"/>
+                <ion-label style="white-space:normal;cursor:pointer;">{{ mailing.user_filter.location.location_address }}</ion-label>
+                <ion-icon slot="end" :icon="trash" @click="locationDelete(`${mailing.user_filter.location.location_id}`)"></ion-icon>
+            </ion-item>
+            <ion-item v-if="mailing.user_filter.location" lines="none">
+                <ion-input v-model="mailing.user_filter.radius" name="user_filter.radius" label="Радиус вокруг локации км"></ion-input>
+            </ion-item>
+            <ion-item lines="none">
+                <ion-chip v-if="mailing.recieverCount.all>0">Всего {{mailing.recieverCount.all}}</ion-chip>
+                <ion-chip v-if="mailing.recieverCount.sent>0" color="success">Послано {{mailing.recieverCount.sent}}</ion-chip>
+                <ion-chip v-if="mailing.recieverCount.failed>0" color="danger">Ошибка {{mailing.recieverCount.failed}}</ion-chip>
+            </ion-item>
+            <ion-item-divider>
+                Способ доставки
+            </ion-item-divider>
+            <ion-item>
+                <ion-select label="Транспорт" v-model="mailing.transport" @ionChange="itemSave()">
+                    <ion-select-option value="push">🖼️ Push</ion-select-option>
+                    <ion-select-option value="email">📧 Email</ion-select-option>
+                    <ion-select-option value="sms">💬 Sms</ion-select-option>
+                    <ion-select-option value="telegram">🖺 Telegram</ion-select-option>
                 </ion-select>
             </ion-item>
-            <ion-item>
-                <ion-input v-model="mailing.start_at" type="time" label="Во сколько отправлять?" label-placement="stacked" @ionChange="itemSave()"></ion-input>
-            </ion-item>
-        </div>
-        <div v-if="mailing.transport">
-            <div v-if="mailing.regular_group == '0'" class="ion-text-center ion-margin-vertical">
-                <ion-button v-if="mailing.is_started == '0'" @click="itemStart()">
-                    <ion-icon slot="start" :src="playOutline"></ion-icon>
-                    <span v-if="mailing.is_delayed">Запланировать</span>
-                    <span v-else>Отправить</span>
-                </ion-button>
-                <ion-button v-else @click="itemStart()" color="warning">
-                    <ion-icon slot="start" :src="refreshOutline"></ion-icon>
-                    Перезапустить
-                </ion-button>
-            </div>
-            <div v-else  class="ion-text-center ion-margin-vertical">
-                <ion-button @click="itemStart()">
-                    <ion-icon slot="start" :src="playOutline"></ion-icon>
-                    Сохранить
-                </ion-button>
-            </div>
-        </div>
+            <ion-item-divider>
+                Содержимое 
+            </ion-item-divider>
+        </ion-list>
         <ion-grid >
             <ion-row>
-                <ion-col col="3" >
-                    <ion-item lines="none">
-                        <ion-label>Предварительный показ:</ion-label>
-                    </ion-item>
+                <ion-col size="12" size-sm="6">
+                    <ion-card>
+                        <ion-card-content>
+                        <form @change="itemSave">
+                            <ion-list lines="full">
+                                <ion-item>
+                                    <ion-input v-model="mailing.subject_template" ref="subject_template" 
+                                        placeholder="Заголовок" 
+                                        label="Заголовок" 
+                                        label-placement="stacked" 
+                                        :disabled="isSubjectDisabled" 
+                                        ></ion-input>
+                                </ion-item>
+                                <ion-item>
+                                    <ion-textarea v-model="mailing.text_template" ref="text_template" 
+                                        placeholder="Текст (обязательно)" 
+                                        label="Текст" 
+                                        label-placement="stacked"
+                                    ></ion-textarea>
+                                </ion-item>
+                                <ion-item>
+                                    <ion-input v-model="mailing.link" label="Ссылка" ref="link" 
+                                        label-placement="stacked" 
+                                        :disabled="isLinkDisabled"
+                                    ></ion-input>
+                                </ion-item>
+                                <ion-item>
+                                    <ion-select @ionChange="itemSave()" label="Рингтон" label-placement="stacked" v-model="mailing.sound" value="default"  :disabled="isRingtoneDisabled">
+                                        <ion-select-option value="">-</ion-select-option>
+                                        <ion-select-option value="default">стандарт</ion-select-option>
+                                        <ion-select-option value="short.wav">Короткий</ion-select-option>
+                                        <ion-select-option value="medium.wav">Средний</ion-select-option>
+                                        <ion-select-option value="long.wav">Длинный</ion-select-option>
+                                    </ion-select>
+                                </ion-item>
+                                <image-tile-comp :images="mailing?.images" image_holder="mailing" :image_holder_id="mailing?.mailing_id" hide_if_empty="true" controller="Admin/Mailing" ref="mailingImgs" @onChange="imageChange"/>
+                                <ion-item lines="none" @click="this.$refs.mailingImgs.take_photo()">
+                                    <ion-icon :src="addOutline" slot="start"/>
+                                    Загрузить фото
+                                </ion-item>
+                        </ion-list>
+                        </form>
+                    </ion-card-content>
+                    </ion-card>  
+                </ion-col>
+                <ion-col size="12" size-sm="6">
                     <ion-card class="preview-card" v-if="mailing.transport == 'push' || mailing.transport == 'telegram'">
                         <ion-card-header>
+                            <ion-card-subtitle>
+                                Предварительный показ
+                            </ion-card-subtitle>
                             <ion-item class="ion-no-padding" lines="none">
                                 <ion-avatar slot="start" style="--border-radius: 5px; width: 25px; height: 25px">
                                     <img src="/img/logo-full.png" />
@@ -144,93 +205,30 @@ ion-textarea.ion-invalid{
                         </ion-card-content>
                     </ion-card>
                 </ion-col>
-                <ion-col col="9">
-                    <ion-item lines="none">
-                        <ion-label>Содержимое:</ion-label>
-                    </ion-item>
-                    <ion-card>
-                        <form @change="itemSave">
-                            <ion-list lines="full">
-                                <div >
-                                <image-tile-comp :images="mailing?.images" image_holder="mailing" :image_holder_id="mailing?.mailing_id" hide_if_empty="true" controller="Admin/Mailing" ref="mailingImgs" @onChange="imageChange"/>
-                                <ion-item lines="none" @click="this.$refs.mailingImgs.take_photo()">
-                                    <ion-icon :src="addOutline" slot="start"/>
-                                    Изменить фото
-                                </ion-item>
-                                </div>
-                                <ion-item>
-                                    <ion-input v-model="mailing.subject_template" ref="subject_template" 
-                                        label="Заголовок" 
-                                        label-placement="stacked" 
-                                        :disabled="isSubjectDisabled" 
-                                        ></ion-input>
-                                </ion-item>
-                                <ion-item>
-                                    <ion-textarea v-model="mailing.text_template" ref="text_template" label="Описание" 
-                                        label-placement="stacked"
-                                    ></ion-textarea>
-                                </ion-item>
-                                <ion-item>
-                                    <ion-input v-model="mailing.link" label="Ссылка" ref="link" 
-                                        label-placement="stacked" 
-                                        :disabled="isLinkDisabled"
-                                    ></ion-input>
-                                </ion-item>
-                                <ion-item>
-                                    <ion-select @ionChange="itemSave()" label="Рингтон" label-placement="stacked" v-model="mailing.sound" value="default"  :disabled="isRingtoneDisabled">
-                                        <ion-select-option value="">-</ion-select-option>
-                                        <ion-select-option value="default">стандарт</ion-select-option>
-                                        <ion-select-option value="short.wav">Короткий</ion-select-option>
-                                        <ion-select-option value="medium.wav">Средний</ion-select-option>
-                                        <ion-select-option value="long.wav">Длинный</ion-select-option>
-                                    </ion-select>
-                                </ion-item>
-                        </ion-list>
-                        </form>  
-                    </ion-card>  
-                </ion-col>
             </ion-row>
         </ion-grid>
-        <ion-grid  v-if="mailing.regular_group == 0">
-            <ion-row>
-                <ion-col>
-                    <ion-card>
-                        <form @change="itemSave">
-                            <ion-list lines="full" v-if="mailing.user_filter">
-                                <ion-list>
-                                    <ion-item>
-                                        <ion-input v-model="mailing.user_filter.phones" name="user_filter.phones" label="Телефоны получателей" label-placement="stacked"></ion-input>
-                                    </ion-item>
-
-                                    <ion-item>
-                                        <ion-label>Локация клиентов</ion-label>
-                                    </ion-item>
-                                    <ion-item v-if="mailing.user_filter.location">
-                                        <ion-icon slot="start" :src="locationOutline"/>
-                                        <ion-label style="white-space:normal;cursor:pointer;">{{ mailing.user_filter.location.location_address }}</ion-label>
-                                        <ion-icon slot="end" :icon="trash" @click="locationDelete(`${mailing.user_filter.location.location_id}`)"></ion-icon>
-                                    </ion-item>
-                                    <ion-button v-else @click="modalLocationCreate()" color="light" expand="block">
-                                        <ion-icon :src="locationOutline"/> Добавить адрес
-                                    </ion-button>
-                                    <ion-item v-if="mailing.user_filter.location">
-                                        <ion-input v-model="mailing.user_filter.radius" name="user_filter.radius" label="Радиус вокруг локации км" label-placement="stacked"></ion-input>
-                                    </ion-item>
-                                    <ion-item>
-                                        <ion-chip v-if="mailing.recieverCount.all>0">Всего {{mailing.recieverCount.all}}</ion-chip>
-                                        <ion-chip v-if="mailing.recieverCount.sent>0" color="success">Послано {{mailing.recieverCount.sent}}</ion-chip>
-                                        <ion-chip v-if="mailing.recieverCount.failed>0" color="danger">Ошибка {{mailing.recieverCount.failed}}</ion-chip>
-                                    </ion-item>
-                                </ion-list>
-                            </ion-list>
-                        </form>
-                    </ion-card>
-                </ion-col>
-            </ion-row>
-        </ion-grid>
-        <ion-card>
+        <div class="ion-padding">
+            <div v-if="mailing.transport">
+                <div v-if="mailing.regular_group == '0'" class="ion-text-center ion-margin-vertical">
+                    <ion-button v-if="mailing.is_started == '0'" @click="itemStart()" expand="block">
+                        <ion-icon slot="start" :src="playOutline"></ion-icon>
+                        <span v-if="mailing.is_delayed">Запланировать</span>
+                        <span v-else>Отправить</span>
+                    </ion-button>
+                    <ion-button v-else @click="itemStart('restart')" color="warning" expand="block">
+                        <ion-icon slot="start" :src="refreshOutline"></ion-icon>
+                        Перезапустить
+                    </ion-button>
+                </div>
+                <div v-else  class="ion-text-center ion-margin-vertical">
+                    <ion-button @click="itemStart()" expand="block">
+                        <ion-icon slot="start" :src="saveOutline"></ion-icon>
+                        Сохранить
+                    </ion-button>
+                </div>
+            </div>            
             <ion-button @click="itemDelete()" color="danger" fill="clear" expand="block">Удалить</ion-button>
-        </ion-card>
+        </div>
     </base-layout>
 </template>
 <script>
@@ -257,7 +255,9 @@ import {
     IonAvatar,
     IonNote,
     IonSkeletonText,
-    IonLoading  
+    IonLoading,  
+    IonCardSubtitle,
+    IonItemDivider,
  }                          from '@ionic/vue';
  import {
     addOutline,
@@ -265,6 +265,7 @@ import {
     imageOutline,
     closeOutline,
     playOutline,
+    saveOutline,
     locationOutline,
     trash,
  }                          from "ionicons/icons";
@@ -297,7 +298,9 @@ export default {
         IonAvatar,
         IonNote,
         IonSkeletonText,
-        IonLoading 
+        IonLoading,
+        IonCardSubtitle,
+        IonItemDivider,
     },
     setup(){
         return {
@@ -306,6 +309,7 @@ export default {
             imageOutline,
             closeOutline,
             playOutline,
+            saveOutline,
             locationOutline,
             trash,
         }
@@ -314,7 +318,14 @@ export default {
         return{
             openedAccordion:'message',
             mailingId: this.$route.params.id,
-            mailing:{},
+            mailing:{
+                transport:'push',
+                regular_group:0,
+                is_started:0,
+                sound:null,
+                user_filter:{},
+                recieverCount:0,
+            },
             saveClock:null,
             regularGroupTranslation: {
                 cart23: 'Корзина брошена сутки',
@@ -383,7 +394,7 @@ export default {
         },
         async itemUpdate(){
             let request=this.mailing
-            if(request.regular_group !== '0' && request.start_at.length < 10){
+            if(request.regular_group !== '0' && request.start_at?.length < 10){
                 request.start_at = '1999-07-01 '+request.start_at+':00';
             }
             try{
@@ -407,41 +418,52 @@ export default {
             }catch{/** */}
         },
         itemValidate(){
-            if(!this.mailing.start_at){
+            if( this.mailing.is_delayed && !this.mailing.start_at ){
                 alert(`Начало рассылки не заполнено`)
                 return
             }
-            if(this.mailing.regular_group == 0 && !this.mailing.user_filter.phones){
+            if( this.mailing.regular_group == 0 && !this.mailing?.user_filter?.phones){
                 alert(`Получатели не заполнены`)
                 return
             }
-            if(!this.mailing.subject_template){
+            if( !this.mailing.subject_template && this.mailing.transport=='email' ){
                 alert(`Заголовок не заполнен`)
                 return
             }
-            if(!this.mailing.text_template){
+            if( !this.mailing.text_template ){
                 this.$refs.text_template.$el.classList.add('ion-invalid');
                 alert(`Содержание не заполнено`)
                 return
             }
-            if(!this.mailing.transport){
+            if( !this.mailing.transport ){
                 alert(`Транспорт не заполнен`)
                 return
             }
             return true
         },
-        async itemStart(){
+        async itemStart( mode='' ){
             //await this.$alert(this.mailing.text_template,this.mailing.subject_template)
             if(!this.itemValidate() || !confirm(`Запустить рассылку в ${this.mailing.start_at}?`)){
                 return
             }
             const request={
-                mailing_id:this.mailing.mailing_id
+                mailing_id:this.mailing.mailing_id,
+                mode
             }
             try{
                 await jQuery.post(`${this.$heap.state.hostname}Admin/Mailing/itemStart`,request)
                 this.itemGet()
-            }catch{/** */}
+            }catch(err){
+                const exception_code=err?.responseJSON?.messages?.error;
+                    switch(exception_code){
+                        case 'empty_recievers':
+                            this.$flash("Нет получателей рассылки. Проверьте фильтр")
+                            break;
+                        default:
+                            this.$flash("Отправка не удалась")
+                    }
+                    return false
+            }
         },
         async modalLocationCreate() {
             if(!this.$heap.state.user.user_id){

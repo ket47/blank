@@ -138,7 +138,7 @@
           <ion-input v-model="storeItem.store_tax_num" name="store_tax_num" label="ИНН *" label-placement="stacked"></ion-input>
         </ion-item>
         <ion-item v-if="storeItem.store_company_name">
-          <ion-label position="stacked" color="primary">Название предприятия (ООО, ИП и т.д.)</ion-label>
+          <ion-label position="stacked" color="primary">Юридическое название (ООО, ИП и т.д.)</ion-label>
           <ion-text>
             {{storeItem.store_company_name}}
             <div>
@@ -147,7 +147,7 @@
           </ion-text>
         </ion-item>
         <ion-item v-if="storeItem.store_company_name_new||!storeItem.store_company_name">
-          <ion-textarea v-model="storeItem.store_company_name_new" name="store_company_name_new" label="Название предприятия непроверенное *" label-placement="stacked"></ion-textarea>
+          <ion-textarea v-model="storeItem.store_company_name_new" name="store_company_name_new" label="Юридическое название (ООО, ИП и т.д.) *" label-placement="stacked"></ion-textarea>
           <ion-icon v-if="isAdmin" :icon="checkmarkCircleOutline" slot="end" color="success" @click="fieldApprove('store_company_name')"/>
         </ion-item>
         <ion-item>
