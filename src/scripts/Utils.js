@@ -71,7 +71,7 @@ const Utils={
             if (mode === 'future' && diff <= 0) {
                 return 'Почти на месте';
             } else if (mode === 'past' && diff > 0) {
-                return 'Еще не наступило';
+                return 'Ожидание';
             }
             const date = new Date(unixTime * 1000);
             const year = date.getFullYear();
@@ -84,7 +84,7 @@ const Utils={
                 const days = diff / 86400;
 
                 if (days >= 1) {
-                    return `Завтра, в ${hours}:${minutes}`;
+                    return date.toLocaleString();
                 } else if (hours >= 3) {
                     return `Через ${Math.floor(hours)} ч.`;
                 } else if (hours >= 2.5) {

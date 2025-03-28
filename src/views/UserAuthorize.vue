@@ -212,7 +212,7 @@
               type="date"
               placeholder=""
               required
-              label="День рождения"
+              label="День рождения (желательно заполнить)"
               label-placement="stacked"
             ></ion-input>
           </ion-item>

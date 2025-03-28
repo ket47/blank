@@ -20,6 +20,7 @@ ion-textarea.ion-invalid{
         <ion-loading message="Dismissing after 3 seconds..."> </ion-loading>
         <ion-list>
             <ion-item>
+                <ion-icon slot="start" :src="layersOutline"/>
                 <ion-toggle @ionChange="(!$event.target.checked) ? mailing.regular_group = '0' : mailing.regular_group = 'signin'; mailing.is_delayed = false; itemSave()" 
                     :checked="mailing.regular_group != '0'">
                     Регулярная рассылка
@@ -27,9 +28,11 @@ ion-textarea.ion-invalid{
             </ion-item>
             <div v-if="mailing.regular_group == '0'">
                 <ion-item>
+                    <ion-icon slot="start" :src="alarmOutline"/>
                     <ion-toggle @ionChange="mailing.is_delayed = $event.target.checked" :checked="mailing.is_delayed">Отправить потом</ion-toggle>
                 </ion-item>
                 <ion-item v-if="mailing.is_delayed">
+                    <ion-icon slot="start" :src="alarmOutline"/>
                     <ion-input v-model="mailing.start_at" type="datetime-local" :min="new Date().toISOString().slice(0, -8)" label="Когда отправить?" @ionChange="itemSave()"></ion-input>
                 </ion-item>
             </div>
@@ -40,6 +43,7 @@ ion-textarea.ion-invalid{
                     </ion-select>
                 </ion-item>
                 <ion-item>
+                    <ion-icon slot="start" :src="alarmOutline"/>
                     <ion-input v-model="mailing.start_at" type="time" label="Во сколько отправлять?" @ionChange="itemSave()"></ion-input>
                 </ion-item>
             </div>
@@ -48,24 +52,27 @@ ion-textarea.ion-invalid{
                 Фильтр получателей
             </ion-item-divider>
             <ion-item>
-                <ion-input v-model="mailing.user_filter.phones" name="user_filter.phones" label="Телефоны" placeholder="xxxxxxxxxxx,..."></ion-input>
-            </ion-item>
-
-            <ion-item>
-                <ion-label>Локация</ion-label>
-                <ion-button v-if="!mailing.user_filter.location" @click="modalLocationCreate()" color="light" expand="block">
-                    <ion-icon :src="locationOutline"/> Добавить адрес
-                </ion-button>
+                <ion-icon slot="start" :src="callOutline"/>
+                <ion-input v-model="mailing.user_filter.phones" name="user_filter.phones" label="Телефоны" @ionChange="itemSave($event)" placeholder="xxxxxxxxxxx,..."></ion-input>
             </ion-item>
             <ion-item v-if="mailing.user_filter.location">
                 <ion-icon slot="start" :src="locationOutline"/>
                 <ion-label style="white-space:normal;cursor:pointer;">{{ mailing.user_filter.location.location_address }}</ion-label>
                 <ion-icon slot="end" :icon="trash" @click="locationDelete(`${mailing.user_filter.location.location_id}`)"></ion-icon>
             </ion-item>
+            <ion-item v-else>
+                <ion-icon slot="start" :src="locationOutline"/>
+                <ion-label>Локация</ion-label>
+                <ion-button v-if="!mailing.user_filter.location" @click="modalLocationCreate()" color="light" expand="block">
+                    <ion-icon :src="locationOutline"/> Добавить адрес
+                </ion-button>
+            </ion-item>
             <ion-item v-if="mailing.user_filter.location" lines="none">
+                <ion-icon slot="start" :src="locateOutline"/>
                 <ion-input v-model="mailing.user_filter.radius" name="user_filter.radius" label="Радиус вокруг локации км"></ion-input>
             </ion-item>
             <ion-item lines="none">
+                <ion-icon slot="start" :src="pieChartOutline"/>
                 <ion-chip v-if="mailing.recieverCount.all>0">Всего {{mailing.recieverCount.all}}</ion-chip>
                 <ion-chip v-if="mailing.recieverCount.sent>0" color="success">Послано {{mailing.recieverCount.sent}}</ion-chip>
                 <ion-chip v-if="mailing.recieverCount.failed>0" color="danger">Ошибка {{mailing.recieverCount.failed}}</ion-chip>
@@ -74,6 +81,7 @@ ion-textarea.ion-invalid{
                 Способ доставки
             </ion-item-divider>
             <ion-item>
+                <ion-icon slot="start" :src="mailOutline"/>
                 <ion-select label="Транспорт" v-model="mailing.transport" @ionChange="itemSave()">
                     <ion-select-option value="push">🖼️ Push</ion-select-option>
                     <ion-select-option value="email">📧 Email</ion-select-option>
@@ -133,25 +141,21 @@ ion-textarea.ion-invalid{
                     </ion-card>  
                 </ion-col>
                 <ion-col size="12" size-sm="6">
+                    <h4>Предварительный показ</h4>
                     <ion-card class="preview-card" v-if="mailing.transport == 'push' || mailing.transport == 'telegram'">
-                        <ion-card-header>
-                            <ion-card-subtitle>
-                                Предварительный показ
-                            </ion-card-subtitle>
+                        <ion-card-content>
                             <ion-item class="ion-no-padding" lines="none">
                                 <ion-avatar slot="start" style="--border-radius: 5px; width: 25px; height: 25px">
-                                    <img src="/img/logo-full.png" />
+                                    <img src="/img/icons/monochrome.png" />
                                 </ion-avatar>
                                 <ion-label>
-                                    <ion-note  style="font-size: 12px;">Tezkel</ion-note>
+                                    <ion-note  style="font-size: 12px;">Tezkel 00:00</ion-note>
+                                    <div>
+                                        <b style="font-size: 14px;">{{ mailing.subject_template }}</b>
+                                        <span class="max-two-lines">{{ mailing.text_template }}</span>
+                                    </div>
                                 </ion-label>
                             </ion-item>
-                        </ion-card-header>
-                        <ion-card-content style="padding-left: 55px;">
-                            <div>
-                                <ion-card-title style="font-size: 14px;"><b>{{ mailing.subject_template }}</b></ion-card-title>
-                                <span class="max-two-lines">{{ mailing.text_template }}</span>
-                            </div>
                             <div style="max-height: 200px; overflow: hidden; border-radius: 5px; margin-top: 5px;">
                                 <img v-if="mailing.image" :src="mailing.image"/>
                             </div>
@@ -256,7 +260,6 @@ import {
     IonNote,
     IonSkeletonText,
     IonLoading,  
-    IonCardSubtitle,
     IonItemDivider,
  }                          from '@ionic/vue';
  import {
@@ -267,7 +270,13 @@ import {
     playOutline,
     saveOutline,
     locationOutline,
+    callOutline,
+    locateOutline,
     trash,
+    mailOutline,
+    pieChartOutline,
+    alarmOutline,
+    layersOutline,
  }                          from "ionicons/icons";
 import jQuery               from 'jquery'
 import ImageTileComp        from '@/components/ImageTileComp.vue'
@@ -299,7 +308,6 @@ export default {
         IonNote,
         IonSkeletonText,
         IonLoading,
-        IonCardSubtitle,
         IonItemDivider,
     },
     setup(){
@@ -312,6 +320,12 @@ export default {
             saveOutline,
             locationOutline,
             trash,
+            callOutline,
+            locateOutline,
+            mailOutline,
+            pieChartOutline,
+            alarmOutline,
+            layersOutline,
         }
     },
     data(){
@@ -509,7 +523,7 @@ export default {
             }
         }
     },
-    ionViewDidEnter(){
+    mounted(){
         this.itemGet()
     },
 }

@@ -4,6 +4,8 @@
         --padding:15px;
         --icon-color: var(--ion-color-primary);
         --placeholder-color: var(--ion-color-primary);
+        --border-radius:0px !important;
+        margin-top: -11px;
     }
 </style>
 
@@ -17,16 +19,18 @@
         >
             <ymap-marker :coords="coords" marker-id="1" :properties="placemarkProperties"/>
         </yandex-map>
-        <div style="position: absolute;bottom: 20px;width:100%;--ion-item-background: #ffffffdd;border-radius:10px;">
-            <ion-item v-for="(row,i) in suggestions" :key="i" @click="suggestionSelect(`${row.subtitle.text}, ${row.title.text}`,row.uri)" style="margin-right:10px;margin-left:10px">
-                <p v-if="i==0">
-                    <b>{{row.subtitle.text}} {{row.title.text}} </b>
-                </p>
-                <p v-else>
-                    {{row.subtitle.text}} {{row.title.text}} 
-                </p>
-                <span slot="end" style="color:#666">{{row.distance.text}}</span>
-            </ion-item>
+        <div style="position: absolute;bottom: 10px;width:100%;">
+            <div style="margin-left:12px;margin-right:12px;background-color: #ffffffdd;--ion-item-background: #ffffff00;border-top-left-radius:10px;border-top-right-radius:10px;">
+                <ion-item v-for="(row,i) in suggestions" :key="i" @click="suggestionSelect(`${row.subtitle.text}, ${row.title.text}`,row.uri)" lines="full">
+                    <p v-if="i==0">
+                        <b>{{row.subtitle.text}} {{row.title.text}} </b>
+                    </p>
+                    <p v-else>
+                        {{row.subtitle.text}} {{row.title.text}} 
+                    </p>
+                    <span slot="end" style="color:#666">{{row.distance.text}}</span>
+                </ion-item>
+            </div>
             <ion-searchbar debounce="500" v-model="addressSearchQuery" @ionInput="suggestionsGet()" @keyup.enter="pickAddress()" placeholder="поиск по адресу" class="search"/>
         </div>
     </ion-content>
@@ -34,16 +38,20 @@
         <div style="width:100%;">
             <ion-segment v-if="locationGroups" mode="ios" v-model="locationGroup">
                 <ion-segment-button v-for="location in locationGroups" :key="location.group_id" :value="location">
-                    <ion-img :src="`${$heap.state.hostname}/image/get.php/${location.image_hash}.60.60.png`" style="height:24px"/>
+                    <ion-img :src="`${$heap.state.hostname}/image/get.php/${location.image_hash}.40.40.png`" style="height:18px"/>
                     <ion-label>{{ location.group_name }}</ion-label>
                 </ion-segment-button>
             </ion-segment>
-            <ion-textarea label="комментарий к адресу" label-placement="floating" v-model="addressComment"></ion-textarea>
-            <ion-button :strong="true" @click="pickAddress()" color="primary" expand="block">
-                <ion-icon :src="checkmark" slot="start"/>
-                Ок
-            </ion-button>
-            <ion-button @click="closeModal()" color="light" expand="block">Закрыть</ion-button>
+            <ion-input label="комментарий к адресу" label-placement="floating" v-model="addressComment"></ion-input>
+            <div style="display:grid;grid-template-columns:1fr 1fr">
+                <ion-button @click="closeModal()" color="light" expand="block">
+                    <ion-icon :src="closeOutline" slot="start"/>
+                    Закрыть
+                </ion-button>                
+                <ion-button :strong="true" @click="pickAddress()" color="primary" expand="block">
+                    <ion-icon :src="checkmark" slot="start"/>Ок
+                </ion-button>
+            </div>
         </div>
     </ion-toolbar>
 </template>
@@ -57,7 +65,7 @@ import {
     IonSearchbar,
     IonIcon,
     IonItem,
-    IonTextarea,
+    IonInput,
     IonSegment,
     IonSegmentButton,
     IonImg,
@@ -86,7 +94,7 @@ export default({
     IonSearchbar,
     IonIcon,
     IonItem,
-    IonTextarea,
+    IonInput,
     IonSegment,
     IonSegmentButton,
     IonImg,
@@ -197,7 +205,7 @@ export default({
             try{
                 const sapikey=this.$heap.state.settings.location.ymapSuggestionApiKey
                 const ll=this.coords.slice().reverse().join(',')
-                const response= await fetch(`https://suggest-maps.yandex.ru/v1/suggest?apikey=${sapikey}&lang=ru_RU&ll=${ll}&spn=1,1&attrs=uri&types=house&results=5&text=${this.addressSearchQuery}`)
+                const response= await fetch(`https://suggest-maps.yandex.ru/v1/suggest?apikey=${sapikey}&results=3&lang=ru_RU&ll=${ll}&spn=1,1&attrs=uri&types=house&results=5&text=${this.addressSearchQuery}`)
                 const responseData=await response.json()
                 this.suggestions=responseData.results||[]
             }catch{

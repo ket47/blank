@@ -5,12 +5,6 @@
 </style>
 <template>
     <base-layout pageDefaultBackLink="/user" page-title="Рассылка">
-        <ion-list>
-            <ion-item button @click="itemCreate()">
-                <ion-icon slot="start" :src="addOutline"/>
-                <ion-label>Добавить Рассылку</ion-label>
-            </ion-item>
-        </ion-list>
         <ion-segment value="blank" scrollable swipe-gesture="true" v-model="filter.mailing_type.value">
             <ion-segment-button value="blank">
                 <ion-label>Неопубликованные <ion-badge >{{mailingListGrouped.blank?.length}}</ion-badge></ion-label>
@@ -23,24 +17,32 @@
             </ion-segment-button>
         </ion-segment>
         <ion-list>
-                    <ion-list slot="content">
-                        <ion-item >
-                            <ion-input placeholder="Название" show-clear-button="always" v-model="filter.subject_template.value" @ionInput="listFilter()"/>
-                        </ion-item>
-                        <ion-item>
-                            <ion-select placeholder="Транспорт" label="Транспорт" v-model="filter.transport.value" @ionChange="listFilter()" :multiple="filter.transport.multiple">
-                                <ion-select-option value="push">Push</ion-select-option>
-                                <ion-select-option value="email">Email</ion-select-option>
-                                <ion-select-option value="telegram">Telegram</ion-select-option>
-                                <ion-select-option value="sms">Sms</ion-select-option>
-                            </ion-select>
-                        </ion-item>
-                        <ion-item v-if="filter.mailing_type.value == 'repeated'">
-                            <ion-select placeholder="Группа рассылок" label="Группа рассылок"  v-model="filter.regular_group.value" @ionChange="listFilter()" :multiple="filter.regular_group.multiple">
-                                <ion-select-option v-for="(translation, code) in regularGroupTranslation" :value="code" :key="translation">{{ translation }}</ion-select-option>
-                            </ion-select>
-                        </ion-item>
-                    </ion-list>
+            <ion-item lines="none" button @click="itemCreate()">
+                <ion-icon slot="start" :src="addOutline"/>
+                <ion-label>Добавить Рассылку</ion-label>
+            </ion-item>
+            <ion-item lines="none">
+                <ion-icon slot="start" :src="mailOutline"/>
+                <ion-select placeholder="Транспорт" label="Фильтр по типу" v-model="filter.transport.value" @ionChange="listFilter()" :multiple="filter.transport.multiple">
+                    <ion-select-option value="push">Push</ion-select-option>
+                    <ion-select-option value="email">Email</ion-select-option>
+                    <ion-select-option value="telegram">Telegram</ion-select-option>
+                    <ion-select-option value="sms">Sms</ion-select-option>
+                </ion-select>
+            </ion-item>
+            <ion-item lines="none" v-if="filter.mailing_type.value == 'repeated'">
+                <ion-select placeholder="Группа рассылок" label="Группа рассылок"  v-model="filter.regular_group.value" @ionChange="listFilter()" :multiple="filter.regular_group.multiple">
+                    <ion-select-option v-for="(translation, code) in regularGroupTranslation" :value="code" :key="translation">{{ translation }}</ion-select-option>
+                </ion-select>
+            </ion-item>
+            <ion-item lines="none">
+                <ion-searchbar placeholder="Поиск" show-clear-button="always" v-model="filter.subject_template.value" @ionInput="listFilter()"/>
+            </ion-item>
+        </ion-list>
+        <ion-item-divider>
+            Рассылки
+        </ion-item-divider>
+        <ion-list v-if="mailingListActive">
             <ion-item v-for="mailing in mailingListActive" :key="`${mailing.subject_template}_${mailing.mailing_id}`">
                 <ion-label  @click="$go(`/admin/mailing-edit-${mailing.mailing_id}`)">
                     <ion-note v-if="mailing.mailing_type == 'finished'" color="medium" class="ion-text-wrap"  style="font-size: 12px">{{ mailing.start_at_humanized }}</ion-note><br />
@@ -80,6 +82,9 @@
                 </div>
             </ion-item>
         </ion-list>
+        <ion-list v-else>
+            <ion-item>Список пуст</ion-item>
+        </ion-list>
     </base-layout>
 </template>
 <script>
@@ -99,7 +104,8 @@ import {
   IonChip,
   IonSelect,
   IonSelectOption,
-  IonInput
+  IonSearchbar,
+  IonItemDivider,
  }                          from '@ionic/vue';
  import {
     addOutline,
@@ -137,7 +143,8 @@ export default {
         IonChip,
         IonSelect,
         IonSelectOption,
-        IonInput
+        IonSearchbar,
+        IonItemDivider,
     },
     setup(){
         return {
@@ -257,6 +264,9 @@ export default {
         },
         listFilter(){
             this.mailingListActive = this.mailingListGrouped[this.filter.mailing_type.value] 
+            if(!this.mailingListActive){
+                return
+            }
             for(var i in this.filter){
                 if(this.filter[i] && this.filter[i].value){
                     if(this.filter[i].multiple){
