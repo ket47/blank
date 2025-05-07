@@ -25,7 +25,7 @@
             </a>
         </ion-item>
         <ion-item>
-            <h6 v-if="job.finish_plan_scheduled_date">Привезти к {{job.finish_plan_scheduled_date}} (⏰ Запланирован)</h6>
+            <h6 v-if="finish_plan_scheduled_date_full">Привезти к {{finish_plan_scheduled_date_full}} (⏰ Запланирован)</h6>
             <h6 v-else>Привезти до {{job.finish_plan_date}}</h6>
         </ion-item>
         <ion-item>
@@ -108,15 +108,16 @@ export default({
             this.confirmed=1
         }
     },
-    // computed:{
-    //     finish_plan_scheduled_date(){
-    //         if( !job.finish_plan_scheduled ){
-    //             return null
-    //         }
-    //         const finish_plan_scheduled = new Date(job.finish_plan_scheduled*1000)
-    //         return finish_plan_scheduled.toLocaleDateString(undefined, { month: 'numeric', day: 'numeric',hour:'numeric',minute:'numeric' })
-    //     }
-    // },
+    computed:{
+        finish_plan_scheduled_date_full(){
+            console.log(this.job)
+            if( !this.job.finish_plan_scheduled ){
+                return null
+            }
+            const finish_plan_scheduled = new Date(this.job.finish_plan_scheduled*1000)
+            return finish_plan_scheduled.toLocaleDateString(undefined, { month: 'short',year: 'numeric', day: 'numeric',hour:'numeric',minute:'numeric' })
+        }
+    },
     methods:{
         async jobTake(){
             try{
