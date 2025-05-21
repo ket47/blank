@@ -34,7 +34,7 @@ ion-avatar{
             <ion-icon v-if="editMode" slot="end" :icon="settingsSharp" color="primary"/>
             <ion-icon v-else slot="end" :icon="settingsOutline"/>
         </ion-item>
-        <div class="image_grid" v-if="imageList?.length">
+        <div v-if="imageList?.length" class="image_grid">
             <div v-for="img in imageList" :key="img.image_id" style="position:relative">
                 <div style="position: absolute; top:0px;background-color:#fffc;font-size:0.75em"  @click="imagePreview(img.image_hash)">
                     <div v-if="img.deleted_at">будет удалено</div>

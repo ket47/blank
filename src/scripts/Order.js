@@ -12,7 +12,7 @@ const Order = {
         async itemGet(order_id){
             const debounce=500
             const order= await Utils.post( heap.state.hostname + "Order/itemGet",{order_id},debounce )
-            if( order.stage_current=='customer_cart' && order.user_role=='customer' ){
+            if( order.stage_current=='customer_cart' && order.owner_id==heap.state.user.user_id ){
                 const cart={
                     order_store_id:order.order_store_id,
                     order_id:order.order_id,
@@ -191,25 +191,25 @@ const Order = {
             return Order.cart.itemCreate(store_id,entries);
         },
         async itemCreate(store_id,entries){
-            let store_name='';
+            let store=null
             if( heap.state.currentStore && heap.state.currentStore.store_id== store_id ){
-                store_name=heap.state.currentStore.store_name;
+                store=heap.state.currentStore;
             } else {
                 try{
-                    const store=await jQuery.get(heap.state.hostname+'Store/itemGet',{store_id,mode:'basic'})
-                    store_name=store.store_name
+                    store=await jQuery.get(heap.state.hostname+'Store/itemGet',{store_id,mode:'basic'})
                 }catch{/** */}
             }
+            this.itemCreateTomorrowAlert(store)
             const date=new Date();
             const cart={
                 order_store_id:store_id,
                 order_id:-store_id,
-                store:{store_name:store_name},
+                store:{store_name:store.store_name},
                 entries:entries||[],
                 created_at:date.toISOString().replace(/[T]/g,' ').replace(/.\d\d\dZ/,''),
                 stage_next:{
                     "customer_confirmed": ["Перейти к оформлению"],
-                    "customer_deleted": ["Удалить","danger","clear"],
+                    "customer_deleted": ["Удалить","medium","clear"],
                 },
                 stage_current:'customer_cart',
                 user_role:'customer',
@@ -217,6 +217,27 @@ const Order = {
             heap.state.cartList.push(cart);
             Order.cart.listSave();
             return store_id;
+        },
+        itemCreateTomorrowAlert(store){
+            const date=new Date()
+            const dayIndex=(date.getDay()+6)%7//monday is 0
+            const dayMinutes=date.getMinutes()
+            const closeHour=store[`store_time_closes_${dayIndex}`]
+            if( store.is_working!=1 || store.is_disabled==1 || closeHour==null ){
+                //alert in margin
+                alert(`"${store.store_name}" сегодня не работает.\n\nВы можете оформить заказ в другом заведении`)
+                return
+            }
+            const marginMinutes=40
+
+            const nowHour=date.getHours()
+            const leftHour=closeHour-1-nowHour
+            if( leftHour>0 || leftHour==0 && (60-marginMinutes > dayMinutes)){
+                // no need to alert
+                return
+            }
+            if( closeHour )
+                alert(`"${store.store_name}" закрывается в ${closeHour}, сможем доставить на следующий день.\n\nВы можете оформить заказ в другом заведении`)
         },
         itemUpdate(store_id,entries=null,properties=null){
             const existingOrder=this.itemGetByStoreId(store_id);

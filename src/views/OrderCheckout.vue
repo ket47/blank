@@ -93,15 +93,13 @@
 
             <ion-item-divider v-if="storeIsReady">Оплата</ion-item-divider>
             <ion-radio-group v-model="paymentType">
-                <ion-item button detail="false" v-if="tariffRule.paymentByCash==1">
-                    <ion-icon :icon="cashOutline" slot="start" color="medium"></ion-icon>
-                    <ion-radio value="use_cash">Наличными курьеру</ion-radio>
-                </ion-item>
-                <ion-item button detail="false" v-if="tariffRule.paymentByCashStore==1">
-                    <ion-icon :icon="cashOutline" slot="start" color="medium"></ion-icon>
-                    <ion-radio value="use_cash_store">Наличными продавцу</ion-radio>
-                </ion-item>
                 <div v-if="tariffRule.paymentByCard==1">
+                    <ion-item v-if="sbpPaymentAllow" detail="false" button>
+                        <ion-img style="width:22px;height: auto;" :src="`/img/icons/card-sbp.svg`" slot="start"/>
+                        <ion-radio value="use_card_sbp">
+                            СБП быстрая оплата
+                        </ion-radio>
+                    </ion-item>
                     <ion-item detail="false" button>
                         <ion-icon :icon="cardOutline" slot="start" color="medium"></ion-icon>
                         <ion-radio value="use_card">
@@ -115,6 +113,7 @@
                             Сохраненная карта {{bankCardCalc.label}}
                         </ion-radio>
                     </ion-item>
+                    <!--reducing row count and complexity
                     <ion-item v-if="bankCardCalc?.card_type" button detail @click="$go('/user/user-cards')">
                         <ion-label color="medium">Выбрать другую карту</ion-label>
                     </ion-item>
@@ -122,12 +121,21 @@
                         <ion-icon :icon="addOutline" slot="start" color="medium"></ion-icon>
                         <ion-label color="medium">Добавить карту</ion-label>
                     </ion-item>
+                    -->
                 </div>
+                <ion-item button detail="false" v-if="tariffRule.paymentByCash==1">
+                    <ion-icon :icon="cashOutline" slot="start" color="medium"></ion-icon>
+                    <ion-radio value="use_cash">Наличными курьеру</ion-radio>
+                </ion-item>
+                <ion-item button detail="false" v-if="tariffRule.paymentByCashStore==1">
+                    <ion-icon :icon="cashOutline" slot="start" color="medium"></ion-icon>
+                    <ion-radio value="use_cash_store">Наличными продавцу</ion-radio>
+                </ion-item>
             </ion-radio-group>
 
             <div v-if="order_sum_total>0">
             <ion-item-divider>Итог</ion-item-divider>
-            <div v-if="deliveryByCourierRuleChecked && (paymentType=='use_card' || paymentType=='use_card_recurrent')">
+            <div v-if="deliveryByCourierRuleChecked && ['use_card','use_card_sbp','use_card_recurrent'].includes(paymentType)">
                 <ion-item v-if="promo" button @click="promoPick()" color="success">
                     <div slot="start">
                         <ion-icon :icon="giftOutline" color="medium" style="font-size:1.5em"></ion-icon>
@@ -150,7 +158,7 @@
                         <ion-icon :icon="giftOutline" color="medium" style="font-size:1.5em"></ion-icon>
                     </div>
                     <ion-text color="medium">
-                    Скидка доступна при доставке <b>{{$heap.state.settings?.app_title}}</b> и оплате картой
+                    Выберите доставит <b>{{$heap.state.settings?.app_title}}</b> и оплату картой, чтобы использовать скидку
                     </ion-text>
                 </ion-item>
             </div>
@@ -211,7 +219,7 @@
             Выбрать время
         </ion-button>
         <ion-button v-else-if="errTooFar==1" expand="block" @click="$go('/modal/user-addresses/');$heap.state.next_route=`/modal/order-checkout-${order_id}`">Выбрать адрес</ion-button>
-        <ion-button v-else-if="paymentType=='use_card' || paymentType=='use_card_recurrent'" expand="block" @click="proceed()" :disabled="checkoutError">Оплатить</ion-button>
+        <ion-button v-else-if="['use_card','use_card_sbp','use_card_recurrent'].includes(paymentType)" expand="block" @click="proceed()" :disabled="checkoutError">Оплатить</ion-button>
         <ion-button v-else expand="block" @click="proceed()" :disabled="checkoutError">Заказать</ion-button>
     </div>
     <div v-else>
@@ -231,6 +239,7 @@
 <script>
 import Topic    from '@/scripts/Topic.js';
 import jQuery   from 'jquery';
+import Order                from '@/scripts/Order.js';
 
 import ordersIcon   from "@/assets/icons/orders.svg";
 import { 
@@ -344,6 +353,7 @@ export default({
             tariffRule:{},
             tariffRuleList:[],
             recurrentPaymentAllow:this.$heap.state.settings?.other?.recurrentPaymentAllow==1?1:0,
+            sbpPaymentAllow:this.$heap.state.settings?.other?.sbpPaymentAllow==1?1:0,
 
             deliveryFinishScheduled:null,
             routePlanMode:'inited',
@@ -470,6 +480,7 @@ export default({
         this.$topic.on('settingsGet',(settings)=>{
             this.can_load_at=0
             this.recurrentPaymentAllow=settings?.other?.recurrentPaymentAllow
+            this.sbpPaymentAllow=settings?.other?.sbpPaymentAllow
         })        
     },
     ionViewDidEnter(){
@@ -487,6 +498,12 @@ export default({
         },
         async itemCheckoutDataGet(){
             if(this.debounce()){
+                return
+            }
+            /**
+             * reject loading if not in this page currently
+             */
+            if(this.$route.href.indexOf('order-checkout')==-1){
                 return
             }
             try{
@@ -513,9 +530,12 @@ export default({
                 this.errNotfound=0
                 this.bankCard=bulkResponse?.bankCard;
                 this.tariffRuleList=bulkResponse.Store_deliveryOptions
-                //if( !this.tariffRule.tariff_id ){//if not set already
+                if( !this.tariffRule.tariff_id ){//if not set already
+                    /**
+                     * set only if not set. promo selection may reset all form otherwise
+                     */
                     this.tariffRuleSet(this.tariffRuleList[0]||{})
-                //}
+                }
                 this.is_checkout_data_loaded=1
                 if( this.order_sum_delivery==0 ){//????
                     this.order_sum_delivery=this.order.order_sum_delivery
@@ -582,6 +602,9 @@ export default({
             } else
             if(tariffRule.paymentByCard==1){
                 this.paymentType='use_card'
+                if(this.sbpPaymentAllow){
+                    this.paymentType='use_card_sbp'
+                }
             } else
             if(tariffRule.paymentByCashStore==1){
                 this.paymentType='use_cash_store'
@@ -589,10 +612,11 @@ export default({
             if(tariffRule.paymentByCash==1){
                 this.paymentType='use_cash'
             }
-            if(tariffRule.deliveryByCourier!=1 && this.promo!=null){
-                this.promoLink({order_id:this.order_id})//unlinking promo if exists
-                this.promo=null
-            }
+            // if( (tariffRule.deliveryByCourier!=1 || tariffRule.paymentByCard!=1) && this.promo!=null){
+            //     this.promoLink({order_id:this.order_id})//unlinking promo if exists
+            //     this.promo=null
+            //     this.order.order_sum_promo=0
+            // }
             this.routePlanMode=tariffRule.routePlan?.start_plan_mode
         },
         tariffMerge( tariffArray ){//merge payment options for same delivery option
@@ -623,7 +647,7 @@ export default({
                 if( !tariff ){
                     continue
                 }
-                if( (this.paymentType=='use_card' || this.paymentType=='use_card_recurrent')  && tariff.paymentByCard!=1 ){
+                if( (this.paymentType=='use_card' || this.paymentType=='use_card_recurrent' || this.paymentType=='use_card_sbp')  && tariff.paymentByCard!=1 ){
                     continue
                 }
                 if( this.paymentType=='use_cash' && tariff.paymentByCash!=1 ){
@@ -692,7 +716,7 @@ export default({
                 deliveryByCourier:this.deliveryByCourierRuleChecked?1:0,
                 deliveryFinishScheduled:this.deliveryFinishScheduled,
                 pickupByCustomer:this.pickupByCustomerRuleChecked?1:0,
-                paymentByCard:this.paymentType=='use_card'?1:0,
+                paymentByCard:['use_card','use_card_sbp'].includes(this.paymentType),
                 paymentByCardRecurrent:this.paymentType=='use_card_recurrent'?1:0,
                 paymentByCash:this.paymentType=='use_cash'?1:0,
                 paymentByCashStore:this.paymentType=='use_cash_store'?1:0,
@@ -724,7 +748,8 @@ export default({
             }
             if(orderData.paymentByCard==1){
                 this.paymentFormOpen({
-                    order_id:this.order.order_id
+                    order_id:this.order.order_id,
+                    payment_type:this.paymentType
                 });
                 return;
             }
@@ -774,8 +799,13 @@ export default({
                     return false
             }
         },
-        async cancel(){
-            this.$router.replace('/order/order-'+this.order.order_id);
+        async back(){
+            try{
+                await Order.api.itemStageCreate(this.order.order_id, 'customer_cart')
+                this.$router.replace('/order/order-'+this.order.order_id);
+            } catch{
+                this.$router.replace('/order/');
+            }
         }, 
         async paymentFormOpen( order_data ) {
             const presEl=document.querySelector('ion-router-outlet');
@@ -784,6 +814,8 @@ export default({
                 component: OrderPaymentCardModal,
                 componentProps:{order_data},
                 presentingElement:presEl,
+                initialBreakpoint: 0.95,
+                breakpoints: [1, 0.95]
                 });
             const dismissFn=function(){
                 modal.dismiss();
@@ -870,9 +902,9 @@ export default({
                 backdropDismiss:true,
                 initialBreakpoint: 0.6,
                 breakpoints: [0, 0.6, 0.75],
-                // componentProps:{
-                //     promo_order_id:this.order.order_id
-                // },
+                componentProps:{
+                    order:this.order
+                },
             });
             modal.present();
             this.$topic.on('dismissModal',()=>{
@@ -884,6 +916,19 @@ export default({
                 this.promo=selectedPromo.data
             } else {
                 this.promo=null
+            }
+        },
+        /**
+         * If delivery method or payment method are not suitable for promo reset it
+         */
+        promoReset(){
+            if( ['use_card','use_card_recurrent','use_card_sbp'].includes(this.paymentType) && ['delivery_by_courier'].includes(this.deliveryType) ){
+                return
+            }
+            this.order.order_sum_promo=0
+            if(this.promo){
+                this.promo=null
+                this.promoLink({order_id:this.order_id})//unlinking promo if exists
             }
         },
         async promoLink(selectedPromo){
@@ -919,6 +964,14 @@ export default({
             }catch(err){
                 //
             }
+        },
+    },
+    watch:{
+        'paymentType':function(){
+            this.promoReset()
+        },
+        'deliveryType':function(){
+            this.promoReset()
         },
     }
 })

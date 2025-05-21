@@ -110,12 +110,11 @@ export default({
     },
     computed:{
         finish_plan_scheduled_date_full(){
-            console.log(this.job)
-            if( !this.job.finish_plan_scheduled ){
-                return null
+            if( this.job.finish_plan_scheduled>0 ){
+                const finish_plan_scheduled = new Date(this.job.finish_plan_scheduled*1000)
+                return finish_plan_scheduled.toLocaleDateString(undefined, { month: 'short',year: 'numeric', day: 'numeric',hour:'numeric',minute:'numeric' })
             }
-            const finish_plan_scheduled = new Date(this.job.finish_plan_scheduled*1000)
-            return finish_plan_scheduled.toLocaleDateString(undefined, { month: 'short',year: 'numeric', day: 'numeric',hour:'numeric',minute:'numeric' })
+            return null
         }
     },
     methods:{
