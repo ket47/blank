@@ -19,7 +19,7 @@
         </ion-card>
 
         <ion-list>
-            <ion-item lines="full">
+            <ion-item lines="none">
                 <ion-chip :color="arrivalTimeColor" v-if="orderData?.time_plan?.start_plan" @click="timePlanInfo()" >
                     <!-- <ion-icon :icon="flagOutline"></ion-icon> -->
                     <ion-label>{{ arrivalTime }}</ion-label>
@@ -29,14 +29,14 @@
 
                 <ion-label v-else color="medium">Корзина</ion-label> -->
 
-                <ion-chip color="primary" slot="end" v-if="orderData.stage_current_name">
+                <ion-chip color="primary" slot="end" v-if="orderData.stage_current && orderData.stage_current!='customer_cart' ">
                     <ion-icon :icon="checkmarkOutline"></ion-icon>
                     <ion-label>{{orderData.stage_current_name}}</ion-label>
                 </ion-chip>
             </ion-item>
             <ion-item v-for="entry in orderData?.entries"  :key="entry.product_id" :class="entry.deleted_at?'entry-deleted':''" lines="full" style="padding-top:10px;">
                 <ion-thumbnail slot="start" v-if="entry.image_hash" @click="productOpen(entry.product_id)">
-                    <ion-img :src="`${$heap.state.hostname}image/get.php/${entry.image_hash}.150.150.webp`" style="border-radius:10px"/>
+                    <ion-img :src="`${$heap.state.hostname}image/get.php/${entry.image_hash}.150.150.webp`" style="border-radius:10px" alt=""/>
                 </ion-thumbnail>
                 <div style="display:grid;grid-template-columns:auto 135px;width:100%;gap:5px;">
                     <div style="grid-column: 1 / span 2">
@@ -74,7 +74,7 @@
                             <ion-icon color="medium" :src="chatboxEllipsesOutline"/> <ion-note @click="itemCommentEdit(entry)">{{ entry.entry_comment }}</ion-note>
                             <ion-icon color="medium" :src="trash" @click="itemCommentEdit(entry,'remove')"/>
                         </ion-chip>
-                        <ion-chip v-else color="medium"  @click="itemCommentEdit(entry)">+ Комментарий</ion-chip>
+                        <ion-chip v-else color="light"  @click="itemCommentEdit(entry)">+ Комментарий</ion-chip>
                     </div>
                     <div v-else-if="entry.entry_comment" style="grid-column: 1 / span 2">
                         <ion-icon color="medium" :src="chatboxEllipsesOutline"/> <ion-note>{{ entry.entry_comment }}</ion-note>

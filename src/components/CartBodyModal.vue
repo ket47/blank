@@ -76,9 +76,16 @@ export default {
   },
   setup() {
     const closeModal = function () {
-      if (modalController && modalController.isOpen) {
-        modalController.dismiss();
+      try{
+        if (modalController) {
+          modalController.dismiss();
+        }
+      } catch{
+        //
       }
+      // if (modalController && modalController.isOpen) {
+      //   modalController.dismiss();
+      // }
     };
     return { closeModal, closeOutline, cartOutline, sparklesOutline };
   },
@@ -88,9 +95,9 @@ export default {
     };
   },
   created() {
-    this.$topic.on("dismissModal", () => {
-      this.closeModal();
-    });
+    // this.$topic.on("dismissModal", () => {
+    //   this.closeModal();
+    // });
   },
   methods: {
     clearCart(order_id, mode) {

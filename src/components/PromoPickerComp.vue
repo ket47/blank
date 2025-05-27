@@ -16,7 +16,20 @@
         </ion-item>
     </ion-list>
 
-    <ion-list>
+    <div v-if="isPropositionOpen">
+        <ion-card>
+            <ion-card-content>
+                <ion-title>
+                Увеличьте заказ до <ion-text color="success">{{promo?.min_order_sum_product}}{{this.$heap.state.currencySign}}</ion-text>
+                </ion-title>
+                Эту скидку можно использовать для заказов от {{promo?.min_order_sum_product}}{{this.$heap.state.currencySign}}
+            </ion-card-content>
+        </ion-card>
+        
+        <ion-button color="primary" expand="block" @click="orderChange()">Увеличить заказ</ion-button>
+        <ion-button color="light" expand="block" @click="promoPick({})">Без скидки</ion-button>
+    </div>
+    <ion-list v-else>
         <ion-item v-if="promoList?.length" button @click="promoPick({})">
             <ion-icon slot="start" :icon="banOutline" color="danger"/>
             <ion-text>Без скидки</ion-text>
@@ -54,6 +67,9 @@ import {
   IonText,
   modalController,
   IonSkeletonText,
+  IonCard,
+  IonCardContent,
+  IonButton,
 }                       from '@ionic/vue'
 import {
     giftOutline,
@@ -61,28 +77,35 @@ import {
     banOutline,
 }                       from 'ionicons/icons'
 import jQuery           from 'jquery'
+import Order            from '@/scripts/Order.js';
 export default {
     components:{
-  IonIcon,
-  IonToolbar,
-  IonHeader,
-  IonContent,
-  IonTitle,
-  IonList,
-  IonItem,
-  IonText,
-  IonSkeletonText,
+        IonIcon,
+        IonToolbar,
+        IonHeader,
+        IonContent,
+        IonTitle,
+        IonList,
+        IonItem,
+        IonText,
+        IonSkeletonText,
+        IonCard,
+        IonCardContent,
+        IonButton,
     },
+    props:['order'],
     setup(){
         return {
-    giftOutline,
-    closeOutline,
-        banOutline,
+            giftOutline,
+            closeOutline,
+            banOutline,
         }
     },
     data(){
         return {
-            promoList:null
+            promoList:null,
+            promo:null,
+            isPropositionOpen:0
         }
     },
     mounted(){
@@ -99,7 +122,30 @@ export default {
             }catch{/** */}
         },
         promoPick(promo){
+            this.promo=promo
+            if( !this.promoValidate(promo) ){
+                return false
+            }
             modalController.dismiss(promo);
+        },
+        promoValidate( promo ){
+            if( !promo ){
+                return true
+            }
+            promo.min_order_sum_product=(promo?.min_order_sum_product??0)*1+1;
+            if( this.order.order_sum_product*1<promo.min_order_sum_product ){
+                this.isPropositionOpen=1
+                return false
+            }
+            this.isPropositionOpen=0
+            return true
+        },
+        async orderChange(){
+            this.promoPick({});
+            this.$flash(`Переходим в ${this.order.store.store_name}...`)
+            await this.$router.replace('/catalog/store-'+this.order.order_store_id);            
+            await Order.api.itemStageCreate(this.order.order_id, 'customer_cart')
+            await Order.api.itemGet(this.order.order_id)
         }
     }
 }
