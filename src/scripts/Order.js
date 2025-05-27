@@ -220,23 +220,24 @@ const Order = {
         },
         itemCreateTomorrowAlert(store){
             const date=new Date()
-            const dayIndex=(date.getDay()+6)%7//monday is 0
             const dayMinutes=date.getMinutes()
-            const closeHour=store[`store_time_closes_${dayIndex}`]
-            if( store.is_working!=1 || store.is_disabled==1 || closeHour==null ){
-                //alert in margin
+            if( store.is_working!=1 || store.is_disabled==1 || store[`store_time_closes`]==null ){
+                //not working
                 alert(`"${store.store_name}" сегодня не работает.\n\nВы можете оформить заказ в другом заведении`)
                 return
             }
             const marginMinutes=40
 
+            const openHour=store[`store_time_opens`]*1
+            const closeHour=store[`store_time_closes`]*1
             const nowHour=date.getHours()
             const leftHour=closeHour-1-nowHour
-            if( leftHour>0 || leftHour==0 && (60-marginMinutes > dayMinutes)){
+            if( closeHour<openHour || leftHour>0 || leftHour==0 && (60-marginMinutes > dayMinutes)){
                 // no need to alert
                 return
             }
             if( closeHour )
+                //alert in margin
                 alert(`"${store.store_name}" закрывается в ${closeHour}, сможем доставить на следующий день.\n\nВы можете оформить заказ в другом заведении`)
         },
         itemUpdate(store_id,entries=null,properties=null){

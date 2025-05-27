@@ -227,7 +227,9 @@ export default{
      * Nonessential request delayed bootstrap
      */
     setTimeout(async ()=>{
-      this.activeOrderCount=await Order.api.listCount()
+      try{
+        this.activeOrderCount=await Order.api.listCount()
+      } catch{/** */}
     },3000)
   },
   methods:{

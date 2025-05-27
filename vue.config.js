@@ -38,6 +38,7 @@ module.exports = {
     manifestOptions: {
       name: "Tezkel",
       short_name: "Tezkel",
+      display: "standalone",
       background_color: "#fff",
       categories: ["shopping", "business", "food"],
       orientation: "portrait-primary",

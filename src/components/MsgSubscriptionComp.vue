@@ -11,7 +11,7 @@
         <ion-card-content>
           <ion-item lines="none">
             <ion-icon :src="notificationsOffOutline" color="primary" slot="start"/>
-            Уведомления от нашего сайта были заблокированы вами. Для полноценной работы приложения, рекомендуем влючить уведомления от сайта {{$heap.state.hostname}} в настройках вашего браузера.
+            Уведомления от нашего сайта были заблокированы вами. Для полноценной работы приложения, рекомендуем влючить уведомления от сайта {{$heap.state?.settings?.app?.frontendUrl??''}} в настройках вашего браузера.
           </ion-item>
         </ion-card-content>        
       </ion-card>

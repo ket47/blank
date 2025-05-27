@@ -181,7 +181,7 @@ if( 'serviceWorker' in navigator ){
 
 
 const app = createApp(VueApp)
-  .use(IonicVue)
+  .use(IonicVue,{swipeBackEnabled: false})
   .use(router)
   .use(heap)
 app.provide("$Order",Order);
