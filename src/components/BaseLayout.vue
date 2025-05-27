@@ -58,6 +58,7 @@
         <tezkel-loader/>
       </ion-fab>
     </ion-content>
+    <cookies-modal/>
   </ion-page>
 </template>
 
@@ -83,6 +84,7 @@ import {
 import CartHeader           from "@/components/CartHeader";
 import { defineComponent }  from "@vue/runtime-core";
 import TezkelLoader         from "@/components/TezkelLoader.vue"
+import CookiesModal   from "@/components/CookiesModal.vue"
 
 
 import {
@@ -124,7 +126,8 @@ export default defineComponent({
     TezkelLoader,
     IonModal,
     IonList,
-    IonItem
+    IonItem,
+    CookiesModal
   },
   setup(){
     return {

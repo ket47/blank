@@ -47,6 +47,7 @@ ion-tabs ion-icon{
       </div>
       <footer-desktop/>
       <stories-startup-modal-trigger/>
+      <cookies-modal/>
     </ion-content>
   </ion-page>
 </template>
@@ -66,6 +67,7 @@ import FooterDesktop  from "@/components/FooterDesktop";
 import CartHeader     from "@/components/CartHeader";
 import Order          from '@/scripts/Order.js'
 import StoriesStartupModalTrigger   from "@/components/PostStoriesStartupModalTrigger.vue"
+import CookiesModal   from "@/components/CookiesModal.vue"
 
 export default {
   setup() {
@@ -94,7 +96,8 @@ export default {
     FooterDesktop,
     IonTitle,
     IonToolbar,
-    StoriesStartupModalTrigger
+    StoriesStartupModalTrigger,
+    CookiesModal
   },
 };
 </script>
