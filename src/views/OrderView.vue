@@ -64,6 +64,7 @@ import OrderEntryAdd        from '@/components/OrderEntryAdd.vue'
 import ImageTileComp        from '@/components/ImageTileComp.vue'
 import MsgSubscriptionComp  from '@/components/MsgSubscriptionComp.vue'
 import ItemPicker           from '@/components/ItemPicker.vue'
+import OrderPaymentCardModal    from '@/components/OrderPaymentCardModal.vue';
 
 import jQuery               from 'jquery'
 
@@ -189,6 +190,7 @@ export default({
                         break;
                     case 'deposit_error_nocof':
                         this.$flash("Нет привязанного способа оплаты")
+                        this.action_payment_open()
                         break;
                     case 'deposit_error_fund':
                         this.$alert("На счету недостаточно средств","Оплата не прошла")
@@ -258,6 +260,23 @@ export default({
                     this.action_take_photo()
                 }
             }
+        },
+        async action_payment_open(){
+            const order_data={
+                order_id:this.order.order_id,
+                payment_type:'use_card_sbp'
+            }
+            const presEl=document.querySelector('ion-router-outlet');
+            const modal = await modalController.create({
+                component: OrderPaymentCardModal,
+                componentProps:{order_data},
+                presentingElement:presEl,
+                initialBreakpoint: 0.95,
+                breakpoints: [1, 0.95]
+                });
+            modal.present()
+            await modal.onDidDismiss()
+            this.itemGet()
         },
         action_rejected(){
             this.isOpenDeliveryRejectionPopover=true;

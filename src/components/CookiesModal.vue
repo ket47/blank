@@ -19,6 +19,7 @@ import {
   IonCardTitle,
   IonCardContent,
   IonButton,
+  isPlatform,
 }                     from "@ionic/vue";
 export default{
   components: {
@@ -30,11 +31,13 @@ export default{
   },
   data(){
     return {
-      isOpen: false,
-      localShown: false
+      isOpen: false
     };
   },
   created(){
+    if( isPlatform('capacitor') ){
+      return
+    }
     if(!localStorage.cookiesShown) this.isOpen = true
   },
   methods: {
