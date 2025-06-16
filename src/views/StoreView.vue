@@ -273,21 +273,19 @@ ion-chip .active-chip {
               <ion-text v-else color="medium">подробнее</ion-text>
             </ion-item>
             <ion-list slot="content">
-              <!--
-              <ion-item lines="none" v-if="storeItem.store_company_name">
-                <ion-text><b>{{storeItem.store_company_name}}</b></ion-text>
-              </ion-item>
-              <ion-item lines="none" v-if="storeItem.store_tax_num">
-                <ion-label color="medium">ИНН</ion-label>
-                <ion-text color="dark">{{storeItem.store_tax_num}}</ion-text>
-              </ion-item>
-              -->
               <ion-item lines="none" v-if="storeItem.store_phone">
                 <ion-label color="medium">Телефон</ion-label>
                 <ion-text><a :href="`tel:${storeItem.store_phone}`">{{storeItem.store_phone}}</a></ion-text>
               </ion-item>
               <ion-item lines="none" v-if="storeItem.locations?.length>0">
                 <ion-text color="dark">{{storeItem.locations?.[0].location_address}}</ion-text>
+              </ion-item>
+              <ion-item lines="none" v-if="storeItem.store_company_name">
+                <ion-text><b>{{storeItem.store_company_name}}</b></ion-text>
+              </ion-item>
+              <ion-item lines="none" v-if="storeItem.store_tax_num">
+                <ion-label color="medium">ИНН</ion-label>
+                <ion-text color="dark">{{storeItem.store_tax_num}}</ion-text>
               </ion-item>
             </ion-list>
           </ion-accordion>

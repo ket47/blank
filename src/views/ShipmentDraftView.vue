@@ -48,7 +48,7 @@ export default {
         },
         itemSave( order ){
             this.order=order
-            localStorage.shipmentDraft=JSON.stringify(order)
+            localStorage.shipmentDraft=JSON.stringify(Object.assign({},order,{order_id:0}))
         },
         async itemUpdate( orderUpdate ){
             console.log(orderUpdate.mode,orderUpdate.order_start_location_id,orderUpdate.order_finish_location_id)

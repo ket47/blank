@@ -43,14 +43,17 @@
             <ion-item>
                 <ion-segment mode="ios" v-model="deliveryPlanMode">
                     <ion-segment-button v-if="isAtonceEnabled" value="inited" @click="deliveryFinishScheduled=null">
+                        <ion-icon :icon="rocketOutline"></ion-icon>
                         <ion-label>Отвезти сразу</ion-label>
                         <span>как можно скорее</span>
                     </ion-segment-button>
                     <ion-segment-button v-else value="awaited" @click="deliveryFinishScheduled=null">
+                        <ion-icon :icon="timeOutline"></ion-icon>
                         <ion-label>Подождать</ion-label>
                         <span>заказ в очереди</span>
                     </ion-segment-button>
                     <ion-segment-button value="scheduled" @click="datetimePick()">
+                        <ion-icon :icon="alarmOutline"></ion-icon>
                         <ion-label><b>Запланировать</b></ion-label>
                         <span v-if="deliveryFinishLocal">{{deliveryFinishLocal}}</span>
                         <span v-else>выберите день и время</span>
@@ -59,21 +62,27 @@
             </ion-item>
             <ion-item-divider>Оплата</ion-item-divider>
             <ion-radio-group v-model="paymentType">
-            <ion-item button detail="false" @click="paymentType='use_credit_store'" v-if="tariffRule.paymentByCreditStore==1">
-                <ion-icon :icon="businessOutline" slot="start" color="medium"></ion-icon>
-                <ion-radio value="use_credit_store">
-                    Со счета предприятия
-                    <div style="font-size:0.7em;color:var(--ion-color-medium)">{{tariffRule.storeCreditName}} {{tariffRule.storeCreditBalance}}{{$heap.state.currencySign}}</div>                        
-                </ion-radio>
-            </ion-item>
-            <ion-item button detail="false" @click="paymentType='use_cash'" v-if="tariffRule.paymentByCash==1">
-                <ion-icon :icon="cashOutline" slot="start" color="medium"></ion-icon>
-                <ion-radio value="use_cash">
-                    Оплата наличными
-                </ion-radio>
-            </ion-item>
+                <ion-item button detail="false" @click="paymentType='use_credit_store'" v-if="tariffRule.paymentByCreditStore==1">
+                    <ion-icon :icon="businessOutline" slot="start" color="medium"></ion-icon>
+                    <ion-radio value="use_credit_store">
+                        Со счета предприятия
+                        <div style="font-size:0.7em;color:var(--ion-color-medium)">{{tariffRule.storeCreditName}} {{tariffRule.storeCreditBalance}}{{$heap.state.currencySign}}</div>                        
+                    </ion-radio>
+                </ion-item>
+                <ion-item button detail="false" @click="paymentType='use_cash'" v-if="tariffRule.paymentByCash==1">
+                    <ion-icon :icon="cashOutline" slot="start" color="medium"></ion-icon>
+                    <ion-radio value="use_cash">
+                        Оплата наличными
+                    </ion-radio>
+                </ion-item>
 
             <div v-if="tariffRule.paymentByCard==1">
+                <ion-item v-if="sbpPaymentAllow" detail="false" button>
+                    <ion-img style="width:22px;height: auto;" :src="`/img/icons/card-sbp.svg`" slot="start"/>
+                    <ion-radio value="use_card_sbp">
+                        СБП быстрая оплата
+                    </ion-radio>
+                </ion-item>
                 <ion-item detail="false" button>
                     <ion-icon :icon="cardOutline" slot="start" color="medium"></ion-icon>
                     <ion-radio value="use_card">
@@ -182,7 +191,9 @@ import {
     walletOutline,
     alertCircleOutline,
     mapOutline,
-    rocketOutline
+    rocketOutline,
+    alarmOutline,
+    timeOutline,
 }                               from 'ionicons/icons';
 import Utils                    from '@/scripts/Utils'
 import jQuery                   from 'jquery'
@@ -228,6 +239,8 @@ export default {
             alertCircleOutline,
             mapOutline,
             rocketOutline,
+            alarmOutline,
+            timeOutline,
         };
     },
     data(){
@@ -248,6 +261,7 @@ export default {
             termsAccepted:1,
             iplocation:null,
             recurrentPaymentAllow:this.$heap.state.settings?.other?.recurrentPaymentAllow==1?1:0,
+            sbpPaymentAllow:this.$heap.state.settings?.other?.sbpPaymentAllow==1?1:0,
 
             deliveryFinishScheduled:null,
             deliveryPlanMode:'inited'
@@ -349,6 +363,9 @@ export default {
                 this.tariffRuleList=bulkResponse.deliveryOptions
                 this.tariffRuleSet(this.tariffRuleList?.[0]||{})
                 this.deliveryPlanMode=this.routePlan.start_plan_mode
+                if( this.routePlan.start_plan_mode=='nocourier' ){
+                    this.deliveryPlanMode='awaited'
+                }
 
                 if( bulkResponse.finishPlanSchedule ){
                     this.finishPlanSchedule=bulkResponse.finishPlanSchedule
@@ -380,6 +397,12 @@ export default {
             } else
             if(tariffRule.paymentByCash==1){
                 this.paymentType='use_cash'
+            } else
+            if(tariffRule.paymentByCard==1){
+                this.paymentType='use_card'
+                if(this.sbpPaymentAllow){
+                    this.paymentType='use_card_sbp'
+                }
             }
         },
         async datetimePick(){
@@ -415,7 +438,7 @@ export default {
                 order_id:this.order.order_id,
                 tariff_id:this.tariffRule.tariff_id,
                 deliveryFinishScheduled:this.deliveryFinishScheduled,
-                paymentByCard:this.paymentType=='use_card'?1:0,
+                paymentByCard:['use_card','use_card_sbp'].includes(this.paymentType),
                 paymentByCardRecurrent:this.paymentType=='use_card_recurrent'?1:0,
                 paymentByCash:this.paymentType=='use_cash'?1:0,
                 paymentByCreditStore:this.paymentType=='use_credit_store'?1:0
@@ -442,7 +465,8 @@ export default {
             }
             if(shipData.paymentByCard==1){
                 this.paymentFormOpen({
-                    order_id:`${this.order_id}`
+                    order_id:`${this.order_id}`,
+                    payment_type:this.paymentType
                 });
                 return;
             }
@@ -538,6 +562,7 @@ export default {
         this.$topic.on('settingsGet',(settings)=>{
             this.can_load_at=0
             this.recurrentPaymentAllow=settings?.other?.recurrentPaymentAllow
+            this.sbpPaymentAllow=settings?.other?.sbpPaymentAllow
         })        
     },
 }

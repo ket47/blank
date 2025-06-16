@@ -608,7 +608,22 @@ export default({
             } else
             if(tariffRule.paymentByCashStore==1){
                 this.paymentType='use_cash_store'
-            } else
+            } 
+            
+
+
+
+
+
+
+
+
+
+
+
+            
+            
+            ///else tmp fix
             if(tariffRule.paymentByCash==1){
                 this.paymentType='use_cash'
             }
