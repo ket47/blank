@@ -116,6 +116,72 @@ const go = async (route:any)=>{
   await router.push(route)
 }
 
+const post=async ( url:string, data:any )=>{
+  const settings={
+    method: "POST",
+    body:data,
+    headers:{
+      "Content-Type": "application/json",
+      "x-sid":heap.state.sessionId,
+      "x-ver":heap.state.applicationVersion
+    }
+  }
+  if( !url.includes('http') ){
+    url=heap.state.hostname+url
+  }
+  if(  typeof data != 'string' ){
+    settings.body=new URLSearchParams(data)
+    settings.headers["Content-Type"]="application/x-www-form-urlencoded";
+  }
+
+  heap.commit('setInteractionStatus',1)
+  const response = await fetch(url,settings)
+  setTimeout(()=>{heap.commit('setInteractionStatus',-1)},100)
+
+  if( response.headers.get("x-sid") ){
+    heap.state.sessionId=response.headers.get("x-sid")
+    User.sessionIdUse(heap.state.sessionId);
+  }
+  await postErrors(response)
+  const resp=await response.text()
+  try{
+    return JSON.parse(resp)
+  } catch{/** */}
+  return resp
+}
+const postErrors=async function (response:Response){
+  if (!response.ok) {
+    if(response.status==403){
+      if( heap.getters.userIsLogged ){
+        flash('К сожалению, нет прав для этого действия');
+      } else {
+        Topic.publish('dismissModal')
+        flash('Вы не выполнили вход, пожалуйста авторизируйтесь');
+        router.push({path: `/modal/user-authorize`});
+      }
+    } else
+    if(response.status==401){
+      flash('Вы не выполнили вход, пожалуйста авторизируйтесь');
+      Topic.publish('dismissModal')
+      router.push({path: `/modal/user-authorize`});
+    } else {
+
+
+    const result = await response.json();
+    const responseError = {
+      type: 'Error',
+      message: result.message || `apiPost Error Response status: ${response.status}`,
+      responseJSON: result || {},
+      code: result.code || '',
+    };
+
+    let error = new Error();
+    error = { ...error, ...responseError };
+    throw (error);
+    }
+  }
+}
+
 jQuery( document ).ajaxError(( event, jqxhr, settings, thrownError )=>{
   const status_code=jqxhr.status;
   if(status_code==403){
@@ -179,17 +245,17 @@ if( 'serviceWorker' in navigator ){
   };
 }
 
-
 const app = createApp(VueApp)
   .use(IonicVue,{swipeBackEnabled: false})
   .use(router)
   .use(heap)
 app.provide("$Order",Order);
+app.config.globalProperties.$topic = Topic;
 app.config.globalProperties.$heap = heap;
+app.config.globalProperties.$go = go;
 app.config.globalProperties.$flash = flash;
 app.config.globalProperties.$alert = alert;
-app.config.globalProperties.$topic = Topic;
-app.config.globalProperties.$go = go;
+app.config.globalProperties.$post = post;
 
 const isMobile= /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(window.navigator.userAgent);
 if(isMobile){
@@ -198,14 +264,19 @@ if(isMobile){
   app.component('base-layout', BaseLayoutDesktop);
 }
 
+
+
+
+
+
 async function startApp(){
   /**
    * Signing in first is slower but is more solid because all requests will go with session header
    */
 
-  const sessionId = await Utils.pref.get('sessionId')
-  if(sessionId){
-    await User.sessionIdUse(sessionId);
+  heap.state.sessionId = await Utils.pref.get('sessionId')
+  if( heap.state.sessionId ){
+    await User.sessionIdUse(heap.state.sessionId);
   }
 
 
@@ -228,7 +299,10 @@ async function startApp(){
   Push.setAlertHandler(alert)
   Push.setGoHandler(go)
 
-  Capgo.init(App,flash)
+  const currrrrr=Capgo.init(App,flash)
+
+
+  console.log(currrrrr.version)
 
 }
 startApp();

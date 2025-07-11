@@ -255,6 +255,18 @@ const routes = [
         component: () => import('@/views/admin/MailingEdit.vue')
       },
       {
+        path: '/admin/promo-codes',
+        component: () => import('@/views/admin/PromoCodesView.vue')
+      },
+      {
+        path: '/admin/promo-code-edit-:id',
+        component: () => import('@/views/PromoCodeEdit.vue')
+      },
+      {
+        path: '/admin/promo-code-create',
+        component: () => import('@/views/PromoCodeCreate.vue')
+      },
+      {
         path: '/admin/analytics',
         component: () => import('@/views/admin/AnalyticsView.vue')
       },

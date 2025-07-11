@@ -608,30 +608,15 @@ export default({
             } else
             if(tariffRule.paymentByCashStore==1){
                 this.paymentType='use_cash_store'
-            } 
-            
-
-
-
-
-
-
-
-
-
-
-
-            
-            
-            ///else tmp fix
+            } else
             if(tariffRule.paymentByCash==1){
                 this.paymentType='use_cash'
             }
-            // if( (tariffRule.deliveryByCourier!=1 || tariffRule.paymentByCard!=1) && this.promo!=null){
-            //     this.promoLink({order_id:this.order_id})//unlinking promo if exists
-            //     this.promo=null
-            //     this.order.order_sum_promo=0
-            // }
+            if( (tariffRule.deliveryByCourier!=1 || tariffRule.paymentByCard!=1) && this.promo!=null){
+                this.promoLink({order_id:this.order_id})//unlinking promo if exists
+                this.promo=null
+                this.order.order_sum_promo=0
+            }
             this.routePlanMode=tariffRule.routePlan?.start_plan_mode
         },
         tariffMerge( tariffArray ){//merge payment options for same delivery option

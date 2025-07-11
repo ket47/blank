@@ -24,6 +24,9 @@
             <ion-segment-button value="couriers" @click="item_type='disabled'">
                 Курьеры
             </ion-segment-button>
+            <ion-segment-button value="pcodes" @click="item_type='active'">
+                Промо Коды
+            </ion-segment-button>
         </ion-segment>
         <div>
             <!-- <ion-item lines="none">
@@ -50,11 +53,30 @@
             </ion-card>
 
 
-            <ion-searchbar v-if="moderationType=='posts' || moderationType=='stores' || moderationType=='products' || moderationType=='couriers' || moderationType=='users'" placeholder="Фильтр" v-model="filter"/>
+            <ion-searchbar v-if="['posts','stores','products','couriers','users','pcodes'].includes(moderationType)" placeholder="Фильтр" v-model="filter"/>
 
 
 
 
+                <ion-list v-if="moderationType=='pcodes'">
+                    <!--PROMO CODES component-->
+                    <ion-item button detail @click="itemEdit({promo_code_id:0})">
+                        <ion-icon :src="addOutline" slot="start"></ion-icon>
+                        <ion-text>Добавить промокод</ion-text>
+                    </ion-item>
+                    <div v-for="item in listComputed" :key="item.item_id">
+                        <ion-item button detail @click="itemEdit(item)" lines="none">
+                            <ion-text>{{item.item_name}}</ion-text>
+                            <ion-label slot="end">до {{item.date_dmy}}</ion-label>
+                        </ion-item>
+                        <ion-item>
+                            <ion-chip color="primary">
+                                <ion-icon :src="callOutline"></ion-icon>
+                                <ion-label><a :href="`tel:${item.user_phone}`">{{item.user_phone}}</a></ion-label>
+                            </ion-chip>
+                        </ion-item>
+                    </div>
+                </ion-list>
                 <ion-list v-if="moderationType=='users'">
                     <!--USERS component-->
                     <ion-item button detail @click="itemEdit({user_id:0})">

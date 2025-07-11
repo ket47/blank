@@ -2,11 +2,10 @@ import { CapacitorUpdater }     from '@capgo/capacitor-updater'
 import { isPlatform }           from "@ionic/vue";
 const Capgo={
     async init( App, flash ){
-        CapacitorUpdater.notifyAppReady()
-        
         if( !isPlatform('capacitor') ){
             return null
         }
+        CapacitorUpdater.notifyAppReady()
         const latest=await this.latestGet()
         if( !latest ){
             return null

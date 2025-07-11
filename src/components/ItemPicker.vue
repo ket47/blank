@@ -75,7 +75,7 @@ export default {
     data(){
         const itemTypeLabel=this.itemType?this.itemType:'order'
         return {
-            query:null,
+            query:'',
             itemList:null,
             itemTypeLabel,
             itemTypeName:''
@@ -94,9 +94,17 @@ export default {
                 this.itemTypeName='Продавец'
                 this.storesGet()
             } else
+            if( this.itemTypeLabel=='product' ){
+                this.itemTypeName='Товар'
+                this.productsGet()
+            } else
             if( this.itemTypeLabel=='courier' ){
                 this.itemTypeName='Курьер'
                 this.couriersGet()
+            } else 
+            if( this.itemTypeLabel=='user' ){
+                this.itemTypeName='Пользователь'
+                this.usersGet()
             } else 
             if( this.itemTypeLabel=='acc' ){
                 this.itemTypeName='Счет'
@@ -115,7 +123,7 @@ export default {
                 request=Object.assign(request,this.filter)
             }
             try{
-                let result=await jQuery.post(`${this.$heap.state.hostname}Store/listGet`,request)
+                let result=await this.$post(`Store/listGet`,request)
                 this.itemList=result.map(item=>{
                     item.name=`продавец ${item.store_name??item.store_name_new}`;
                     item.id=item.store_id
@@ -133,11 +141,29 @@ export default {
                 request=Object.assign(request,this.filter)
             }
             try{
-                let result=await jQuery.post(`${this.$heap.state.hostname}Courier/listGet`,request)
+                let result=await this.$post(`Courier/listGet`,request)
                 this.itemList=result.map(item=>{
                     item.name=`курьер ${item.user_name} ${item.user_phone}`;
                     item.id=item.courier_id
                     item.image_hash=item.courier_photo_image_hash
+                    return item
+                    })
+            }catch{/** */}
+        },
+        async usersGet(){
+            let request={
+                name_query:this.query,
+                name_query_fields:'user_name,user_phone',
+                limit:10
+            }
+            if( this.filter ){
+                request=Object.assign(request,this.filter)
+            }
+            try{
+                let result=await this.$post(`User/listGet`,request)
+                this.itemList=result.map(item=>{
+                    item.name=`Пользователь ${item.user_name} ${item.user_phone}`;
+                    item.id=item.user_id
                     return item
                     })
             }catch{/** */}
@@ -149,7 +175,7 @@ export default {
                 limit:10
             }
             try{
-                let result=await jQuery.post(`${this.$heap.state.hostname}Order/listGet`,request)
+                let result=await this.$post(`Order/listGet`,request)
                 this.itemList=result.map(item=>{
                     item.name=`заказ#${item.order_id} ${item.store_name} > ${item.user_name}`;
                     item.id=item.order_id
@@ -162,10 +188,29 @@ export default {
                 group_table:'transaction_account_list'
             }
             try{
-                let result=await jQuery.post(`${this.$heap.state.hostname}Admin/GroupManager/listGet`,request)
+                let result=await this.$post(`Admin/GroupManager/listGet`,request)
                 this.itemList=result.map(item=>{
                     item.name=`${item.group_name}`;
                     item.type=item.group_type
+                    return item
+                    })
+            }catch{/** */}
+        },
+        async productsGet(){
+            let request={
+                name_query:this.query,
+                name_query_fields:'product_name,product_code',
+                //store_id:this.store_id,
+                limit:10
+            }
+            if( this.filter ){
+                request=Object.assign(request,this.filter)
+            }
+            try{
+                let result=await this.$post(`Product/listGet`,request)
+                this.itemList=result.product_list.map(item=>{
+                    item.name=`${item.product_name}`;
+                    item.id=item.product_id
                     return item
                     })
             }catch{/** */}

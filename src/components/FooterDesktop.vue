@@ -33,6 +33,9 @@
           <router-link to="/page/privacy_policy">
             <ion-label>Политика конфиденциальности</ion-label>
           </router-link>
+          <router-link to="/page/copyright">
+            <ion-label>Правообладателям</ion-label>
+          </router-link>
           </div>
         </div>
       </div>
