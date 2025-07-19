@@ -127,7 +127,7 @@
                     <ion-icon :icon="cashOutline" slot="start" color="medium"></ion-icon>
                     <ion-radio value="use_cash">Наличными курьеру</ion-radio>
                 </ion-item>
-                <ion-item button detail="false" v-if="tariffRule.paymentByCashStore==1">
+                <ion-item button detail="false" v-else-if="tariffRule.paymentByCashStore==1">
                     <ion-icon :icon="cashOutline" slot="start" color="medium"></ion-icon>
                     <ion-radio value="use_cash_store">Наличными продавцу</ion-radio>
                 </ion-item>
@@ -135,7 +135,39 @@
 
             <div v-if="order_sum_total>0">
             <ion-item-divider>Итог</ion-item-divider>
-            <div v-if="deliveryByCourierRuleChecked && ['use_card','use_card_sbp','use_card_recurrent'].includes(paymentType)">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                <ion-item v-if="promo" button @click="promoPick()" color="success">
+                    <div slot="start">
+                        <ion-icon :icon="giftOutline" color="medium" style="font-size:1.5em"></ion-icon>
+                        <sup class="righttop_badge"><ion-badge v-if="promoCount>0" color="secondary">{{promoCount}}</ion-badge></sup>
+                    </div>
+                    {{promo.promo_name}}
+                    <ion-text slot="end">-{{order.order_sum_promo}}{{$heap.state.currencySign}}</ion-text>
+                </ion-item>
+                <ion-item v-else button detail @click="promoPick()">
+                    <div slot="start">
+                        <ion-icon :icon="giftOutline" color="medium" style="font-size:1.5em"></ion-icon>
+                        <sup class="righttop_badge"><ion-badge v-if="promoCount>0" color="secondary">{{promoCount}}</ion-badge></sup>
+                    </div>
+                    Промокоды и скидки
+                </ion-item>
+
+
+
+            <!-- <div v-if="deliveryByCourierRuleChecked && ['use_card','use_card_sbp','use_card_recurrent'].includes(paymentType)">
                 <ion-item v-if="promo" button @click="promoPick()" color="success">
                     <div slot="start">
                         <ion-icon :icon="giftOutline" color="medium" style="font-size:1.5em"></ion-icon>
@@ -161,7 +193,19 @@
                     Выберите доставит <b>{{$heap.state.settings?.app_title}}</b> и оплату картой, чтобы использовать скидку
                     </ion-text>
                 </ion-item>
-            </div>
+            </div> -->
+
+
+
+
+
+
+
+
+
+
+
+
            <ion-accordion-group>
                 <ion-accordion>
                     <ion-item slot="header">
@@ -900,8 +944,8 @@ export default({
                 component: PromoPickerComp,
                 showBackdrop:true,
                 backdropDismiss:true,
-                initialBreakpoint: 0.6,
-                breakpoints: [0, 0.6, 0.75],
+                initialBreakpoint: 1,
+                breakpoints: [0, 0.75,1],
                 componentProps:{
                     order:this.order
                 },

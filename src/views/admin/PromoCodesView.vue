@@ -24,21 +24,36 @@
 
             <ion-searchbar placeholder="Фильтр" v-model="filter"/>
 
-            <ion-list>
-                <ion-item button detail @click="itemEdit({promo_code_id:0})">
+            <ion-list lines="full">
+                <ion-item button detail @click="itemCreate()">
                     <ion-icon :src="addOutline" slot="start"></ion-icon>
                     <ion-text>Добавить промокод</ion-text>
                 </ion-item>
                 <div v-for="item in listComputed" :key="item.promo_code_id">
-                    <ion-item button detail @click="itemEdit(item)" lines="none">
-                        <ion-label>{{item.promo_code}}</ion-label>
-                        <ion-label slot="end">{{item.start_at_dmy}}-{{item.finish_at_dmy}}</ion-label>
+                    <ion-item button @click="itemEdit(item)" lines="none">
+                        <ion-chip color="primary">
+                            <ion-label>{{item.promo_code}}</ion-label>
+                        </ion-chip>
+                        <ion-label slot="end" color="primary">
+                            {{ item.promo_sum }}{{ $heap.state.currencySign }}
+                            <span  v-if="item.charge_sum" style="color:var(--ion-color-danger)">/{{ item.charge_sum }}{{ $heap.state.currencySign }}</span>
+                        </ion-label>
                     </ion-item>
                     <ion-item>
-                        <ion-chip color="primary">
-                            <ion-icon :src="callOutline"></ion-icon>
-                            <ion-label><a :href="`tel:${item.user_phone}`">{{item.user_phone}}</a></ion-label>
-                        </ion-chip>
+                        <ion-label slot="start" color="medium">{{item.promo_description}}</ion-label>
+                        <div slot="end">
+                            <ion-icon v-if="item.promo_subject=='delivery'" :icon="rocketOutline" color="secondary"/>
+                            <ion-icon v-if="item.promo_subject=='product'" :icon="cubeOutline" color="secondary"/>
+
+                            <ion-icon v-if="item.case_user_id" color="medium" :icon="personOutline"/>
+
+                            <ion-icon v-if="item.case_started_at" color="medium" :icon="calendarClearOutline"/>
+                            <ion-icon v-else-if="item.case_finished_at" color="medium" :icon="calendarNumberOutline"/>
+
+                            <ion-icon v-if="item.case_product_id" color="medium" :icon="fastFoodOutline"/>
+                            <ion-icon v-else-if="item.case_store_id" color="medium" :icon="storefrontOutline"/>
+                            <ion-icon v-if="item.charge_sum&&0" color="danger" :icon="removeCircleOutline"/>
+                        </div>
                     </ion-item>
                 </div>
             </ion-list>
@@ -69,7 +84,6 @@ import {
   IonList,
   IonSegmentButton,
   IonSegment,
-  modalController,
   IonThumbnail,
   IonText,
   IonSkeletonText,
@@ -79,12 +93,18 @@ import {
   IonChip,
   IonIcon,
 }                           from '@ionic/vue';
-import jquery               from 'jquery'
-import ImagePreviewModal    from '@/components/ImagePreviewModal'
 
 import {
-  callOutline,
+  walletOutline,
   addOutline,
+  storefrontOutline,
+  personOutline,
+  removeCircleOutline,
+  fastFoodOutline,
+  rocketOutline,
+  calendarNumberOutline,
+  calendarClearOutline,
+  cubeOutline,
 }                     from 'ionicons/icons'
 
 export default {
@@ -107,8 +127,16 @@ export default {
     },
     setup(){
         return {
-            addOutline,
-            callOutline
+  walletOutline,
+  addOutline,
+  storefrontOutline,
+  personOutline,
+  removeCircleOutline,
+  fastFoodOutline,
+  rocketOutline,
+  calendarNumberOutline,
+  calendarClearOutline,
+  cubeOutline,
         }
     },
     data(){
@@ -152,7 +180,7 @@ export default {
             }
             try{
                 request.order='updated_at'
-                let items=await jquery.post(`${this.$heap.state.hostname}PromoCode/listGet`,request)
+                let items=await this.$post(`PromoCode/listGet`,request)
 
                 this.is_loading=0
                 this.items=this.items.concat(items)
@@ -190,6 +218,9 @@ export default {
         },
         itemEdit(item){
             this.$go('/admin/promo-code-edit-'+item.promo_code_id)
+        },
+        itemCreate(){
+            this.$go('/admin/promo-code-create')
         },
     },
     mounted(){

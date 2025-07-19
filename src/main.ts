@@ -153,31 +153,28 @@ const postErrors=async function (response:Response){
   if (!response.ok) {
     if(response.status==403){
       if( heap.getters.userIsLogged ){
-        flash('К сожалению, нет прав для этого действия');
+        flash('К сожалению, нет прав для этого действия')
       } else {
         Topic.publish('dismissModal')
-        flash('Вы не выполнили вход, пожалуйста авторизируйтесь');
-        router.push({path: `/modal/user-authorize`});
+        flash('Вы не выполнили вход, пожалуйста авторизируйтесь')
+        router.push({path: `/modal/user-authorize`})
       }
     } else
     if(response.status==401){
-      flash('Вы не выполнили вход, пожалуйста авторизируйтесь');
+      flash('Вы не выполнили вход, пожалуйста авторизируйтесь')
       Topic.publish('dismissModal')
       router.push({path: `/modal/user-authorize`});
     } else {
-
-
-    const result = await response.json();
-    const responseError = {
-      type: 'Error',
-      message: result.message || `apiPost Error Response status: ${response.status}`,
-      responseJSON: result || {},
-      code: result.code || '',
-    };
-
-    let error = new Error();
-    error = { ...error, ...responseError };
-    throw (error);
+      const result = await response.json()
+      const responseError = {
+        type: 'Error',
+        message: result.message || `apiPost Error Response status: ${response.status}`,
+        responseJSON: result || {},
+        code: result.code || '',
+      }
+      let error = new Error()
+      error = { ...error, ...responseError }
+      throw (error)
     }
   }
 }

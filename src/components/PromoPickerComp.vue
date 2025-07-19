@@ -2,61 +2,69 @@
   <ion-header>
       <ion-toolbar>
         <ion-item lines="none">
-          <ion-title>Ваши доступные скидки</ion-title>
-          <ion-icon :icon="closeOutline" @click="$topic.publish('dismissModal')" slot="end" size="large"></ion-icon>
+            <ion-title>Промокоды и скидки</ion-title>
+            <ion-icon :icon="closeOutline" @click="$topic.publish('dismissModal')" slot="end" size="large" color="light"></ion-icon>
+        </ion-item>
+        <ion-item lines="none" style="--background:var(--ion-color-primary-tint);">
+            <ion-input placeholder="Впишите Промокод" style111="--background:var(--ion-color-primary-tint);--placeholder-color: #000;--placeholder-opacity: 0.8;">
+                <ion-button slot="end" color="success">
+                    Применить
+                </ion-button>
+            </ion-input>
         </ion-item>
       </ion-toolbar>
   </ion-header>
   <ion-content>
-    <ion-list v-if="promoList==null">
-        <ion-item lines="none" v-for="skeleton in [1,2,3]" :key="skeleton">
-            <ion-icon slot="start" :icon="giftOutline" color="primary"/>
-            <ion-skeleton-text style="width:70%"></ion-skeleton-text>
-            <ion-skeleton-text slot="end" style="width:50px"></ion-skeleton-text>
-        </ion-item>
-    </ion-list>
 
-    <div v-if="isPropositionOpen">
-        <ion-card>
+    <ion-list v-if="promoList==null">
+        <ion-card  v-for="skeleton in [1,2,3]" :key="skeleton">
+            <ion-card-header>
+                <div style="display:grid;grid-template-columns:2fr 1fr">
+                    <div>
+                        <ion-card-title><ion-skeleton-text style="width:60px;height:20px" animated></ion-skeleton-text></ion-card-title>
+                        <ion-card-subtitle><ion-skeleton-text style="width:70%" animated></ion-skeleton-text></ion-card-subtitle>
+                    </div>
+                    <div><ion-button size="small" expand="block" color="light"><ion-skeleton-text style="width:70%"></ion-skeleton-text></ion-button></div>
+                </div>
+            </ion-card-header>
+        </ion-card>
+    </ion-list>
+    <div v-else>
+        <ion-card v-if="promoList?.length" button @click="promoPick({})">
+            <ion-card-header>
+                <div style="display:grid;grid-template-columns:2fr 1fr">
+                    <div>
+                        <ion-card-title>0{{ $heap.state.currencySign }}</ion-card-title>
+                        <ion-card-subtitle>Без скидки</ion-card-subtitle>
+                    </div>
+                    <div><ion-button size="small" expand="block">Выбрать</ion-button></div>
+                </div>
+            </ion-card-header>
+        </ion-card>
+        <ion-item lines="none">
+            <b>Подходящие скидки</b>
+        </ion-item>
+        <ion-card  v-for="promo in promoList" :key="promo.promo_id" button @click="promoPick(promo)">
+            <ion-card-header>
+                <div style="display:grid;grid-template-columns:2fr 1fr">
+                    <div>
+                        <ion-card-title style="color:var(--ion-color-success)">-{{promo.promo_value}}{{ $heap.state.currencySign }}</ion-card-title>
+                        <ion-card-subtitle>Заказ {{promo.min_order_sum_product}}{{$heap.state.currencySign}}+</ion-card-subtitle>
+                    </div>
+                    <div><ion-button size="small" expand="block">Выбрать</ion-button></div>
+                </div>
+            </ion-card-header>
             <ion-card-content>
-                <ion-title>
-                Увеличьте заказ до <ion-text color="success">{{promo?.min_order_sum_product}}{{this.$heap.state.currencySign}}</ion-text>
-                </ion-title>
-                Эту скидку можно использовать для заказов от {{promo?.min_order_sum_product}}{{this.$heap.state.currencySign}}
+                <ion-label>{{promo.promo_name}}</ion-label>
+                <p>до {{promo.expiration}}</p>
             </ion-card-content>
         </ion-card>
-        
-        <ion-button color="primary" expand="block" @click="orderChange()">Увеличить заказ</ion-button>
-        <ion-button color="light" expand="block" @click="promoPick({})">Без скидки</ion-button>
     </div>
-    <ion-list v-else>
-        <ion-item v-if="promoList?.length" button @click="promoPick({})">
-            <ion-icon slot="start" :icon="banOutline" color="danger"/>
-            <ion-text>Без скидки</ion-text>
-            <ion-text slot="end">0{{$heap.state.currencySign}}</ion-text>
-        </ion-item>
-        <ion-item v-else>
-            <ion-icon slot="start" :icon="giftOutline" color="medium"/>
-            <ion-text color="medium">К сожалению, доступных скидок нет.</ion-text>
-        </ion-item>
-
-        <ion-item v-for="promo in promoList" :key="promo.promo_id" button @click="promoPick(promo)">
-            <ion-icon slot="start" :icon="giftOutline" color="primary"/>
-            <ion-text>
-                {{promo.promo_name}} 
-                <p style="color:#999">мин. заказ {{promo.min_order_sum_product}}{{$heap.state.currencySign}}; до {{promo.expiration}}</p>
-            </ion-text>
-            <ion-text slot="end" color="success">{{promo.promo_value}}{{$heap.state.currencySign}}</ion-text>
-        </ion-item>
-        
-        <ion-item button detail @click="$go('/user/user-promo');$topic.publish('dismissModal')">
-            <ion-text>Показать все ваши скидки <span v-if="!promoList?.length">или получить ещё</span></ion-text>
-        </ion-item>
-    </ion-list>
   </ion-content>
 </template>
 <script>
 import {
+  modalController,
   IonIcon,
   IonToolbar,
   IonHeader,
@@ -65,21 +73,25 @@ import {
   IonList,
   IonItem,
   IonText,
-  modalController,
   IonSkeletonText,
   IonCard,
+  IonCardHeader,
+  IonCardTitle,
+  IonCardSubtitle,
   IonCardContent,
   IonButton,
+  IonInput,
 }                       from '@ionic/vue'
 import {
     giftOutline,
     closeOutline,
     banOutline,
+    textOutline,
 }                       from 'ionicons/icons'
-import jQuery           from 'jquery'
-import Order            from '@/scripts/Order.js';
+//import Order            from '@/scripts/Order.js';
 export default {
     components:{
+        modalController,
         IonIcon,
         IonToolbar,
         IonHeader,
@@ -90,8 +102,12 @@ export default {
         IonText,
         IonSkeletonText,
         IonCard,
+        IonCardHeader,
+        IonCardTitle,
+        IonCardSubtitle,
         IonCardContent,
         IonButton,
+        IonInput,
     },
     props:['order'],
     setup(){
@@ -99,26 +115,33 @@ export default {
             giftOutline,
             closeOutline,
             banOutline,
+            textOutline,
         }
     },
     data(){
         return {
             promoList:null,
             promo:null,
-            isPropositionOpen:0
+            isPropositionOpen:0,
+            promoType:'active',
         }
     },
     mounted(){
         this.listGet()
     },
     methods:{
+        async listTypeChanged(type){
+            this.promoType=type
+            this.listGet()
+        },
         async listGet(){
             try{
                 const request={
-                    type:'active',
-                    user_id:this.$heap.state.user.user_id
+                    type:'all',
+                    user_id:this.order.owner_id,
+                    order_id:this.order.order_id,
                 }
-                this.promoList=await jQuery.post(`${this.$heap.state.hostname}Promo/listGet`,request)
+                this.promoList=await this.$post(`${this.$heap.state.hostname}Promo/listFilteredGet`,request)
             }catch{/** */}
         },
         promoPick(promo){
@@ -132,7 +155,7 @@ export default {
             if( !promo ){
                 return true
             }
-            promo.min_order_sum_product=(promo?.min_order_sum_product??0)*1+1;
+            //promo.min_order_sum_product=(promo?.min_order_sum_product??0)*1+1;
             if( this.order.order_sum_product*1<promo.min_order_sum_product ){
                 this.isPropositionOpen=1
                 return false
@@ -140,13 +163,13 @@ export default {
             this.isPropositionOpen=0
             return true
         },
-        async orderChange(){
-            this.promoPick({});
-            this.$flash(`Переходим в ${this.order.store.store_name}...`)
-            await this.$router.replace('/catalog/store-'+this.order.order_store_id);            
-            await Order.api.itemStageCreate(this.order.order_id, 'customer_cart')
-            await Order.api.itemGet(this.order.order_id)
-        }
+        // async orderChange(){
+        //     this.promoPick({});
+        //     this.$flash(`Переходим в ${this.order.store.store_name}...`)
+        //     await this.$router.replace('/catalog/store-'+this.order.order_store_id);            
+        //     await Order.api.itemStageCreate(this.order.order_id, 'customer_cart')
+        //     await Order.api.itemGet(this.order.order_id)
+        // }
     }
 }
 </script>

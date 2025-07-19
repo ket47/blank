@@ -26,7 +26,8 @@
       <ion-card-content v-if="productItem?.validity<validity_min">
         <ion-text>
           Вам необходимо заполнить анкету не меньше чем на {{validity_min}}% для рассмотрения модератором
-          <p v-if="productItem?.validity==0">Обратите внимание на то, что поля 
+          <div v-if="productItem?.validity==0" class="ion-padding">
+            Обратите внимание на то, что поля 
             <ul>
               <li>Название (больше 5 букв), </li>
               <li>Цена, </li>
@@ -34,7 +35,7 @@
               <li>Изображения товара</li>
             </ul>
             обязательные
-          </p>
+          </div>
         </ion-text>
       </ion-card-content>
     </ion-card>

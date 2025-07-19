@@ -14,14 +14,15 @@
 </style>
 
 <template>
-  <base-layout :page-title="`Промокод ${item?.promo_code??''}`">
+  <base-layout :pageTitle="`Промокод ${item?.promo_code??''}`">
   <div v-if="item">
     <ion-card>
       <ion-card-content :class="messageClass">
         <ion-text color="dark">{{message}}</ion-text>
       </ion-card-content>
     </ion-card>
-    <ion-list v-if="0">
+
+    <ion-list>
       <ion-item>
         <ion-icon :src="checkmarkCircleOutline" color="primary" slot="start"/>
         <ion-toggle v-model="item.is_working" color="success" @ionChange="save($event.target.name,$event.target.checked?1:0)" name="is_working">Активен</ion-toggle>
@@ -38,10 +39,7 @@
     <ion-item-divider>
       <ion-label>Основные настройки</ion-label>
     </ion-item-divider>
-    
-    
-    
-    <!-- <ion-list>
+    <ion-list>
       <ion-item>
         <ion-icon :icon="textOutline" slot="start" color="primary" />
         <ion-input
@@ -50,35 +48,26 @@
           type="text"
           @change="save('promo_code', $event.target.value)"
           placeholder="буквы и цифры"
-          label="Промокод"
           label-placement="stacked"
           required
-        ></ion-input>
+        >
+          <ion-text color="primary" slot="label">Промокод</ion-text>
+        </ion-input>
       </ion-item>
 
-      <ion-item>
-        <ion-icon :icon="bookOutline" slot="start" color="primary" />
-        <ion-textarea
-          v-model="item.promo_description"
-          placeholder="описание условий промокода"
-          label="Описание"
-          label-placement="stacked"
-          name="promo_description"
-          @change="save('promo_description', $event.target.value)">
-        </ion-textarea>
-      </ion-item>
       <ion-item lines="none">
-        <ion-icon :icon="walletOutline" slot="start" color="primary" />
+        <ion-icon :icon="giftOutline" slot="start" color="primary" />
         <ion-input
           v-model="item.promo_sum"
           placeholder="сумма скидки"
-          label="Сумма"
           label-placement="stacked"
           @change="save('promo_sum', $event.target.value)"
-        ></ion-input>
+        >
+          <ion-text color="primary" slot="label">Сумма</ion-text>
+        </ion-input>
       </ion-item>
 
-      <ion-item lines="none">
+      <ion-item>
         <ion-icon slot="start" />
         <ion-segment
           mode="ios"
@@ -86,16 +75,28 @@
           @ionChange="save('promo_subject', $event.target.value)"
         >
           <ion-segment-button value="product">
-            <ion-icon :icon="fastFoodOutline"/>
+            <ion-icon :icon="cubeOutline" color="secondary"/>
             скидка от суммы
           </ion-segment-button>
           <ion-segment-button value="delivery">
-            <ion-icon :icon="rocketOutline"/>
+            <ion-icon :icon="rocketOutline" color="secondary"/>
             скидка от доставки
           </ion-segment-button>
         </ion-segment>
       </ion-item>
-    </ion-list> -->
+      <ion-item lines="none">
+        <ion-icon :icon="bookOutline" slot="start" color="primary" />
+        <ion-textarea
+          v-model="item.promo_description"
+          placeholder="описание условий промокода"
+          label-placement="stacked"
+          name="promo_description"
+          @change="save('promo_description', $event.target.value)">
+          
+          <ion-text color="primary" slot="label">Описание</ion-text>
+        </ion-textarea>
+      </ion-item>
+    </ion-list>
 
     <ion-item-divider>
       <ion-label>Условия применения</ion-label>
@@ -103,123 +104,112 @@
     <div class="ion-padding">
       <ion-chip v-if="item.case_product_id" color="primary">
         <ion-icon :icon="fastFoodOutline"/>
-        <ion-label color="dark">{{ item.case_product_name }}</ion-label>
-        <ion-icon :icon="closeCircleOutline" @click="save('case_store_id',null,'case_product_id',null)"/>
+        <ion-label color="dark" @click="itemTagPick('product')">{{ item.case_product_name }}</ion-label>
+        <ion-icon :icon="closeOutline" @click="save('case_store_id',null,'case_product_id',null)"/>
       </ion-chip>
       <ion-chip v-if="item.case_store_id" color="primary">
         <ion-icon :icon="storefrontOutline"/>
-        <ion-label color="dark">{{ item.case_store_name }}</ion-label>
-        <ion-icon :icon="closeCircleOutline" @click="save('case_store_id',null,'case_product_id',null)"/>
+        <ion-label color="dark" @click="itemTagPick('store')">{{ item.case_store_name }}</ion-label>
+        <ion-icon :icon="closeOutline" @click="save('case_store_id',null,'case_product_id',null)"/>
       </ion-chip>
       <ion-chip v-if="item.case_user_id" color="primary">
         <ion-icon :icon="personOutline"/>
-        <ion-label color="dark">{{ item.case_user_name }} {{ item.case_user_phone }}</ion-label>
-        <ion-icon :icon="closeCircleOutline" @click="save('case_user_id',null)"/>
+        <ion-label color="dark" @click="itemTagPick('user')">{{ item.case_user_name }} {{ item.case_user_phone }}</ion-label>
+        <ion-icon :icon="closeOutline" @click="save('case_user_id',null)"/>
       </ion-chip>
       <ion-chip v-if="item.case_min_sum" color="primary">
         <ion-icon :icon="walletOutline"/>
-        <ion-label color="dark">Сумма {{ item.case_min_sum }}</ion-label>
-        <ion-icon :icon="closeCircleOutline" @click="save('case_min_sum',null)"/>
+        <ion-label color="dark" @click="itemTagPick('min_sum')">Мин. сумма заказа: {{ item.case_min_sum }}{{ $heap.state.currencySign }}</ion-label>
+        <ion-icon :icon="closeOutline" @click="save('case_min_sum',null)"/>
       </ion-chip>
-      <ion-chip v-if="item.started_at" color="primary">
+      <ion-chip v-if="item.case_started_at" color="primary">
         <ion-icon :icon="calendarClearOutline"/>
-        <ion-label color="dark">От {{ item.started_at }}</ion-label>
-        <ion-icon :icon="closeCircleOutline" @click="save('started_at',null)"/>
+        <ion-label color="dark" @click="itemTagPick('started_at')">От {{ item.case_started_at }}</ion-label>
+        <ion-icon :icon="closeOutline" @click="save('case_started_at',null)"/>
       </ion-chip>
-      <ion-chip v-if="item.finished_at" color="primary">
+      <ion-chip v-if="item.case_finished_at" color="primary">
         <ion-icon :icon="calendarNumberOutline"/>
-        <ion-label color="dark">До {{ item.finished_at }}</ion-label>
-        <ion-icon :icon="closeCircleOutline" @click="save('finished_at',null)"/>
+        <ion-label color="dark" @click="itemTagPick('finished_at')">До {{ item.case_finished_at }}</ion-label>
+        <ion-icon :icon="closeOutline" @click="save('case_finished_at',null)"/>
       </ion-chip>
     </div>
 
     <div class="ion-padding">
-      <ion-chip v-if="!item.case_product_id" @click="itemCasePick('product')">
+      <ion-chip v-if="!item.case_product_id" @click="itemTagPick('product')">
         <ion-icon :icon="fastFoodOutline"/>
         <ion-label>Товар</ion-label>
       </ion-chip>
-      <ion-chip v-if="!item.case_store_id" @click="itemCasePick('store')">
+      <ion-chip v-if="!item.case_store_id" @click="itemTagPick('store')">
         <ion-icon :icon="storefrontOutline"/>
         <ion-label>Магазин</ion-label>
       </ion-chip>
-      <ion-chip v-if="!item.case_user_id" @click="itemCasePick('user')">
+      <ion-chip v-if="!item.case_user_id" @click="itemTagPick('user')">
         <ion-icon :icon="personOutline"/>
         <ion-label>Клиент</ion-label>
       </ion-chip>
-      <ion-chip v-if="!item.case_min_sum">
+      <ion-chip v-if="!item.case_min_sum" @click="itemTagPick('min_sum')">
         <ion-icon :icon="walletOutline"/>
         <ion-label>Сумма заказа</ion-label>
       </ion-chip>
-      <ion-chip v-if="!item.started_at">
+      <ion-chip v-if="!item.case_started_at" @click="itemTagPick('started_at')">
         <ion-icon :icon="calendarClearOutline"/>
         <ion-label>Начало</ion-label>
       </ion-chip>
-      <ion-chip v-if="!item.finished_at">
+      <ion-chip v-if="!item.case_finished_at" @click="itemTagPick('finished_at')">
         <ion-icon :icon="calendarNumberOutline"/>
         <ion-label>Конец</ion-label>
       </ion-chip>
     </div>
 
-
-
-
-
-
-
-    <ion-item-divider>
-      <ion-label>Списывать с магазина</ion-label>
+    <ion-item-divider v-if="item.case_store_id">
+      <ion-label>Списывать с {{ item.case_store_name }}</ion-label>
     </ion-item-divider>
-    <div style="display:grid;grid-template-columns:repeat( auto-fill, 200px )">
-      <ion-card>
-        <ion-card-header>
-          <ion-item lines="none">
-            <ion-icon :icon="storefrontOutline" slot="start" size="large" color="primary"/>
-            <ion-icon :icon="trashOutline" slot="end" color="medium" />
-          </ion-item>
-        </ion-card-header>
-        <ion-card-content>
-          Сумма <b>350</b> Магазин <b>YaEm</b>
-        </ion-card-content>
-      </ion-card>
-    </div>
-    <div class="ion-padding">
-      <ion-chip>
-        <ion-icon :icon="storefrontOutline"/>
-        <ion-label>Магазин</ion-label>
+    <div class="ion-padding" v-if="item.case_store_id">
+      <ion-chip v-if="item.charge_sum" color="danger">
+        <ion-icon :icon="removeCircleOutline"/>
+        <ion-label color="dark" @click="itemTagPick('charge_sum')">Списать с {{ item.case_store_name }}: {{ item.charge_sum }}{{ $heap.state.currencySign }}</ion-label>
+        <ion-icon :icon="closeOutline" @click="save('charge_sum',null)"/>
+      </ion-chip>
+
+      <ion-chip v-if="!item.charge_sum" @click="itemTagPick('charge_sum')">
+        <ion-icon :icon="removeCircleOutline"/>
+        <ion-label>Сумма списания</ion-label>
       </ion-chip>
     </div>
+
+    <ion-item-divider>
+      <ion-label>Итог</ion-label>
+    </ion-item-divider>
+    <div class="ion-padding" v-if="messageClass=='pactive'" style="color:var(--ion-color-dark);font-size:0.8em">
+      <p>
+        Это промокод <b>{{ item.promo_code }}</b> <span v-if="item.promo_description">,с описанием <b>{{ item.promo_description }}</b>,</span> на сумму <ion-chip color="primary">{{ item.promo_sum }}{{ $heap.state.currencySign }}</ion-chip>
+        <b><span v-if="item.promo_subject=='product'">от суммы заказа</span>
+        <span v-else>от доставки</span></b>.
+      </p>
+      <p>
+        Он может быть использован 
+        <span v-if="item.case_store_id">в <b>{{ item.case_store_name }}</b></span>
+        <span v-if="item.case_product_id">, при покупке <b>{{ item.case_product_name }}</b></span>
+        <span v-if="item.case_min_sum">, если сумма заказа больше <b>{{ item.case_min_sum }}{{ $heap.state.currencySign }}</b></span>.
+      </p>
+      <p>
+        <span v-if="item.case_user_id">Только клиент {{ item.case_user_name }} может использовать его один раз.</span>
+        <span v-else>Промокод могут использовать все клиенты не ограниченное количество раз.</span>
+      </p>
+      <p v-if="item.case_started_at || item.case_finished_at">
+        Время действия 
+        <span v-if="item.case_started_at"> с {{ item.case_started_at }}</span>
+        <span v-if="item.case_finished_at"> до {{ item.case_finished_at }}</span>. 
+      </p>
+      <p>
+        <span v-if="item.charge_sum">Сумма <b>{{ item.charge_sum }}{{ $heap.state.currencySign }}</b> будет списана с {{ item.case_store_name }}. </span>
+        <span v-if="item.charge_sum*1 < item.promo_sum*1">Часть суммы в {{ item.promo_sum-item.charge_sum }}{{ $heap.state.currencySign }} будет списана с {{ $heap.state.settings.app_title }}. </span>
+      </p>
     </div>
-
-
-    <div v-else>
-      Loading
-    </div>
-
-
-    <ion-modal :is-open="ipicker.is_opened">
-      <ion-header>
-        <ion-item>
-          <ion-icon :icon="calendarClearOutline"/>
-        </ion-item>
-      </ion-header>
-      <ion-content class="ion-padding">
-        <ion-list>
-        <ion-item v-if="ipicker.start_at_opened">
-          <ion-icon :icon="calendarClearOutline"/>
-          <ion-input  type="date" v-model="ipicker.start_at" label="Начало действия" label-placement="stacked"/>
-        </ion-item>
-        <ion-item v-if="ipicker.finish_at_opened">
-          <ion-icon :icon="calendarNumberOutline"/>
-          <ion-input  type="date" v-model="ipicker.finish_at" label="Начало действия" label-placement="stacked"/>
-        </ion-item>
-        <ion-item v-if="ipicker.case_min_sum_opened">
-          <ion-icon :icon="walletOutline"/>
-          <ion-input  type="date" v-model="ipicker.case_min_sum" label="Минимальная сумма заказа" label-placement="stacked"/>
-        </ion-item>
-        </ion-list>
-      </ion-content>
-    </ion-modal>
-
+  </div>
+  <div v-else>
+    Loading
+  </div>
   </base-layout>
 </template>
 
@@ -260,10 +250,13 @@ import {
   storefrontOutline,
   ribbonOutline,
   checkmarkCircleOutline,
-  closeCircleOutline,
-
+  closeOutline,
+  removeCircleOutline,
+  cubeOutline,
+  giftOutline,
 }                             from "ionicons/icons";
 import ItemPicker             from '@/components/ItemPicker.vue'
+import ItemInputPicker        from '@/components/ItemInputPicker.vue'
 
 export default {
   components: {
@@ -303,8 +296,11 @@ export default {
       storefrontOutline,
       ribbonOutline,
       checkmarkCircleOutline,
-  
-  closeCircleOutline,
+    removeCircleOutline,
+    cubeOutline,
+  giftOutline,
+
+  closeOutline,
     }
   },
   data() {
@@ -313,15 +309,6 @@ export default {
       is_deleted:0,
       is_disabled:0,
       item: null,
-      ipicker:{//input
-        is_opened:1,
-        start_at:null,
-        start_at_opened:0,
-        finish_at:null,
-        finish_at_opened:0,
-        case_min_sum:null,
-        case_min_sum_opened:0,
-      }
     };
   },
   computed:{
@@ -366,6 +353,12 @@ export default {
 
         item.is_disabled*=1
         item.is_working*=1
+        if( item.case_started_at ){
+          item.case_started_at=item.case_started_at.split(' ')[0]
+        }
+        if( item.case_finished_at ){
+          item.case_finished_at=item.case_finished_at.split(' ')[0]
+        }
         this.item=item
       } catch (err){
         console.warn(err)
@@ -387,8 +380,11 @@ export default {
     async itemUpdate(requestData) {
       try {
         const resp = await this.$post(`PromoCode/itemUpdate`,JSON.stringify(requestData));
+        if( requestData?.promo_sum ){
+          this.itemGet()//case_min_sum & charge_sum may be changed
+        }
         if (resp == "ok") {
-          this.$flash("Сохранено");
+          this.$flash("💾 Сохранено");
           return true;
         }
       } catch (err) {
@@ -406,9 +402,10 @@ export default {
         }
         switch (exception_code) {
           case "promo_sum_small":
-            this.$flash("Сумма слишком маленькая");
+            this.$flash("🚫 Сумма слишком маленькая");
             break;
         }
+        this.itemGet()
         return false;
       }
     },
@@ -417,7 +414,7 @@ export default {
     },
 
 
-    async itemCasePick( type ){
+    async itemTagPick( type ){
       if( type=='product' ){
         this.$flash("С какого магазина товар?")
         const store=await this.itemPick('store')
@@ -444,9 +441,12 @@ export default {
         this.itemUpdate({
           promo_code_id:this.promoCodeId,
           case_store_id:store.store_id,
+          case_product_id:null
         })
         this.item.case_store_id=store.store_id
         this.item.case_store_name=store.store_name
+        this.item.case_product_id=null
+        this.item.case_product_name=null
       }
       if( type=='user' ){
         const user=await this.itemPick('user')
@@ -461,10 +461,76 @@ export default {
         this.item.case_user_name=user.user_name
         this.item.case_user_phone=user.user_phone
       }
-      
-      
+      if( type=='min_sum' ){
+        const value=await this.inputValuePick('text',this.item.case_min_sum,'Минимальная сумма заказа')
+        if( !value || value<=0 ){
+          return
+        }
+        if( this.item.promo_sum*1 > value*1 ){
+          this.$flash(`Минимальная сумма заказа должна быть не меньше ${this.item.promo_sum}${this.$heap.state.currencySign}`)
+        }
+        this.item.case_min_sum=value
+        await this.itemUpdate({
+          promo_code_id:this.promoCodeId,
+          case_min_sum:value,
+        })
+        this.itemGet()
+      }
+      if( type=='started_at' ){
+        let value=await this.inputValuePick('date',this.item.case_started_at,'Начало действия')
+        if( !value ){
+          return
+        }
+        this.item.case_started_at=value
+        await this.itemUpdate({
+          promo_code_id:this.promoCodeId,
+          case_started_at:value+' 00:00:00',
+        })
+        this.itemGet()
+      }
+      if( type=='finished_at' ){
+        let value=await this.inputValuePick('date',this.item.case_finished_at,'Конец действия')
+        if( !value ){
+          return
+        }
+        this.item.case_finished_at=value
+        await this.itemUpdate({
+          promo_code_id:this.promoCodeId,
+          case_finished_at:value+' 00:00:00',
+        })
+        this.itemGet()
+      }
+      if( type=='charge_sum' ){
+        const value=await this.inputValuePick('text',this.item.charge_sum,'Списывать с магазина')
+        if( !value || value<=0 ){
+          return
+        }
+        if( this.item.promo_sum*1 < value*1 ){
+          this.$flash(`Сумма списания должна быть меньше ${this.item.promo_sum}${this.$heap.state.currencySign}`)
+        }
+        this.item.charge_sum=value
+        await this.itemUpdate({
+          promo_code_id:this.promoCodeId,
+          charge_sum:value,
+        })
+        this.itemGet()
+      }
     },
-
+    async inputValuePick( inputType, inputValue, inputLabel ){
+      const modal = await modalController.create({
+          component: ItemInputPicker,
+          componentProps:{inputType,inputValue,inputLabel},
+          initialBreakpoint: 0.35,
+          breakpoints: [0, 0.35, 0.7],
+          canDissmiss:true,
+      });
+      modal.present()
+      this.$topic.on('dismissModal',()=>{
+          modal.dismiss()
+      });
+      const item=await modal.onDidDismiss()
+      return item.data
+    },
 
     async itemPick( itemType, filter=null ){
       const modal = await modalController.create({
