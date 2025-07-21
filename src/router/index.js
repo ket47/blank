@@ -270,6 +270,10 @@ const routes = [
         path: '/admin/analytics',
         component: () => import('@/views/admin/AnalyticsView.vue')
       },
+      {
+        path: '/admin/user-metric',
+        component: () => import('@/views/admin/UserMetricView.vue')
+      },
       //wall tab mustakbel
       {
         path: '/wall/post-edit-:id',
