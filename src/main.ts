@@ -158,6 +158,7 @@ const postErrors=async function (response:Response){
         Topic.publish('dismissModal')
         flash('Вы не выполнили вход, пожалуйста авторизируйтесь')
         router.push({path: `/modal/user-authorize`})
+
       }
     } else
     if(response.status==401){
@@ -165,13 +166,17 @@ const postErrors=async function (response:Response){
       Topic.publish('dismissModal')
       router.push({path: `/modal/user-authorize`});
     } else {
-      const result = await response.json()
-      const responseError = {
+      const responseError={
         type: 'Error',
-        message: result.message || `apiPost Error Response status: ${response.status}`,
-        responseJSON: result || {},
-        code: result.code || '',
+        responseJSON: null,
+        status: response.status,
+        message: `apiPost Error Response status: ${response.status}`,
       }
+      try{
+        const result = await response.json()
+        responseError.message=result?.message
+        responseError.responseJSON=result
+      } catch{/** */}
       let error = new Error()
       error = { ...error, ...responseError }
       throw (error)

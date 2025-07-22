@@ -16,7 +16,7 @@
   </ion-header>
   <ion-content>
 
-    <ion-list v-if="promoList==null">
+    <div v-if="promoList==null">
         <ion-card  v-for="skeleton in [1,2,3]" :key="skeleton">
             <ion-card-header>
                 <div style="display:grid;grid-template-columns:2fr 1fr">
@@ -28,7 +28,14 @@
                 </div>
             </ion-card-header>
         </ion-card>
-    </ion-list>
+    </div>
+    <div v-else-if="!promoList.length">
+        <ion-card>
+            <ion-card-header>
+                <ion-card-subtitle>Нет доступных скидок</ion-card-subtitle>
+            </ion-card-header>
+        </ion-card>
+    </div>
     <div v-else>
         <ion-card v-if="promoList?.length" button @click="promoPick({})">
             <ion-card-header>
@@ -142,7 +149,11 @@ export default {
                     order_id:this.order.order_id,
                 }
                 this.promoList=await this.$post(`${this.$heap.state.hostname}Promo/listFilteredGet`,request)
-            }catch{/** */}
+            }catch(err){
+                if(err.status==404){
+                    this.promoList=[]
+                }
+            }
         },
         promoPick(promo){
             this.promo=promo
