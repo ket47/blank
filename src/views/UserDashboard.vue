@@ -82,6 +82,10 @@ ion-icon{
               <ion-icon :icon="pieChartOutline" slot="start" color="primary"></ion-icon>
               <ion-label>Аналитика</ion-label>
           </ion-item>
+          <ion-item @click="$go('/admin/user-metric')" lines="full" button detail>
+              <ion-icon :icon="pieChartOutline" slot="start" color="primary"></ion-icon>
+              <ion-label>Активность пользователей</ion-label>
+          </ion-item>
         </ion-item-group>
       </ion-item-group>
 
