@@ -6,7 +6,7 @@
   align-items: center;
   margin: 5px; 
   border-radius: 10px; 
-  min-width: 300px;
+  min-width: 320px;
   width: 50%;
   white-space: initial;
 }
@@ -18,11 +18,10 @@
 <template>
   <div v-if="promoList.length > 0" class="promo-counter-container">
     <ion-list v-if="lastPromo.expired_at" style="background: transparent;">
-      <div class="snow"></div>
         <ion-item  color="transparent" lines="none" button detail="true" :detailIcon="chevronForwardOutline" @click="$go(`/user/user-promo`)">
           <img slot="start" src="/img/discount_box.png" width="60"/>
           <ion-label class="ion-no-margin">
-            <strong>У вас есть скидка 🔥 {{lastPromo.promo_value}}</strong>
+            <strong>У вас есть скидка 🔥 {{lastPromo.promo_value}}{{ $heap.state.currencySign }}</strong>
             <p style="font-size: 12px; line-height: 16px; margin-top: 5px;">Успейте воспользоваться, времени мало:</p>
           </ion-label>
         </ion-item>

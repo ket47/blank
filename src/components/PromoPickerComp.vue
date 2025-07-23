@@ -5,7 +5,7 @@
             <ion-title>Промокоды и скидки</ion-title>
             <ion-icon :icon="closeOutline" @click="$topic.publish('dismissModal')" slot="end" size="large" color="light"></ion-icon>
         </ion-item>
-        <ion-item lines="none" style="--background:var(--ion-color-primary-tint);">
+        <ion-item lines="none" style="--background:var(--ion-color-primary-tint);" v-if="0">
             <ion-input placeholder="Впишите Промокод" style111="--background:var(--ion-color-primary-tint);--placeholder-color: #000;--placeholder-opacity: 0.8;">
                 <ion-button slot="end" color="success">
                     Применить
@@ -88,6 +88,7 @@ import {
   IonCardContent,
   IonButton,
   IonInput,
+  IonLabel,
 }                       from '@ionic/vue'
 import {
     giftOutline,
@@ -115,6 +116,7 @@ export default {
         IonCardContent,
         IonButton,
         IonInput,
+        IonLabel,
     },
     props:['order'],
     setup(){

@@ -606,16 +606,16 @@ export default{
           products_include:1,
         }
         let secondRenderTimeout=0
-        let store=await Utils.prePost(`${heap.state.hostname}Store/itemGet`,request )
+        let store=await Utils.prePost(`${this.$heap.state.hostname}Store/itemGet`,request )
         if(store){
           this.storeItem = this.itemPrepare(store);
           secondRenderTimeout=300
         }
-        store=await Utils.post(`${heap.state.hostname}Store/itemGet`,request )
+        store=await Utils.post(`${this.$heap.state.hostname}Store/itemGet`,request )
         setTimeout(()=>{
           this.storeItem = this.itemPrepare(store);
         },secondRenderTimeout)
-        heap.commit('setCurrentStore',this.storeItem);
+        this.$heap.commit('setCurrentStore',this.storeItem);
       } catch(err){
         const exception_code=err?.responseJSON?.messages?.error;
         switch(exception_code){
@@ -651,9 +651,9 @@ export default{
           product_name:"Новый товар",
           product_price:1000
         }
-        const product_id=await jQuery.post(`${heap.state.hostname}Product/itemCreate`,request)
+        const product_id=await jQuery.post(`${this.$heap.state.hostname}Product/itemCreate`,request)
         if(group_id){
-          await jQuery.post(`${heap.state.hostname}Product/itemUpdateGroup`,{product_id,group_id,is_joined:1})
+          await jQuery.post(`${this.$heap.state.hostname}Product/itemUpdateGroup`,{product_id,group_id,is_joined:1})
         }
         this.$go(`/catalog/product-edit-${product_id}`)
         this.$flash("Добавлен 'Новый товар'")
@@ -670,14 +670,14 @@ export default{
       }
       try{
         let secondRenderTimeout=0
-        let response=await Utils.prePost(`${heap.state.hostname}Product/listGet`, request)
+        let response=await Utils.prePost(`${this.$heap.state.hostname}Product/listGet`, request)
         if(response){
           this.productList=response.product_list
           this.groupTreePrepare(response.group_tree)
           secondRenderTimeout=300
         }
 
-        response=await Utils.post(`${heap.state.hostname}Product/listGet`, request)
+        response=await Utils.post(`${this.$heap.state.hostname}Product/listGet`, request)
         setTimeout(()=>{//
           this.productList=response.product_list
           this.groupTreePrepare(response.group_tree)

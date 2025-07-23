@@ -7,10 +7,11 @@
   overflow: hidden;
 }
 .crop-to-fit img{
-  min-width: 100%;
-  height: 100%;
+  width: 100%;
+  --min-height: 100%;
   object-fit: cover;
   z-index: 1;
+  margin:1px;
 }
 .product-item .crop-to-fit {
   height: 250px;
@@ -21,30 +22,25 @@
   box-shadow: none;
   background: transparent;
 }
-.crop-to-fit {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  overflow: hidden;
-  border-radius: 15px;
-}
 
 .absent{
     filter:grayscale(1);
     opacity: 0.5;
 }
 .product-item{
-    border-radius: 15px;
+    border-radius: 10px;
 }
 .product-item.incart{
     background: linear-gradient(to top, #a3e3f7, #abfbd5);
 }
 .product_list_item_img{
-    border: 3px solid transparent !important;
+    border: 1px solid #f5f5f5;
+    height: 250px;
+    width: 100%;
 }
 .product_list_item_img{
-    border-radius: 15px;
-    -border: 3px solid var(--ion-color-light);
+    border-radius: 10px;
+    border: 1px solid var(--ion-color-light);
     overflow:hidden;
     align-items: center;
     justify-content: center;
@@ -56,7 +52,7 @@
     z-index: 0;
     min-height:100%;
     min-width:100%;
-    filter: blur(5px);
+    -filter: blur(5px);
 }
 .promo{
     background: linear-gradient(to top, #cff2d3, #e2feff);
@@ -73,33 +69,31 @@
 }
 @media screen and (max-width: 740px) {
     .product-item .crop-to-fit {
-        height: 200px;
+        min-height: 200px;
     }
 }
 </style>
 <template>
     <div :class="`product-item ${item_class}`" :id="`product_list_item${productItem.product_id}`">
         <div style="position:relative" v-if="productItem.options">
-            <div class="product_list_item_img" style="position:absolute;border:#9ac solid 2px;top:-8px;left:8px;z-index:-1"></div>
-            <div class="product_list_item_img" style="position:absolute;border:#cde solid 2px;top:-4px;left:4px;z-index:-1"></div>
+            <div class="product_list_item_img" style="position:absolute;border:#9ac solid 1px;top:-4px;left:8px;z-index:-1;"></div>
+            <div class="product_list_item_img" style="position:absolute;border:#cde solid 1px;top:-2px;left:4px;z-index:-1;"></div>
         </div>
         <div class="product_list_item_img" :style="productItem.options?'border:#def solid 2px;':''" @click="$go(`/catalog/product-${productItem.product_id}`)" >
             <ion-chip v-if="discount<0" style="position:absolute;right:0px;top:0px;background-color:var(--ion-color-success-tint)" outline color="success">{{discount}}%</ion-chip>
             
-            <img class="blur-image" :src="`${$heap.state.hostname}image/get.php/${productItem.image_hash}.10.10.png`"/>
+            <img class="blur-image" :src="`${$heap.state.hostname}image/get.php/${productItem.image_hash}.10.10.png`" alt=""/>
             <div class="crop-to-fit">
-                <img :src="`${$heap.state.hostname}image/get.php/${productItem.image_hash}.350.350.webp`"/>
+                <img :src="`${$heap.state.hostname}image/get.php/${productItem.image_hash}.350.350.webp`" alt=""/>
             </div>
-            <ion-chip  v-if="productItem.options" style="position:absolute;top:3px;right:3px; z-index: 100; background: white">
-                <ion-icon :src="layersOutline" color="primary" />
-                <ion-label>Есть варианты</ion-label>
-            </ion-chip>
-            
+            <div v-if="productItem.options && 0" style="position:absolute;top:3px;right:3px; z-index: 100;">
+                <ion-icon :src="layersOutline" color="primary" size="large"/>
+            </div>
         </div>
         <ion-card>
             <ion-card-content style="padding: 0 8px 8px ">
                 <h4>
-                    <span v-if="productItem.product_price*1!=productItem.product_final_price*1" style="color:var(--ion-color-dark)">
+                    <span v-if="productItem.product_price*1>productItem.product_final_price*1" style="color:var(--ion-color-dark)">
                         <s>{{product_price}}{{$heap.state.currencySign}}</s>&nbsp;&nbsp;
                     </span>
                     <b style="color:var(--ion-color-primary)">
@@ -113,7 +107,7 @@
                     <span v-else style="color:var(--ion-color-medium)">{{productItem.product_unit}}</span>
                 </h4>
                 <sub style="color:var(--ion-color-primary)">{{productItem.store?.store_name}}</sub>
-                <span class="max-one-line" style="margin-bottom: 5px;">{{ productItem.product_name }}</span>
+                <span class="max-one-line" style="margin-bottom: 5px;font-size:10px">{{ productItem.product_name }}</span>
                 <cart-add-buttons-new display="inline" buttonLayout="horizontal" :productItem="productItem"></cart-add-buttons-new>
             </ion-card-content>
         </ion-card>

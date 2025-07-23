@@ -490,11 +490,11 @@ export default {
         }
         this.$emit('isloading', true)
         let response
-        response=await Utils.prePost(`${heap.state.hostname}Store/listNearGet`, location)
+        response=await Utils.prePost(`${this.$heap.state.hostname}Store/listNearGet`, location)
         if(response){
           this.render(response)
         }
-        response=await Utils.post(`${heap.state.hostname}Store/listNearGet`, location)
+        response=await Utils.post(`${this.$heap.state.hostname}Store/listNearGet`, location)
         this.render(response)
         this.$emit('isloading', false)
       }catch{  this.$emit('isloading', false) }
@@ -640,7 +640,7 @@ export default {
   mounted () {
     this.$topic.on('userMainLocationSet',loc=>this.listNearGet(loc))
     this.$topic.on('userCurrentLocationSet',loc=>this.listNearGet(loc))
-    this.listNearGet(heap.state.user.location_current??heap.state.user.location_main);
+    this.listNearGet(this.$heap.state.user.location_current??this.$heap.state.user.location_main);
   },
   watch:{
     'filter.store_group'(){
@@ -659,7 +659,7 @@ export default {
     },
     '$route.path'(to,from){
       if(to=='/catalog'){
-        this.listNearGet(heap.state.user.location_current??heap.state.user.location_main);
+        this.listNearGet(this.$heap.state.user.location_current??this.$heap.state.user.location_main);
       }
     }
   }

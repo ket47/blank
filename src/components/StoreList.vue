@@ -251,7 +251,6 @@ import {
   Swiper,
   SwiperSlide 
  }                  from 'swiper/vue';
-import jQuery       from "jquery";
 import heap         from "@/heap";
 import Utils        from '@/scripts/Utils.js'
 import StoreOpenedIndicator from '@/components/StoreOpenedIndicator.vue';
@@ -319,7 +318,7 @@ export default {
   },
   methods: {
     async listNearReload(){
-      this.listNearGet(heap.state.user.location_current??heap.state.user.location_main);
+      this.listNearGet(this.$heap.state.user.location_current??this.$heap.state.user.location_main);
     },
     async listNearGet(loc) {
       try{
@@ -330,12 +329,12 @@ export default {
           platform:getPlatforms()
         }
         let response
-        response=await Utils.prePost(`${heap.state.hostname}Store/listNearGet`, location)
+        response=await Utils.prePost(`${this.$heap.state.hostname}Store/listNearGet`, location)
         if(response){
           this.hiddenCount=response.hidden_count
           this.storeList=this.storeListCalculate(response.store_list)
         }
-        response=await Utils.post(`${heap.state.hostname}Store/listNearGet`, location)
+        response=await Utils.post(`${this.$heap.state.hostname}Store/listNearGet`, location)
         this.hiddenCount=response.hidden_count
         this.storeList=this.storeListCalculate(response.store_list)
       }catch{/** */}
@@ -357,7 +356,7 @@ export default {
           subject:this.out.address,
           body:this.out.comment
         }
-        await Utils.post(`${heap.state.hostname}Talk/inquiryCreate`, request)
+        await Utils.post(`${this.$heap.state.hostname}Talk/inquiryCreate`, request)
         this.$flash("Заявка отправлена")
       }catch{/** */}
       this.outofrangeFormHidden=1
@@ -374,7 +373,7 @@ export default {
           subject:this.showndelivery_address,
           body:this.storeSuggestion
         }
-        await Utils.post(`${heap.state.hostname}Talk/inquiryCreate`, request)
+        await Utils.post(`${this.$heap.state.hostname}Talk/inquiryCreate`, request)
         this.$flash("Ваше предложение отправлено")
       }catch{/** */}
       this.suggestFormHidden=1
@@ -383,7 +382,7 @@ export default {
   mounted(){
     this.$topic.on('userMainLocationSet',loc=>this.listNearGet(loc))
     this.$topic.on('userCurrentLocationSet',loc=>this.listNearGet(loc))
-    this.listNearGet(heap.state.user.location_current??heap.state.user.location_main);
+    this.listNearGet(this.$heap.state.user.location_current??this.$heap.state.user.location_main);
   }
 };
 </script>

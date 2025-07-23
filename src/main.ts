@@ -301,10 +301,6 @@ async function startApp(){
   Push.setAlertHandler(alert)
   Push.setGoHandler(go)
 
-  const currrrrr=Capgo.init(App,flash)
-
-
-  console.log(currrrrr.version)
-
+  Capgo.init(App,flash)
 }
 startApp();

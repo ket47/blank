@@ -55,8 +55,8 @@
     <div v-if="productData"  :class="`product-actions ${componentLayout} ${buttonLayout} ${currentQuantity>0?'incart':''} ${isAvailable?'':'sold'}`">
       
       <ion-button v-if="!currentQuantity" @click="addToOrder(+productData.product_quantity_min)" color="primary" expand="block" size="small">
-        <span style="font-size:2em">+</span><!-- that is strange but improves chrome performance-->
-        <span v-if="buttonLayout=='horizontal'">купить</span>
+        <ion-icon :icon="add" slot="start"></ion-icon>
+        <span v-if="buttonLayout=='horizontal'"> купить</span>
       </ion-button>
         <ion-button v-if="currentQuantity>0" @click="addToOrder(+productData.product_quantity_min)" color="light" size="small">
           <ion-icon :icon="add" color="primary"></ion-icon>

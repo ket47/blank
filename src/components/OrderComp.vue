@@ -12,11 +12,6 @@
             <ion-icon v-else slot="start" :icon="storefrontOutline"></ion-icon>
             <ion-label>{{orderData?.store?.store_name}}</ion-label>
         </ion-item>
-        <ion-card color="primary"  v-if="orderData?.finish_plan_scheduled" @click="timePlanInfo()">
-            <ion-card-content>
-                ⏰⏰⏰ Запланированный заказ
-            </ion-card-content>
-        </ion-card>
 
         <ion-list>
             <ion-item lines="none">
@@ -210,6 +205,7 @@
                     expand="block" 
                     :color="stage_title[1]??'primary'"
                     :fill="stage_title[2]??'solid'"
+                    style="white-space: nowrap;"
                     >
                         <ion-icon slot="start" :src="stage_title.icon"></ion-icon>
                         {{ stage_title[0] }}

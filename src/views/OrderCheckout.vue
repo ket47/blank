@@ -149,6 +149,7 @@
 
 
 
+            <div v-if="isAdmin">
                 <ion-item v-if="promo" button @click="promoPick()" color="success">
                     <div slot="start">
                         <ion-icon :icon="giftOutline" color="medium" style="font-size:1.5em"></ion-icon>
@@ -164,10 +165,8 @@
                     </div>
                     Промокоды и скидки
                 </ion-item>
-
-
-
-            <!-- <div v-if="deliveryByCourierRuleChecked && ['use_card','use_card_sbp','use_card_recurrent'].includes(paymentType)">
+            </div>
+            <div v-else-if="deliveryByCourierRuleChecked && ['use_card','use_card_sbp','use_card_recurrent'].includes(paymentType)">
                 <ion-item v-if="promo" button @click="promoPick()" color="success">
                     <div slot="start">
                         <ion-icon :icon="giftOutline" color="medium" style="font-size:1.5em"></ion-icon>
@@ -193,7 +192,7 @@
                     Выберите доставит <b>{{$heap.state.settings?.app_title}}</b> и оплату картой, чтобы использовать скидку
                     </ion-text>
                 </ion-item>
-            </div> -->
+            </div>
 
 
 
@@ -507,7 +506,30 @@ export default({
                 card.label=`${card.card_type.toUpperCase()} (**** ${card.card_mask.split('*').pop()})`
             }
             return card;
-        }
+        },
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            isAdmin(){//for beta testing
+                const user_types=this.$heap.state?.user?.member_of_groups?.group_types
+                if( user_types?.indexOf('admin')>-1 ){
+                  return 1
+                }
+                return 0
+            },
     },
     mounted(){
         this.itemCheckoutDataGet();
