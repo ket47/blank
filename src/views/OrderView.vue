@@ -11,6 +11,7 @@
 
             <order-comp :orderData="order" @stageCreate="onStageCreate" @orderRefresh="itemGet"/>
             <order-tracking-comp :orderData="order"/>
+            <order-reaction-comp :orderData="order"/>
             <order-info-comp :orderData="order"/>
             <order-history-comp :orderData="order"/>
             <image-tile-comp v-show="order?.images" :images="order?.images" :image_holder_id="order?.order_id" controller="Order" ref="orderImgs" source="CAMERA" hide_if_empty="1"/>
@@ -58,7 +59,8 @@ import OrderComp            from '@/components/OrderComp.vue';
 import OrderHistoryComp     from '@/components/OrderHistoryComp.vue';
 import OrderInfoComp        from '@/components/OrderInfoComp.vue';
 import OrderMetaComp        from '@/components/OrderMetaComp.vue';
-import OrderTrackingComp    from '@/components/OrderTrackingComp.vue'
+import OrderTrackingComp    from '@/components/OrderTrackingComp.vue';
+import OrderReactionComp    from '@/components/OrderReactionComp.vue';
 import OrderObjectionModal  from '@/components/OrderObjectionModal.vue'
 import OrderEntryAdd        from '@/components/OrderEntryAdd.vue'
 import ImageTileComp        from '@/components/ImageTileComp.vue'
@@ -72,6 +74,7 @@ export default({
     components: { 
     OrderComp,
     OrderHistoryComp,
+    OrderReactionComp,
     OrderMetaComp,
     OrderInfoComp,
     OrderTrackingComp,
