@@ -196,10 +196,10 @@ const Order = {
                 store=heap.state.currentStore;
             } else {
                 try{
-                    store=await jQuery.get(heap.state.hostname+'Store/itemGet',{store_id,mode:'basic'})
+                    store=await jQuery.post(heap.state.hostname+'Store/itemGet',{store_id,mode:'basic'})
+                    this.itemCreateTomorrowAlert(store)//cache is messing with tomorrow alert
                 }catch{/** */}
             }
-            this.itemCreateTomorrowAlert(store)
             const date=new Date();
             const cart={
                 order_store_id:store_id,

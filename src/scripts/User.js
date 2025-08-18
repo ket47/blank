@@ -91,10 +91,15 @@ const User = {
         }
         return userData;
     },
+    /**
+     * should be rewriten
+     */
     async sessionIdUse(sid){
+        heap.state.sessionId=sid//for $post
         jQuery.ajaxSetup({ 
             beforeSend: function(xhr) {
                 xhr.setRequestHeader('x-sid',  sid);
+                xhr.setRequestHeader('x-ver',  heap.state.applicationVersion);
             }
         });
         await Utils.pref.set('sessionId',sid)

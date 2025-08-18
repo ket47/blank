@@ -33,12 +33,15 @@
 .product-item.incart{
     background: linear-gradient(to top, #a3e3f7, #abfbd5);
 }
-.product_list_item_img{
-    border: 1px solid #f5f5f5;
-    height: 250px;
-    width: 100%;
+.incart .product_list_item_img{
+    border: 2px solid #a3e3f7;
 }
 .product_list_item_img{
+    border: 2px solid #f5f5f5;
+}
+.product_list_item_img{
+    height: 250px;
+    width: 100%;
     border-radius: 10px;
     border: 1px solid var(--ion-color-light);
     overflow:hidden;

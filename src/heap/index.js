@@ -7,7 +7,8 @@ const heap = createStore({
             user: {user_id: -1},
             settings:null,
             currencySign:"₽",
-            isInteractingWithServer:0
+            isInteractingWithServer:0,
+            applicationVersion:'web'
         }
     }, 
     getters: {
