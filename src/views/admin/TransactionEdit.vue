@@ -124,8 +124,8 @@ const transTypes=[
     {
         'trans_role':'supplier->profit',
         'holder':['store'],
-        'trans_name':'Продавец Начисление бонуса при регистрации',
-        'trans_description':'Начисление бонуса на услуги при регистрации на сайте',
+        'trans_name':'Продавец Начисление бонуса',
+        'trans_description':'Начисление бонуса на продавцу',
     },
     {
         'trans_role':'site->courier',

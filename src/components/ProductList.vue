@@ -2,7 +2,7 @@
     .product_list_widget_grid {
       display: grid;
       gap: 1px;
-      grid-template-columns: repeat(auto-fill, 170px);
+      grid-template-columns: repeat(auto-fill, 140px);
       font-size: 0.6em;
     }
     .product_item_colspan2{
@@ -19,7 +19,7 @@
 </template>
 
 <script>
-import ProductItemNew        from "@/components/ProductItemNew";
+import ProductItemNew     from "@/components/ProductItem";
 import ProductItemNoImg   from "@/components/ProductItemNoImg";
 
 export default {
