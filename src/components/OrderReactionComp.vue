@@ -101,47 +101,53 @@
     }
 </style>
 <template>
-<div v-if="has_delivery_finish">
-    <div style="padding: 8px;" v-if="is_customer">
-        <ion-item button v-if="!isFinished" class="reaction-block-customer" color="transparent" lines="none"  id="openOrderReactionModal">
+<div v-if="isLoaded && has_delivery_finish">
+    <div style="padding: 8px;" v-if="(is_customer || is_admin)">
+        <ion-item button v-if="!done_reactions.includes('speed') || !done_reactions.includes('appearence')" class="reaction-block-customer" color="transparent" lines="none"  id="openOrderReactionModal">
             <ion-label color="white">
                 <h3><b>Оцените курьера</b></h3>
-                <p>И получите бонус в размере 50₽!</p>
+                <p>И получите бонус!</p>
             </ion-label>
             <ion-icon :icon="arrowForwardOutline" slot="end"></ion-icon>
         </ion-item>
-        <ion-item button v-else class="reaction-block-customer" color="transparent" lines="none" href="/user/user-promo">
+        <!-- <ion-item button v-else class="reaction-block-customer" color="transparent" lines="none" href="/user/user-promo">
             <ion-label color="white">
                 <h3><b>Спасибо за вашу оценку!</b></h3>
-                <p>Теперь вам доступен бонус в размере 50₽</p>
+                <p>Вам начислен бонус.</p>
             </ion-label>
             <ion-icon :icon="arrowForwardOutline" slot="end"></ion-icon>
-        </ion-item>
+        </ion-item> -->
     </div>
-    <div v-else-if="is_courier" style="padding: 8px;">
-        <ion-item v-if="isFinished" class="reaction-block-courier" color="transparent" lines="none" >
+    <div style="padding: 8px;" v-else-if="is_courier && isLoaded">
+        <ion-item v-if="done_reactions.includes('rating')" class="reaction-block-courier" color="transparent" lines="none" >
             <ion-label color="white">
-                <h3><b>Клиент оставил чаевые</b></h3>
-                <p>Это клёвый клиент!</p>
+                <h3><b>Клиент оставил чаевые!</b></h3>
+                Это клёвый клиент!
             </ion-label>
-            <ion-button :icon="arrowForwardOutline" slot="end" color="light"  @click="createReaction(1, 'Клиент оставил чаевые!', `order:${orderData.order_id}:customer:rating`)">Клёвый клиент!</ion-button>
+       </ion-item>
+        <ion-item v-else class="reaction-block-courier" color="transparent" lines="none" >
+            <ion-label color="white">
+                <h3><b>Клиент оставил чаевые?</b></h3>
+            </ion-label>
+            <ion-button :icon="arrowForwardOutline" slot="end" color="light"  @click="createReaction(1, 'Клиент оставил чаевые!', `order:${orderData.order_id}:customer:rating`)">❤️+1 Клёвый клиент!</ion-button>
         </ion-item>
     </div>
-    <ion-modal ref="reactionModal" :initial-breakpoint="0.35" :breakpoints="[0, 0.35, 0.5, 0.75]" class="reaction-modal" :handle="false"
+    <ion-modal ref="reactionModal" :initial-breakpoint="0.5" :breakpoints="[0, 0.5, 0.75]" class="reaction-modal" :handle="false"
         trigger="openOrderReactionModal" style="--overflow: visible; --border-radius: 25px;">
         <div class="block" v-if="currentStep == 0">
             <div class="img-group-container">
                 <div class="img-container img-left">
-                    <ion-img src="/img/wolves/wolf_fast.png"/>
-                    <ion-button @click="createReaction(1, '', `order:${orderData.order_id}:courier:speed`)">⚡ Быстрый</ion-button>
+                    <ion-img src="/img/wolves/wolf_slow.png" style="transform: scaleX(-1);"/>
+                    <ion-button @click="createReaction(0, '', `order:${orderData.order_id}:courier:speed`)" color="danger">🐌 Медленный</ion-button>
                 </div>
                 <div class="img-container img-right">
-                    <ion-img src="/img/wolves/wolf_slow.png"/>
-                    <ion-button @click="createReaction(0, '', `order:${orderData.order_id}:courier:speed`)" color="danger">🐌 Медленный</ion-button>
+                    <ion-img src="/img/wolves/wolf_fast.png" style="transform: scaleX(-1);"/>
+                    <ion-button @click="createReaction(1, '', `order:${orderData.order_id}:courier:speed`)">⚡ Быстрый</ion-button>
                 </div>
             </div>
             <div>
-                <h3 style="text-align: center; margin-top: -100px;">Быстрым ли был курьер?</h3>
+                <h3 style="text-align: center; margin-top: -120px;">Быстрый ли был курьер?</h3>
+                <h5 style="text-align: center;color:#666">Время доставки ⏱️ {{delivery_time}}</h5>
             </div>
         </div>
         <div class="block" v-else-if="currentStep == 1">
@@ -240,9 +246,10 @@ export default({
         return {
             currentStep: 0,
             reactionComment: '',
-            isFinished: false
-        };
-
+            isFinished: null,
+            isLoaded: false,
+            done_reactions:[]
+        }
     },
     computed:{
         is_admin(){
@@ -263,17 +270,42 @@ export default({
         has_delivery_finish(){
             return this.orderData?.stages?.find(stage=>stage.group_type=='delivery_finish')
         },
+        delivery_time(){
+            const start_stage=this.orderData?.stages.find(stage=>stage.group_type=='delivery_start')
+            const finish_stage=this.orderData?.stages.find(stage=>stage.group_type=='delivery_finish')
+            const diff=Date.parse(finish_stage.created_at.replace(' ','T'))-Date.parse(start_stage.created_at.replace(' ','T'))
+            const time = new Date();
+            time.setTime(diff)
+            if(time.getUTCHours()>0){
+                return `${time.getUTCHours()}ч ${time.getUTCMinutes()}мин ${time.getUTCSeconds()}с`
+            }
+            return `${time.getUTCMinutes()}мин ${time.getUTCSeconds()}с`
+        },
+
     },
     methods: {
         async listGet(){
-            const request={
-                tagQuery:`order:${this.orderData.order_id}`
-            }
-            const response = await this.$post("Reaction/listGet", request)
+            try{
+                const request={
+                    tagQuery:`order:${this.orderData.order_id}`
+                }
+                const response = await this.$post("Reaction/listGet", request)
 
-            if(response.find((reaction) => reaction.tag_option == 'speed')) this.currentStep = 1
-            if(response.find((reaction) => reaction.tag_option == 'appearence')) this.currentStep = 2
-            if(response.length >= 2) this.isFinished = true
+                this.done_reactions=[]
+                for( let reaction of response ){
+                    this.done_reactions.push(reaction.tag_option)
+                }
+                if(response.find((reaction) => reaction.tag_option == 'speed')) this.currentStep = 1
+                if(response.find((reaction) => reaction.tag_option == 'appearence')) this.currentStep = 2
+                if(response.length >= 2) {
+                    this.isFinished = true
+                } else {
+                    this.isFinished = false
+                }
+                this.isLoaded=true
+            } catch{
+                //
+            }
         },
         async createReaction(is_like, comment, target){
             const request={
@@ -287,7 +319,7 @@ export default({
             try{
                 await this.$post("Reaction/itemSave", request)
             }catch(err){
-                console.error(err)
+                //
             }
             this.currentStep++
         },
