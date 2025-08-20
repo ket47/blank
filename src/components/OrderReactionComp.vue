@@ -101,103 +101,114 @@
     }
 </style>
 <template>
-<div v-if="isLoaded && has_delivery_finish">
-    <div style="padding: 8px;" v-if="(is_customer || is_admin)">
-        <ion-item button v-if="!done_reactions.includes('speed') || !done_reactions.includes('appearence')" class="reaction-block-customer" color="transparent" lines="none"  id="openOrderReactionModal">
-            <ion-label color="white">
-                <h3><b>Оцените курьера</b></h3>
-                <p>И получите бонус!</p>
-            </ion-label>
-            <ion-icon :icon="arrowForwardOutline" slot="end"></ion-icon>
-        </ion-item>
-        <!-- <ion-item button v-else class="reaction-block-customer" color="transparent" lines="none" href="/user/user-promo">
-            <ion-label color="white">
-                <h3><b>Спасибо за вашу оценку!</b></h3>
-                <p>Вам начислен бонус.</p>
-            </ion-label>
-            <ion-icon :icon="arrowForwardOutline" slot="end"></ion-icon>
-        </ion-item> -->
-    </div>
-    <div style="padding: 8px;" v-else-if="is_courier && isLoaded">
-        <ion-item v-if="done_reactions.includes('rating')" class="reaction-block-courier" color="transparent" lines="none" >
-            <ion-label color="white">
-                <h3><b>Клиент оставил чаевые!</b></h3>
-                Это клёвый клиент!
-            </ion-label>
-       </ion-item>
-        <ion-item v-else class="reaction-block-courier" color="transparent" lines="none" >
-            <ion-label color="white">
-                <h3><b>Клиент оставил чаевые?</b></h3>
-            </ion-label>
-            <ion-button :icon="arrowForwardOutline" slot="end" color="light"  @click="createReaction(1, 'Клиент оставил чаевые!', `order:${orderData.order_id}:customer:rating`)">❤️+1 Клёвый клиент!</ion-button>
-        </ion-item>
-    </div>
-    <ion-modal ref="reactionModal" :initial-breakpoint="0.5" :breakpoints="[0, 0.5, 0.75]" class="reaction-modal" :handle="false"
-        trigger="openOrderReactionModal" style="--overflow: visible; --border-radius: 25px;">
-        <div class="block" v-if="currentStep == 0">
-            <div class="img-group-container">
-                <div class="img-container img-left">
-                    <ion-img src="/img/wolves/wolf_slow.png" style="transform: scaleX(-1);"/>
-                    <ion-button @click="createReaction(0, '', `order:${orderData.order_id}:courier:speed`)" color="danger">🐌 Медленный</ion-button>
-                </div>
-                <div class="img-container img-right">
-                    <ion-img src="/img/wolves/wolf_fast.png" style="transform: scaleX(-1);"/>
-                    <ion-button @click="createReaction(1, '', `order:${orderData.order_id}:courier:speed`)">⚡ Быстрый</ion-button>
-                </div>
-            </div>
-            <div>
-                <h3 style="text-align: center; margin-top: -120px;">Быстрый ли был курьер?</h3>
-                <h5 style="text-align: center;color:#666">Время доставки ⏱️ {{delivery_time}}</h5>
-            </div>
+<div v-if="isLoaded">
+    <div v-if="has_delivery_found && !has_delivery_finish">
+        <div style="padding: 8px;" v-if="is_customer || is_admin">
+            <ion-item color="light" lines="none" style="border-radius: 10px;">
+                <ion-label>
+                    <h3><b>Чаевые курьеру</b></h3>
+                    <p>При такой сумме заказа обычно курьеру оставляют <b>{{ courier_tips }}₽</b></p>
+                </ion-label>
+            </ion-item>
         </div>
-        <div class="block" v-else-if="currentStep == 1">
-            <div class="img-group-container">
-                <div class="img-container img-left">
-                    <ion-img src="/img/wolves/wolf_good.png"/>
-                <ion-button @click="createReaction(1, '', `order:${orderData.order_id}:courier:appearence`)">🙂 Да</ion-button>
-                </div>
-                <div class="img-container img-right">
-                    <ion-img src="/img/wolves/wolf_bad.png"/>
-                    <ion-button @click="createReaction(0, '', `order:${orderData.order_id}:courier:appearence`)" color="danger">😐 Нет</ion-button>
-                </div>
-            </div>
-            <div>
-                <h3 style="text-align: center; margin-top: -100px;">Курьер выглядел опрятно?</h3>
-            </div>
+    </div>
+    <div v-else-if="has_delivery_finish">
+        <div style="padding: 8px;" v-if="is_customer || is_admin">
+            <ion-item button v-if="!done_reactions.includes('speed') || !done_reactions.includes('appearence')" class="reaction-block-customer" color="transparent" lines="none"  id="openOrderReactionModal">
+                <ion-label color="white">
+                    <h3><b>Оцените курьера</b></h3>
+                    <p>И получите бонус!</p>
+                </ion-label>
+                <ion-icon :icon="arrowForwardOutline" slot="end"></ion-icon>
+            </ion-item>
+            <!-- <ion-item button v-else class="reaction-block-customer" color="transparent" lines="none" href="/user/user-promo">
+                <ion-label color="white">
+                    <h3><b>Спасибо за вашу оценку!</b></h3>
+                    <p>Вам начислен бонус.</p>
+                </ion-label>
+                <ion-icon :icon="arrowForwardOutline" slot="end"></ion-icon>
+            </ion-item> -->
         </div>
-        <div class="block" v-else-if="currentStep == 2">
-            <div style="display: flex; justify-content: center;  margin-top: -200px; z-index: 100">
-                <ion-img src="/img/wolves/wolf_thinking.png" style="width: 300px; "/>
-            </div>
-            <div class="ion-padding-horizontal">
-                <h3 style="text-align: center;">Что бы вы посоветовали?</h3>
-                <ion-textarea placeholder="Напишите свои мысли..." v-model="reactionComment"></ion-textarea>
-            </div>
-            <div  style="display: flex; justify-content: space-evenly;">
-                <ion-button @click="currentStep++" color="medium">Пропустить</ion-button>
+        <div style="padding: 8px;" v-if="is_courier || is_admin">
+            <ion-item v-if="done_reactions.includes('rating') || isCoolClient" class="reaction-block-courier" color="transparent" lines="none" >
+                <ion-label color="white">
+                    <h3><b>Клиент оставил чаевые!</b></h3>
+                    Это клёвый клиент!
+                </ion-label>
+            </ion-item>
+            <ion-item v-else class="reaction-block-courier" color="transparent" lines="none" >
+                <ion-label color="white">
+                    <h3><b>Клиент оставил чаевые?</b></h3>
+                </ion-label>
+                <ion-button :icon="arrowForwardOutline" slot="end" color="light"  @click="createReaction(1, 'Клиент оставил чаевые!', `order:${orderData.order_id}:customer:rating`)">❤️+1 Клёвый клиент!</ion-button>
+            </ion-item>
+        </div>
+        <ion-modal ref="reactionModal" :initial-breakpoint="0.5" :breakpoints="[0, 0.5, 0.75]" class="reaction-modal" :handle="false"
+            trigger="openOrderReactionModal" style="--overflow: visible; --border-radius: 25px;">
+            <div class="block" v-if="currentStep == 0">
+                <div class="img-group-container">
+                    <div class="img-container img-left">
+                        <ion-img src="/img/wolves/wolf_slow.png" style="transform: scaleX(-1);"/>
+                        <ion-button @click="createReaction(0, '', `order:${orderData.order_id}:courier:speed`)" color="danger">🐌 Медленный</ion-button>
+                    </div>
+                    <div class="img-container img-right">
+                        <ion-img src="/img/wolves/wolf_fast.png" style="transform: scaleX(-1);"/>
+                        <ion-button @click="createReaction(1, '', `order:${orderData.order_id}:courier:speed`)">⚡ Быстрый</ion-button>
+                    </div>
+                </div>
                 <div>
-                    <ion-button :disabled="reactionComment.length == 0" @click="createReaction(null, reactionComment, `order:${orderData.order_id}:courier:speed`)" color="primary">Подтвердить</ion-button>
+                    <h3 style="text-align: center; margin-top: -120px;">Быстрый ли был курьер?</h3>
+                    <h5 style="text-align: center;color:#666">Время доставки ⏱️ {{delivery_time}}</h5>
                 </div>
-                
             </div>
-        </div>
-        <div class="block" v-else>
-            <div style="display: flex; justify-content: center; margin-top: -200px; z-index: 100">
-                <ion-img src="/img/wolves/wolf_asking.png" style="width: 300px; "/>
+            <div class="block" v-else-if="currentStep == 1">
+                <div class="img-group-container">
+                    <div class="img-container img-right">
+                        <ion-img src="/img/wolves/wolf_bad.png" style="transform: scaleX(-1);"/>
+                        <ion-button @click="createReaction(0, '', `order:${orderData.order_id}:courier:appearence`)" color="danger">😐 Нет</ion-button>
+                    </div>
+                    <div class="img-container img-left">
+                        <ion-img src="/img/wolves/wolf_good.png" style="transform: scaleX(-1);"/>
+                        <ion-button @click="createReaction(1, '', `order:${orderData.order_id}:courier:appearence`)">🙂 Да</ion-button>
+                    </div>
+                </div>
+                <div>
+                    <h3 style="text-align: center; margin-top: -100px;">Курьер выглядел опрятно?</h3>
+                </div>
             </div>
-            <div>
-                <h3 style="text-align: center;">Не забудьте отблагодарить курьера</h3>
+            <div class="block" v-else-if="currentStep == 2">
+                <div style="display: flex; justify-content: center;  margin-top: -200px; z-index: 100">
+                    <ion-img src="/img/wolves/wolf_thinking.png" style="width: 300px; "/>
+                </div>
+                <div class="ion-padding-horizontal">
+                    <h3 style="text-align: center;">Что бы вы посоветовали?</h3>
+                    <ion-textarea placeholder="Напишите свои мысли..." v-model="reactionComment"></ion-textarea>
+                </div>
+                <div  style="display: flex; justify-content: space-evenly;">
+                    <ion-button v-if="reactionComment.length == 0" @click="(courierLikeCount > 0) ? currentStep++ : closeModal()" color="medium">Пропустить</ion-button>
+                    <ion-button v-else :disabled="reactionComment.length == 0" @click="createReaction(null, reactionComment, `order:${orderData.order_id}:courier:speed`)" color="primary">Подтвердить</ion-button>
+                    
+                </div>
             </div>
-            <div  style="display: flex; justify-content: space-evenly;">
-                <ion-button @click="closeModal()">Хорошо</ion-button>
+            <div class="block" v-else-if="courierLikeCount > 0">
+                <div style="display: flex; justify-content: center; margin-top: -200px; z-index: 100">
+                    <ion-img src="/img/wolves/wolf_asking.png" style="width: 300px; "/>
+                </div>
+                <div>
+                    <h3 style="text-align: center;">Не забудьте отблагодарить курьера</h3>
+                </div>
+                <div  style="display: flex; justify-content: space-evenly;">
+                    <ion-button @click="closeModal()">Хорошо</ion-button>
+                </div>
             </div>
-        </div>
-    </ion-modal>
+        </ion-modal>
+    </div>
 </div>
 
 </template>
 <script>
 import { 
+    modalController,
     IonList,
     IonChip,
     IonItem,
@@ -215,7 +226,7 @@ import {
 }                   from '@ionic/vue';
 import {
     arrowForwardOutline,
-    }               from 'ionicons/icons';
+}                   from 'ionicons/icons';
 
 import User         from '@/scripts/User.js';
 
@@ -248,7 +259,9 @@ export default({
             reactionComment: '',
             isFinished: null,
             isLoaded: false,
-            done_reactions:[]
+            done_reactions:[],
+            isCoolClient: false,
+            courierLikeCount: 0
         }
     },
     computed:{
@@ -270,6 +283,9 @@ export default({
         has_delivery_finish(){
             return this.orderData?.stages?.find(stage=>stage.group_type=='delivery_finish')
         },
+        has_delivery_found(){
+            return this.orderData?.stages?.find(stage=>stage.group_type=='delivery_found')
+        },
         delivery_time(){
             const start_stage=this.orderData?.stages.find(stage=>stage.group_type=='delivery_start')
             const finish_stage=this.orderData?.stages.find(stage=>stage.group_type=='delivery_finish')
@@ -281,7 +297,9 @@ export default({
             }
             return `${time.getUTCMinutes()}мин ${time.getUTCSeconds()}с`
         },
-
+        courier_tips(){
+            return Math.round(this.orderData?.order_sum_total * 0.05 / 10)*10
+        }
     },
     methods: {
         async listGet(){
@@ -316,6 +334,9 @@ export default({
                 request.is_like = is_like
                 request.is_dislike = (!is_like)*1
             }
+            if(target.indexOf('customer:rating') && is_like) this.isCoolClient = true
+            if(target.indexOf('courier') > -1 && is_like) this.courierLikeCount++
+            if(this.courierLikeCount == 0 && this.currentStep == 2) this.closeModal()
             try{
                 await this.$post("Reaction/itemSave", request)
             }catch(err){
@@ -327,6 +348,11 @@ export default({
             this.$refs.reactionModal.$el.dismiss();
             this.isFinished = true
         }
+    },
+    mounted(){
+        this.$topic.on('dismissModal',()=>{
+            this.closeModal()
+        })
     },
     watch:{
         'orderData':async function(newval){
