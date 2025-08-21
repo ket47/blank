@@ -157,11 +157,11 @@
                 <div class="img-group-container">
                     <div class="img-container img-left">
                         <ion-img src="/img/wolves/wolf_slow.png" style="transform: scaleX(-1);"/>
-                        <ion-button @click="createReaction(0, null, `order:${orderData.order_id}:courier:speed`)" color="danger" expand="block">🐌 Медленный</ion-button>
+                        <ion-button @click="createReaction(0, '', `order:${orderData.order_id}:courier:speed`)" color="danger" expand="block">🐌 Медленный</ion-button>
                     </div>
                     <div class="img-container img-right">
                         <ion-img src="/img/wolves/wolf_fast.png" style="transform: scaleX(-1);"/>
-                        <ion-button @click="createReaction(1, null, `order:${orderData.order_id}:courier:speed`)" expand="block">⚡ Быстрый</ion-button>
+                        <ion-button @click="createReaction(1, '', `order:${orderData.order_id}:courier:speed`)" expand="block">⚡ Быстрый</ion-button>
                     </div>
                 </div>
                 <div>
@@ -335,8 +335,10 @@ export default({
         },
         async createReaction(is_like, comment, target){
             const request={
-                comment: comment,
                 tagQuery:target
+            }
+            if(comment){
+                request.comment=comment
             }
             if(is_like !== null){
                 request.is_like = is_like
@@ -358,7 +360,7 @@ export default({
             this.listGet()
         },
         skipbuttonPressed(){
-            this.createReaction(this.appearence_islike, null, `order:${this.orderData.order_id}:courier:appearence`)
+            this.createReaction(this.appearence_islike, '', `order:${this.orderData.order_id}:courier:appearence`)
             if(this.courierLikeCount > 0){
                 this.currentStep++
             }else{
