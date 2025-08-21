@@ -22,6 +22,7 @@
     <base-layout pageTitle="Общая статистика" pageDefaultBackLink="/user">
         <div class="horizontalScroller">
             <ion-chip @click="reportPrint()" color="medium"><ion-icon :src="printOutline"/><ion-label>Напечатать</ion-label></ion-chip> 
+            <ion-chip @click="listGet()" color="medium"><ion-icon :src="reloadOutline"/><ion-label>Обновить</ion-label></ion-chip> 
         </div>
         <ion-list>
             <ion-item>
@@ -79,9 +80,8 @@ import {
   calendarOutline,
   addOutline,
   calculatorOutline,
-}                             from "ionicons/icons";
-import { 
-  printOutline
+  printOutline,
+  reloadOutline,
 }                             from "ionicons/icons";
 
 
@@ -110,6 +110,7 @@ export default {
             calendarOutline,
             addOutline,
             calculatorOutline,
+            reloadOutline,
         }
     },
     data(){

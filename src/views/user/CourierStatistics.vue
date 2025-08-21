@@ -14,10 +14,10 @@
                 <div v-for="(tag,i) in statistics.rating" :key="i">
                     <ion-item v-if="tag.tag_option=='speed'">
                         <ion-icon :icon="rocket" slot="start"/>
-                        <ion-label>Скорость доставки ( {{ tag.total_reactions }} )</ion-label>
+                        <ion-label>Быстрота ( {{ tag.total_reactions }} )</ion-label>
                         <ion-label slot="end">{{ Number(tag.rating/0.2).toFixed(1) }}</ion-label>
                     </ion-item>
-                    <ion-item v-if="tag.tag_option=='look'">
+                    <ion-item v-if="tag.tag_option=='appearence'">
                         <ion-icon :icon="sparkles" slot="start"/>
                         <ion-label>Униформа ( {{ tag.total_reactions }} )</ion-label>
                         <ion-label slot="end">{{ Number(tag.rating/0.2).toFixed(1) }}</ion-label>
@@ -27,10 +27,11 @@
 
             <div v-if="statistics.comments?.length">
                 <h3>Последние отзывы</h3>
-                <ion-card  v-for="(tag,i) in statistics.comments" :key="i">
-                    <ion-card-header>{{ tag.user_name }}</ion-card-header>
-                    <ion-card-content>{{ tag.reaction_comment }}</ion-card-content>
-                </ion-card>
+                <ion-item  v-for="(tag,i) in statistics.comments" :key="i">
+                    <ion-icon slot="end" color="medium" v-if="tag.reaction_is_like==1" :icon="thumbsUpSharp"/>
+                    <ion-icon slot="end" color="medium" v-else :icon="thumbsDownSharp"/>
+                    {{ tag.user_name }}: {{ tag.reaction_comment }}
+                </ion-item>
             </div>
         </div>
         <ledger-comp v-else-if="courier && activeTab=='ledger'" permanentTag="acc::courier"/>
@@ -55,6 +56,8 @@ import {
     sparkles,
     rocket,
     text,
+    thumbsDownSharp,
+    thumbsUpSharp,
 }                       from "ionicons/icons";
 
 import ledgerComp       from "@/components/LedgerComp.vue";
@@ -74,11 +77,12 @@ export default {
     },
     setup(){
         return {
-    star,
-    sparkles,
-    rocket,
-    text,
-
+            star,
+            sparkles,
+            rocket,
+            text,
+            thumbsDownSharp,
+            thumbsUpSharp,
         }
     },
     data(){
