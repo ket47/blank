@@ -52,9 +52,18 @@ const User = {
                 User.courier.parseStatus()
                 User.supplier.storeList=response.storeList
             }
-            heap.commit('setUser', response);
+
+            let main_location_is_changed=1
+            if(heap.state.user?.location_main?.location_id==response?.location_main?.location_id){
+                main_location_is_changed=0
+                //to avoid unnecessary reloads
+            }
+
+            heap.commit('setUser', response)
             Topic.publish('userGet',response);
-            User.geo.switch()
+            if(main_location_is_changed==1){
+                User.geo.switch()
+            }
         });
         if( user?.user_id>0 ){
             //Order.api.listCount()
@@ -209,10 +218,12 @@ const User = {
         },
         async get(){
             try{
-                const data=await jQuery.post( heap.state.hostname + "Courier/itemGet")
+                const debounce=10*60*1000//10 minute
+                const data=await Utils.post(`${heap.state.hostname}Courier/itemGet`,null,debounce)
+
                 User.courier.data=data
                 User.courier.parseStatus()
-                User.courier.batteryCheck()
+                //User.courier.batteryCheck()
                 return data;
             }catch(err){
                 User.courier.data=null;

@@ -39,7 +39,7 @@
         </ion-list>
         <ion-list v-else-if="cardList?.length>0">
             <ion-item v-for="(card,i) in cardList" :key="card.order_id" button detail-icon="" @click="itemMainSet(card.card_id)">
-                <ion-img v-if="card.card_type" class="card_type" :src="`/img/icons/card-${card.card_type}.svg`" slot="start"/>
+                <ion-img v-if="card.card_type" class="card_type" :src="`/img/icons/card-${card.card_type}.svg`" slot="start" style="width:24px;height:auto;"/>
                 <ion-icon v-else :src="cardOutline" slot="start" color="primary"/>
                 <div v-if="i==0">
                     <h6 class="is_main">{{card.label}}</h6>
@@ -167,6 +167,8 @@ export default {
                 component: OrderPaymentCardModal,
                 componentProps:{order_data},
                 presentingElement:presEl,
+                initialBreakpoint: 0.40,
+                breakpoints: [1, 0.40]
                 });
             const dismissFn=function(){
                 modal.dismiss();

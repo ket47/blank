@@ -99,13 +99,18 @@ export default {
       totalSum: 0,
       promoList: [],
       lastPromo: {},
+      last_loaded_user_id:0
     };
   },
   methods: {
     async listGet() {
       try{
-        if(this.$heap.state.user.user_id == -1) return false
+        if(this.$heap.state.user.user_id == -1 || this.$heap.state.user.user_id==this.last_loaded_user_id){
+          return false
+        }
         this.isLoading = true
+        this.last_loaded_user_id=this.$heap.state.user.user_id
+
         this.$emit('isloading', true)
         let response
         response=await Utils.prePost(`${heap.state.hostname}Promo/listGet`, {user_id: this.$heap.state.user.user_id, type:	"active"})

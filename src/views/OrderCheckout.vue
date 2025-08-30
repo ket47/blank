@@ -771,9 +771,12 @@ export default({
             if( this.deliveryByCourierRuleChecked && !await this.deliveryAddressConfirm() ){
                 return false
             }
-            // if( this.pickupByCustomerRuleChecked && !await this.pickupConfirm() ){
-            //     return false
-            // }
+            if( this.pickupByCustomerRuleChecked && !await this.pickupConfirm() ){
+                return false
+            }
+            if( this.paymentType=='use_cash' && !await this.cashConfirm() ){
+                return false
+            }
             this.tariffSplit()
             const orderData={
                 order_id:this.order.order_id,
@@ -880,8 +883,8 @@ export default({
                 component: OrderPaymentCardModal,
                 componentProps:{order_data},
                 presentingElement:presEl,
-                initialBreakpoint: 0.95,
-                breakpoints: [1, 0.95]
+                initialBreakpoint: 0.40,
+                breakpoints: [1, 0.40]
                 });
             const dismissFn=function(){
                 modal.dismiss();
@@ -939,28 +942,50 @@ export default({
             this.$go('/modal/user-addresses');
             return false
         },
-        // async pickupConfirm(){
-        //     const alert = await alertController.create({
-        //         header: 'Самовывоз',
-        //         message:"Заказ надо забрать самостоятельно",
-        //         buttons: [
-        //           {
-        //             text: 'Отмена',
-        //             role: 'cancel',
-        //           },
-        //           {
-        //             text: 'Ок',
-        //             role: 'confirm',
-        //           },
-        //         ],
-        //     });
-        //     await alert.present();
-        //     const { role } = await alert.onDidDismiss();
-        //     if( role=='confirm' ){
-        //         return true
-        //     }
-        //     return false
-        // },
+        async pickupConfirm(){
+            const alert = await alertController.create({
+                header: 'Самовывоз',
+                message:"Заказ надо забрать самостоятельно",
+                buttons: [
+                  {
+                    text: 'Отмена',
+                    role: 'cancel',
+                  },
+                  {
+                    text: 'Ок',
+                    role: 'confirm',
+                  },
+                ],
+            });
+            await alert.present();
+            const { role } = await alert.onDidDismiss();
+            if( role=='confirm' ){
+                return true
+            }
+            return false
+        },
+        async cashConfirm(){
+            const alert = await alertController.create({
+                header: 'Оплата наличными',
+                message:`Курьер позвонит на +${this.order.customer.user_phone}`,
+                buttons: [
+                  {
+                    text: 'Отмена',
+                    role: 'cancel',
+                  },
+                  {
+                    text: 'Буду на связи',
+                    role: 'confirm',
+                  },
+                ],
+            });
+            await alert.present();
+            const { role } = await alert.onDidDismiss();
+            if( role=='confirm' ){
+                return true
+            }
+            return false
+        },
         async promoPick() {
             const modal = await modalController.create({
                 component: PromoPickerComp,

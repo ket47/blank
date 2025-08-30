@@ -24,9 +24,6 @@
             <ion-segment-button value="couriers" @click="item_type='disabled'">
                 Курьеры
             </ion-segment-button>
-            <ion-segment-button value="pcodes" @click="item_type='active'">
-                Промо Коды
-            </ion-segment-button>
         </ion-segment>
         <div>
             <!-- <ion-item lines="none">

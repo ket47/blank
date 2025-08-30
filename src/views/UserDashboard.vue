@@ -48,10 +48,10 @@ ion-icon{
               <ion-icon :icon="receiptOutline" slot="start" color="primary"></ion-icon>
               <ion-label>Мои чеки</ion-label>
           </ion-item>
-          <ion-item @click="$go('/user/user-cards')" lines="full" button detail>
+          <!-- <ion-item @click="$go('/user/user-cards')" lines="full" button detail>
               <ion-icon :icon="cardOutline" slot="start" color="primary"></ion-icon>
               <ion-label>Мои способы оплаты</ion-label>
-          </ion-item>
+          </ion-item> -->
         </div>
 
         <ion-item-group v-if="isAdmin">
@@ -79,12 +79,16 @@ ion-icon{
               <ion-label>Бухгалтерия</ion-label>
           </ion-item>
           <ion-item @click="$go('/admin/analytics')" lines="full" button detail>
-              <ion-icon :icon="pieChartOutline" slot="start" color="primary"></ion-icon>
+              <ion-icon :icon="trendingUpOutline" slot="start" color="primary"></ion-icon>
               <ion-label>Аналитика</ion-label>
           </ion-item>
           <ion-item @click="$go('/admin/user-metric')" lines="full" button detail>
-              <ion-icon :icon="pieChartOutline" slot="start" color="primary"></ion-icon>
+              <ion-icon :icon="footstepsOutline" slot="start" color="primary"></ion-icon>
               <ion-label>Активность пользователей</ion-label>
+          </ion-item>
+          <ion-item @click="$go('/admin/promo-codes')" lines="full" button detail>
+              <ion-icon :icon="magnetOutline" slot="start" color="primary"></ion-icon>
+              <ion-label>Промокоды</ion-label>
           </ion-item>
         </ion-item-group>
       </ion-item-group>
@@ -288,6 +292,9 @@ import {
 
   pieChartOutline,
   thumbsUpSharp,
+  footstepsOutline,
+  trendingUpOutline,
+  magnetOutline,
 } from "ionicons/icons";
 
 import User     from "@/scripts/User.js";
@@ -313,32 +320,38 @@ export default {
   },
   setup() {
     return {
-      settingsOutline,
-      logInOutline,
-      personCircleOutline,
-      exitOutline,
-      locationOutline,
-      heartOutline,
-      helpCircle,
-      callOutline,
-      mailOutline,
-      cardOutline,
-      cartOutline,
-      notifications,
-      chevronForwardOutline,
-      documentTextOutline,
-      informationCircleOutline,
-      storefrontOutline,
-      chatboxEllipsesOutline,
-      giftOutline,
-      personAddOutline,
-      ribbonOutline,
-      receiptOutline,
-      rocketOutline,
-      briefcaseOutline,
-      pieChartOutline,
-      thumbsUpSharp,
-      bookOutline,
+        settingsOutline,
+        logInOutline,
+        personCircleOutline,
+        exitOutline,
+
+        locationOutline,
+        heartOutline,
+        helpCircle,
+        callOutline,
+        mailOutline,
+        
+        cardOutline,
+        cartOutline,
+        notifications,
+        chevronForwardOutline,
+        documentTextOutline,
+        informationCircleOutline,
+        storefrontOutline,
+        chatboxEllipsesOutline,
+        giftOutline,
+        personAddOutline,
+        ribbonOutline,
+        receiptOutline,
+        rocketOutline,
+        briefcaseOutline,
+        bookOutline,
+
+        pieChartOutline,
+        thumbsUpSharp,
+        footstepsOutline,
+        trendingUpOutline,
+        magnetOutline,
     };
   },
   data() {

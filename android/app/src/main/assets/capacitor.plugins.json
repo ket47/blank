@@ -1,11 +1,11 @@
 [
 	{
-		"pkg": "@capacitor-community/firebase-analytics",
-		"classpath": "com.getcapacitor.community.firebaseanalytics.FirebaseAnalytics"
-	},
-	{
 		"pkg": "@capacitor/app",
 		"classpath": "com.capacitorjs.plugins.app.AppPlugin"
+	},
+	{
+		"pkg": "@capacitor/browser",
+		"classpath": "com.capacitorjs.plugins.browser.BrowserPlugin"
 	},
 	{
 		"pkg": "@capacitor/camera",
@@ -50,6 +50,10 @@
 	{
 		"pkg": "@capgo/capacitor-updater",
 		"classpath": "ee.forgr.capacitor_updater.CapacitorUpdaterPlugin"
+	},
+	{
+		"pkg": "@capacitor-community/firebase-analytics",
+		"classpath": "com.getcapacitor.community.firebaseanalytics.FirebaseAnalytics"
 	},
 	{
 		"pkg": "@capgo/inappbrowser",

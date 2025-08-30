@@ -19,25 +19,24 @@
 
 <template>
     <base-layout pageTitle="Оформление доставки посылки" :pageDefaultBackLink="`/order/shipment-${order_id}`" ref="page">
+
         <ion-list  lines="none">
-            <ion-item-divider style="margin-top:0px;box-shadow:none;">Доставка</ion-item-divider>
+            <ion-item-divider style="margin-top:0px;margin-bottom:10px;box-shadow:none;">Доставка</ion-item-divider>
             <!-- <ion-item>
                 Курьер отвезет вашу посылку
             </ion-item>
             <ion-item>
                 {{order?.order_description}}
             </ion-item> -->
-            <ion-item>
-
-            </ion-item>
-            <ion-card v-if="this.routePlan.start_plan_mode=='scheduled'" color="light">
-                <ion-card-header>
-                    <ion-card-title>
-                        Запланировать заказ
-                    </ion-card-title>
-                </ion-card-header>
+            <ion-card v-if="tariffRule.routePlan?.start_plan_mode=='scheduled'" color="light">
                 <ion-card-content>
-                    <p>Сегодня доставить уже не сможем</p>
+                    <div style="display:grid;grid-template-columns:30% 70%">
+                        <div><img src="../assets/icons/sleeping_wolf.png" style="height:60px"/></div>
+                        <div>
+                            Курьерская служба сейчас не работает. 
+                            Доставим, когда Вам будет удобно.
+                        </div>
+                    </div>
                 </ion-card-content>
             </ion-card>
             <ion-item>
@@ -62,48 +61,53 @@
             </ion-item>
             <ion-item-divider>Оплата</ion-item-divider>
             <ion-radio-group v-model="paymentType">
-                <ion-item button detail="false" @click="paymentType='use_credit_store'" v-if="tariffRule.paymentByCreditStore==1">
+                <div>
+
+                <ion-item v-if="tariffRule.paymentByCreditStore==1" button detail="false" @click="paymentType='use_credit_store'">
                     <ion-icon :icon="businessOutline" slot="start" color="medium"></ion-icon>
                     <ion-radio value="use_credit_store">
                         Со счета предприятия
                         <div style="font-size:0.7em;color:var(--ion-color-medium)">{{tariffRule.storeCreditName}} {{tariffRule.storeCreditBalance}}{{$heap.state.currencySign}}</div>                        
                     </ion-radio>
-                </ion-item>
-                <ion-item button detail="false" @click="paymentType='use_cash'" v-if="tariffRule.paymentByCash==1">
+                </ion-item>                    
+                </div>
+
+<!-- 
+                NODE INSERT ERROR OCCURS <ion-item v-if="tariffRule.paymentByCash==1" button detail="false" @click="paymentType='use_cash'">
                     <ion-icon :icon="cashOutline" slot="start" color="medium"></ion-icon>
                     <ion-radio value="use_cash">
                         Оплата наличными
                     </ion-radio>
-                </ion-item>
+                </ion-item> -->
 
-            <div v-if="tariffRule.paymentByCard==1">
-                <ion-item v-if="sbpPaymentAllow" detail="false" button>
-                    <ion-img style="width:22px;height: auto;" :src="`/img/icons/card-sbp.svg`" slot="start"/>
-                    <ion-radio value="use_card_sbp">
-                        СБП быстрая оплата
-                    </ion-radio>
-                </ion-item>
-                <ion-item detail="false" button>
-                    <ion-icon :icon="cardOutline" slot="start" color="medium"></ion-icon>
-                    <ion-radio value="use_card">
-                        Банковская карта
-                    </ion-radio>
-                </ion-item>
-                <ion-item v-if="bankCardCalc?.card_type" button detail="false">
-                    <ion-img v-if="bankCardCalc.card_type" style="width:22px;height: auto;" :src="`/img/icons/card-${bankCardCalc.card_type.toLowerCase()}.svg`" slot="start"/>
-                    <ion-icon v-else :src="cardOutline" slot="start" color="medium"/>
-                    <ion-radio value="use_card_recurrent">
-                        Сохраненная карта {{bankCardCalc.label}}
-                    </ion-radio>
-                </ion-item>
-                <ion-item v-if="bankCardCalc?.card_type" button detail @click="$go('/user/user-cards')">
-                    <ion-label color="medium">Выбрать другую карту</ion-label>
-                </ion-item>
-                <ion-item v-else-if="recurrentPaymentAllow" button detail @click="$go('/user/user-cards')">
-                    <ion-icon :icon="addOutline" slot="start" color="medium"></ion-icon>
-                    <ion-label color="medium">Добавить карту</ion-label>
-                </ion-item>
-            </div>
+                <div v-if="tariffRule.paymentByCard==1">
+                    <ion-item v-if="sbpPaymentAllow" detail="false" button>
+                        <ion-img style="width:22px;height: auto;" :src="`/img/icons/card-sbp.svg`" slot="start"/>
+                        <ion-radio value="use_card_sbp">
+                            СБП быстрая оплата
+                        </ion-radio>
+                    </ion-item>
+                    <ion-item detail="false" button>
+                        <ion-icon :icon="cardOutline" slot="start" color="medium"></ion-icon>
+                        <ion-radio value="use_card">
+                            Банковская карта
+                        </ion-radio>
+                    </ion-item>
+                    <ion-item v-if="bankCardCalc?.card_type" button detail="false">
+                        <ion-img v-if="bankCardCalc.card_type" style="width:22px;height: auto;" :src="`/img/icons/card-${bankCardCalc.card_type.toLowerCase()}.svg`" slot="start"/>
+                        <ion-icon v-else :src="cardOutline" slot="start" color="medium"/>
+                        <ion-radio value="use_card_recurrent">
+                            Сохраненная карта {{bankCardCalc.label}}
+                        </ion-radio>
+                    </ion-item>
+                    <ion-item v-if="bankCardCalc?.card_type" button detail @click="$go('/user/user-cards')">
+                        <ion-label color="medium">Выбрать другую карту</ion-label>
+                    </ion-item>
+                    <ion-item v-else-if="recurrentPaymentAllow" button detail @click="$go('/user/user-cards')">
+                        <ion-icon :icon="addOutline" slot="start" color="medium"></ion-icon>
+                        <ion-label color="medium">Добавить карту</ion-label>
+                    </ion-item>
+                </div>
             </ion-radio-group>
 
             <ion-item-divider>Итог</ion-item-divider>
@@ -141,14 +145,11 @@
         <ion-card v-if="checkoutError" color="warning">
             <ion-card-content>{{checkoutError}}</ion-card-content>
         </ion-card>
-        <ion-card v-else-if="deliveryPlanMode=='awaited'" color="light" @click="heavyLoadInfo()">
+        <!-- <ion-card v-else-if="deliveryPlanMode=='awaited'" color="light" @click="heavyLoadInfo()">
             <ion-card-content>
                 <p v-if="deliveryPlanMode=='awaited'">Высокая загруженность</p>
                  Планируемое время доставки {{deliveryFinishRange}} <ion-icon :src="alertCircleOutline" color="warning"/>.
             </ion-card-content>
-        </ion-card>
-        <!-- <ion-card v-if="isVPNon && (paymentType=='use_card' || paymentType=='use_card_recurrent')" color="light">
-            <ion-card-content>Возможно включен VPN. Банк часто блокирует платежи через VPN.</ion-card-content>
         </ion-card> -->
         <ion-button v-if="paymentType=='use_card' || paymentType=='use_card_recurrent'" expand="block" @click="proceed()" :disabled="checkoutError">Оплатить картой</ion-button>
         <ion-button v-else expand="block" @click="proceed()" :disabled="checkoutError">Вызвать курьера</ion-button>
@@ -264,7 +265,9 @@ export default {
             sbpPaymentAllow:this.$heap.state.settings?.other?.sbpPaymentAllow==1?1:0,
 
             deliveryFinishScheduled:null,
-            deliveryPlanMode:'inited'
+            deliveryPlanMode:'inited',
+
+            is_checkout_data_loaded:0,
         }
     },
     computed:{
@@ -382,9 +385,8 @@ export default {
                     this.$flash('Заказ не найден')
                     this.$router.go(-1)
                 }
-                console.log(err)
-                return false
             }
+            this.is_checkout_data_loaded=1
         },
         tariffRuleSet( tariffRule ){
             this.tariffRule=tariffRule
@@ -510,8 +512,8 @@ export default {
             const modal = await modalController.create({
                 component: OrderPaymentCardModal,
                 componentProps:{order_data},
-                initialBreakpoint: 0.85,
-                breakpoints: [0, 0.85, 0.95]
+                initialBreakpoint: 0.4,
+                breakpoints: [0, 0.4]
             });
             this.$topic.on('dismissModal',()=>{
                 modal && modal.dismiss();

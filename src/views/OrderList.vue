@@ -57,6 +57,10 @@
                 <div v-for="(job) in route.jobs" :key="job.job_id" @click="itemClickConfirm(job)">
                     <ion-item lines="none" style="--inner-padding-bottom:0px">
                         <ion-icon v-if="job.finish_plan_scheduled_date" :icon="alarmOutline" slot="start" color="danger"></ion-icon>
+                        <div v-else-if="job.customer_heart_count>0" slot="start">
+                            <ion-icon  :icon="heartSharp" color="danger"></ion-icon>
+                            <sup>({{ job.customer_heart_count }})</sup>
+                        </div>
                         <ion-text>
                             {{job.job_name}}
                         </ion-text>
@@ -168,6 +172,7 @@ import {
     square,
     cubeOutline,
     cartOutline,
+    heartSharp,
 }                           from 'ionicons/icons';
 import ordersIcon           from "@/assets/icons/orders.svg";
 import Order                from '@/scripts/Order.js';
@@ -202,6 +207,8 @@ export default {
       return { sparklesOutline,storefrontOutline,alarmOutline,ordersIcon,rocketOutline,ribbonOutline,checkmarkOutline,informationOutline,banOutline,square,
                 cubeOutline,
                 cartOutline,
+                
+    heartSharp,
             };
     },
     data(){

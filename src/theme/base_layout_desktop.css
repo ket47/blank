@@ -248,7 +248,7 @@
   ion-header ion-toolbar ion-title{
     color: var(--ion-color-dark);
   }
-  ion-header ion-tab-bar{
-    --background: transparent;
+  ion-tab-bar{
+    --background: white;
   }
 }
