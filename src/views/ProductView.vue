@@ -149,6 +149,15 @@ ion-accordion-group .accordion-expanding .product-description{
           <ion-textarea label="" label-placement="" :value="inCartComment" @change="cartCommentUpdate($event.target.value)" placeholder="заметка для продавца"></ion-textarea>
         </ion-item>
       </ion-list>
+
+
+
+
+
+
+      <div v-for="item in analogList" :key="item.href" :class="`search-item item-width-${item.width}`" class="ion-padding">
+        <product-item-new :productItem="item"></product-item-new> 
+      </div>
   </base-layout>
 </template>
 
@@ -197,11 +206,13 @@ import Utils            from '@/scripts/Utils.js'
 import ReactionThumbs   from '@/components/ReactionThumbs.vue'
 import ReactionComment  from '@/components/ReactionComment.vue'
 import ReactionShare    from '@/components/ReactionShare.vue'
+import ProductItemNew   from '@/components/ProductItemNew.vue'
 
 export default  {
   components: { 
     ImageSliderComp,
     CartAddButtons,
+    ProductItemNew,
     ReactionThumbs,
     ReactionComment,
     ReactionShare,
@@ -241,6 +252,7 @@ export default  {
     return { 
       productId: this.$route.params.id,
       productItem: null,
+      analogList:null
     };
   },
   mounted(){
@@ -317,6 +329,8 @@ export default  {
         try{
           this.productItem=await Utils.prePost( heap.state.hostname + "Product/itemGet", { product_id: this.productId })
           this.productItem=await Utils.post( heap.state.hostname + "Product/itemGet", { product_id: this.productId })
+
+          //this.itemAnalogsGet()
         }catch(err){
           const exception_code=err?.responseJSON?.messages?.error;
           switch(exception_code){
@@ -326,6 +340,25 @@ export default  {
                   break;
           }
           return false
+        }
+      },
+      async itemAnalogsGet(){
+        try{
+          const loc=this.$heap.state.user.location_current??this.$heap.state.user.location_main
+          if(!loc || this.is_loading==1){
+            return
+          }
+          let request={
+              group_ids: this.productItem.member_of_groups.group_ids,
+              location_id:loc.location_id,
+              location_latitude:loc.location_latitude,
+              location_longitude:loc.location_longitude,
+              offset:0,
+              limit:3
+          }
+          this.analogList=await this.$post( heap.state.hostname + "Product/analogListGet", request)
+        }catch{
+          /** */
         }
       },
       cartCommentUpdate(comment){

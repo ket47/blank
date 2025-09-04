@@ -7,7 +7,11 @@
           <ion-button v-else @click="goback()"><ion-icon :src="arrowBackOutline" size="large"/></ion-button>
         </ion-buttons>
         <ion-title v-if="pageTitle" size="small"><div style="line-height: 1.5;max-height:3em;text-overflow: ellipsis;overflow: hidden;font-weight: bold;">{{ pageTitle }}</div></ion-title>
-        <ion-icon  v-if="pageLogo" class="toolbar_svg_logo" style="color: var(--ion-color-primary)" :icon="pageLogo"/>
+        <div v-if="pageLogo=='show'">
+          <ion-icon v-if="this.$heap.state.chameleonMode=='on'" class="toolbar_svg_logo" style="color: var(--ion-color-primary)" :icon="simpleLogo"/>
+          <ion-icon v-else class="toolbar_svg_logo" style="color: var(--ion-color-primary)" :icon="standartLogo"/>
+        </div>
+        
         <div slot="end">
           <cart-header slot="end" ref="cardWidget"></cart-header>
         </div>
@@ -86,6 +90,8 @@ import { defineComponent }  from "@vue/runtime-core";
 import TezkelLoader         from "@/components/TezkelLoader.vue"
 import CookiesModal         from "@/components/CookiesModal.vue"
 
+import standartLogo               from "@/assets/icons/tezkel_logo_text.svg";
+import simpleLogo                 from "@/assets/icons/tezkel_simple_logo.svg";
 
 import {
   arrowBackOutline,
@@ -138,6 +144,8 @@ export default defineComponent({
       addCircleOutline,
       logoAppleAppstore,
       logoGooglePlaystore,
+      simpleLogo ,
+      standartLogo
     }
   },
   data(){
@@ -166,9 +174,13 @@ export default defineComponent({
     },
   },
   mounted(){
+    if( sessionStorage.installPrompted==1 ){
+      return
+    }
     setTimeout(()=>{
       this.installPromptInit()
     },10000)
+    sessionStorage.installPrompted=1
   },
   methods:{
     reload(){

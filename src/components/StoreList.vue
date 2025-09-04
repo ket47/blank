@@ -313,7 +313,7 @@ export default {
       if( this.$heap.state.user.location_main.is_default!=1 ){
         return this.$heap.state.user.location_main.location_address
       }
-      return this.$heap.state.user.location_current.location_address
+      return this.$heap.state.user.location_current?.location_address
     }
   },
   methods: {

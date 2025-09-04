@@ -42,7 +42,7 @@
 }
 </style>
 <template>
-  <base-layout :pageLogo="mainLogo" hideBackLink="true" :contentOnScroll="onScroll">
+  <base-layout :pageLogo="'show'" hideBackLink="true" :contentOnScroll="onScroll">
     <div ref="topMarker"></div>
     <user-address-widget :deliveryTime="primaryDeliveryTime" />
     <home-slider :is-editable="isAdmin" :is-promoted="true"/>
@@ -88,7 +88,6 @@ import ProductListHomeInfinite    from "@/components/ProductListHomeInfinite";
 import StoriesSlider              from "@/components/PostStoriesSlider";
 import StoriesStartupModalTrigger from "@/components/PostStoriesStartupModalTrigger.vue"
 
-import standartLogo               from "@/assets/icons/tezkel_logo_text.svg";
 
 import Utils                      from '@/scripts/Utils.js'
 import User                       from '@/scripts/User.js';
@@ -114,9 +113,7 @@ import {
 
 export default {
   setup() {
-    const mainLogo=isPlatform('ios')&&isPlatform('capacitor')?null:standartLogo
     return {
-      mainLogo,
       chevronBackOutline,
       searchOutline,
       chevronForwardOutline,
@@ -155,7 +152,7 @@ export default {
       if( this.$heap.state.user.location_main.is_default!=1 ){
         return this.$heap.state.user.location_main.location_address
       }
-      return this.$heap.state.user.location_current.location_address
+      return this.$heap.state.user.location_current?.location_address
     }
   },
   mounted(){

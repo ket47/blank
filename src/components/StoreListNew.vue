@@ -469,10 +469,10 @@ export default {
       });
     },
     showndelivery_address(){
-      if( this.$heap.state.user.location_main.is_default!=1 ){
-        return this.$heap.state.user.location_main.location_address
+      if( this.$heap.state.user.location_main?.is_default!=1 ){
+        return this.$heap.state.user.location_main?.location_address
       }
-      return this.$heap.state.user.location_current.location_address
+      return this.$heap.state.user.location_current?.location_address
     },
     storeListRendered(){
       var result = this.storeListFiltered
@@ -484,24 +484,27 @@ export default {
     async listNearGet(loc) {
       try{
         const location={
-          location_id:loc.location_id,
+          location_id:loc?.location_id,
           location_latitude:loc.location_latitude,
           location_longitude:loc.location_longitude
         }
         this.$emit('isloading', true)
         let response
         response=await Utils.prePost(`${this.$heap.state.hostname}Store/listNearGet`, location)
-        if(response){
+        if(response && response?.store_list?.length>0 ){
           this.render(response)
         }
         response=await Utils.post(`${this.$heap.state.hostname}Store/listNearGet`, location)
         this.render(response)
         this.$emit('isloading', false)
-      }catch{  this.$emit('isloading', false) }
+      }catch(err){
+        this.$emit('isloading', false)
+        this.storeList=[]//if not found
+      }
     },
     render(response){
       this.storeList=this.filterSubstract(response.store_list)
-      this.storeGroups=this.storeGroupsPrecompose(response.store_groups)
+      this.storeGroups=this.storeGroupsPrecompose(response.store_groups||[])
       this.productGroups=this.customProductGroups.concat(response.product_groups);
       this.filterStoreList();
       this.productCategoryRecalc(this.storeListFiltered)

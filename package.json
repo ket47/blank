@@ -38,6 +38,7 @@
     "@pqina/flip": "^1.8.3",
     "@vue/cli": "^5.0.8",
     "capacitor": "^0.5.6",
+    "capacitor-plugin-safe-area": "^4.0.0",
     "core-js": "^3.6.5",
     "firebase": "^9.8.3",
     "jquery": "^3.6.0",

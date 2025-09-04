@@ -52,6 +52,10 @@
 		"classpath": "ee.forgr.capacitor_updater.CapacitorUpdaterPlugin"
 	},
 	{
+		"pkg": "capacitor-plugin-safe-area",
+		"classpath": "com.capacitor.safearea.SafeAreaPlugin"
+	},
+	{
 		"pkg": "@capacitor-community/firebase-analytics",
 		"classpath": "com.getcapacitor.community.firebaseanalytics.FirebaseAnalytics"
 	},

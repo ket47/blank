@@ -142,6 +142,9 @@ const post=async ( url:string, data:any )=>{
     heap.state.sessionId=response.headers.get("x-sid")
     User.sessionIdUse(heap.state.sessionId);
   }
+  if( response.headers.get("x-chameleon") ){
+    heap.state.chameleonMode=response.headers.get("x-chameleon")
+  }
   await postErrors(response)
   const resp=await response.text()
   try{
@@ -223,6 +226,9 @@ jQuery( document ).ajaxComplete((e,xhr)=>{
   if(sid){
     User.sessionIdUse(sid);
   }
+  if( xhr.getResponseHeader("x-chameleon") ){
+    heap.state.chameleonMode=xhr.getResponseHeader("x-chameleon")
+  }
   setTimeout(()=>{
     heap.commit('setInteractionStatus',-1)
   },100)
@@ -267,6 +273,24 @@ if(isMobile){
 }
 
 
+
+import { SafeArea } from 'capacitor-plugin-safe-area';
+SafeArea.getSafeAreaInsets().then((data) => {
+  const { insets } = data;
+  document.body.style.setProperty("--ion-safe-area-top", `${insets.top}px`);
+  document.body.style.setProperty(
+    "--ion-safe-area-right",
+    `${insets.right}px`
+  );
+  document.body.style.setProperty(
+    "--ion-safe-area-bottom",
+    `${insets.bottom}px`
+  );
+  document.body.style.setProperty(
+    "--ion-safe-area-left",
+    `${insets.left}px`
+  );
+});
 
 
 

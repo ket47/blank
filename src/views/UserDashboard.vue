@@ -201,7 +201,33 @@ ion-icon{
         </ion-item>
       </ion-item-group>
 
-      <ion-item-group>
+      <ion-item-group  v-if="$heap.state.chameleonMode=='on'">
+        <ion-item-divider>
+          <ion-label>Информация</ion-label>
+        </ion-item-divider>
+        <ion-item lines="full" button detail @click="$go('/page/about-us')">
+            <ion-icon :icon="informationCircleOutline" slot="start" color="primary"></ion-icon>
+            <ion-text>О нас</ion-text>
+        </ion-item>
+        <ion-item lines="full" button detail @click="$go('/page/rules-courier')">
+            <ion-icon :icon="informationCircleOutline" slot="start" color="primary"></ion-icon>
+            <ion-text>Правила пользования для курьера</ion-text>
+        </ion-item>
+        <ion-item lines="full" button detail @click="$go('/page/supplier-guide')">
+            <ion-icon :icon="informationCircleOutline" slot="start" color="primary"></ion-icon>
+            <ion-text>Презентация для продавцов</ion-text>
+        </ion-item>
+        <ion-item lines="full" button detail @click="$go('/page/copyright')">
+            <ion-icon :icon="informationCircleOutline" slot="start" color="primary"></ion-icon>
+            <ion-text>Правообладателям</ion-text>
+        </ion-item>
+        <ion-item lines="full" button detail href="https://t.me/tezkelbot" target="_new">
+            <ion-icon :icon="chatboxEllipsesOutline" slot="start" color="primary"></ion-icon>
+            <ion-label>Телеграм бот <a href="https://t.me/tezkelbot" target="_new">@telegrambot</a></ion-label>
+        </ion-item>
+      </ion-item-group>
+      <!-- for all -->
+      <ion-item-group  v-else>
         <ion-item-divider>
           <ion-label>Информация</ion-label>
         </ion-item-divider>
