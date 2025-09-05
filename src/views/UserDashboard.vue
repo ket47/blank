@@ -201,14 +201,10 @@ ion-icon{
         </ion-item>
       </ion-item-group>
 
-      <ion-item-group  v-if="$heap.state.chameleonMode=='on'">
-        <ion-item-divider>
+      <ion-item-group v-if="$heap.state.settings?.chameleonMode=='on' || $heap.state.settings?.chameleonMode==null">
+        <ion-item-divider @click="capgoInstallerReset()">
           <ion-label>Информация</ion-label>
         </ion-item-divider>
-        <ion-item lines="full" button detail @click="$go('/page/about-us')">
-            <ion-icon :icon="informationCircleOutline" slot="start" color="primary"></ion-icon>
-            <ion-text>О нас</ion-text>
-        </ion-item>
         <ion-item lines="full" button detail @click="$go('/page/rules-courier')">
             <ion-icon :icon="informationCircleOutline" slot="start" color="primary"></ion-icon>
             <ion-text>Правила пользования для курьера</ion-text>
@@ -228,7 +224,7 @@ ion-icon{
       </ion-item-group>
       <!-- for all -->
       <ion-item-group  v-else>
-        <ion-item-divider>
+        <ion-item-divider @click="capgoInstallerReset()">
           <ion-label>Информация</ion-label>
         </ion-item-divider>
         <ion-item lines="full" button detail @click="$go('/page/about-us')">
@@ -430,6 +426,9 @@ export default {
         const options = { month: 'short', day: 'numeric',hour:'numeric', hc:'h24', minute:'numeric',year:'numeric' };//,timeZone:'Europe/Kyiv' not supported on safari
         return event.toLocaleDateString('ru-RU', options);
     },
+    capgoInstallerReset(){
+      localStorage.appUpdateSkipUntil=0
+    }
   },
   watch: {
     $route(to, from) {

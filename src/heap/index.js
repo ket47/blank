@@ -8,7 +8,7 @@ const heap = createStore({
             settings:null,
             currencySign:"₽",
             isInteractingWithServer:0,
-            applicationVersion:'web'
+            applicationVersion:null
         }
     }, 
     getters: {

@@ -275,21 +275,14 @@ if(isMobile){
 
 
 import { SafeArea } from 'capacitor-plugin-safe-area';
+let safeAreaInlets
 SafeArea.getSafeAreaInsets().then((data) => {
   const { insets } = data;
+  safeAreaInlets=insets
   document.body.style.setProperty("--ion-safe-area-top", `${insets.top}px`);
-  document.body.style.setProperty(
-    "--ion-safe-area-right",
-    `${insets.right}px`
-  );
-  document.body.style.setProperty(
-    "--ion-safe-area-bottom",
-    `${insets.bottom}px`
-  );
-  document.body.style.setProperty(
-    "--ion-safe-area-left",
-    `${insets.left}px`
-  );
+  document.body.style.setProperty("--ion-safe-area-right",`${insets.right}px`);
+  document.body.style.setProperty("--ion-safe-area-bottom",`${insets.bottom}px`);
+  document.body.style.setProperty("--ion-safe-area-left",`${insets.left}px`);
 });
 
 
@@ -299,13 +292,11 @@ async function startApp(){
   /**
    * Signing in first is slower but is more solid because all requests will go with session header
    */
-
+  heap.state.applicationVersion=await Capgo.installedVersionGet()
   heap.state.sessionId = await Utils.pref.get('sessionId')
   if( heap.state.sessionId ){
     await User.sessionIdUse(heap.state.sessionId);
   }
-
-
 
   app.mount('#app');
   /**
@@ -318,7 +309,6 @@ async function startApp(){
     }
   })
   await User.autoSignIn();
-
 
   Metrics.init()
   Push.setFlashHandler(flash)

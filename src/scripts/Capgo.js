@@ -34,7 +34,7 @@ const Capgo={
      */
     async latestGet(){
         const now=Date.now()/1000
-        const skipUntil=now+1*60*60//1h
+        const skipUntil=now+3*60*60//3h
         if( localStorage.appUpdateSkipUntil>now ){
             return null
         }
@@ -66,6 +66,14 @@ const Capgo={
             }
         }
         return null
+    },
+
+    async installedVersionGet(){
+        if( !isPlatform('capacitor') ){
+            return 'web'
+        }
+        const result=await CapacitorUpdater.getBuiltinVersion()
+        return result?.version
     }
 }
 export default Capgo;
