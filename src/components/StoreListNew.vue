@@ -482,11 +482,14 @@ export default {
   },
   methods: {
     async listNearGet(loc) {
+      if( !loc ){
+        return
+      }
       try{
         const location={
           location_id:loc?.location_id,
-          location_latitude:loc.location_latitude,
-          location_longitude:loc.location_longitude
+          location_latitude:loc?.location_latitude,
+          location_longitude:loc?.location_longitude
         }
         this.$emit('isloading', true)
         let response
@@ -500,6 +503,7 @@ export default {
       }catch(err){
         this.$emit('isloading', false)
         this.storeList=[]//if not found
+        console.log(err)
       }
     },
     render(response){

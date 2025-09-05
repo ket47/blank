@@ -36,7 +36,7 @@ export default{
     },
     preloadFirstImage(image_hash) {
       var image = new Image()
-      image.src = `${this.$heap.state.hostname}image/get.php/${image_hash}.3000.2000.webp`
+      image.src = `${this.$heap.state.hostname}image/get.php/${image_hash}.1500.3000.webp`
       image.onload = () => {
         this.isOpen = true
         localStorage.storiesStartupModalShown=Date.now()

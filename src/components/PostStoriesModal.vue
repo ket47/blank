@@ -24,6 +24,7 @@ ion-modal{
 }
 .story-toolbar{
   position: absolute;
+  top:20px;
   width: 100%;
   padding: 16px;
   pointer-events: all;
@@ -142,16 +143,17 @@ ion-modal{
             @slideChange="onSlideChange"
             @touchStart="touchStart"
             @touchEnd="touchEnd"
-            style="max-width: 100%;">
+            style="max-width: 100%;height:100%">
             <swiper-slide v-for="(slideGroup, slideGroupIndex) in groups" :key="slideGroupIndex" >
-              <div class="stories">
+              <div class="stories" style="height:100%">
                   <div class="autoplay-progress">
                     <div class="progress-container" v-for="story in slideGroup.children" :key="`pr_${story.title}`" >
                       <div :class="`progress ${story.progressClass}`" :style="`width: ${(story.isActive) ? autoplayProgress : story.progress}%`" ></div>
                     </div>
                   </div>
-                  <div :class="`story ${(story.isActive) ? 'is-active' : ''}`" v-for="story in slideGroup.children" :key="story.title">
-                    <div class="slide-container">
+                  <div :class="`story ${(story.isActive) ? 'is-active' : ''}`" v-for="story in slideGroup.children" :key="story.title" style="height:100%">
+                    <div class="slide-container" 
+                      :style="`height:100%;background-image:url('${$heap.state.hostname}image/get.php/${story.image_hash}.10.20.webp');background-size: cover`">
                       <div class="story-toolbar">
                         <div @click="(slideGroup.holder == 'store') ? go(`/catalog/store-${slideGroup.holder_id}`) : null">
                           <ion-avatar v-if="slideGroup.avatar_hash">
@@ -161,7 +163,7 @@ ion-modal{
                         </div>
                         <ion-buttons>
                           <ion-button v-if="story.is_writable && isEditable" @click="closeModal(); editStory(story.post_id)" fill="clear" color="light"><ion-icon slot="icon-only" :icon="settingsSharp" size="large"></ion-icon></ion-button>
-                          <ion-button @click="closeModal()" fill="clear" color="light"><ion-icon slot="icon-only" :icon="closeOutline" size="large"></ion-icon></ion-button>
+                          <ion-button @click="closeModal()" fill="clear" color="light"><ion-icon slot="icon-only" :icon="closeSharp" size="large"></ion-icon></ion-button>
                         </ion-buttons>
                       </div>
                       <div class="story-nav">
@@ -176,8 +178,8 @@ ion-modal{
                             @touchstart="action = 'link'; actionData = story.post_route" 
                             >Подробнее<ion-icon :icon="chevronForwardOutline"></ion-icon></ion-button>
                       </div>
-                      <div class="crop-to-fit">
-                        <img class="" :src="`${$heap.state.hostname}image/get.php/${story.image_hash}.3000.2000.webp`"/>
+                      <div>
+                        <img :src="`${$heap.state.hostname}image/get.php/${story.image_hash}.1500.3000.webp`"/>
                       </div>
                     </div>
                   </div>
@@ -200,6 +202,7 @@ import {
 }                               from "@ionic/vue";
 import {
   closeOutline,
+  closeSharp,
   chevronForwardOutline,
   settingsSharp
   }                             from 'ionicons/icons';
@@ -224,7 +227,7 @@ export default{
       const closeModal = function(){
           modalController.dismiss();
       };
-      return {  closeModal, closeOutline, chevronForwardOutline, settingsSharp};
+      return {  closeModal, closeSharp, chevronForwardOutline, settingsSharp};
   },
   data(){
     return {
