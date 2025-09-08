@@ -138,28 +138,33 @@ ion-icon{
           </ion-item>
         </div>
 
-        <div v-if="courierStatus=='notcourier'">
-          <ion-item lines="none">
-            <ion-text>
-              <ion-label>Пока вы не курьер</ion-label>
-              <ion-note>Подайте заявку, чтобы стать курьером</ion-note>
-            </ion-text>
-          </ion-item>
-          <ion-item button lines="full" @click="$go('/user/courier-dashboard')"  v-if="$heap.state.settings?.other?.chameleonMode!='on'">
-            <ion-icon :icon="rocketOutline" slot="start"></ion-icon>
-            <ion-button slot="end" color="light">Стать курьером</ion-button>
-          </ion-item>
+        <div  v-if="$heap.state.settings?.other?.chameleonMode!='on'">
+
+          <div v-if="courierStatus=='notcourier'">
+            <ion-item lines="none">
+              <ion-text>
+                <ion-label>Пока вы не курьер</ion-label>
+                <ion-note>Подайте заявку, чтобы стать курьером</ion-note>
+              </ion-text>
+            </ion-item>
+            <ion-item button lines="full" @click="$go('/user/courier-dashboard')" >
+              <ion-icon :icon="rocketOutline" slot="start"></ion-icon>
+              <ion-button slot="end" color="light">Стать курьером</ion-button>
+            </ion-item>
+          </div>
+          <div v-else>
+            <ion-item lines="full" button detail @click="$go('/user/courier-dashboard')">
+                <ion-icon :icon="documentTextOutline" slot="start" color="primary"></ion-icon>
+                <ion-label>Анкета курьера</ion-label>
+            </ion-item>
+            <ion-item lines="full" button detail @click="$go('/user/courier-statistics')">
+                <ion-icon :icon="pieChartOutline" slot="start" color="primary"></ion-icon>
+                <ion-label>Статистика</ion-label>
+            </ion-item>
+          </div>
+
         </div>
-        <div v-else>
-          <ion-item lines="full" button detail @click="$go('/user/courier-dashboard')">
-              <ion-icon :icon="documentTextOutline" slot="start" color="primary"></ion-icon>
-              <ion-label>Анкета курьера</ion-label>
-          </ion-item>
-          <ion-item lines="full" button detail @click="$go('/user/courier-statistics')">
-              <ion-icon :icon="pieChartOutline" slot="start" color="primary"></ion-icon>
-              <ion-label>Статистика</ion-label>
-          </ion-item>
-        </div>
+
 
       </ion-item-group>
 
