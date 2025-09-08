@@ -200,8 +200,7 @@ ion-icon{
           <ion-text>Ваши пожелания или замечания</ion-text>
         </ion-item>
       </ion-item-group>
-
-      <ion-item-group v-if="$heap.state.settings?.chameleonMode=='on' || $heap.state.settings?.chameleonMode==null">
+      <ion-item-group v-if="$heap.state.settings?.other?.chameleonMode=='on' || $heap.state.settings?.other?.chameleonMode==null">
         <ion-item-divider @click="capgoInstallerReset()">
           <ion-label>Информация</ion-label>
         </ion-item-divider>
@@ -262,6 +261,9 @@ ion-icon{
         <ion-item lines="full" button detail href="https://t.me/tezkelbot" target="_new">
             <ion-icon :icon="chatboxEllipsesOutline" slot="start" color="primary"></ion-icon>
             <ion-label>Телеграм бот <a href="https://t.me/tezkelbot" target="_new">@telegrambot</a></ion-label>
+        </ion-item>
+        <ion-item lines="none">
+            <ion-label>Версия приложения: {{ $heap.state.applicationVersion }}</ion-label>
         </ion-item>
       </ion-item-group>
     </ion-list>
