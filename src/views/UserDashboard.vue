@@ -145,7 +145,7 @@ ion-icon{
               <ion-note>Подайте заявку, чтобы стать курьером</ion-note>
             </ion-text>
           </ion-item>
-          <ion-item button lines="full" @click="$go('/user/courier-dashboard')">
+          <ion-item button lines="full" @click="$go('/user/courier-dashboard')"  v-if="$heap.state.settings?.other?.chameleonMode!='on'">
             <ion-icon :icon="rocketOutline" slot="start"></ion-icon>
             <ion-button slot="end" color="light">Стать курьером</ion-button>
           </ion-item>
@@ -186,7 +186,7 @@ ion-icon{
               <ion-note>Зарегистрируйте свой магазин или ресторан</ion-note>
             </ion-text>
           </ion-item>
-          <ion-item @click="$go(`/user/supplier-dashboard`)" lines="full">
+          <ion-item @click="$go(`/user/supplier-dashboard`)" lines="full" v-if="$heap.state.settings?.other?.chameleonMode!='on'">
             <ion-icon :icon="storefrontOutline" slot="start"></ion-icon>
             <ion-button slot="end" color="light">Стать продавцом</ion-button>
           </ion-item>
@@ -204,14 +204,6 @@ ion-icon{
         <ion-item-divider @click="capgoInstallerReset()">
           <ion-label>Информация</ion-label>
         </ion-item-divider>
-        <ion-item lines="full" button detail @click="$go('/page/rules-courier')">
-            <ion-icon :icon="informationCircleOutline" slot="start" color="primary"></ion-icon>
-            <ion-text>Правила пользования для курьера</ion-text>
-        </ion-item>
-        <ion-item lines="full" button detail @click="$go('/page/supplier-guide')">
-            <ion-icon :icon="informationCircleOutline" slot="start" color="primary"></ion-icon>
-            <ion-text>Презентация для продавцов</ion-text>
-        </ion-item>
         <ion-item lines="full" button detail @click="$go('/page/copyright')">
             <ion-icon :icon="informationCircleOutline" slot="start" color="primary"></ion-icon>
             <ion-text>Правообладателям</ion-text>
