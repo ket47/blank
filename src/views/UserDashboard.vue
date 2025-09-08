@@ -213,10 +213,6 @@ ion-icon{
             <ion-icon :icon="informationCircleOutline" slot="start" color="primary"></ion-icon>
             <ion-text>Правообладателям</ion-text>
         </ion-item>
-        <ion-item lines="full" button detail href="https://t.me/tezkelbot" target="_new">
-            <ion-icon :icon="chatboxEllipsesOutline" slot="start" color="primary"></ion-icon>
-            <ion-label>Телеграм бот <a href="https://t.me/tezkelbot" target="_new">@telegrambot</a></ion-label>
-        </ion-item>
       </ion-item-group>
       <!-- for all -->
       <ion-item-group  v-else>
