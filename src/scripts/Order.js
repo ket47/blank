@@ -216,6 +216,14 @@ const Order = {
             };
             heap.state.cartList.push(cart);
             Order.cart.listSave();
+
+            jQuery.post(heap.state.hostname+'Metric/itemActCreate',{
+                type:'cartCreate',
+                result:'ok',
+                target_id:store_id,
+                description:`${store.store_name}`
+            })
+
             return store_id;
         },
         itemCreateTomorrowAlert(store){
@@ -224,6 +232,13 @@ const Order = {
             if( store.is_working!=1 || store.is_disabled==1 || store[`store_time_closes`]==null ){
                 //not working
                 alert(`"${store.store_name}" сегодня не работает.\n\nВы можете оформить заказ в другом заведении`)
+                
+                jQuery.post(heap.state.hostname+'Metric/itemActCreate',{
+                    type:'cartCreate',
+                    result:'error',
+                    target_id:store.store_id,
+                    description:`На завтра! ${store.store_name}`
+                })
                 return
             }
             const marginMinutes=40
@@ -238,6 +253,13 @@ const Order = {
             }
             if( closeHour )
                 //alert in margin
+            
+                jQuery.post(heap.state.hostname+'Metric/itemActCreate',{
+                    type:'cartCreate',
+                    result:'error',
+                    target_id:store.store_id,
+                    description:`Не успеваем! ${store.store_name}`
+                })
                 alert(`"${store.store_name}" закрывается в ${closeHour}, сможем доставить на следующий день.\n\nВы можете оформить заказ в другом заведении`)
         },
         itemUpdate(store_id,entries=null,properties=null){
@@ -296,6 +318,12 @@ const Order = {
         },
         async entrySave(store_id,entry){
             const existingOrder=Order.cart.itemGetByStoreId(store_id);
+            jQuery.post(heap.state.hostname+'Metric/itemActCreate',{
+                type:'cartEntry',
+                result:'ok',
+                target_id:entry.product_id,
+                description:`${entry?.entry_text}`
+            })
             if( !existingOrder ){
                 Order.cart.itemCreate(store_id,[entry]);
                 return true;
