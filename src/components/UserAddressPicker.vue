@@ -43,7 +43,7 @@
                 </ion-segment-button>
             </ion-segment>
             <ion-input label="квартира, дом, этаж, подъезд" label-placement="floating" v-model="addressComment"></ion-input>
-            <div style="display:grid;grid-template-columns:1fr 1fr">
+            <div style="display:grid;grid-template-columns:1fr 1fr;margin-bottom:var(--ion-safe-area-bottom)">
                 <ion-button @click="closeModal()" color="light" expand="block">
                     <ion-icon :src="closeOutline" slot="start"/>
                     Закрыть

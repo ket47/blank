@@ -90,6 +90,10 @@ ion-icon{
               <ion-icon :icon="magnetOutline" slot="start" color="primary"></ion-icon>
               <ion-label>Промокоды</ion-label>
           </ion-item>
+          <ion-item @click="$go('/admin/chat-rooms')" lines="full" button detail>
+              <ion-icon :icon="chatbubblesOutline" slot="start" color="primary"></ion-icon>
+              <ion-label>Чат</ion-label>
+          </ion-item>
         </ion-item-group>
       </ion-item-group>
 
@@ -306,6 +310,7 @@ import {
   rocketOutline,
   briefcaseOutline,
   bookOutline,
+  chatbubblesOutline,
 
   pieChartOutline,
   thumbsUpSharp,
@@ -363,6 +368,8 @@ export default {
         rocketOutline,
         briefcaseOutline,
         bookOutline,
+        chatbubblesOutline,
+
 
         pieChartOutline,
         thumbsUpSharp,

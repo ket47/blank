@@ -264,6 +264,7 @@
         <ion-button v-else-if="errTooFar==1" expand="block" @click="$go('/modal/user-addresses/');$heap.state.next_route=`/modal/order-checkout-${order_id}`">Выбрать адрес</ion-button>
         <ion-button v-else-if="['use_card','use_card_sbp','use_card_recurrent'].includes(paymentType)" expand="block" @click="proceed()" :disabled="checkoutError">Оплатить</ion-button>
         <ion-button v-else expand="block" @click="proceed()" :disabled="checkoutError">Заказать</ion-button>
+        <div style="height:var(--ion-safe-area-bottom)"></div>
     </div>
     <div v-else>
         <ion-item lines="none">

@@ -279,12 +279,21 @@ const routes = [
         path: '/wall/post-edit-:id',
         component: () => import('@/views/PostEdit.vue')
       },
+      {
+        path: '/admin/chat-rooms',
+        component: () => import('@/views/WallChatRooms.vue')
+      },
+      {
+        path: '/admin/chat-room-:id',
+        component: () => import('@/views/WallChatRoom.vue')
+      },
   ]
   },
   {
     path: '/wall/post-user-edit-:id',
     component: () => import('@/views/PostUserEditModal.vue')
   },
+
   {
     path: '/modal/store-dmethods-:id',
     component: () => import('@/views/StoreDeliveryMethods.vue')

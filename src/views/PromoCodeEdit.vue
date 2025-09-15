@@ -189,6 +189,7 @@
       <p>
         Он может быть использован 
         <span v-if="item.case_store_id">в <b>{{ item.case_store_name }}</b></span>
+        <span v-else>везде</span>
         <span v-if="item.case_product_id">, при покупке <b>{{ item.case_product_name }}</b></span>
         <span v-if="item.case_min_sum">, если сумма заказа больше <b>{{ item.case_min_sum }}{{ $heap.state.currencySign }}</b></span>.
       </p>

@@ -118,7 +118,7 @@ export default {
         return {
             data: [],
             finish_at: Utils.date.toIso(today),
-            user_group: ['guest','admin','courier','customer','supplier'],
+            user_group: ['guest','customer','supplier'],
             order_only: false,
             currentPage: 0
         }

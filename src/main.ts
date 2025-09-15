@@ -275,10 +275,8 @@ if(isMobile){
 
 
 import { SafeArea } from 'capacitor-plugin-safe-area';
-let safeAreaInlets
 SafeArea.getSafeAreaInsets().then((data) => {
   const { insets } = data;
-  safeAreaInlets=insets
   document.body.style.setProperty("--ion-safe-area-top", `${insets.top}px`);
   document.body.style.setProperty("--ion-safe-area-right",`${insets.right}px`);
   document.body.style.setProperty("--ion-safe-area-bottom",`${insets.bottom}px`);
@@ -310,11 +308,11 @@ async function startApp(){
   })
   await User.autoSignIn();
 
-  Metrics.init()
   Push.setFlashHandler(flash)
   Push.setAlertHandler(alert)
   Push.setGoHandler(go)
 
   Capgo.init(App,flash)
+  Metrics.init()
 }
 startApp();
