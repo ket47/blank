@@ -7,9 +7,9 @@
           <ion-button v-else @click="goback()"><ion-icon :src="arrowBackOutline" size="large"/></ion-button>
         </ion-buttons>
         <ion-title v-if="pageTitle" size="small"><div style="line-height: 1.5;max-height:3em;text-overflow: ellipsis;overflow: hidden;font-weight: bold;">{{ pageTitle }}</div></ion-title>
-        <div v-if="pageLogo=='show'">
-          <ion-icon v-if="this.$heap.state.chameleonMode=='on'" class="toolbar_svg_logo" style="color: var(--ion-color-primary)" :icon="simpleLogo"/>
-          <ion-icon v-else class="toolbar_svg_logo" style="color: var(--ion-color-primary)" :icon="standartLogo"/>
+        <div v-if="pageLogo=='show' && this.$heap.state.chameleonMode!='on'">
+          <!-- <ion-icon v-if="" class="toolbar_svg_logo" style="color: var(--ion-color-primary)" :icon="simpleLogo"/> -->
+          <ion-icon class="toolbar_svg_logo" style="color: var(--ion-color-primary)" :icon="standartLogo"/>
         </div>
         
         <div slot="end">
@@ -58,9 +58,9 @@
         </ion-content>
       </ion-modal>
       <div style="height:30px"><!--spacer for bottom main tabs--></div>
-      <ion-fab v-if="isInteractingWithServer" vertical="bottom" slot="fixed">
+      <!-- <ion-fab v-if="isInteractingWithServer" vertical="bottom" slot="fixed">
         <tezkel-loader/>
-      </ion-fab>
+      </ion-fab> -->
     </ion-content>
     <cookies-modal/>
   </ion-page>

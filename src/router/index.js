@@ -179,6 +179,12 @@ const routes = [
       
 
       {
+        path: '/promo',
+        component: () => import('@/views/UserPromoList.vue'),
+        props: true
+      },
+
+      {
         path: '/order',
         component: () => import('@/views/OrderList.vue')
       },

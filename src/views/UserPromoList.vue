@@ -1,6 +1,6 @@
 <template>
     <base-layout pageTitle="Ваши скидки" pageDefaultBackLink="/user">
-        <ion-card color="light">
+        <!-- <ion-card color="light">
             <ion-card-header>
                 <ion-card-title>
                     Получите скидку
@@ -30,7 +30,7 @@
             </ion-card-content>
         </ion-card>
         <ion-title></ion-title>
-        <ion-text></ion-text>
+        <ion-text></ion-text> -->
 
 
 

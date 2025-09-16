@@ -54,6 +54,12 @@
             </ion-row>
         </ion-grid>
         </div>
+        <ion-item-divider>
+            Другие настройки
+        </ion-item-divider>
+        <ion-item>
+            <ion-input label="Кэшбэк" v-model="tariff.cash_back" placeholder="%" debounce="600" @ionInput="itemUpdate()"/>
+        </ion-item>
     </base-layout>
 </template>
 <script>

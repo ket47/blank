@@ -94,6 +94,8 @@ ion-tab-bar ion-label{
 }
 .tab-selected .active{
   display:inline-block;
+
+  color:#000;
 }
 .tab-selected .passive{
   display:none;
@@ -105,7 +107,7 @@ ion-tab-bar ion-label{
   display:inline-block;
 }
 .badge{
-  background:var(--ion-color-warning);
+  background:var(--ion-color-primary);
   position:absolute;
   right:calc( 50% - 20px );
   top:0px;
@@ -113,7 +115,7 @@ ion-tab-bar ion-label{
   min-width: 15px;
   font-size:0.7em;
   font-weight:bold;
-  color:#000;
+  color:#fff;
   text-align: center;
 }
 </style>
@@ -129,28 +131,29 @@ ion-tab-bar ion-label{
         </div>
 
         <div @click="tabClicked('/catalog')" ref="catalogtab">
-          <ion-icon class="active" color="primary" :icon="home"/>
+          <ion-icon class="active" :icon="home"/>
           <ion-icon class="passive" :icon="homeOutline"/>
-          <ion-label>Каталог</ion-label>
         </div>
 
         <div @click="tabClicked('/search')" ref="searchtab">
-          <ion-icon class="active" color="primary" :icon="search"/>
+          <ion-icon class="active" :icon="search"/>
           <ion-icon class="passive" :icon="searchOutline"/>
-          <ion-label>Поиск</ion-label>
         </div>
 
         <div @click="tabClicked('/order')" ref="ordertab" style="position: relative;">
-          <ion-icon class="active" color="primary" :icon="reader"/>
-          <ion-icon class="passive" :icon="readerOutline"/>
+          <ion-icon class="active" :icon="cart"/>
+          <ion-icon class="passive" :icon="cartOutline"/>
           <div color="warning" class="badge" v-if="activeOrderCount>0">{{activeOrderCount}}</div>
-          <ion-label>Заказы</ion-label>
+        </div>
+
+        <div @click="tabClicked('/promo')" ref="promotab">
+          <ion-icon class="active" :icon="gift"/>
+          <ion-icon class="passive" :icon="giftOutline"/>
         </div>
 
         <div @click="tabClicked('/user')" ref="usertab">
-          <ion-icon class="active" color="primary" :icon="person"/>
+          <ion-icon class="active" :icon="person"/>
           <ion-icon class="passive" :icon="personOutline"/>
-          <ion-label>Профиль</ion-label>
         </div>
       </ion-tab-bar>
     </ion-tabs>
@@ -175,8 +178,10 @@ import {
   search,
   personOutline,
   person,
-  readerOutline,
-  reader,
+  cartOutline,
+  cart,
+  giftOutline,
+  gift,
 }                   from 'ionicons/icons';
 
 import mainLogo     from "@/assets/icons/tezkel_logo_text.svg";
@@ -199,8 +204,10 @@ export default{
       search,
       personOutline,
       person,
-      readerOutline,
-      reader,
+      cartOutline,
+      cart,
+      giftOutline,
+      gift,
     };
   },
   data(){
