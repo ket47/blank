@@ -135,9 +135,15 @@ const post=async ( url:string, data:any )=>{
   }
 
   heap.commit('setInteractionStatus',1)
-  const response = await fetch(url,settings)
-  setTimeout(()=>{heap.commit('setInteractionStatus',-1)},100)
-
+  let response:Response
+  try{
+    response = await fetch(url,settings)
+  } finally {
+    setTimeout(()=>{
+      heap.commit('setInteractionStatus',-1)
+    },100)
+  }
+  
   if( response.headers.get("x-sid") ){
     heap.state.sessionId=response.headers.get("x-sid")
     User.sessionIdUse(heap.state.sessionId);

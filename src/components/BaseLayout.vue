@@ -7,7 +7,7 @@
           <ion-button v-else @click="goback()"><ion-icon :src="arrowBackOutline" size="large"/></ion-button>
         </ion-buttons>
         <ion-title v-if="pageTitle" size="small"><div style="line-height: 1.5;max-height:3em;text-overflow: ellipsis;overflow: hidden;font-weight: bold;">{{ pageTitle }}</div></ion-title>
-        <div v-if="pageLogo=='show' && this.$heap.state.chameleonMode!='on'">
+        <div v-if="pageLogo=='show' && this.$heap.state.chameleonMode=='off'">
           <!-- <ion-icon v-if="" class="toolbar_svg_logo" style="color: var(--ion-color-primary)" :icon="simpleLogo"/> -->
           <ion-icon class="toolbar_svg_logo" style="color: var(--ion-color-primary)" :icon="standartLogo"/>
         </div>

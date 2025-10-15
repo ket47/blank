@@ -125,7 +125,37 @@ ion-tab-bar ion-label{
   <ion-page>
     <ion-tabs style="position:relative">
       <ion-router-outlet ref="routerOutlet"></ion-router-outlet>
-      <ion-tab-bar class="main-tab-bar" slot="bottom">
+      
+      <ion-tab-bar v-if="this.$heap.state.chameleonMode=='off'" class="main-tab-bar" slot="bottom">
+        <div class="tabbar_svg_logo">
+          <ion-icon class=" ion-color ion-color-primary" :icon="mainLogo"/>
+        </div>
+          <div @click="tabClicked('/catalog')" ref="catalogtab">
+            <ion-icon class="active" color="primary" :icon="home"/>
+            <ion-icon class="passive" :icon="homeOutline"/>
+            <ion-label>Каталог</ion-label>
+          </div>
+
+          <div @click="tabClicked('/search')" ref="searchtab">
+            <ion-icon class="active" color="primary" :icon="search"/>
+            <ion-icon class="passive" :icon="searchOutline"/>
+            <ion-label>Поиск</ion-label>
+          </div>
+
+          <div @click="tabClicked('/order')" ref="ordertab" style="position: relative;">
+            <ion-icon class="active" color="primary" :icon="reader"/>
+            <ion-icon class="passive" :icon="readerOutline"/>
+            <div color="warning" class="badge" v-if="activeOrderCount>0">{{activeOrderCount}}</div>
+            <ion-label>Заказы</ion-label>
+          </div>
+
+          <div @click="tabClicked('/user')" ref="usertab">
+            <ion-icon class="active" color="primary" :icon="person"/>
+            <ion-icon class="passive" :icon="personOutline"/>
+            <ion-label>Профиль</ion-label>
+          </div>
+      </ion-tab-bar>
+      <ion-tab-bar v-else class="main-tab-bar" slot="bottom">
         <div class="tabbar_svg_logo">
           <ion-icon class=" ion-color ion-color-primary" :icon="mainLogo"/>
         </div>
@@ -133,27 +163,26 @@ ion-tab-bar ion-label{
         <div @click="tabClicked('/catalog')" ref="catalogtab">
           <ion-icon class="active" :icon="home"/>
           <ion-icon class="passive" :icon="homeOutline"/>
+          <ion-label>Главная</ion-label>
         </div>
 
         <div @click="tabClicked('/search')" ref="searchtab">
           <ion-icon class="active" :icon="search"/>
           <ion-icon class="passive" :icon="searchOutline"/>
+          <ion-label>Поиск</ion-label>
         </div>
 
         <div @click="tabClicked('/order')" ref="ordertab" style="position: relative;">
           <ion-icon class="active" :icon="cart"/>
           <ion-icon class="passive" :icon="cartOutline"/>
           <div color="warning" class="badge" v-if="activeOrderCount>0">{{activeOrderCount}}</div>
-        </div>
-
-        <div @click="tabClicked('/promo')" ref="promotab">
-          <ion-icon class="active" :icon="gift"/>
-          <ion-icon class="passive" :icon="giftOutline"/>
+          <ion-label>Заказы</ion-label>
         </div>
 
         <div @click="tabClicked('/user')" ref="usertab">
           <ion-icon class="active" :icon="person"/>
           <ion-icon class="passive" :icon="personOutline"/>
+          <ion-label>Профиль</ion-label>
         </div>
       </ion-tab-bar>
     </ion-tabs>

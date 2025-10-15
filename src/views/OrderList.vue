@@ -127,8 +127,8 @@
 
         <ion-fab v-if="orderType=='active'" slot="fixed" vertical="bottom" horizontal="end">
             <div>
-                <ion-button @click="$go('/order/shipment-0')">
-                    <ion-icon :icon="cubeOutline" slot="start"></ion-icon>
+                <ion-button @click="$go('/order/shipment-0')" color="medium">
+                    <ion-icon :icon="rocketOutline" slot="start"></ion-icon>
                     <ion-label>Вызвать курьера</ion-label>
                 </ion-button>
             </div>
