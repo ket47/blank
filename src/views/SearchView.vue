@@ -199,7 +199,7 @@
     <div  v-else-if="activeView == 'category' && !isActiveSearch && !isLoading" class="search-category-grid">
       <div class="search-category-item" v-for="(category, k) in categories" @click="query = category.group_name; listGet()" :key="k">
         <div class="desc-section">
-          <h5> {{ category.group_name }}</h5>
+          <h5> {{ category.group_name }} ({{ category.product_count }})</h5>
         </div>
         <div v-if="category.image_hash" class="img-section">
           <img :src="`${$heap.state.hostname +'image/get.php/' +category.image_hash +'.180.180.png'}`"/>

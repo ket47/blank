@@ -54,6 +54,7 @@
             </div>
         </div>
     </ion-toolbar>
+    <div style="height:var(--ion-safe-area-bottom)"></div>
 </template>
 
 <script>

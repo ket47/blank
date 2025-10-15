@@ -33,11 +33,12 @@
         <ion-text color="medium">Адрес доставки заказа</ion-text>
         <ion-icon slot="end" :icon="chevronDownOutline"/>
       </ion-item> -->
-      <ion-item @click="selectDeliveryAddress()" button detail>
+      <ion-item @click="selectDeliveryAddress()" button detail="false">
         <ion-thumbnail v-if="location_delivery.image_hash" slot="start" style="width:20px;height:20px">
           <ion-img :src="`${$heap.state.hostname}/image/get.php/${location_delivery.image_hash}.32.32.png`" />
         </ion-thumbnail>
         <ion-text color="dark">{{location_delivery?.location_address}}</ion-text>
+        <ion-icon slot="end" :icon="optionsOutline"></ion-icon>
       </ion-item>
   </ion-list>
   <ion-list v-else>
@@ -52,6 +53,7 @@ import {
   IonItem,
   IonList,
   IonThumbnail,
+  IonIcon,
  }  from "@ionic/vue";
 
 import { 
@@ -60,6 +62,7 @@ import {
   timeOutline,
   callOutline,
   addOutline,
+  optionsOutline,
 }                               from "ionicons/icons";
 import heap                     from "@/heap";
 import jQuery                   from 'jquery';
@@ -72,6 +75,8 @@ export default {
       IonItem,
       IonList,
       IonThumbnail,
+        IonIcon,
+
   },
   setup() {
     return { 
@@ -80,6 +85,8 @@ export default {
       timeOutline,
       callOutline,
       addOutline,
+      optionsOutline,
+
     };
   },
   data() {
