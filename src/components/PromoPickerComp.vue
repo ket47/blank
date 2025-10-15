@@ -3,7 +3,7 @@
       <ion-toolbar>
         <ion-item lines="none">
             <ion-title>Промокоды и скидки</ion-title>
-            <ion-icon :icon="closeOutline" @click="$topic.publish('dismissModal')" slot="end" size="large" color="light"></ion-icon>
+            <ion-icon :icon="closeOutline" @click="$topic.publish('dismissModal')" slot="end" size="large" color="dark"></ion-icon>
         </ion-item>
         <ion-item lines="none" style="--background:var(--ion-color-primary-tint);" v-if="0">
             <ion-input placeholder="Впишите Промокод" style111="--background:var(--ion-color-primary-tint);--placeholder-color: #000;--placeholder-opacity: 0.8;">
@@ -170,6 +170,7 @@ export default {
             }
             //promo.min_order_sum_product=(promo?.min_order_sum_product??0)*1+1;
             if( this.order.order_sum_product*1<promo.min_order_sum_product ){
+                this.$flash("Сумма заказа должна быть больше "+promo.min_order_sum_product)
                 this.isPropositionOpen=1
                 return false
             }

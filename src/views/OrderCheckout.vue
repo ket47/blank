@@ -68,6 +68,9 @@
                     </ion-card-content>
                 </ion-card>
                 <div></div>
+
+
+
                 <ion-item>
                     <ion-segment mode="ios" v-model="routePlanMode">
                         <ion-segment-button v-if="tariffRule.routePlan?.start_plan_mode=='inited'" value="inited" @click="deliveryFinishScheduled=null">
@@ -137,33 +140,27 @@
             <ion-item-divider>Итог</ion-item-divider>
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-            <div v-if="isAdmin">
-                <ion-item v-if="promo" button @click="promoPick()" color="success">
-                    <div slot="start">
-                        <ion-icon :icon="giftOutline" color="medium" style="font-size:1.5em"></ion-icon>
-                        <sup class="righttop_badge"><ion-badge v-if="promoCount>0" color="secondary">{{promoCount}}</ion-badge></sup>
-                    </div>
-                    {{promo.promo_name}}
-                    <ion-text slot="end">-{{order.order_sum_promo}}{{$heap.state.currencySign}}</ion-text>
+            <div v-if="tariffRule.bonus">
+                <ion-item>
+                    <ion-icon :icon="giftOutline" color="medium" slot="start"></ion-icon>
+                    <ion-label>Бонусы {{$heap.state.settings?.app_title}}</ion-label>
+                    <ion-button slot="end" color="medium" @click="promoPick()" fill="outline">скидки</ion-button>
                 </ion-item>
-                <ion-item v-else button detail @click="promoPick()">
-                    <div slot="start">
-                        <ion-icon :icon="giftOutline" color="medium" style="font-size:1.5em"></ion-icon>
-                        <sup class="righttop_badge"><ion-badge v-if="promoCount>0" color="secondary">{{promoCount}}</ion-badge></sup>
-                    </div>
-                    Промокоды и скидки
+                <ion-item>
+                    <ion-segment mode="ios" v-model="bonusMode" color="medium" @click="promoBonusUse()">
+                        <ion-segment-button value="gain">
+                            <ion-label>Накопить {{ tariffRule.bonus.bonus_gain }}б</ion-label>
+                            <span>с этого заказа</span>
+                        </ion-segment-button>
+                        <ion-segment-button v-if="tariffRule.bonus.bonus_usable==0" :disabled="1">
+                            <ion-label>Нет бонусов</ion-label>
+                            <span>на счету {{tariffRule.bonus.bonus_total}}б</span>
+                        </ion-segment-button>
+                        <ion-segment-button v-else value="spend">
+                            <ion-label>Потратить {{ tariffRule.bonus.bonus_usable }}б</ion-label>
+                            <span>на счету {{tariffRule.bonus.bonus_total}}б</span>
+                        </ion-segment-button>
+                    </ion-segment>
                 </ion-item>
             </div>
             <div v-else-if="deliveryByCourierRuleChecked && ['use_card','use_card_sbp','use_card_recurrent'].includes(paymentType)">
@@ -204,9 +201,8 @@
 
 
 
-
            <ion-accordion-group>
-                <ion-accordion>
+                <ion-accordion value="total">
                     <ion-item slot="header">
                         <ion-icon :icon="walletOutline" slot="start" color="medium"></ion-icon>
                         <ion-text>Итого к оплате</ion-text>
@@ -218,6 +214,11 @@
                             Сумма заказа 
                             <ion-text slot="end">{{order.order_sum_product}}{{$heap.state.currencySign}}</ion-text>
                         </ion-item>
+                        <ion-item v-if="promo" button>
+                            <ion-icon :icon="giftOutline" slot="start" style="font-size:1.5em"></ion-icon>
+                            <ion-label>{{promo.promo_name}}</ion-label>
+                            <ion-text slot="end" color="success">-{{order.order_sum_promo}}{{$heap.state.currencySign}}</ion-text>
+                        </ion-item>
                         <ion-item v-if="order_sum_delivery>0">
                             <ion-icon :icon="rocketOutline" slot="start" color="medium"></ion-icon>
                             <div>
@@ -225,13 +226,6 @@
                                 <div v-if="tariffRule.deliveryHeavyCost" style="font-size:0.75em;color:#666">{{order_sum_delivery-tariffRule.deliveryHeavyCost}}+{{tariffRule.deliveryHeavyCost}} (непогода или высокая загруженность)</div>
                             </div>
                             <ion-text slot="end">{{order_sum_delivery??0}}{{$heap.state.currencySign}}</ion-text>
-                        </ion-item>
-                        <ion-item v-if="promo" button>
-                            <div slot="start">
-                                <ion-icon :icon="giftOutline" color="medium" style="font-size:1.5em"></ion-icon>
-                            </div>
-                            {{promo.promo_name}}
-                            <ion-text slot="end">-{{order.order_sum_promo}}{{$heap.state.currencySign}}</ion-text>
                         </ion-item>
                     </ion-list>
                 </ion-accordion>
@@ -383,6 +377,8 @@ export default({
 
             promo:null,
             promoCount:0,
+            bonusMode:'gain',
+            
             deliveryTime:{},
             termsAccepted:1,
             storeIsReady:null,
@@ -471,9 +467,6 @@ export default({
             if(this.order_sum_total*1<=this.order_sum_delivery*1){
                 return `Сумма к оплате должна быть больше чем ${this.order_sum_delivery}${this.$heap.state.currencySign}`
             }
-            if(this.order_sum_total<=10){
-                return `Сумма к оплате слишком маленькая`
-            }
             return false
         },
 
@@ -508,29 +501,13 @@ export default({
             }
             return card;
         },
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-            isAdmin(){//for beta testing
-                const user_types=this.$heap.state?.user?.member_of_groups?.group_types
-                if( user_types?.indexOf('admin')>-1 ){
-                  return 1
-                }
-                return 0
-            },
+        isAdmin(){//for beta testing
+            const user_types=this.$heap.state?.user?.member_of_groups?.group_types
+            if( user_types?.indexOf('admin')>-1 ){
+                return 1
+            }
+            return 0
+        },
     },
     mounted(){
         this.itemCheckoutDataGet();
@@ -790,7 +767,8 @@ export default({
                 paymentByCardRecurrent:this.paymentType=='use_card_recurrent'?1:0,
                 paymentByCash:this.paymentType=='use_cash'?1:0,
                 paymentByCashStore:this.paymentType=='use_cash_store'?1:0,
-                storeCorrectionAllow:this.storeCorrectionAllow?1:0
+                storeCorrectionAllow:this.storeCorrectionAllow?1:0,
+                bonusMode:this.bonusMode
             }
             localStorage.storeCorrectionAllow=this.storeCorrectionAllow?1:0;
             try{
@@ -1007,6 +985,19 @@ export default({
             if( selectedPromo?.data?.promo_id ){
                 this.promo=selectedPromo.data
             } else {
+                this.promo=null
+            }
+        },
+        async promoBonusUse(){
+            if( this.bonusMode=='spend' && this.tariffRule.bonus.bonus_usable>0 ){
+                this.order.order_sum_promo=this.tariffRule.bonus.bonus_usable
+                this.promo={
+                    promo_name:'Оплата бонусами',
+                    promo_value:this.order.order_sum_promo,
+                    min_order_sum_product:this.order.order_sum_promo
+                }
+            } else {
+                this.order.order_sum_promo=0
                 this.promo=null
             }
         },
