@@ -37,11 +37,14 @@
 
 
         <ion-segment swipe-gesture="true" v-model="promoType" @ionChange="listTypeChanged($event)">
+            <ion-segment-button value="bonuses">
+                Бонусы
+            </ion-segment-button>
             <ion-segment-button value="active">
-                Доступные
+                Скидки
             </ion-segment-button>
             <ion-segment-button value="inactive">
-                Неактивные
+                Архив
             </ion-segment-button>
         </ion-segment>
 
