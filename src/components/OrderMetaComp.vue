@@ -25,6 +25,15 @@
                     <span v-if="meta.pickup_by_customer">Самовывоз</span>
                     </ion-text>
                 </ion-chip>
+
+                <ion-chip v-if="meta.bonus_gain" color="success">
+                    <ion-icon :src="giftOutline"/>
+                    <ion-text>Начислен бонус {{ meta.bonus_gain }}{{$heap.state.currencySign}}</ion-text>
+                </ion-chip>
+                <ion-chip v-if="meta.bonus_spend">
+                    <ion-icon :src="giftOutline"/>
+                    <ion-text>Использован бонус {{ meta.bonus_spend }}{{$heap.state.currencySign}}</ion-text>
+                </ion-chip>
                 <ion-button v-if="meta.invoice_link" color="light" @click="billOpen(meta.invoice_link)" expand="block">
                     <ion-icon :src="receiptOutline" slot="start"/>
                     <ion-text>Открыть чек на {{meta.invoice_sum}}{{$heap.state.currencySign}}</ion-text>
@@ -57,6 +66,7 @@ import {
     cardOutline, 
     rocketOutline,
     receiptOutline,
+    giftOutline
 }                       from 'ionicons/icons';
 import InvoiceModal from "@/components/InvoiceModal.vue"
 import jQuery       from "jquery";
@@ -79,6 +89,7 @@ export default({
             cardOutline,
             rocketOutline,
             receiptOutline,
+            giftOutline
          };
     },
     data(){
