@@ -94,12 +94,9 @@
             </div>
         </ion-list>
 
-        <ion-list v-if="promoList?.length===0">
-            <ion-item lines="none">
-                Скидок нет, но вы можете получить их пригласив друга
-            </ion-item>
-        </ion-list>
-
+        <div v-if="promoType=='bonuses'">
+            <promo-statistics/>
+        </div>
     </base-layout>
 </template>
 <script>
@@ -129,6 +126,7 @@ import {
 }                       from 'ionicons/icons'
 import jQuery           from 'jquery'
 import { Share }        from '@capacitor/share';
+import PromoStatistics  from '@/components/PromoStatistics.vue'
 
 export default {
     components:{
@@ -147,6 +145,7 @@ export default {
   IonSkeletonText,
   IonAccordion,
   IonAccordionGroup,
+  PromoStatistics
     },
     setup(){
         return {
@@ -159,7 +158,7 @@ export default {
     },
     data(){
         return {
-            promoType:'active',
+            promoType:'bonuses',
             promoList:null
         }
     },

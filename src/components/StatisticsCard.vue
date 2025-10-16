@@ -5,7 +5,7 @@
       <ion-card-title>
         <div>
           <b style="font-size: 22px">{{ mainValue }}</b> 
-          <ion-chip  v-if="data.series.length > 0" :outline="true"  :color="dynamicsData.color" class=" ion-no-margin " style="font-size: 12px; border: none; ">
+          <ion-chip  v-if="dynamicsData.value != 0" :outline="true"  :color="dynamicsData.color" class=" ion-no-margin " style="font-size: 12px; border: none; ">
             <ion-icon :icon="dynamicsData.icon"></ion-icon>
             <ion-label>{{ dynamicsData.value }}%</ion-label>
           </ion-chip>
@@ -112,6 +112,7 @@ export default {
           categories: [],
         },
         yaxis: {
+          min: 0,
           show: false,
           labels: { show: false },
           axisBorder: { show: false },
@@ -173,7 +174,8 @@ export default {
   },
   methods: {
     initChart () {
-      if(this.$refs.apexChart) this.$refs.apexChart.updateSeries(this.series);
+      if(!this.$refs.apexChart)  return
+      this.$refs.apexChart.updateSeries(this.series);
       this.$refs.apexChart.updateOptions({xaxis: {
         categories: this.datesParsed
       }});
@@ -194,7 +196,9 @@ export default {
     }, 10)  
   },
   updated() {
-    this.initChart()
+    setTimeout(() => {
+      this.initChart()
+    }, 10)  
   }
 };
 </script>

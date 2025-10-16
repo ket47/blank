@@ -7,6 +7,7 @@ ion-tab-bar.main-tab-bar  {
   box-shadow: 0px -3px 10px #ccc;
   justify-content: space-around;
   color:#999;
+  background: white;
 }
 ion-tab-bar.main-tab-bar>div{
   width:calc(100vw / 4);
@@ -56,11 +57,13 @@ ion-tab-bar.main-tab-bar>div{
     }
     ion-tab-bar.main-tab-bar-adaptive ion-label{
       display:inline-block;
-      font-size:1.1em;
+      font-size:1em;
       margin-left:10px;
+      color: var(--ion-color-dark);
     }
     ion-tab-bar.main-tab-bar-adaptive>div ion-icon{
       font-size:1.2em;
+      color: var(--ion-color-dark);
     }
     .tabbar_svg_logo ion-icon{
       width: 100%;
@@ -125,37 +128,7 @@ ion-tab-bar ion-label{
   <ion-page>
     <ion-tabs style="position:relative">
       <ion-router-outlet ref="routerOutlet"></ion-router-outlet>
-      
-      <ion-tab-bar v-if="this.$heap.state.chameleonMode=='off'" class="main-tab-bar" slot="bottom">
-        <div class="tabbar_svg_logo">
-          <ion-icon class=" ion-color ion-color-primary" :icon="mainLogo"/>
-        </div>
-          <div @click="tabClicked('/catalog')" ref="catalogtab">
-            <ion-icon class="active" color="primary" :icon="home"/>
-            <ion-icon class="passive" :icon="homeOutline"/>
-            <ion-label>Каталог</ion-label>
-          </div>
-
-          <div @click="tabClicked('/search')" ref="searchtab">
-            <ion-icon class="active" color="primary" :icon="search"/>
-            <ion-icon class="passive" :icon="searchOutline"/>
-            <ion-label>Поиск</ion-label>
-          </div>
-
-          <div @click="tabClicked('/order')" ref="ordertab" style="position: relative;">
-            <ion-icon class="active" color="primary" :icon="reader"/>
-            <ion-icon class="passive" :icon="readerOutline"/>
-            <div color="warning" class="badge" v-if="activeOrderCount>0">{{activeOrderCount}}</div>
-            <ion-label>Заказы</ion-label>
-          </div>
-
-          <div @click="tabClicked('/user')" ref="usertab">
-            <ion-icon class="active" color="primary" :icon="person"/>
-            <ion-icon class="passive" :icon="personOutline"/>
-            <ion-label>Профиль</ion-label>
-          </div>
-      </ion-tab-bar>
-      <ion-tab-bar v-else class="main-tab-bar" slot="bottom">
+      <ion-tab-bar class="main-tab-bar" slot="bottom">
         <div class="tabbar_svg_logo">
           <ion-icon class=" ion-color ion-color-primary" :icon="mainLogo"/>
         </div>
@@ -163,26 +136,32 @@ ion-tab-bar ion-label{
         <div @click="tabClicked('/catalog')" ref="catalogtab">
           <ion-icon class="active" :icon="home"/>
           <ion-icon class="passive" :icon="homeOutline"/>
-          <ion-label>Главная</ion-label>
+          <ion-label v-if="!isMobile">Главная</ion-label>
         </div>
 
         <div @click="tabClicked('/search')" ref="searchtab">
           <ion-icon class="active" :icon="search"/>
           <ion-icon class="passive" :icon="searchOutline"/>
-          <ion-label>Поиск</ion-label>
+          <ion-label v-if="!isMobile">Поиск</ion-label>
         </div>
 
         <div @click="tabClicked('/order')" ref="ordertab" style="position: relative;">
           <ion-icon class="active" :icon="cart"/>
           <ion-icon class="passive" :icon="cartOutline"/>
+          <ion-label v-if="!isMobile">Заказы</ion-label>
           <div color="warning" class="badge" v-if="activeOrderCount>0">{{activeOrderCount}}</div>
-          <ion-label>Заказы</ion-label>
+        </div>
+
+        <div @click="tabClicked('/promo')" ref="promotab">
+          <ion-icon class="active" :icon="gift"/>
+          <ion-icon class="passive" :icon="giftOutline"/>
+          <ion-label v-if="!isMobile">Скидки</ion-label>
         </div>
 
         <div @click="tabClicked('/user')" ref="usertab">
           <ion-icon class="active" :icon="person"/>
           <ion-icon class="passive" :icon="personOutline"/>
-          <ion-label>Профиль</ion-label>
+          <ion-label v-if="!isMobile">Профиль</ion-label>
         </div>
       </ion-tab-bar>
     </ion-tabs>
@@ -244,7 +223,8 @@ export default{
       activeOrderCount:0,
       tabRoutes:{},
       tabSelected:'',
-      can_click:0
+      can_click:0,
+      isMobile: false
     }
   },
   async mounted(){
@@ -253,8 +233,8 @@ export default{
       self.activeOrderCount=data?.orderActiveCount
     })
     //this.activeOrderCount=await Order.api.listCount()
-    const isMobile= /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(window.navigator.userAgent);
-    if(!isMobile){
+    this.isMobile= /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(window.navigator.userAgent);
+    if(!this.isMobile){
       document.querySelector('.main-tab-bar').classList.add('main-tab-bar-adaptive');
     }
     this.tabSelect()

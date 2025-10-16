@@ -89,15 +89,6 @@ ion-accordion-group .accordion-expanding .store-description{
   font-size: 16px;
 }
 
-
-
-
-
-
-
-
-
-
 .groups-container{
   display: grid;/** for webview */
   grid-template-columns: repeat(30,min-content);
@@ -119,16 +110,6 @@ ion-accordion-group .accordion-expanding .store-description{
   padding: 0;
   color: #535151;
 }
-.store-page .product-list {
-  margin-top: 1em;
-  min-height: 75vh;
-}
-
-
-
-
-
-
 
 
 .store-page .product-item {
@@ -156,28 +137,6 @@ ion-accordion-group .accordion-expanding .store-description{
 .store-page .product-list ion-card-content {
   padding: 10px 0px;
   text-align: center;
-}
-
-
-
-
-
-
-
-
-
-.product-list-slider{
-  background-color: white;
-}
-.product-list-slider.swiper-container {
-  min-height: 100vh;
-
-}
-.product-list-slider.swiper-container .swiper-wrapper {
-  min-height: 350px;
-}
-.store-page .store-block .swiper-wrapper {
-  max-height: 250px;
 }
 .group-title {
   border-bottom: 2px solid var(--ion-color-secondary);
@@ -284,7 +243,7 @@ ion-chip .active-chip {
                 <ion-item lines="none" v-if="storeItem.store_company_name">
                   <ion-text><b>{{storeItem.store_company_name}}</b></ion-text>
                 </ion-item>
-                <ion-item lines="none" v-if="$heap.state.settings?.other?.chameleonMode!='on' && storeItem.store_tax_num">
+                <ion-item lines="none" v-if="storeItem.store_tax_num">
                   <ion-label color="medium">ИНН</ion-label>
                   <ion-text color="dark">{{storeItem.store_tax_num}}</ion-text>
                 </ion-item>
@@ -342,63 +301,35 @@ ion-chip .active-chip {
       <stories-slider :holderId="storeItem.store_id" group-by="post_id" :is-editable="storeItem.is_writable"/>
     </div>
 
-    <div v-if="storeGroupsFiltered" ref="groupFixedBlock" class="group-fixed-block hidden-block">
-      <ion-segment v-model="groupSelectedParentId" scrollable style="scrollbar-width: none;" class="groups-container">
-        <ion-segment-button
-          v-for="group_item in storeGroupsFiltered"
-          :key="group_item.group_id"
-          :value="group_item.group_id"
-          @click="groupSelectParent(group_item.group_id,1)"
-          :ref="'group-tab-' + group_item.group_id"
-        >
-          <ion-label>{{ group_item.group_name }}</ion-label>
-        </ion-segment-button>
-      </ion-segment>
-    </div>
 
     <ion-searchbar class="search-container" v-model="searchQuery" placeholder="Поиск у этого продавца"/>
 
     <div v-if="storeGroupsFiltered">
       <h4 style="margin: 8px 16px;"><b>Категории</b></h4>
-      <group-list :groupList="storeGroupsFiltered" :onClick="(group_id) => {groupSelectParent(group_id,true) }"></group-list>
-
-      <swiper
-        pager="true" 
-        :initialSlide="0"
-        :speed="400"
-        :watchSlidesProgress="false"
-        :grabCursor="true"
-        :touchStartForcePreventDefault="true"
-        :slidesPerView="1.1"
-        :pagination="false"
-        :centeredSlides="false" 
-        class="product-list-slider" 
-        @slideChange="groupSliderChanged($event)"
-        ref="productListSlider"
-      >
-        <swiper-slide v-for="parent_group_item in storeGroupsFiltered" :key="parent_group_item.group_id">
-          <ion-grid class="product-list">
-            <ion-row
-              v-for="group_item in parent_group_item.children"
-              :key="group_item.group_id"
-              :ref="'group-' + group_item.group_id"
-              :data-group_id="group_item.group_id"
-            >
-              <ion-col class="group-title" size="12">
-                <h5 style="margin: 0;">
-                  {{ group_item.group_name }} 
-                  <ion-chip v-if="storeItem.is_writable==1" @click="productItemCreate(group_item.group_id)">
-                    <ion-icon :src="addOutline"/>добавить
-                  </ion-chip>
-                </h5>
-              </ion-col>
-              <ion-col  size="12">
-                <product-list :productList="storeProductsFiltered[group_item.group_id]"></product-list>
-              </ion-col>
-            </ion-row>
-          </ion-grid>
-        </swiper-slide>
-      </swiper>
+      <group-list :groupList="storeGroupsFiltered" :activeIndex="productCategoryActive" :storeId="storeItem.store_id" :onClick="(evt) => selectProductCategory(evt)"></group-list>
+      <div v-for="(parent_group_item, index) in storeGroupsFiltered" :key="parent_group_item.group_id" :id="`group-${index}-${storeItem.store_id}`">
+        <h5 style="padding: 0 10px; margin: 0px">{{ parent_group_item.group_name }} </h5>
+        <ion-grid class="product-list">
+          <ion-row
+            v-for="group_item in parent_group_item.children"
+            :key="group_item.group_id"
+            :ref="'group-' + group_item.group_id"
+            :data-group_id="group_item.group_id"
+          >
+            <ion-col class="group-title" size="12">
+              <h6 style="margin: 0; color: var(--ion-color-medium)" >
+                - {{ group_item.group_name }} 
+                <ion-chip v-if="storeItem.is_writable==1" @click="productItemCreate(group_item.group_id)">
+                  Добавить товар
+                </ion-chip>
+              </h6>
+            </ion-col>
+            <ion-col  size="12">
+              <product-list :productList="storeProductsFiltered[group_item.group_id]"></product-list>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </div>
     </div>
     <ion-label v-else-if="searchQuery" style="padding:15px">
       К сожалению, в <b>{{storeItem.store_name}}</b> по запросу <b>"{{searchQuery}}"</b> ничего не найдено. <ion-chip @click="this.searchQuery=null">Сбросить фильтр</ion-chip>
@@ -452,14 +383,6 @@ import {
   IonSkeletonText,
 }                         from "@ionic/vue";
 import { 
-  Autoplay
-}                         from 'swiper';
-import { 
-  Swiper,
-  SwiperSlide 
- }                        from 'swiper/vue';
-import 'swiper/css';
-import { 
   search,
   settingsOutline,
   rocketOutline,
@@ -473,7 +396,6 @@ import GroupList          from "@/components/GroupList.vue";
 import ProductList        from '@/components/ProductList.vue';
 import StoreOpenedIndicator from '@/components/StoreOpenedIndicator.vue';
 import jQuery             from "jquery";
-import heap               from "@/heap";
 import Utils              from "@/scripts/Utils.js";
 
 import ReactionThumbs     from '@/components/ReactionThumbs.vue'
@@ -500,8 +422,6 @@ export default{
     IonItem,
     ImageSliderComp,
     StoreOpenedIndicator,
-    Swiper,
-    SwiperSlide,
     GroupList,
     ProductList,
     IonSkeletonText,
@@ -520,7 +440,6 @@ export default{
       addOutline,
       arrowRedoOutline,
       openOutline,
-      slideModules:[Autoplay]
     };
   },
   data() {
@@ -529,13 +448,12 @@ export default{
       query:this.$route.query,
       searchQuery: null,
       storeItem: [],
-
       productList:null,
       storeGroups: null,
-      groupSelectedParentId: -1,
-      sliderMaxHeight: 500,
-      offsetModificator: 150,
-      can_reload_at:0
+      can_reload_at:0,
+      stickyMenuState: false,
+      stickyMenuAnimating: false,
+      productCategoryActive: -1
     };
   },
   computed:{
@@ -693,7 +611,6 @@ export default{
       }
       this.storeGroups=storeGroupsOrdered
       this.groupOtherAdd()
-      setTimeout(()=>{this.groupSelect()}, 0)
     },
     groupOtherAdd(){
       if(this.storeProductsFiltered[0]){
@@ -717,73 +634,54 @@ export default{
         })
       }
     },
-    groupSelect(){//if there is parameter in route then scrollto category
-      if(this.groupSelectedParentId>-1){
-        return//group was set previously
-      }
-      let parent_group_id=this.query.parent_group_id
-      let sub_group_id=this.query.sub_group_id
-      if( sub_group_id ){
-        parentloop:for(let parent in this.storeGroups){
-          for(let sub in this.storeGroups[parent].children){
-            if(sub==sub_group_id){
-              parent_group_id=parent
-              break parentloop
-            }
-          }
-        }
-      }
-      if( !parent_group_id ){
-        parent_group_id = this.storeGroups[0]?.group_id
-      }
-      const selectFirstChip=false;//sub_group_id?false:true
-      this.groupSelectParent(parent_group_id,selectFirstChip)
-    },
-    groupSelectParent(parent_group_id){
-      if(this.groupSelectedParentId == parent_group_id){
-        return
-      }
-      this.groupSelectedParentId = parent_group_id;
-      if(this.$refs.productListSlider==undefined){//no products prevent error
-        return
-      }
-      const swiper = this.$refs.productListSlider.$el.swiper
-      const slide_index =this.storeGroups.findIndex(group=>group.group_id==parent_group_id)
-      if(slide_index>=0){
-        swiper.slideTo(slide_index,100,false)
-        this.groupSliderAdjustHeight()
-      }
-    },
-    groupSliderChanged(event) {
-      const slideIndex=event.activeIndex
-      const parent_groud_id = this.storeGroups[slideIndex].group_id;
-      this.groupSelectParent(parent_groud_id,1)
-    },
-    groupSliderAdjustHeight(){
-        const sliderContentHeight=this.$refs.productListSlider.$el.querySelector('.swiper-slide-active')?.scrollHeight
-        if(sliderContentHeight>0){
-          this.$refs.productListSlider.$el.style.maxHeight=sliderContentHeight+'px'
-        } else {
-          this.$refs.productListSlider.$el.style.maxHeight=''
-        }
-    },
     onScroll(event) {
-      if(!this.$refs.productListSlider || !this.$refs.groupFixedBlock){
-        return
-      }
-      const offsetTop=this.$refs.productListSlider.$el?.offsetTop;
-      const offsetHeight=this.$refs.groupFixedBlock.offsetHeight;
-      if (offsetTop - offsetHeight - 100 < event.detail.scrollTop ) {
-        this.$refs.groupFixedBlock.classList.remove("hidden-block");
-      } else {
-        this.$refs.groupFixedBlock.classList.add("hidden-block");
-      }
+      this.checkSticky()
+      this.checkActiveCategory(event)
     },
+    checkSticky(){
+      var sticky = document.querySelector(`#productCategories${this.storeItem.store_id}`);
+      if(this.stickyMenuAnimating || !sticky) return
+      this.stickyMenuAnimating = true
+      setTimeout(() => {
+        if (!this.stickyMenuState && (this.getAnchorOffset() < 0)) {
+            sticky.classList.add("is-sticky");
+            this.stickyMenuState = true;
+        } else if (this.stickyMenuState && (this.getAnchorOffset() >=0 )) {
+            sticky.classList.remove("is-sticky");
+            this.stickyMenuState = false;
+        }
+        this.stickyMenuAnimating = false
+      },100)
+    },
+    getAnchorOffset() {
+      var sticky = document.querySelector(`#productCategories${this.storeItem.store_id}`);
+      if(!sticky) return 0
+      var stickyAnchor = sticky.parentNode;
+      return stickyAnchor.getBoundingClientRect().top;
+    },
+    checkActiveCategory(event){
+      const menuLinks = document.querySelectorAll(`#productCategories${this.storeItem.store_id} a`);
+      const sections = Array.from(menuLinks).map(link => document.querySelector(link.getAttribute("data-target")));
+      this.productCategoryActive = -1;
+      if(!event) return false;
+      let scrollPosition = event.detail.currentY + window.innerHeight / 2;
+      sections.forEach((section, index) => {
+        const top = section.offsetTop;
+        const bottom = top + section.offsetHeight;
+        if (scrollPosition >= top && scrollPosition < bottom) {
+          this.productCategoryActive = index
+        }
+      });
+    },
+    selectProductCategory(index) {
+      document.querySelector(`#group-${index}-${this.storeItem.store_id}`).scrollIntoView()
+    }
   },
   async mounted(){
     this.query = this.$route.query
     this.itemGet()
     this.productListGet()
+    this.checkActiveCategory()
   },
   async ionViewDidEnter() {
     this.query = this.$route.query;
