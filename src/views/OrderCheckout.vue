@@ -149,7 +149,7 @@
                 <ion-item>
                     <ion-segment mode="ios" v-model="bonusMode" color="medium" @click="promoBonusUse()">
                         <ion-segment-button value="gain">
-                            <ion-label>Накопить {{ tariffRule.bonus.bonus_gain }}б</ion-label>
+                            <ion-label>Накопить {{ tariffRule.bonus.bonus_gain }}<span><img class="bonus-chip" src="/img/crystal.png" width="14px"/></span></ion-label>
                             <span>с этого заказа</span>
                         </ion-segment-button>
                         <ion-segment-button v-if="tariffRule.bonus.bonus_usable==0" :disabled="1">
@@ -158,7 +158,7 @@
                         </ion-segment-button>
                         <ion-segment-button v-else value="spend">
                             <ion-label>Потратить {{ tariffRule.bonus.bonus_usable }}б</ion-label>
-                            <span>на счету {{tariffRule.bonus.bonus_total}}б</span>
+                            <span>на счету {{tariffRule.bonus.bonus_total}}<span><img class="bonus-chip" src="/img/crystal.png" width="14px"/></span></span>
                         </ion-segment-button>
                     </ion-segment>
                 </ion-item>

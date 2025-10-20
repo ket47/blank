@@ -56,8 +56,8 @@
   <div>
     <div class="promo-total">
       <div class="promo-text">
-        <h4>Мои кристалы</h4>
-        <p>За последние 30 дней</p>
+        <h4>Мои бонусы</h4>
+        <p>Доступные к использованию</p>
       </div>
       <div class="promo-value">
         <h2 slot="start">{{ bonusTotal }}</h2>
@@ -68,35 +68,43 @@
   <ion-accordion-group>
     <ion-accordion value="first">
       <ion-item slot="header" color="light">
-        <ion-label>Как <b>получить</b> изумруды?</ion-label>
+        <ion-label>Как <b>получить</b> бонусы?</ion-label>
       </ion-item>
-      <div class="ion-padding" slot="content">
-        <p style="font-size: 12px; margin: 0px;">
-          При <b>покупке</b> товаров со значком изумруда <span><img class="bonus-chip" src="/img/crystal.png" width="14px"/></span> вы получаете на свой счёт соответствующее количество изумрудов.
+      <div class="ion-padding" slot="content" style="color:#666">
+        <p>
+          При <b>покупке</b> товаров со значком изумруда <span><img class="bonus-chip" src="/img/crystal.png" width="14px"/></span>, вы получаете на свой счёт соответствующее количество бонусов.
+        </p>
+        <p>
+          Бонусы действуют 6 месяцев.
         </p>
       </div>
     </ion-accordion>
     <ion-accordion value="second">
       <ion-item slot="header" color="light">
-        <ion-label>Как <b>потратить</b> изумруды?</ion-label>
+        <ion-label>Как <b>потратить</b> бонусы?</ion-label>
       </ion-item>
-      <div class="ion-padding" slot="content">
-        <p style="font-size: 12px; margin: 0px;">
-          Вы можете <b>потратить</b> изумруды на реальные покупки. При этом <b>1 изумруд = 1 рубль</b>. Так вы можете оплатить до <b>100%</b> следующего заказа!
+      <div class="ion-padding" slot="content" style="color:#666">
+        <p>
+          Вы можете <b>потратить</b> бонусы на реальные покупки. При этом <b>1 изумруд = 1 рубль</b>. 
+        </p>
+        <p>
+          Так вы можете оплатить до <b>100%</b> следующего заказа! Товары, со значком изумруда <span><img class="bonus-chip" src="/img/crystal.png" width="14px"/></span>, можно купить по цене до 1 рубля.
         </p>
       </div>
     </ion-accordion>
   </ion-accordion-group>
-  <div class="ion-padding-horizontal"> 
-    <h5>Статистика бонусов</h5>
-    <p style="margin-top: 0">За последние 30 дней</p>
+  <div  v-if="dataset.bonus_gained || dataset.bonus_spent">
+    <div class="ion-padding-horizontal"> 
+      <h5>Статистика бонусов</h5>
+      <p style="margin-top: 0">За последние 30 дней</p>
+    </div>
+    <ion-grid>
+      <ion-row>
+        <ion-col size="12" size-sm="4"><statistics-card v-if="dataset.bonus_gained" label="Заработано" :data="dataset.bonus_gained" format="integer" color="#008FFB" :dates="statisticsDates"/></ion-col>
+        <ion-col size="12" size-sm="4"><statistics-card v-if="dataset.bonus_spent" label="Потрачено" :data="dataset.bonus_spent" format="integer" color="#04e398" :dates="statisticsDates"/></ion-col>
+      </ion-row>
+    </ion-grid>
   </div>
-  <ion-grid>
-    <ion-row>
-      <ion-col size="12" size-sm="4"><statistics-card v-if="dataset.bonus_gained" label="Заработано" :data="dataset.bonus_gained" format="integer" color="#008FFB" :dates="statisticsDates"/></ion-col>
-      <ion-col size="12" size-sm="4"><statistics-card v-if="dataset.bonus_spent" label="Потрачено" :data="dataset.bonus_spent" format="integer" color="#04e398" :dates="statisticsDates"/></ion-col>
-    </ion-row>
-  </ion-grid>
 </template>
 
 <script>
@@ -157,7 +165,7 @@ export default {
             }
             const response = await jQuery.post(`${this.$heap.state.hostname}Statistics/bonusParametersGet`, request)
             response.body.reverse()
-            this.bonusTotal = response.head.bonus_total
+            this.bonusTotal = response.head.bonus_total??0
             this.statisticsDates = this.parseDates(response)
             this.parseStatisticResponse(response)
             console.log(this.dataset)
@@ -169,15 +177,20 @@ export default {
           bonus_spent: true
         }
         for(var param in bars){
-          this.dataset[param] = {
-            value: 0,
-            series: []
+          let dataset={
+            [param]:{
+              value: 0,
+              series: []
+            }
           }
           for(var i in response.body){
             if(response.body[i][param]){
-              this.dataset[param].series.push(response.body[i][param])
-              this.dataset[param].value += response.body[i][param]*1
+              dataset[param].series.push(response.body[i][param])
+              dataset[param].value += response.body[i][param]*1
             }
+          }
+          if(dataset[param].series.length){
+            this.dataset=dataset
           }
         }
     },

@@ -318,7 +318,7 @@ ion-chip .active-chip {
           >
             <ion-col class="group-title" size="12">
               <h6 style="margin: 0; color: var(--ion-color-medium)" >
-                - {{ group_item.group_name }} 
+                {{ group_item.group_name }} 
                 <ion-chip v-if="storeItem.is_writable==1" @click="productItemCreate(group_item.group_id)">
                   Добавить товар
                 </ion-chip>

@@ -1,5 +1,5 @@
 <template>
-    <base-layout pageTitle="Ваши скидки" pageDefaultBackLink="/user">
+    <base-layout pageTitle="Мои бонусы" pageDefaultBackLink="/user">
         <!-- <ion-card color="light">
             <ion-card-header>
                 <ion-card-title>

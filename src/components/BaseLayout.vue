@@ -58,9 +58,9 @@
         </ion-content>
       </ion-modal>
       <div style="height:30px"><!--spacer for bottom main tabs--></div>
-      <!-- <ion-fab v-if="isInteractingWithServer" vertical="bottom" slot="fixed">
+      <ion-fab v-if="isInteractingWithServer" vertical="bottom" slot="fixed">
         <tezkel-loader/>
-      </ion-fab> -->
+      </ion-fab>
     </ion-content>
     <cookies-modal/>
   </ion-page>

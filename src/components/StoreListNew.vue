@@ -39,6 +39,10 @@ ion-card .store-title{
   display: grid;
   grid-template-columns: repeat(auto-fit,  minmax(10px, max-content)) ;
 }
+.perk-row ion-img{
+  filter: drop-shadow(0px 1px 2px #000);
+  width: 30px;
+}
 .perk-slider{
   --swiper-navigation-size: 20px;
 }
@@ -216,9 +220,11 @@ ion-card .store-title{
             <div @click="$go(`/catalog/store-${store_item.store_id}`)" class="crop-to-fit" style="height: 180px;cursor:pointer">
                 <img v-if="store_item.image_hash" :src="$heap.state.hostname +'image/get.php/' +store_item.image_hash +'.700.700.webp'"/>
             </div>
+
             <div v-if="store_perks[store_index].length > 0" class="perk-row" :style="`width:${store_perks[store_index].length*50}px`">
               <span v-for="perk in store_perks[store_index]" :key="perk.image_hash" class="perk" >
                 <ion-img v-if="perk.image_hash" :src="`${$heap.state.hostname +'image/get.php/' +perk.image_hash +'.80.80.png'}`"/>
+                <ion-img v-else-if="perk.perk_type=='cashback'" src="/img/crystal.png"/>
                 <ion-img v-else :src="`/img/perks/${perk.image_url}`"/>
               </span>
             </div>
@@ -465,7 +471,7 @@ export default {
   computed: {
     store_perks () {
       return this.storeListFiltered.map(function(store) {
-        return (store.perks) ? store.perks.filter(perk => perk.perk_type == 'store_halal') : false
+        return (store.perks) ? store.perks.filter(perk =>['store_halal','cashback'].includes(perk.perk_type)) : false
       });
     },
     showndelivery_address(){
