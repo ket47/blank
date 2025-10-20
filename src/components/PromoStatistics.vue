@@ -105,6 +105,20 @@
       </ion-row>
     </ion-grid>
   </div>
+  <ion-card color="light">
+      <ion-card-header>
+          <ion-card-title>
+              Получите Бонус
+          </ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+          <p>Новый пользователь, зарегистриванный <u>на сайте</u> по вашему приглашению, получит бонус 200<span><img class="bonus-chip" src="/img/crystal.png" width="14px"/></span>.</p>
+          <p>В качестве благодарности, мы начислим вам бонус 100<span><img class="bonus-chip" src="/img/crystal.png" width="14px"/></span></p>
+          <p>
+              <ion-button @click="shareInvitation()" expand="block"><ion-icon :src="arrowRedoOutline"/>Пригласить друга</ion-button>
+          </p>
+      </ion-card-content>
+  </ion-card>
 </template>
 
 <script>
@@ -123,7 +137,7 @@ import {
   timeOutline, 
   searchOutline
  }                  from 'ionicons/icons'
- 
+ import { Share }        from '@capacitor/share';
 import jQuery           from 'jquery'
 import StatisticsCard          from "@/components/StatisticsCard.vue";
 
@@ -200,7 +214,30 @@ export default {
             result.unshift(response.body[i].point_finish)
         }
         return result
-    }
+    },
+    async shareInvitation(){
+            try{
+                const targetTitle=this.$heap.state.settings.app_title
+                const targetText='Присоединяйтесь и получите бонус'
+                const canshare=await Share.canShare()
+                const fullUrl=`${this.$heap.getters.settings.app.frontendUrl}invitation.html?inviter_user_id=${this.$heap.state.user.user_id}`
+                if(canshare){
+                    await Share.share({
+                        title: targetTitle,
+                        text: targetText,
+                        url: fullUrl,
+                        dialogTitle: targetTitle,
+                    });
+                } else if(navigator.clipboard){
+                    await navigator.clipboard.writeText(fullUrl);
+                    this.$alert("Теперь вы можете поделиться ей с друзьями в социальных сетях или мессенджерах.","Ссылка на страницу скопирована");
+                } else {
+                    this.$alert("Устройство не поддерживает функцию поделиться",""); 
+                }
+            }catch(err){
+                //console.log(err)
+            }
+        },
   },
   mounted(){
     this.listGet();

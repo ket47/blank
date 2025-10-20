@@ -157,8 +157,8 @@
                             <span>на счету {{tariffRule.bonus.bonus_total}}б</span>
                         </ion-segment-button>
                         <ion-segment-button v-else value="spend">
-                            <ion-label>Потратить {{ tariffRule.bonus.bonus_usable }}б</ion-label>
-                            <span>на счету {{tariffRule.bonus.bonus_total}}<span><img class="bonus-chip" src="/img/crystal.png" width="14px"/></span></span>
+                            <ion-label>Потратить {{ tariffRule.bonus.bonus_usable }}<span><img class="bonus-chip" src="/img/crystal.png" width="14px"/></span></ion-label>
+                            <span>на счету {{tariffRule.bonus.bonus_total}}<span><img class="bonus-chip" src="/img/crystal.png" width="14px" style="filter:grayscale(1)"/></span></span>
                         </ion-segment-button>
                     </ion-segment>
                 </ion-item>

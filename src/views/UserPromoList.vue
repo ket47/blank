@@ -1,41 +1,5 @@
 <template>
     <base-layout pageTitle="Мои бонусы" pageDefaultBackLink="/user">
-        <!-- <ion-card color="light">
-            <ion-card-header>
-                <ion-card-title>
-                    Получите скидку
-                </ion-card-title>
-            </ion-card-header>
-            <ion-card-content>
-                <p>Новый пользователь, зарегистриванный <u>на сайте</u> по вашему приглашению, получит 3 скидки по 333руб.</p>
-                <p>В качестве благодарности, мы начислим вам 3 скидки по 222руб.</p>
-                <ion-accordion-group>
-                    <ion-accordion>
-                        <ion-item slot="header" color="light">
-                            <ion-text slot="end" color="medium">подробнее</ion-text>
-                        </ion-item>
-                        <div slot="content" style="padding:10px">
-                            <p>
-                            После регистрации, на сайте, нового клиента по вашему приглашению, мы начислим вам 3 скидки по 222руб.
-                            </p>
-                            <p>
-                                Эти скидки будут активироваться по мере того, как приглашённый вами друг, будет использовать свои скидки.
-                            </p>
-                        </div>
-                    </ion-accordion>
-                </ion-accordion-group>
-                <p>
-                    <ion-button @click="shareInvitation()" expand="block"><ion-icon :src="arrowRedoOutline"/>Пригласить друга</ion-button>
-                </p>
-            </ion-card-content>
-        </ion-card>
-        <ion-title></ion-title>
-        <ion-text></ion-text> -->
-
-
-
-
-
         <ion-segment swipe-gesture="true" v-model="promoType" @ionChange="listTypeChanged($event)">
             <ion-segment-button value="bonuses">
                 Бонусы
