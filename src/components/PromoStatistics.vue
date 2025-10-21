@@ -65,7 +65,35 @@
       </div>
     </div>
   </div>
-  <ion-accordion-group>
+  <div  v-if="dataset.bonus_gained || dataset.bonus_spent">
+    <div class="ion-padding-horizontal"> 
+      <h5>Статистика бонусов</h5>
+      <p style="margin-top: 0">За последние 30 дней</p>
+    </div>
+    <ion-grid>
+      <ion-row>
+        <ion-col size="12" size-sm="4"><statistics-card v-if="dataset.bonus_gained" label="Заработано" :data="dataset.bonus_gained" format="integer" color="#008FFB" :dates="statisticsDates"/></ion-col>
+        <ion-col size="12" size-sm="4"><statistics-card v-if="dataset.bonus_spent" label="Потрачено" :data="dataset.bonus_spent" format="integer" color="#04e398" :dates="statisticsDates"/></ion-col>
+      </ion-row>
+    </ion-grid>
+  </div>
+  <div class="ion-padding-horizontal"> 
+    <h5>Копите бонусы</h5>
+    <p style="margin-top: 0">Пригласив друга</p>
+  </div>
+  <ion-card>
+      <ion-card-content>
+          <p>Новый пользователь, зарегистриванный <u>на сайте</u> по вашему приглашению, получит бонус 200<span><img class="bonus-chip" src="/img/crystal.png" width="14px"/></span>.</p>
+          <p>В качестве благодарности, мы начислим вам бонус 100<span><img class="bonus-chip" src="/img/crystal.png" width="14px"/></span></p>
+          <p style="text-align:center">
+            <a v-if="this.$heap.state.user.user_id>0" :href="`${this.$heap.state.hostname}User/itemInvitationQR?user_id=${this.$heap.state.user.user_id}`" target="_blank">
+              <img :src="`${this.$heap.state.hostname}User/itemInvitationQR?user_id=${this.$heap.state.user.user_id}`" style="width:150px;height:150px"/>
+            </a>
+          </p>
+          <ion-button @click="shareInvitation()" expand="block" color="success"><ion-icon :src="arrowRedoOutline"/>Пригласить друга</ion-button>
+      </ion-card-content>
+  </ion-card>
+    <ion-accordion-group>
     <ion-accordion value="first">
       <ion-item slot="header" color="light">
         <ion-label>Как <b>получить</b> бонусы?</ion-label>
@@ -93,32 +121,6 @@
       </div>
     </ion-accordion>
   </ion-accordion-group>
-  <div  v-if="dataset.bonus_gained || dataset.bonus_spent">
-    <div class="ion-padding-horizontal"> 
-      <h5>Статистика бонусов</h5>
-      <p style="margin-top: 0">За последние 30 дней</p>
-    </div>
-    <ion-grid>
-      <ion-row>
-        <ion-col size="12" size-sm="4"><statistics-card v-if="dataset.bonus_gained" label="Заработано" :data="dataset.bonus_gained" format="integer" color="#008FFB" :dates="statisticsDates"/></ion-col>
-        <ion-col size="12" size-sm="4"><statistics-card v-if="dataset.bonus_spent" label="Потрачено" :data="dataset.bonus_spent" format="integer" color="#04e398" :dates="statisticsDates"/></ion-col>
-      </ion-row>
-    </ion-grid>
-  </div>
-  <ion-card color="light">
-      <ion-card-header>
-          <ion-card-title>
-              Получите Бонус
-          </ion-card-title>
-      </ion-card-header>
-      <ion-card-content>
-          <p>Новый пользователь, зарегистриванный <u>на сайте</u> по вашему приглашению, получит бонус 200<span><img class="bonus-chip" src="/img/crystal.png" width="14px"/></span>.</p>
-          <p>В качестве благодарности, мы начислим вам бонус 100<span><img class="bonus-chip" src="/img/crystal.png" width="14px"/></span></p>
-          <p>
-              <ion-button @click="shareInvitation()" expand="block"><ion-icon :src="arrowRedoOutline"/>Пригласить друга</ion-button>
-          </p>
-      </ion-card-content>
-  </ion-card>
 </template>
 
 <script>
@@ -132,14 +134,20 @@ import {
   IonRow,
   IonCol,
   IonText,
-}                   from "@ionic/vue";
+  IonCard,
+  IonCardHeader,
+  IonCardTitle,
+  IonCardContent,
+  IonIcon,
+  IonButton,
+}                         from "@ionic/vue";
 import {  
   timeOutline, 
-  searchOutline
- }                  from 'ionicons/icons'
- import { Share }        from '@capacitor/share';
-import jQuery           from 'jquery'
-import StatisticsCard          from "@/components/StatisticsCard.vue";
+  searchOutline,
+  arrowRedoOutline
+ }                        from 'ionicons/icons'
+ import { Share }         from '@capacitor/share';
+import StatisticsCard     from "@/components/StatisticsCard.vue";
 
 export default {
   components: {
@@ -152,12 +160,19 @@ export default {
     IonRow,
     IonCol,
     IonText,
+    IonCard,
+    IonCardHeader,
+    IonCardTitle,
+    IonCardContent,
+    IonIcon,
+    IonButton,
     StatisticsCard
   },
   setup(){
       return {
         timeOutline,
-        searchOutline
+        searchOutline,
+        arrowRedoOutline
       }
   },
   data() {
@@ -177,12 +192,11 @@ export default {
                 point_span: 3,
                 point_num: 10
             }
-            const response = await jQuery.post(`${this.$heap.state.hostname}Statistics/bonusParametersGet`, request)
+            const response = await this.$post(`${this.$heap.state.hostname}Statistics/bonusParametersGet`, request)
             response.body.reverse()
             this.bonusTotal = response.head.bonus_total??0
             this.statisticsDates = this.parseDates(response)
             this.parseStatisticResponse(response)
-            console.log(this.dataset)
         }catch{/** */}
     },
     parseStatisticResponse(response){

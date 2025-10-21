@@ -144,9 +144,10 @@
                 <ion-item>
                     <ion-icon :icon="giftOutline" color="medium" slot="start"></ion-icon>
                     <ion-label>Бонусы {{$heap.state.settings?.app_title}}</ion-label>
-                    <ion-button slot="end" color="medium" @click="promoPick()" fill="outline">скидки</ion-button>
+                    <ion-button v-if="promo" slot="end" color="success" @click="promoPick()">скидка {{order.order_sum_promo}}{{$heap.state.currencySign}}</ion-button>
+                    <ion-button v-else slot="end" color="medium" @click="promoPick()" fill="outline">скидки</ion-button>
                 </ion-item>
-                <ion-item>
+                <ion-item  v-if="!promo">
                     <ion-segment mode="ios" v-model="bonusMode" color="medium" @click="promoBonusUse()">
                         <ion-segment-button value="gain">
                             <ion-label>Накопить {{ tariffRule.bonus.bonus_gain }}<span><img class="bonus-chip" src="/img/crystal.png" width="14px"/></span></ion-label>
@@ -211,21 +212,21 @@
                     <ion-list slot="content">
                         <ion-item>
                             <ion-icon :icon="cubeOutline" slot="start" color="medium"></ion-icon>
-                            Сумма заказа 
-                            <ion-text slot="end">{{order.order_sum_product}}{{$heap.state.currencySign}}</ion-text>
+                            <ion-label color="medium">Сумма заказа </ion-label>
+                            <ion-text slot="end" color="medium">{{order.order_sum_product}}{{$heap.state.currencySign}}</ion-text>
                         </ion-item>
                         <ion-item v-if="promo" button>
-                            <ion-icon :icon="giftOutline" slot="start" style="font-size:1.5em"></ion-icon>
-                            <ion-label>{{promo.promo_name}}</ion-label>
+                            <ion-icon :icon="giftOutline" slot="start" style="font-size:1.5em" color="medium"></ion-icon>
+                            <ion-label color="medium">{{promo.promo_name}}</ion-label>
                             <ion-text slot="end" color="success">-{{order.order_sum_promo}}{{$heap.state.currencySign}}</ion-text>
                         </ion-item>
                         <ion-item v-if="order_sum_delivery>0">
                             <ion-icon :icon="rocketOutline" slot="start" color="medium"></ion-icon>
                             <div>
-                                Доставка
+                                <ion-label color="medium">Доставка</ion-label>
                                 <div v-if="tariffRule.deliveryHeavyCost" style="font-size:0.75em;color:#666">{{order_sum_delivery-tariffRule.deliveryHeavyCost}}+{{tariffRule.deliveryHeavyCost}} (непогода или высокая загруженность)</div>
                             </div>
-                            <ion-text slot="end">{{order_sum_delivery??0}}{{$heap.state.currencySign}}</ion-text>
+                            <ion-text slot="end" color="medium">{{order_sum_delivery??0}}{{$heap.state.currencySign}}</ion-text>
                         </ion-item>
                     </ion-list>
                 </ion-accordion>
