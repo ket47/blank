@@ -10,6 +10,34 @@
   width: 50%;
   white-space: initial;
 }
+.promo-crystal-container{
+  position: relative;
+  background: #23b94f;
+  display: grid;
+  color: white;
+  align-items: center;
+  margin: 5px; 
+  border-radius: 10px; 
+  min-width: 320px;
+  width: 50%;
+  white-space: initial;
+  animation: blinkColor 1.5s ease infinite alternate;
+}
+.promo-crystal-container ion-label{
+
+  text-shadow: 0px 1px 3px #00000078;
+}
+.promo-crystal-container img{
+  filter: drop-shadow(0px 1px 2px #0000008c);
+}
+@keyframes blinkColor {
+    0%{
+        background: #238eb9;
+    }
+    100%{
+        background: #23b94f;
+    }
+}
 
 
 
@@ -40,14 +68,14 @@
       </ion-item>
     </div>
   </div>
-  <div v-else  class="promo-counter-container" >
-        <ion-item  color="transparent" lines="none" button detail="true" :detailIcon="chevronForwardOutline"  href="/user/user-promo">
-          <img slot="start" src="/img/discount_box.png" width="60"/>
-          <ion-label class="ion-no-margin">
-            <strong>Нужны скидки?</strong>
-            <p style="font-size: 12px">Приглашайте друзей</p>
-          </ion-label>
-        </ion-item>
+  <div v-else  class="promo-crystal-container" >
+    <ion-item  color="transparent" lines="none" button detail="true" :detailIcon="chevronForwardOutline"  @click="$go('/user/user-promo')">
+      <img slot="start" src="/img/crystal.png" width="60"/>
+      <ion-label class="ion-no-margin">
+        <h4><b>Нужны скидки?</b></h4>
+        <p style="font-size: 12px">Собирайте <b>изумруды</b> и используйте их в заказах!</p>
+      </ion-label>
+    </ion-item>
   </div>
 
 </template>

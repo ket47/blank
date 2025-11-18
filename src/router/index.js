@@ -11,6 +11,8 @@ import ProductView    from '@/views/ProductView.vue'
 import OrderCheckout  from '@/views/OrderCheckout.vue'
 import OrderView      from '@/views/OrderView.vue'
 
+import ChameleonHome       from '@/views/chameleon/ChameleonHome.vue'
+
 import Topic          from '@/scripts/Topic.js';
 
 // const already_visited_app=localStorage?.already_visited_app?true:false;
@@ -327,6 +329,14 @@ const routes = [
   {
     path: '/catalog/store-:id/menu',
     component: () => import('@/views/StoreMenu.vue')
+  },
+  {
+    path: '/chameleon-home',
+    component: ChameleonHome
+  },
+  {
+    path: '/chameleon-store-:id',
+    component: () => import('@/views/chameleon/ChameleonStore.vue')
   },
   {
     path: '/:catchAll(.*)',

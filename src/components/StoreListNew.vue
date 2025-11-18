@@ -41,7 +41,7 @@ ion-card .store-title{
 }
 .perk-row ion-img{
   filter: drop-shadow(0px 1px 2px #000);
-  width: 30px;
+  width: 40px;
 }
 .perk-slider{
   --swiper-navigation-size: 20px;
@@ -144,7 +144,34 @@ ion-card .store-title{
 .ribbon-container .ribbon.ribbon-purple::after {
   border-color: #740c2b transparent transparent;
 }
+.crystal-chip{
+  border-top-right-radius: 50px; 
+  border-bottom-right-radius: 50px;
+  background: linear-gradient(to right, #1bb046, #25ca7d);
+  display: flex;
+  align-items: center;
+  padding: 4px;
+  box-shadow: 1px 3px 2px #00000096;
+}
+.crystal-chip ion-label{
+  font-size: 12px; 
+  color: white;
+  margin-left: 5px;
+  text-shadow: 0px 1px 2px black;
+}
+.crystal-chip .avatar{
+  margin-left: 5px;
+  border-radius: 100%;
+  background: #0f4b68a8;
+  padding: 3px;
+  box-shadow: inset 0px 2px 3px #00000087;
+}
 
+.crystal-chip .avatar ion-img{
+  width: 16px;
+  filter: brightness(1);
+  animation: blinkCrystal 0.5s cubic-bezier(.95,.05,.8,.04)  infinite alternate;
+}
 .suggest-card ion-card{
   background:  var(--ion-color-light);
   border-radius: 15px;
@@ -158,6 +185,14 @@ ion-card .store-title{
 }
 .suggest-card .add-icon{
   font-size: 50px;
+}
+@keyframes blinkCrystal {
+    0%{
+        filter: brightness(1);
+    }
+    100%{
+        filter: brightness(2);
+    }
 }
 
 </style>
@@ -182,7 +217,6 @@ ion-card .store-title{
               :color="(sort.code == sortBy.code) ? `primary` : ''">
               <ion-label>{{ sort.title }}</ion-label>
               <ion-icon v-if="sort.code == sortBy.code" :icon="checkmarkCircleOutline" slot="end"></ion-icon>
-              
           </ion-item>
       </ion-list>
     </ion-content>
@@ -221,12 +255,19 @@ ion-card .store-title{
                 <img v-if="store_item.image_hash" :src="$heap.state.hostname +'image/get.php/' +store_item.image_hash +'.700.700.webp'"/>
             </div>
 
-            <div v-if="store_perks[store_index].length > 0" class="perk-row" :style="`width:${store_perks[store_index].length*50}px`">
+            <div v-if="store_perks[store_index].length > 0" class="perk-row">
               <span v-for="perk in store_perks[store_index]" :key="perk.image_hash" class="perk" >
-                <ion-img v-if="perk.image_hash" :src="`${$heap.state.hostname +'image/get.php/' +perk.image_hash +'.80.80.png'}`"/>
-                <ion-img v-else-if="perk.perk_type=='cashback'" src="/img/crystal.png"/>
+                <ion-img v-if="perk.image_hash" :src="`${$heap.state.hostname +'image/get.php/' +perk.image_hash +'.80.80.png'}`" style="margin: 10px;"/>
                 <ion-img v-else :src="`/img/perks/${perk.image_url}`"/>
               </span>
+            </div>
+            <div v-if="store_crystal[store_index]" style="position: absolute; bottom: 8px; left: 0px; z-index: 100">
+                <div class="crystal-chip">
+                    <ion-label><b>Есть бонусы</b></ion-label>
+                    <span class="avatar">
+                      <ion-img width="25px;" src="/img/crystal.png"/>
+                    </span>
+                </div>
             </div>
             <div class="ribbon-container">
               <div :class="`ribbon ribbon-${ribbon.color}`" v-for="(ribbon, ribbon_index) in store_item.ribbons" :key="ribbon_index" >
@@ -471,7 +512,12 @@ export default {
   computed: {
     store_perks () {
       return this.storeListFiltered.map(function(store) {
-        return (store.perks) ? store.perks.filter(perk =>['store_halal','cashback'].includes(perk.perk_type)) : false
+        return (store.perks) ? store.perks.filter(perk =>['store_halal'].includes(perk.perk_type)) : false
+      });
+    },
+    store_crystal () {
+      return this.storeListFiltered.map(function(store) {
+        return (store.perks) ? store.perks.find(perk => perk.perk_type ==  'cashback') : false
       });
     },
     showndelivery_address(){

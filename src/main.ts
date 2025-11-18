@@ -302,13 +302,11 @@ async function startApp(){
     await User.sessionIdUse(heap.state.sessionId);
   }
 
-
   if(heap.state.applicationVersion=='4.0.0'){
     document.body.style.setProperty("--ion-color-primary",`#03c04a`);
   }
 
 
-  app.mount('#app');
   /**
    * opens deeplinking urls in this app
    */
@@ -320,11 +318,14 @@ async function startApp(){
   })
   await User.autoSignIn();
 
+  app.mount('#app');
+
   Push.setFlashHandler(flash)
   Push.setAlertHandler(alert)
   Push.setGoHandler(go)
 
   Capgo.init(App,flash)
   Metrics.init()
+
 }
 startApp();

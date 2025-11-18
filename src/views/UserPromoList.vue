@@ -1,5 +1,5 @@
 <template>
-    <base-layout pageTitle="Мои бонусы" pageDefaultBackLink="/user">
+    <base-layout pageTitle="Мои бонусы">
         <ion-segment swipe-gesture="true" v-model="promoType" @ionChange="listTypeChanged($event)">
             <ion-segment-button value="bonuses">
                 Бонусы

@@ -42,7 +42,7 @@
 }
 </style>
 <template>
-  <base-layout :pageLogo="'show'" hideBackLink="true" :contentOnScroll="onScroll">
+  <base-layout :pageLogo="'show'" hideBackLink="true" :contentOnScroll="onScroll" >
     <div ref="topMarker"></div>
     <user-address-widget :deliveryTime="primaryDeliveryTime" />
     <home-slider :is-editable="isAdmin" :is-promoted="true"/>
@@ -159,6 +159,10 @@ export default {
     this.isAdmin = User.isAdmin()
   },
   created(){
+    if(this.$heap.state.settings?.other?.chameleonMode == 'on'){
+      this.$router.replace('/chameleon-home')
+      return;
+    }
     this.$topic.on('userGet',user=>{
       this.isAdmin = User.isAdmin()
     })

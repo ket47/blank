@@ -1,5 +1,5 @@
 <template>
-    <base-layout :pageTitle="`Вызов курьера ${order?.deleted_at?'(Удален)':''}` " pageDefaultBackLink="/order/order-list">
+    <base-layout :pageTitle="`Вызов курьера ${order?.deleted_at?'(Удален)':''}` " >
 
             <div v-if="order=='notfound'" style="display:flex;align-items:center;justify-content:center;height:100%">
                 <div style="width:max-content;text-align:center">
