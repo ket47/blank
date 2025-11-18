@@ -13,11 +13,11 @@
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.tezkel.tez</string>
+	<string>com.vkusnogid.app</string>
 	<key>PROJECT_ID</key>
-	<string>tezkel-8e371</string>
+	<string>vkusnogid-8e371</string>
 	<key>STORAGE_BUCKET</key>
-	<string>tezkel-8e371.appspot.com</string>
+	<string>vkusnogid-8e371.appspot.com</string>
 	<key>IS_ADS_ENABLED</key>
 	<false/>
 	<key>IS_ANALYTICS_ENABLED</key>
