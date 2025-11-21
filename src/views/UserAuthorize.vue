@@ -10,7 +10,7 @@
   }
 </style>
 <template>
-  <base-layout page-title="Вход в профиль" pageDefaultBackLink="/user">
+  <base-layout page-title="Вход в профиль" >
     
 
     <form novalidate onsubmit="return false">
