@@ -23,6 +23,9 @@
                     <ion-text slot="end" color="success"><b>{{promo.promo_value}}{{$heap.state.currencySign}}</b></ion-text>
                 </ion-item>
             </div>
+            <ion-text color="medium" v-if="!compPromoList.length" class="ion-padding">
+                Пока доступных скидок нет
+            </ion-text>
         </ion-list>
 
         <ion-list v-if="promoType=='inactive'">
@@ -43,6 +46,9 @@
                     <ion-text v-if="promo.promo_order_id">использована в заказе #{{promo.promo_order_id}}</ion-text>
                 </ion-item>
             </div>
+            <ion-text color="medium" v-if="!compPromoList.length" class="ion-padding">
+                Пока использованных скидок нет
+            </ion-text>
         </ion-list>
 
         <ion-list v-if="promoList==null">
@@ -139,9 +145,9 @@ export default {
                 this.promoList=[]
                 const request={
                     user_id:this.$heap.state.user.user_id,
-                    type:this.promoType
+                    type:this.promoType,
                 }
-                this.promoList=await jQuery.post(`${this.$heap.state.hostname}Promo/listGet`,request)
+                this.promoList=await this.$post(`${this.$heap.state.hostname}Promo/listGet`,request)
             }catch{/** */}
         },
         listTypeChanged(e){

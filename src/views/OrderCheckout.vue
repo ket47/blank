@@ -148,7 +148,7 @@
                     <ion-button v-else slot="end" color="medium" @click="promoPick()" fill="outline">скидки</ion-button>
                 </ion-item>
                 <ion-item  v-if="!promo">
-                    <ion-segment mode="ios" v-model="bonusMode" color="medium" @click="promoBonusUse()">
+                    <ion-segment mode="ios" v-model="bonusMode" color="success" @click="promoBonusUse()">
                         <ion-segment-button value="gain">
                             <ion-label>Накопить {{ tariffRule.bonus.bonus_gain }}<span><img class="bonus-chip" src="/img/crystal.png" width="14px"/></span></ion-label>
                             <span>с этого заказа</span>
@@ -194,14 +194,6 @@
 
 
 
-
-
-
-
-
-
-
-
            <ion-accordion-group>
                 <ion-accordion value="total">
                     <ion-item slot="header">
@@ -215,9 +207,10 @@
                             <ion-label color="medium">Сумма заказа </ion-label>
                             <ion-text slot="end" color="medium">{{order.order_sum_product}}{{$heap.state.currencySign}}</ion-text>
                         </ion-item>
-                        <ion-item v-if="promo" button>
+                        <ion-item v-if="order.order_sum_promo>0" button>
                             <ion-icon :icon="giftOutline" slot="start" style="font-size:1.5em" color="medium"></ion-icon>
-                            <ion-label color="medium">{{promo.promo_name}}</ion-label>
+                            <ion-label color="medium" v-if="promo?.promo_name">{{promo.promo_name}}</ion-label>
+                            <ion-label color="medium" v-else>Скидка</ion-label>
                             <ion-text slot="end" color="success">-{{order.order_sum_promo}}{{$heap.state.currencySign}}</ion-text>
                         </ion-item>
                         <ion-item v-if="order_sum_delivery>0">
@@ -227,6 +220,13 @@
                                 <div v-if="tariffRule.deliveryHeavyCost" style="font-size:0.75em;color:#666">{{order_sum_delivery-tariffRule.deliveryHeavyCost}}+{{tariffRule.deliveryHeavyCost}} (непогода или высокая загруженность)</div>
                             </div>
                             <ion-text slot="end" color="medium">{{order_sum_delivery??0}}{{$heap.state.currencySign}}</ion-text>
+                        </ion-item>
+                        <ion-item v-else>
+                            <ion-icon :icon="rocketOutline" slot="start" color="medium"></ion-icon>
+                            <div>
+                                <ion-label color="medium">Доставка</ion-label>
+                            </div>
+                            <ion-text slot="end" color="success">бесплатно</ion-text>
                         </ion-item>
                     </ion-list>
                 </ion-accordion>
@@ -465,9 +465,9 @@ export default({
             if(this.order.order_sum_product*1<this.order?.store?.store_minimal_order*1){
                 return `Сумма заказа у "${this.order?.store?.store_name}" должна быть больше чем ${this.order?.store?.store_minimal_order}${this.$heap.state.currencySign}`
             }
-            if(this.order_sum_total*1<=this.order_sum_delivery*1){
-                return `Сумма к оплате должна быть больше чем ${this.order_sum_delivery}${this.$heap.state.currencySign}`
-            }
+            // if(this.order_sum_total*1<=this.order_sum_delivery*1){
+            //     return `Сумма к оплате должна быть больше чем ${this.order_sum_delivery}${this.$heap.state.currencySign}`
+            // }
             return false
         },
 
@@ -575,16 +575,17 @@ export default({
                 this.errNotfound=0
                 this.bankCard=bulkResponse?.bankCard;
                 this.tariffRuleList=bulkResponse.Store_deliveryOptions
-                if( !this.tariffRule.tariff_id ){//if not set already
+                //if( !this.tariffRule.tariff_id ){//if not set already
                     /**
                      * set only if not set. promo selection may reset all form otherwise
                      */
                     this.tariffRuleSet(this.tariffRuleList[0]||{})
-                }
+                //}
                 this.is_checkout_data_loaded=1
-                if( this.order_sum_delivery==0 ){//????
-                    this.order_sum_delivery=this.order.order_sum_delivery
-                }
+                this.bonusMode='gain'
+                // if( this.order_sum_delivery==0 ){//????
+                //     this.order_sum_delivery=this.order.order_sum_delivery
+                // }
             }
             catch(err){
                 this.is_checkout_data_loaded=1
@@ -992,11 +993,12 @@ export default({
         async promoBonusUse(){
             if( this.bonusMode=='spend' && this.tariffRule.bonus.bonus_usable>0 ){
                 this.order.order_sum_promo=this.tariffRule.bonus.bonus_usable
-                this.promo={
-                    promo_name:'Оплата бонусами',
-                    promo_value:this.order.order_sum_promo,
-                    min_order_sum_product:this.order.order_sum_promo
-                }
+                // this.promo={
+                //     promo_name:'Оплата бонусами',
+                //     promo_value:this.order.order_sum_promo,
+                //     is_summable:1,//this is bonus
+                //     min_order_sum_product:this.order.order_sum_promo
+                // }
             } else {
                 this.order.order_sum_promo=0
                 this.promo=null

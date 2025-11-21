@@ -28,11 +28,11 @@
 
                 <ion-chip v-if="meta.bonus_gain" color="success">
                     <ion-icon :src="giftOutline"/>
-                    <ion-text>Начислен бонус {{ meta.bonus_gain }}{{$heap.state.currencySign}}</ion-text>
+                    <ion-text>Начислен бонус {{ meta.bonus_gain }}<span><img class="bonus-chip" src="/img/crystal.png" width="14px"/></span></ion-text>
                 </ion-chip>
                 <ion-chip v-if="meta.bonus_spend">
                     <ion-icon :src="giftOutline"/>
-                    <ion-text>Использован бонус {{ meta.bonus_spend }}{{$heap.state.currencySign}}</ion-text>
+                    <ion-text>Использован бонус {{ meta.bonus_spend }}<span><img class="bonus-chip" src="/img/crystal.png" width="14px"/></span></ion-text>
                 </ion-chip>
                 <ion-button v-if="meta.invoice_link" color="light" @click="billOpen(meta.invoice_link)" expand="block">
                     <ion-icon :src="receiptOutline" slot="start"/>

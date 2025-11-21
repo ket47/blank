@@ -15,8 +15,8 @@
     <ion-card-content class="ion-no-padding ">
       <apexchart v-if="data.series.length > 1" type="area" height="70" :options="chartOptions" :series="series" ref="apexChart"></apexchart >
       <div v-else class="ion-padding ion-text-center">
-        <h2>Недостаточно данных</h2>
-        <p>для показа статистики</p>
+        <!-- <h2>Недостаточно данных</h2>
+        <p>для показа статистики</p> -->
       </div>
     </ion-card-content>
   </ion-card>

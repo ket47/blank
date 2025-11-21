@@ -10,7 +10,7 @@
         </ion-segment>
         <div v-if="statistics && activeTab=='statistics'" class="ion-padding">
             <h3>Оценки клиентов</h3>
-            <ion-list>
+            <ion-list v-if="statistics.rating.length>0">
                 <div v-for="(tag,i) in statistics.rating" :key="i">
                     <ion-item v-if="tag.tag_option=='speed'">
                         <ion-icon :icon="rocket" slot="start"/>
@@ -23,7 +23,14 @@
                         <ion-label slot="end">{{ Number(tag.rating/0.2).toFixed(1) }}</ion-label>
                     </ion-item>
                 </div>
+                <ion-item v-if="$heap.state.courier?.ratingScore>0">
+                    <ion-label>Общий показатель</ion-label>
+                    <ion-label slot="end">{{ Math.round($heap.state.courier.ratingScore*100) }}%</ion-label>
+                </ion-item>
             </ion-list>
+            <div v-else style="color:#999">
+                Пока оценок нет
+            </div>
 
             <div v-if="statistics.comments?.length">
                 <h3>Последние отзывы</h3>
@@ -64,16 +71,16 @@ import ledgerComp       from "@/components/LedgerComp.vue";
 import User             from "@/scripts/User"
 export default {
     components:{
-    ledgerComp,
-    IonSegment,
-    IonSegmentButton,
-    IonList,
-    IonItem,
-    IonIcon,
-    IonLabel,
-    IonCard,
-    IonCardHeader,
-    IonCardContent,
+        ledgerComp,
+        IonSegment,
+        IonSegmentButton,
+        IonList,
+        IonItem,
+        IonIcon,
+        IonLabel,
+        IonCard,
+        IonCardHeader,
+        IonCardContent,
     },
     setup(){
         return {
@@ -97,6 +104,9 @@ export default {
             this.courier=await User.courier.get()
         },
         async itemStatisticsGet(){
+            if( !this.courier ){
+                await this.itemGet()
+            }
             this.statistics=await this.$post('Courier/itemStatisticsGet',{courier_id:this.courier.courier_id})
         },
         async activeTabChanged( type ){

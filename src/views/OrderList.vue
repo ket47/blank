@@ -62,7 +62,11 @@
                             <sup>({{ job.customer_heart_count }})</sup>
                         </div>
                         <ion-text>
-                            {{job.job_name}}
+                            {{job.job_name}} 
+                            <div v-if="job.courier_gain_base" style="display:inline-block;padding:3px;color:#fff;background-color:var(--ion-color-success);border-radius:3px">
+                                {{ job.courier_gain_base }}{{ $heap.state.currencySign }}+{{ job.courier_rating_pool }}{{ $heap.state.currencySign }}
+                            </div>
+                            
                         </ion-text>
                         <ion-chip slot="end" :color="job.stage_color">
                             <ion-icon :icon="checkmarkOutline"></ion-icon>
@@ -71,13 +75,13 @@
                     </ion-item>
                     <ion-item lines="full">
                         <div style="display:grid;grid-template-columns:45px auto 20px;width:100%;margin-bottom:3px">
-                            <div style="padding:3px;color:var(--ion-color-primary)"><b>{{job.start_plan_date}}</b></div>
+                            <div style="padding:3px;color:#ccc">{{job.start_plan_date}}</div>
                             <div style="padding:3px;color:#333"><small>{{job.start_address}}</small></div>
                             <div><ion-icon :icon="square" :style="`color:${job.start_color}`"/></div>
                             <div v-if="job.finish_plan_scheduled_date" style="padding:3px;color:#fff;background-color:var(--ion-color-primary);border-radius:3px">
                                 {{job.finish_plan_scheduled_date}}
                             </div>
-                            <div v-else style="padding:3px;color:#999">{{job.finish_plan_date}}</div>
+                            <div v-else style="padding:3px;color:#ccc">{{job.finish_plan_date}}</div>
                             <div style="padding:3px;color:#333"><small>{{job.finish_address}}</small></div>
                             <div><ion-icon :icon="square" :style="`color:${job.finish_color}`"/></div>
                         </div>
@@ -284,6 +288,8 @@ export default {
                 job.stage_label=stageDict[job.stage]||'-'
                 job.stage_color=['scheduled','awaited'].includes(job.stage)?'light':'primary'
                 job.is_courier_job=1
+                job.courier_gain_max=Math.round(job.courier_gain_base*1+job.courier_rating_pool*1)
+                job.courier_rating_pool=Math.round(job.courier_rating_pool)
                 if(job.finish_plan_scheduled>0){
                     const finish_plan_scheduled = new Date(job.finish_plan_scheduled*1000)
                     job.finish_plan_scheduled_date=finish_plan_scheduled.toLocaleTimeString(undefined, { hour:'numeric',minute:'numeric' })

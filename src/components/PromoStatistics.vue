@@ -72,7 +72,7 @@
     </div>
     <ion-grid>
       <ion-row>
-        <ion-col size="12" size-sm="4"><statistics-card v-if="dataset.bonus_gained" label="Заработано" :data="dataset.bonus_gained" format="integer" color="#008FFB" :dates="statisticsDates"/></ion-col>
+        <ion-col size="12" size-sm="4"><statistics-card v-if="dataset.bonus_gained" label="Накоплено" :data="dataset.bonus_gained" format="integer" color="#008FFB" :dates="statisticsDates"/></ion-col>
         <ion-col size="12" size-sm="4"><statistics-card v-if="dataset.bonus_spent" label="Потрачено" :data="dataset.bonus_spent" format="integer" color="#04e398" :dates="statisticsDates"/></ion-col>
       </ion-row>
     </ion-grid>
@@ -96,11 +96,14 @@
     <ion-accordion-group>
     <ion-accordion value="first">
       <ion-item slot="header" color="light">
-        <ion-label>Как <b>получить</b> бонусы?</ion-label>
+        <ion-label>Как <b>накопить</b> бонусы?</ion-label>
       </ion-item>
       <div class="ion-padding" slot="content" style="color:#666">
         <p>
           При <b>покупке</b> товаров со значком изумруда <span><img class="bonus-chip" src="/img/crystal.png" width="14px"/></span>, вы получаете на свой счёт соответствующее количество бонусов.
+        </p>
+        <p>
+          Оцените работу курьера или оставьте отзыв на товар и это тоже принесет вам <span><img class="bonus-chip" src="/img/crystal.png" width="14px"/></span>.
         </p>
         <p>
           Бонусы действуют 6 месяцев.
@@ -187,6 +190,9 @@ export default {
   methods: {
     async listGet(){
         try{
+            if( this.$heap.state.user.user_id<0 || this.bonusTotal ){
+              return//run once
+            }
             const request = {
                 user_id: this.$heap.state.user.user_id,
                 point_span: 3,
@@ -204,21 +210,20 @@ export default {
           bonus_gained: true,
           bonus_spent: true
         }
-        for(var param in bars){
-          let dataset={
-            [param]:{
+        for(const param in bars){
+          const graph={
               value: 0,
               series: []
+          }
+          for(const i in response.body){
+            const value=Math.abs(response.body[i][param]*1)
+            if(value || value===0){
+              graph.series.push(value)
+              graph.value += value
             }
           }
-          for(var i in response.body){
-            if(response.body[i][param]){
-              dataset[param].series.push(response.body[i][param])
-              dataset[param].value += response.body[i][param]*1
-            }
-          }
-          if(dataset[param].series.length){
-            this.dataset=dataset
+          if(graph.series.length){
+            this.dataset[param]=graph
           }
         }
     },
@@ -255,6 +260,9 @@ export default {
   },
   mounted(){
     this.listGet();
+    this.$topic.on('userGet',(user)=>{
+      this.listGet();
+    })
   },
   activated(){
     this.listGet();

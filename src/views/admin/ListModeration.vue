@@ -284,12 +284,12 @@ export default {
                 let items
                 if(this.moderationType=='images'){
                     request.order='updated_at'
-                    items=await jquery.post(`${this.$heap.state.hostname}Image/listGet`,request)
+                    items=await this.$post(`${this.$heap.state.hostname}Image/listGet`,request)
                 } else 
                 if(this.moderationType=='posts'){
                     request.name_query_fields='post_title,post_content'
                     request.order='updated_at'
-                    const posts=await jquery.post(`${this.$heap.state.hostname}Post/listGet`,request)
+                    const posts=await this.$post(`${this.$heap.state.hostname}Post/listGet`,request)
                     items=posts.post_list
                 } else 
                 if(this.moderationType=='products'){
@@ -299,23 +299,23 @@ export default {
                     if(this.productType=='promo'){
                         request.is_promo=1
                     }
-                    const products=await jquery.post(`${this.$heap.state.hostname}Product/listGet`,request)
+                    const products=await this.$post(`${this.$heap.state.hostname}Product/listGet`,request)
                     items=products.product_list
                 } else
                 if(this.moderationType=='stores'){
                     request.name_query_fields='store_name,store_description'
                     request.reverse='validity'
-                    items=await jquery.post(`${this.$heap.state.hostname}Store/listGet`,request)
+                    items=await this.$post(`${this.$heap.state.hostname}Store/listGet`,request)
                 } else 
                 if(this.moderationType=='couriers'){
                     request.name_query_fields='courier_vehicle,user_phone,user_name'
                     request.order='courier_list.updated_at'
-                    items=await jquery.post(`${this.$heap.state.hostname}Courier/listGet`,request)
+                    items=await this.$post(`${this.$heap.state.hostname}Courier/listGet`,request)
                 } else 
                 if(this.moderationType=='users'){
                     request.name_query_fields='user_phone,user_name'
                     request.order='signed_in_at'
-                    items=await jquery.post(`${this.$heap.state.hostname}User/listGet`,request)
+                    items=await this.$post(`${this.$heap.state.hostname}User/listGet`,request)
                 }
                 this.is_loading=0
                 this.items=this.items.concat(items)

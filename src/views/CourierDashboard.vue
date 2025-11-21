@@ -12,7 +12,7 @@ ion-text{
   border-radius:10px;
 }
 .disabled{
-  background-color: var(--ion-color-light-shade);
+  background-color: var(--ion-color-light);
 }
 .deleted{
   background-color: var(--ion-color-danger-tint);
@@ -40,13 +40,13 @@ ion-text{
           {{message}}
         </ion-card-content>
       </ion-card>
-      <ion-card lines="none" v-else>
-        <ion-card-content style="background-color: var(--ion-color-success-tint);">
-        Анкета активна. Вы можете открыть смену для приема заказов.
+      <ion-card lines="none" v-else color="success">
+        <ion-card-content>
+        Анкета активна. Вы можете получать заказы.
         </ion-card-content>
       </ion-card>
       
-      <form @change="updateCourier()">
+      <form @ionChange="updateCourier()">
         <ion-list>
           <ion-item>
             <ion-icon :src="trashOutline" color="primary" slot="start"/>
@@ -54,42 +54,77 @@ ion-text{
             <ion-toggle slot="end" v-model="is_deleted" color="danger" @ionChange="itemDelete($event.target.checked?1:0)"></ion-toggle>
           </ion-item>
           <ion-item>
-            <ion-icon :src="searchOutline" color="primary" slot="start"/>
+            <ion-icon :src="ribbonOutline" color="primary" slot="start"/>
             На модерации
             <ion-toggle slot="end" v-model="is_disabled" @ionChange="itemDisable($event.target.checked?1:0)"></ion-toggle>
           </ion-item>
 
+
+          <ion-item lines="full">
+            <ion-icon :src="notificationsOutline" color="primary" slot="start"/>
+            <ion-select v-model="courier.courier_parttime_notify"  interface="popover" label="Подработка" :interface-options="{
+                header:'Заказы вне смены',
+                message: 'Присылать уведомления о дополнительных заказах',
+              }">
+              <ion-select-option value="ringtone">
+                🔔 Рингтон
+              </ion-select-option>
+              <ion-select-option value="push">
+                💬 Сообщение
+              </ion-select-option>
+              <ion-select-option value="silent">
+                🔇 Без звука
+              </ion-select-option>
+              <ion-select-option value="off">
+                🚫 Отключено
+              </ion-select-option>
+            </ion-select>
+          </ion-item>
+
           <ion-item-divider>
-            <ion-label>Основные настройки</ion-label>
+            <ion-label>Информация о курьере</ion-label>
           </ion-item-divider>
           <ion-item lines="full">
-            <ion-input v-model="courier.courier_name" placeholder="Имя курьера" label="Имя" label-placement="stacked"/>
+            <ion-input v-model="courier.courier_name" placeholder="Имя" label="Имя" label-placement="fixed"/>
           </ion-item>
           <ion-item lines="full">
-            <ion-input v-model="courier.courier_vehicle" placeholder="автомобиль, мопед, велосипед" label="Транспорт" label-placement="stacked"/>
+            <ion-select v-model="courier.courier_vehicle"  interface="popover" label="Транспорт" label-placement="fixed" :interface-options="customPopoverOptions">
+              <ion-select-option value="auto_private">
+                🚗 Автомобиль личный
+              </ion-select-option>
+              <ion-select-option value="moped_private">
+                🏍️ Мопед личный
+              </ion-select-option>
+              <ion-select-option value="moped_rent">
+                🛵 Мопед аренда
+              </ion-select-option>
+              <ion-select-option value="electro_bike">
+                🛴 Электросамокат
+              </ion-select-option>
+            </ion-select>
           </ion-item>
           <ion-item lines="full">
-            <ion-input v-model="courier.courier_tax_num" placeholder="ИНН курьера" label="ИНН" label-placement="stacked"/>
-          </ion-item>
-          <ion-item lines="full">
-            <ion-textarea v-model="courier.courier_comment" placeholder="Цвет, номер авто" label="Комментарий" label-placement="stacked"></ion-textarea>
+            <ion-textarea v-model="courier.courier_comment" placeholder="Цвет, номер авто" label="Комментарий" label-placement="fixed"></ion-textarea>
           </ion-item>
         </ion-list>
       </form>
-      <ion-list v-if="courier">
         <ion-item-divider>
-          <ion-label>Ваше фото</ion-label>
+          <ion-label>Фотографии</ion-label>
         </ion-item-divider>
-        <image-tile-comp :images="courier.images" :image_holder_id="courier.courier_id" controller="Courier" ref="courierImgs"></image-tile-comp>
+        <ion-list v-if="courier">
+        <image-tile-comp :images="courier.images" :image_holder_id="courier.courier_id" controller="Courier" ref="courierImgs" :title="'Аватар в приложении'"></image-tile-comp>
         <ion-button @click="$refs.courierImgs.take_photo()" expand="block" color="light">
-          <ion-icon :src="cameraOutline"/> Добавить
+          <ion-icon :src="cameraOutline" slot="start"/> Добавить аватар
+        </ion-button>
+      </ion-list>
+      <ion-list v-if="courier">
+        <image-tile-comp :images="courier.passport_images" :image_holder_id="courier.courier_id" controller="Courier" ref="courierPassImgs" :title="'Фото паспорта'"></image-tile-comp>
+        <ion-button @click="$refs.courierPassImgs.take_photo()" expand="block" color="light">
+          <ion-icon :src="cameraOutline" slot="start"/> Загрузить фото
         </ion-button>
       </ion-list>
 
       <ion-list>
-        <ion-item-divider>
-          <ion-label>Информация</ion-label>
-        </ion-item-divider>
         <ion-item lines="none" button detail @click="$go('/page/rules-courier')">
           <ion-icon :src="documentTextOutline" slot="start"></ion-icon>
           <router-link to="/page/rules-courier">Правила пользования для курьера</router-link>
@@ -214,14 +249,19 @@ import {
   IonItemDivider,
   IonToggle,
   IonIcon,
+  IonSelect,
+  IonSelectOption,
+
 }                    from "@ionic/vue";
 import {
   cameraOutline,
   trashOutline,
-  searchOutline,
-  documentTextOutline
+  documentTextOutline,
+  ribbonOutline,
+  notificationsOutline
 }                     from 'ionicons/icons'
-import jQuery         from "jquery";
+
+import jQuery           from 'jquery';
 import heap           from '@/heap';
 import User           from '@/scripts/User.js';
 import imageTileComp  from '@/components/ImageTileComp.vue'
@@ -247,13 +287,17 @@ export default  {
   IonItemDivider,
   IonToggle,
   IonIcon,
+  IonSelect,
+  IonSelectOption,
+
   },
   setup(){
     return {
   cameraOutline,
   trashOutline,
-  searchOutline,
-  documentTextOutline
+  documentTextOutline,
+  ribbonOutline,
+    notificationsOutline
     }
   },
   data(){
@@ -264,6 +308,9 @@ export default  {
       contractAccepted:0,
       is_deleted:0,
       is_disabled:0,
+      customPopoverOptions :{
+        message: 'Тип транспорта определяет радиус доставки',
+      }
     }
   },
   ionViewDidEnter(){
@@ -274,7 +321,7 @@ export default  {
     this.itemGet()
   },
   mounted(){
-    this.itemGet();
+    this.itemGet()
   },
   computed:{
     message(){
@@ -282,7 +329,7 @@ export default  {
         return "Анкета не активна и будет удалена. Вы можете еще отменить удаление";
       }
       if(this.courier?.is_disabled==1){
-        return "Анкета пока не активна. Свяжитесь по контактному телефону с администратором, чтобы записаться на собеседование";
+        return "Анкета пока не активна. Свяжитесь по контактному телефону с администратором, чтобы записаться на собеседование. Телефон и адрес офиса на странице Контакты";
       }
       return null;
     },
@@ -306,7 +353,7 @@ export default  {
     async itemGet(){
       if(this.other_courier_id>0){
         try{
-          this.courier=await jQuery.post( heap.state.hostname + "Courier/itemGet",{courier_id:this.other_courier_id})
+          this.courier=await this.$post( heap.state.hostname + "Courier/itemGet",{courier_id:this.other_courier_id})
         } catch( err ){
           this.$flash("Не удалось загрузить анкету")
         }
@@ -324,7 +371,7 @@ export default  {
     },
     async itemCreate(){
       try{
-        await jQuery.post(heap.state.hostname + "Courier/itemCreate");
+        await this.$post(heap.state.hostname + "Courier/itemCreate");
         await User.get('full');
         this.courier=User.courier.data;
       } catch {
@@ -334,7 +381,7 @@ export default  {
     async itemDelete( is_deleted ){
       const remoteFunction=is_deleted?'itemDelete':'itemUnDelete'
       try{
-        await jQuery.post( heap.state.hostname + "Courier/"+remoteFunction, { courier_id: this.courier.courier_id })
+        await this.$post( heap.state.hostname + "Courier/"+remoteFunction, { courier_id: this.courier.courier_id })
         this.courier.deleted_at=is_deleted?1:null;
       }catch{
         this.itemGet()
@@ -345,7 +392,7 @@ export default  {
         return
       }
       try{
-        await jQuery.post( heap.state.hostname + "Courier/itemDisable", { courier_id: this.courier.courier_id, is_disabled })
+        await this.$post( heap.state.hostname + "Courier/itemDisable", { courier_id: this.courier.courier_id, is_disabled })
         this.courier.is_disabled=is_disabled;
       }catch{
         this.itemGet()
@@ -371,11 +418,18 @@ export default  {
       }
     },
     uploadImageTrigger(){
-      jQuery('#courier_foto_upload').trigger('click');
+      this.$post('#courier_foto_upload').trigger('click');
     },
     async updateCourier(){
       try{
-        return await jQuery.post(heap.state.hostname + "Courier/itemUpdate",JSON.stringify(this.courier));
+        const request={
+          courier_id:this.courier.courier_id,
+          courier_name:this.courier.courier_name,
+          courier_vehicle:this.courier.courier_vehicle,
+          courier_comment:this.courier.courier_comment,
+          courier_parttime_notify:this.courier.courier_parttime_notify,
+        }
+        return await this.$post(heap.state.hostname + "Courier/itemUpdate",JSON.stringify(request));
       } catch(err){
         const message=JSON.parse(err.responseJSON?.messages?.error);
         if(message.courier_tax_num){

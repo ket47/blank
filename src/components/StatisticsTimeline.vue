@@ -1,10 +1,10 @@
 <template>
     <h6 class="ion-padding-horizontal">{{ label }}</h6>
     <apexchart v-if="data.length > 0" type="bar" height="370" :options="chartOptions" :series="series" ref="apexChartElement"></apexchart >
-    <div v-else class="ion-padding ion-text-center">
+    <!-- <div v-else class="ion-padding ion-text-center">
       <h2>Недостаточно данных</h2>
       <p>для показа статистики</p>
-    </div>
+    </div> -->
 </template>
 
 <script>
