@@ -303,7 +303,7 @@ async function startApp(){
   }
 
 
-  if(heap.state.applicationVersion=='4.0.0'){
+  if(heap.state.applicationVersion=='1.0.0'){
     document.body.style.setProperty("--ion-color-primary",`#03c04a`);
   }
 

@@ -141,7 +141,7 @@ export default{
         filter.is_promoted = 1
       } 
       try{
-        const response=await jQuery.post( this.$heap.state.hostname+"Post/listGet", filter)
+        const response=await this.$post( this.$heap.state.hostname+"Post/listGet", filter)
         this.storyGroups=this.composeSlides(response.post_list)
         this.checkShown()
       }catch(err){

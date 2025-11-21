@@ -22,6 +22,11 @@ const User = {
         this.courier.init()
     },
     async settingsGet(){
+        jQuery.ajaxSetup({ 
+            beforeSend: function(xhr) {
+                xhr.setRequestHeader('x-ver',  heap.state.applicationVersion);
+            }
+        });
         const settings=await jQuery.get( heap.state.hostname + "User/itemSettingsGet")
         heap.commit('setSettings', settings);
         Topic.publish('settingsGet',settings);
@@ -58,7 +63,6 @@ const User = {
                 main_location_is_changed=0
                 //to avoid unnecessary reloads
             }
-
             heap.commit('setUser', response)
             Topic.publish('userGet',response);
             if(main_location_is_changed==1){
@@ -210,6 +214,7 @@ const User = {
             if(localStorage.courierData){
                 try{
                     User.courier.data=JSON.parse(localStorage.courierData)
+                    heap.state.courier=User.courier.data
                 }catch{/** */}
             }
         },
@@ -221,13 +226,21 @@ const User = {
                 const debounce=10*60*1000//10 minute
                 const data=await Utils.post(`${heap.state.hostname}Courier/itemGet`,null,debounce)
 
-                User.courier.data=data
+                User.courier.data=User.courier.ratingCalculate(data)
                 User.courier.parseStatus()
+                heap.state.courier=User.courier.data
                 //User.courier.batteryCheck()
-                return data;
+                return User.courier.data
             }catch(err){
                 User.courier.data=null;
+                return null
             }
+        },
+        ratingCalculate(data){
+            if(data.rating?.length>0){
+                data.ratingScore=Math.round((data.rating[0].rating*1+data.rating[1].rating*1)/2*100)/100
+            }
+            return data
         },
         async batteryCheck(){
             try{
@@ -239,34 +252,34 @@ const User = {
                 await jQuery.post( heap.state.hostname + "Courier/itemUpdate",JSON.stringify(request))
             } catch{/** */}
         },
-        async updateStatus(new_status){
-            if( !User.courier.data?.courier_id ){
-                return 'ok';
-            }
-            const request={
-                courier_id:User.courier.data.courier_id,
-                group_type:new_status
-            };
-            const result=await jQuery.post( heap.state.hostname + "Courier/itemUpdateStatus",request);
-            if(result=='ok'){
-                User.courier.status=new_status;
-                Topic.publish('courierStatusChange',User.courier.status);
-            }
-            return result;
-        },
+        // async updateStatus(new_status){
+        //     if( !User.courier.data?.courier_id ){
+        //         return 'ok';
+        //     }
+        //     const request={
+        //         courier_id:User.courier.data.courier_id,
+        //         group_type:new_status
+        //     };
+        //     const result=await jQuery.post( heap.state.hostname + "Courier/itemUpdateStatus",request);
+        //     if(result=='ok'){
+        //         User.courier.status=new_status;
+        //         Topic.publish('courierStatusChange',User.courier.status);
+        //     }
+        //     return result;
+        // },
         parseStatus(){
             User.courier.status=User.courier.data?.member_of_groups?.group_types||"notcourier";
             localStorage.courierData=JSON.stringify(User.courier.data)
             Topic.publish('courierStatusChange',User.courier.status);
         },
-        async signOut(){
-            const result=await User.courier.updateStatus('idle');
-            if( result=='ok' ){
-                User.courier.data=null;
-                Topic.publish('courierStatusChange','notcourier');
-            }
-            return result;
-        }
+        // async signOut(){
+        //     const result=await User.courier.updateStatus('idle');
+        //     if( result=='ok' ){
+        //         User.courier.data=null;
+        //         Topic.publish('courierStatusChange','notcourier');
+        //     }
+        //     return result;
+        // }
     },
     geo:{
         trackingActive:false,

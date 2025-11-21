@@ -25,7 +25,7 @@ export default{
   methods: {
     async listGet(){
       try{
-        const response=await jQuery.post( this.$heap.state.hostname+"Post/listGet", { is_actual: 1, is_active: 1, post_type: "story", is_promoted: 1 })
+        const response=await this.$post( this.$heap.state.hostname+"Post/listGet", { is_actual: 1, is_active: 1, post_type: "story", is_promoted: 1 })
         this.storyGroups = this.composeSlides(response.post_list)
         if(this.storyGroups.length > 0){
           this.preloadFirstImage(this.storyGroups[0].children[0].image_hash);
