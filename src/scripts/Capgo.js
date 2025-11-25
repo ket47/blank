@@ -69,7 +69,6 @@ const Capgo={
     },
 
     async installedVersionGet(){
-        return '1.0.0';
         if( !isPlatform('capacitor') ){
             return 'web'
         }
