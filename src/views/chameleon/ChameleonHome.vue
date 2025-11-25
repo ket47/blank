@@ -51,6 +51,9 @@
     <ion-header class="ion-no-border">
       <ion-toolbar>
         <ion-title><b>ВкусоГид</b></ion-title>
+        <ion-button @click="$go('/chameleon-user')">
+          User
+        </ion-button>
       </ion-toolbar>  
     </ion-header>
     <ion-content class="main-container">

@@ -339,6 +339,10 @@ const routes = [
     component: () => import('@/views/chameleon/ChameleonStore.vue')
   },
   {
+    path: '/chameleon-user',
+    component: () => import('@/views/chameleon/ChameleonUser.vue')
+  },
+  {
     path: '/:catchAll(.*)',
     redirect: homePath
   },

@@ -2,7 +2,7 @@
   <ion-page>
     <ion-header v-if="!hideTitle" :class="[pageClass]">
       <ion-toolbar>
-        <ion-buttons v-if="canGoBack" slot="start">
+        <ion-buttons v-if="canGoBack && this.$heap.state.chameleonMode=='off'" slot="start">
           <ion-button v-if="isIos" @click="goback()"><ion-icon :src="chevronBackOutline"/>Назад</ion-button>
           <ion-button v-else @click="goback()"><ion-icon :src="arrowBackOutline" size="large"/></ion-button>
         </ion-buttons>
