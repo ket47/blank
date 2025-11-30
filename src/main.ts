@@ -302,10 +302,6 @@ async function startApp(){
     await User.sessionIdUse(heap.state.sessionId);
   }
 
-  if(heap.state.applicationVersion=='1.0.0'){
-    document.body.style.setProperty("--ion-color-primary",`#03c04a`);
-  }
-
 
   /**
    * opens deeplinking urls in this app

@@ -51,8 +51,8 @@
     <ion-header class="ion-no-border">
       <ion-toolbar>
         <ion-title><b>ВкусоГид</b></ion-title>
-        <ion-button @click="$go('/chameleon-user')">
-          User
+        <ion-button  slot="end" @click="$go('/chameleon-user')">
+          <ion-icon :icon="personCircleOutline" slot="icon-only"></ion-icon>
         </ion-button>
       </ion-toolbar>  
     </ion-header>
@@ -64,7 +64,7 @@
         </div>
         <ion-label>Здесь вы найдёте отзывы на самые популярные заведения</ion-label>
       </div>
-      <ion-list class="store-list">
+      <ion-list class="store-list" v-if="storeList.length > 0">
         <div  v-for="store_item in storeList"  :key="store_item.store_id"  >
           <div v-if="!store_item.not_found">
             <ion-card style="position:relative;height:fit-content;border-radius:12px;" :class="store_item.is_opened==0?'closed':''">
@@ -92,20 +92,28 @@
           </div>
         </div>
       </ion-list>
+      <div v-else  style="padding: 10px; text-align: center; margin: 10px; background: #eee; border-radius: 10px;">
+        <div>
+          <ion-label style="font-size: 15px;"><b>Ничего не найдено</b></ion-label>
+        </div>
+        <ion-label>Выполните вход для показа ресторанов и магазинов</ion-label>
+        <ion-button expand="block"  @click="$go('/chameleon-user')">
+          Войти
+        </ion-button>
+      </div>
     </ion-content>
   </ion-page>
 </template>
 
 <script>
-import StoreListNew   from "@/components/StoreListNew";
 import Utils          from '@/scripts/Utils.js'
-import User           from '@/scripts/User.js';
 
 import {
   IonPage,
   IonHeader,
   IonToolbar,
   IonTitle,
+  IonButton,
   IonContent,
   IonIcon,
   IonLabel,
@@ -118,19 +126,20 @@ import {
   IonList
 }                   from "@ionic/vue";
 
-import { star }     from 'ionicons/icons'
+import { star, personCircleOutline }     from 'ionicons/icons'
 
 
 export default {
   setup() {
     return {
-      star,
+      star, personCircleOutline
     }
   },
   components: {
     IonPage,
     IonHeader,
     IonToolbar,
+    IonButton,
     IonContent,
     IonIcon,
     IonTitle,
@@ -151,10 +160,8 @@ export default {
   mounted(){
     this.listNearGet(this.$heap.state.user.location_current??this.$heap.state.user.location_main);
   },
-  created(){
-    this.$topic.on('userGet',user=>{
-      this.listNearGet(this.$heap.state.user.location_current??this.$heap.state.user.location_main);  
-    })
+  ionViewDidEnter(){
+    this.listNearGet(this.$heap.state.user.location_current??this.$heap.state.user.location_main);
   },
   methods: {
     async listNearGet(loc) {

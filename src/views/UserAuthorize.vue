@@ -48,7 +48,7 @@
         <ion-button v-else @click="$refs.uphone.$el.setFocus()" expand="block" color="light">Заполнить номер</ion-button>
 
         <div class="vspace"></div>
-        <ion-text  color="medium" style="text-align:center;color:var(--ion-color-medium);font-size:0.7em;">
+        <ion-text v-if="$heap.state.settings?.other?.chameleonMode!='on'" color="medium" style="text-align:center;color:var(--ion-color-medium);font-size:0.7em;">
           Нажатием кнопки Продолжить, вы соглашаетесь с <b @click="$go('/page/rules-customer')"><u>Правилами пользования</u></b> и <b @click="$go('/page/privacy_policy')"><u>Политикой конфиденциальности</u></b>
         </ion-text>
       </section>

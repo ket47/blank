@@ -159,11 +159,11 @@ export default {
     this.isAdmin = User.isAdmin()
   },
   created(){
+    if(this.$heap.state.settings?.other?.chameleonMode == 'on'){
+      this.$router.replace('/chameleon-home')
+      return;
+    }
     this.$topic.on('userGet',user=>{
-      if(this.$heap.state.settings?.other?.chameleonMode == 'on'){
-        this.$router.replace('/chameleon-home')
-        return;
-      }
       this.isAdmin = User.isAdmin()
     })
   },
