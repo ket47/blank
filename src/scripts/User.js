@@ -22,8 +22,10 @@ const User = {
         this.courier.init()
     },
     async settingsGet(){
+        const sessionId = await Utils.pref.get('sessionId')
         jQuery.ajaxSetup({ 
             beforeSend: function(xhr) {
+                xhr.setRequestHeader('x-sid',  sessionId);
                 xhr.setRequestHeader('x-ver',  heap.state.applicationVersion);
             }
         });
