@@ -207,7 +207,7 @@ ion-modal{
                             @touchstart="action = 'link'; actionData = story.post_route" 
                             >Подробнее<ion-icon :icon="chevronForwardOutline"></ion-icon></ion-button>
                           <div v-if="story.reaction_tags" >
-                            <ion-button v-if="story.reacted_tags_splitted.includes('challenge')" color="success"><ion-icon :icon="checkmarkOutline" ></ion-icon> Вы участвуете</ion-button>
+                            <ion-button v-if="story.reacted_tags_splitted?.includes('challenge')" color="success"><ion-icon :icon="checkmarkOutline" ></ion-icon> Вы участвуете</ion-button>
                             <ion-button v-else
                               @mouseover="action = ''; createReaction(story.post_id, 'challenge')"
                               @touchstart="action = ''; createReaction(story.post_id, 'challenge')"
