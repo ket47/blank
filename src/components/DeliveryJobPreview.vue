@@ -10,7 +10,12 @@
     <ion-list lines="none">
         <ion-item>
             <ion-icon v-if="job.finish_plan_scheduled_date" :icon="alarmOutline" slot="start" style="font-size:24px;" color="danger"></ion-icon>
-            <h5 style="color:#999">{{job.job_name}} ({{job.stage_label}})</h5>
+            <h5 style="color:#999">{{job.job_name}}</h5>
+            <ion-select v-if="isAdmin" slot="end" name="job_courier_type" :value="jobComp.job_courier_type" interface="popover" @ion-change="itemTypeUpdate($event.target.value)">
+                <ion-select-option value="auto">🔄 авто</ion-select-option>
+                <ion-select-option value="shift">🚦 смена</ion-select-option>
+                <ion-select-option value="taxi">🚕 такси</ion-select-option>
+            </ion-select>
         </ion-item>
         <ion-item>
             <ion-text>
@@ -26,27 +31,24 @@
                 <h6 v-if="finish_plan_scheduled_date_full">Привезти к {{finish_plan_scheduled_date_full}} (⏰ Запланирован)</h6>
                 <h6 v-else style="color:#666">Привезти <span style="color:#ccc">{{job.finish_plan_date}}</span></h6>
 
+                <ion-icon v-if="job.customer_heart_count>0" :icon="heartSharp" color="danger"></ion-icon>&nbsp;
                 <a :href="`https://yandex.ru/maps/?pt=${job.finish_longitude},${job.finish_latitude}&z=19&l=map,trf`" target="_new">
                     {{job.finish_address}}
                 </a>
             </ion-text>
             <ion-icon slot="end" :icon="square" size="large"  :style="`color:${job.finish_color}`"/>
         </ion-item>
-        <ion-item class="ion-padding-top">
+    </ion-list>
+    <div v-if="jobComp.courier_gain_total>0 && job.stage=='awaited'">
+        <ion-item lines="none">
             <h3 slot="start" style="color:#333;padding-top:7px;">Итого</h3>
             <h1 slot="end" style="color:var(--ion-color-primary);padding:3px;border-radius:7px">{{jobComp.courier_gain_total}}{{ $heap.state.currencySign }}</h1>
         </ion-item>
-        <ion-item>
+        <ion-item id="deljobprev_info" lines="none">
             <ion-chip v-if="$heap.state.courier.ratingScore>0" color="medium"><ion-icon :icon="add" color="success"/><ion-label>рейтинг</ion-label></ion-chip>
             <ion-chip v-if="job?.courier_promised_tip>0" color="medium"><ion-icon :icon="add" color="success"/><ion-label>чаевые</ion-label></ion-chip>
-            <ion-chip color="medium" id="deljobprev_info"><ion-icon :icon="information"/><ion-label>подробнее</ion-label></ion-chip>
+            <ion-chip color="medium"><ion-icon :icon="information"/><ion-label>подробнее</ion-label></ion-chip>
         </ion-item>
-
-
-    </ion-list>
-
-
-
         <ion-popover trigger="deljobprev_info" trigger-action="click">
             <ion-content class="ion-padding">
                 <ion-list lines="none">
@@ -56,7 +58,7 @@
                     </ion-item>
                     <ion-item>
                         <ion-label>Рейтинг {{ $heap.state.courier.ratingScore*5 }}⭐</ion-label>
-                        +{{ jobComp.courier_rating_bonus }}{{ $heap.state.currencySign }}
+                        +{{ jobComp.courier_rating_bonus }}{{ $heap.state.currencySign }} <span style="color:#ccc">/{{ jobComp.courier_rating_pool }}{{ $heap.state.currencySign }}</span>
                     </ion-item>
                     <ion-item v-if="job?.courier_promised_tip>0">
                         <ion-label>Обещанные чаевые</ion-label>
@@ -65,6 +67,7 @@
                 </ion-list>
             </ion-content>
         </ion-popover>
+    </div>
     <ion-card v-if="job.stage=='awaited' && job.payment_by_cash==1" color="light">
         <ion-card-header>
             <ion-card-subtitle>Заказ не оплачен</ion-card-subtitle>
@@ -82,6 +85,7 @@
     </div>
 
     <ion-button @click="close()" expand="block" color="dark" fill="clear">Закрыть</ion-button>
+
  </ion-content>
 </template>
 <script>
@@ -100,16 +104,19 @@ import {
     IonText,
     IonLabel,
     IonPopover,
-    modalController
+    modalController,
+    IonSelect,
+    IonSelectOption,
 }                   from '@ionic/vue';
 import {
     square,
     alarmOutline,
     add,
-    information
-    }               from 'ionicons/icons';
-import jQuery       from 'jquery';
+    information,
+    heartSharp
+}                   from 'ionicons/icons';
 
+import User from '@/scripts/User.js'
 
 export default({
     props:['job'],
@@ -125,17 +132,20 @@ export default({
     IonCardSubtitle,
     IonChip,
     IonCheckbox,
-        IonText,
+    IonText,
     IonLabel,
     IonPopover,
- 
+    IonSelect,
+    IonSelectOption,
+
     },
     setup() {
         return { 
             square,
             alarmOutline,
             add,
-            information
+            information,
+            heartSharp
             }
     },
     data(){
@@ -151,8 +161,6 @@ export default({
         } else {
             this.confirmed=1
         }
-
-        console.log(this.$heap.state.courier)
     },
     computed:{
         finish_plan_scheduled_date_full(){
@@ -165,9 +173,12 @@ export default({
         jobComp(){
             const job=this.job
             job.courier_rating_bonus=Math.round(job.courier_rating_pool*this.$heap.state.courier.ratingScore)
-            job.courier_gain_total=job.courier_gain_base*1+job.courier_rating_bonus
+            job.courier_gain_total=job.courier_gain_base*1+job.courier_rating_bonus+job.courier_promised_tip*1
             return job
-        }
+        },
+        isAdmin(){
+            return User.isAdmin()
+        },
     },
     methods:{
         async jobTake(){
@@ -175,7 +186,7 @@ export default({
                 const request={
                     order_id:this.job.order_id
                 }
-                await jQuery.post(`${this.$heap.state.hostname}DeliveryJob/itemTake`,request)
+                await this.$post(`${this.$heap.state.hostname}DeliveryJob/itemTake`,request)
                 this.itemOpen();
                 this.$topic.publish('dismissModal');
                 modalController.dismiss(null, 'confirm')
@@ -209,13 +220,24 @@ export default({
                 job_id:this.job.job_id
             }
             try{
-                this.customerDetails=await jQuery.post(`${this.$heap.state.hostname}DeliveryJob/itemCustomerDetailGet`,request)
+                this.customerDetails=await this.$post(`${this.$heap.state.hostname}DeliveryJob/itemCustomerDetailGet`,request)
             } catch{
                 this.$flash("Данные клиента не найдены")
             }
         },
         close(){
             modalController.dismiss(null, 'cancel')
+        },
+        async itemTypeUpdate( new_type ){
+            try{
+                const request ={
+                    job_id:this.job.job_id,
+                    job_courier_type:new_type
+                }
+                await this.$post(`${this.$heap.state.hostname}DeliveryJob/itemUpdate`,JSON.stringify(request))
+            } catch{
+                //
+            }
         }
     }
 })

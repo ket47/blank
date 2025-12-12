@@ -236,6 +236,7 @@ import {
 }                   from 'ionicons/icons';
 
 import User         from '@/scripts/User.js';
+import Utils        from '@/scripts/Utils.js';
 
 export default({
     props:['orderData'],
@@ -315,23 +316,29 @@ export default({
                 const request={
                     tagQuery:`order:${this.orderData.order_id}`
                 }
-                const response = await this.$post("Reaction/listGet", request)
-
-                this.done_reactions=[]
-                for( let reaction of response ){
-                    this.done_reactions.push(reaction.tag_option)
+                let response = await Utils.prePost(`${this.$heap.state.hostname}Reaction/listGet`, request)
+                if( response ){
+                    this.reactionPrepare(response)
                 }
-                if(response.find((reaction) => reaction.tag_option == 'speed')) this.currentStep = 1
-                if(response.find((reaction) => reaction.tag_option == 'appearence')) this.currentStep = 2
-                if(response.length >= 2) {
-                    this.isFinished = true
-                } else {
-                    this.isFinished = false
-                }
-                this.isLoaded=true
+                response = await Utils.post(`${this.$heap.state.hostname}Reaction/listGet`, request)
+                this.reactionPrepare(response)
             } catch{
                 //
             }
+        },
+        reactionPrepare(response){
+            this.done_reactions=[]
+            for( let reaction of response ){
+                this.done_reactions.push(reaction.tag_option)
+            }
+            if(response.find((reaction) => reaction.tag_option == 'speed')) this.currentStep = 1
+            if(response.find((reaction) => reaction.tag_option == 'appearence')) this.currentStep = 2
+            if(response.length >= 2) {
+                this.isFinished = true
+            } else {
+                this.isFinished = false
+            }
+            this.isLoaded=true            
         },
         async createReaction(is_like, comment, target){
             const request={
@@ -346,7 +353,10 @@ export default({
             }
             if(target.indexOf('customer:rating') && is_like) this.isCoolClient = true
             if(target.indexOf('courier') > -1 && is_like) this.courierLikeCount++
-            if(this.courierLikeCount == 0 && this.currentStep == 2) this.closeModal()
+            if(this.courierLikeCount == 0 && this.currentStep == 2) {
+                this.closeModal()
+                this.listGet()
+            }
             try{
                 await this.$post("Reaction/itemSave", request)
             }catch(err){
@@ -355,9 +365,8 @@ export default({
             this.currentStep++
         },
         closeModal(){
-            this.$refs?.reactionModal?.$el?.dismiss();
+            this.$refs?.reactionModal?.$el?.dismiss()
             this.isFinished = true
-            this.listGet()
         },
         skipbuttonPressed(){
             this.createReaction(this.appearence_islike, '', `order:${this.orderData.order_id}:courier:appearence`)
@@ -365,6 +374,7 @@ export default({
                 this.currentStep++
             }else{
                 this.closeModal()
+                this.listGet()
             }
         }
     },
@@ -377,6 +387,6 @@ export default({
         'orderData':async function(newval){
             this.listGet()
         },
-    }
+    },
 })
 </script>

@@ -49,6 +49,7 @@
                     <ion-avatar slot="start" v-if="route.image_hash">
                         <ion-img style="border-radius:16px;" :src="`${$heap.state.hostname}image/get.php/${route.image_hash}.150.150.webp`"/>
                     </ion-avatar>
+                    <ion-avatar slot="start" v-else style="background-color:#eee"></ion-avatar>
                     <ion-text>
                         <b>{{route.courier_name}}</b>
                     </ion-text>
@@ -61,14 +62,12 @@
                             <ion-icon  :icon="heartSharp" color="danger"></ion-icon>
                             <sup>({{ job.customer_heart_count }})</sup>
                         </div>
-                        <ion-text>
-                            {{job.job_name}} 
-                            <div v-if="job.courier_gain_base" style="display:inline-block;padding:3px;color:#fff;background-color:var(--ion-color-success);border-radius:3px">
-                                {{ job.courier_gain_base }}{{ $heap.state.currencySign }}+{{ job.courier_rating_pool }}{{ $heap.state.currencySign }}
-                            </div>
-                            
+                        {{job.job_name}}
+                        <ion-text v-if="job.courier_gain_base>0" color="success">
+                            &nbsp;/&nbsp;{{ job.courier_gain_max }}{{ $heap.state.currencySign }}
                         </ion-text>
-                        <ion-chip slot="end" :color="job.stage_color">
+
+                        <ion-chip :color="job.stage_color" slot="end">
                             <ion-icon :icon="checkmarkOutline"></ion-icon>
                             <ion-label color="dark"><small>{{job.stage_label}}</small></ion-label>
                         </ion-chip>
@@ -177,6 +176,7 @@ import {
     cubeOutline,
     cartOutline,
     heartSharp,
+    personOutline,
 }                           from 'ionicons/icons';
 import ordersIcon           from "@/assets/icons/orders.svg";
 import Order                from '@/scripts/Order.js';
@@ -208,11 +208,21 @@ export default {
     IonCardContent,
     },
     setup() {
-      return { sparklesOutline,storefrontOutline,alarmOutline,ordersIcon,rocketOutline,ribbonOutline,checkmarkOutline,informationOutline,banOutline,square,
-                cubeOutline,
-                cartOutline,
-                
-    heartSharp,
+      return { 
+            sparklesOutline,
+            storefrontOutline,
+            alarmOutline,
+            ordersIcon,
+            rocketOutline,
+            ribbonOutline,
+            checkmarkOutline,
+            informationOutline,
+            banOutline,
+            square,
+            cubeOutline,
+            cartOutline,
+            personOutline,
+            heartSharp,
             };
     },
     data(){
@@ -288,7 +298,7 @@ export default {
                 job.stage_label=stageDict[job.stage]||'-'
                 job.stage_color=['scheduled','awaited'].includes(job.stage)?'light':'primary'
                 job.is_courier_job=1
-                job.courier_gain_max=Math.round(job.courier_gain_base*1+job.courier_rating_pool*1)
+                job.courier_gain_max=Math.round(job.courier_gain_base*1+job.courier_rating_pool*1+job.courier_promised_tip*1)
                 job.courier_rating_pool=Math.round(job.courier_rating_pool)
                 if(job.finish_plan_scheduled>0){
                     const finish_plan_scheduled = new Date(job.finish_plan_scheduled*1000)
@@ -296,9 +306,11 @@ export default {
                 }
                 if( !job.courier_id ){
                     job.courier_id=0
-                    if(!routeList['route_0']){
-                        routeList['route_0']={courier_name:'',actual_color:'#fff',jobs:[]}
-                    }
+                }
+                if( !routeList['route_'+job.courier_id] ){
+                    const courier_name=job.courier_id==0?'🚕 Свободные заказы':'🚕 '+job.courier_name
+                    const image_hash=job.courier_id==0?'':job.courier_image_hash
+                    routeList['route_'+job.courier_id]={courier_name,actual_color:'#fff',image_hash,jobs:[]}
                 }
                 routeList['route_'+job.courier_id]?.jobs?.push(job)
             }
