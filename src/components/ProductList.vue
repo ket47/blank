@@ -13,12 +13,12 @@
     
   @media only screen and (min-width: 768px) {
     .product_list_widget_grid > div{
-      flex: 0 0 25%;
+      flex: 0 0 calc(25% - 1px);
     }
   }
   @media only screen and (min-width: 1200px) {
     .product_list_widget_grid > div{
-      flex: 0 0 20%;
+      flex: 0 0 calc(20% - 1px);
     }
   }
 </style>

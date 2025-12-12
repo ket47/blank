@@ -32,7 +32,7 @@
     filter: blur(5px);
 }
 .deleted .product_list_item_img{
-    border: 4px solid red;
+    border: 4px solid red !important;
 }
 .disabled .product_list_item_img{
     border: 4px solid #666;

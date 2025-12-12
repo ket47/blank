@@ -144,7 +144,17 @@ ion-card .store-title{
 .ribbon-container .ribbon.ribbon-purple::after {
   border-color: #740c2b transparent transparent;
 }
-.crystal-chip{
+.bottom-ribbon-chip-container{
+  position: absolute;
+  bottom: 8px;
+  left: 0px;
+  z-index: 100;
+}
+.bottom-ribbon-chip-container > div{
+  width: fit-content;
+  margin: 5px 0;
+}
+.bottom-ribbon-chip{
   border-top-right-radius: 50px; 
   border-bottom-right-radius: 50px;
   background: linear-gradient(to right, #1bb046, #25ca7d);
@@ -153,13 +163,13 @@ ion-card .store-title{
   padding: 4px;
   box-shadow: 1px 3px 2px #00000096;
 }
-.crystal-chip ion-label{
+.bottom-ribbon-chip ion-label{
   font-size: 12px; 
   color: white;
   margin-left: 5px;
   text-shadow: 0px 1px 2px black;
 }
-.crystal-chip .avatar{
+.bottom-ribbon-chip .avatar{
   margin-left: 5px;
   border-radius: 100%;
   background: #0f4b68a8;
@@ -167,10 +177,16 @@ ion-card .store-title{
   box-shadow: inset 0px 2px 3px #00000087;
 }
 
-.crystal-chip .avatar ion-img{
+.bottom-ribbon-chip .avatar ion-img{
   width: 16px;
   filter: brightness(1);
   animation: blinkCrystal 0.5s cubic-bezier(.95,.05,.8,.04)  infinite alternate;
+}
+.bottom-ribbon-chip.challenge-chip{
+  background: linear-gradient(to right, #ff4f0a, #ffb403);
+}
+.bottom-ribbon-chip.challenge-chip .avatar{
+  background: #684c0fa8;
 }
 .suggest-card ion-card{
   background:  var(--ion-color-light);
@@ -261,13 +277,23 @@ ion-card .store-title{
                 <ion-img v-else :src="`/img/perks/${perk.image_url}`"/>
               </span>
             </div>
-            <div v-if="store_crystal[store_index]" style="position: absolute; bottom: 8px; left: 0px; z-index: 100">
-                <div class="crystal-chip">
-                    <ion-label><b>Есть бонусы</b></ion-label>
-                    <span class="avatar">
-                      <ion-img width="25px;" src="/img/crystal.png"/>
-                    </span>
-                </div>
+            <div class="bottom-ribbon-chip-container">
+              <div v-if="store_challenge[store_index]" >
+                  <div class="bottom-ribbon-chip challenge-chip">
+                      <ion-label><b>Розыгрыш</b></ion-label>
+                      <span class="avatar">
+                        <ion-img width="25px;" src="/img/crown.png"/>
+                      </span>
+                  </div>
+              </div>
+              <div v-if="store_crystal[store_index]">
+                  <div class="bottom-ribbon-chip">
+                      <ion-label><b>Бонусы</b></ion-label>
+                      <span class="avatar">
+                        <ion-img width="25px;" src="/img/crystal.png"/>
+                      </span>
+                  </div>
+              </div>
             </div>
             <div class="ribbon-container">
               <div :class="`ribbon ribbon-${ribbon.color}`" v-for="(ribbon, ribbon_index) in store_item.ribbons" :key="ribbon_index" >
@@ -518,6 +544,11 @@ export default {
     store_crystal () {
       return this.storeListFiltered.map(function(store) {
         return (store.perks) ? store.perks.find(perk => perk.perk_type ==  'cashback') : false
+      });
+    },
+    store_challenge () {
+      return this.storeListFiltered.map(function(store) {
+        return (store.perks) ? store.perks.find(perk => perk.perk_type ==  'store_challenge') : false
       });
     },
     showndelivery_address(){

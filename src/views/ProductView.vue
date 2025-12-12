@@ -68,11 +68,6 @@ ion-accordion-group .accordion-expanding .product-description{
           </ion-accordion>
         </ion-accordion-group>
 
-
-
-
-
-
         <ion-item lines="none" @click="$go('/catalog/store-'+productItem.store_id)" button>
           <ion-avatar slot="start" v-if="productItem?.store?.avatar">
             <ion-img :src="`${$heap.state.hostname}image/get.php/${avatar.image_hash}.200.200.webp`" v-for="avatar in productItem?.store?.avatar" :key="avatar.image_id"/>
@@ -86,13 +81,8 @@ ion-accordion-group .accordion-expanding .product-description{
           <reaction-share :targetUrl="`catalog/product-${productId}`" :targetTitle="productItem.product_name" :targetText="productItem.product_description"/>
         </div>
 
-
-
-
         <reaction-comment  @react="getProduct()" :reactionSummary="productItem?.reactionSummary" :targetType="'product'" :targetId="productId"/>
 
-
-        <ion-item lines="none"></ion-item>
         <div v-if="productItem?.options">
           <ion-item lines="none">
             <ion-icon color="medium" :src="layersOutline" slot="start"/>
@@ -149,15 +139,17 @@ ion-accordion-group .accordion-expanding .product-description{
           <ion-textarea label="" label-placement="" :value="inCartComment" @change="cartCommentUpdate($event.target.value)" placeholder="заметка для продавца"></ion-textarea>
         </ion-item>
       </ion-list>
-
-
-
-
-
-
-      <div v-for="item in analogList" :key="item.href" :class="`search-item item-width-${item.width}`" class="ion-padding">
-        <product-item-new :productItem="item"></product-item-new> 
-      </div>
+      <ion-grid class="product-list" v-if="analogList.length > 0">
+        <ion-row>
+          <ion-col class="group-title" size="12">
+            <h6 style="">Подобрали для вас:</h6>
+          </ion-col>
+          <ion-col  size="12">
+            <ProductList :productList="analogList"/>
+        </ion-col>
+        </ion-row>
+      </ion-grid>
+      
   </base-layout>
 </template>
 
@@ -185,6 +177,9 @@ import {
   IonListHeader,
   IonText,
   IonIcon,
+  IonGrid,
+  IonRow,
+  IonCol,
   IonItem,
   IonChip,
   IonLabel,
@@ -207,6 +202,7 @@ import ReactionThumbs   from '@/components/ReactionThumbs.vue'
 import ReactionComment  from '@/components/ReactionComment.vue'
 import ReactionShare    from '@/components/ReactionShare.vue'
 import ProductItemNew   from '@/components/ProductItemNew.vue'
+import ProductList      from '@/components/ProductList.vue'
 
 export default  {
   components: { 
@@ -220,6 +216,9 @@ export default  {
     IonListHeader,
     IonText,
     IonIcon,
+    IonGrid,
+    IonRow,
+    IonCol,
     IonItem,
     IonChip,
     IonLabel,
@@ -229,6 +228,7 @@ export default  {
     IonButton,
     IonAvatar,
     IonImg,
+    ProductList
   },
   setup(){
     return {
@@ -252,7 +252,7 @@ export default  {
     return { 
       productId: this.$route.params.id,
       productItem: null,
-      analogList:null
+      analogList:[]
     };
   },
   mounted(){
@@ -330,7 +330,7 @@ export default  {
           this.productItem=await Utils.prePost( heap.state.hostname + "Product/itemGet", { product_id: this.productId })
           this.productItem=await Utils.post( heap.state.hostname + "Product/itemGet", { product_id: this.productId })
 
-          //this.itemAnalogsGet()
+          this.itemAnalogsGet()
         }catch(err){
           const exception_code=err?.responseJSON?.messages?.error;
           switch(exception_code){
@@ -354,7 +354,7 @@ export default  {
               location_latitude:loc.location_latitude,
               location_longitude:loc.location_longitude,
               offset:0,
-              limit:3
+              limit:10
           }
           this.analogList=await this.$post( heap.state.hostname + "Product/analogListGet", request)
         }catch{

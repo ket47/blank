@@ -137,7 +137,6 @@ const User = {
     },
     async signOut(){
         try{
-            await User.courier.signOut()
             await jQuery.post( heap.state.hostname + "User/signOut")
             await Utils.pref.remove('signInData')
             heap.commit('setUser', {user_id: -1})
@@ -254,34 +253,11 @@ const User = {
                 await jQuery.post( heap.state.hostname + "Courier/itemUpdate",JSON.stringify(request))
             } catch{/** */}
         },
-        // async updateStatus(new_status){
-        //     if( !User.courier.data?.courier_id ){
-        //         return 'ok';
-        //     }
-        //     const request={
-        //         courier_id:User.courier.data.courier_id,
-        //         group_type:new_status
-        //     };
-        //     const result=await jQuery.post( heap.state.hostname + "Courier/itemUpdateStatus",request);
-        //     if(result=='ok'){
-        //         User.courier.status=new_status;
-        //         Topic.publish('courierStatusChange',User.courier.status);
-        //     }
-        //     return result;
-        // },
         parseStatus(){
             User.courier.status=User.courier.data?.member_of_groups?.group_types||"notcourier";
             localStorage.courierData=JSON.stringify(User.courier.data)
             Topic.publish('courierStatusChange',User.courier.status);
         },
-        // async signOut(){
-        //     const result=await User.courier.updateStatus('idle');
-        //     if( result=='ok' ){
-        //         User.courier.data=null;
-        //         Topic.publish('courierStatusChange','notcourier');
-        //     }
-        //     return result;
-        // }
     },
     geo:{
         trackingActive:false,

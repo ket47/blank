@@ -125,13 +125,8 @@ export default{
       const filter = {
         post_type: "story" 
       }
-      if( this.isEditable ){
-        filter.is_disabled = 1
-        filter.is_deleted = 1
-      } else {
-        filter.is_active = 1
-        filter.is_actual = 1
-      }
+      filter.is_active = 1
+      filter.is_actual = 1
 
       if(this.holderId){
         filter.post_holder_id = this.holderId
@@ -203,6 +198,7 @@ export default{
         }
     },
     closeModal(){
+        this.listGet()
         this.modalIsOpen = false
     },
     createStory(){

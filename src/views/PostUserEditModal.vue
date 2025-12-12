@@ -151,6 +151,10 @@
                     <ion-label color="light">{{ dateRange }}</ion-label>
                     <ion-icon :icon="calendarOutline" color="light"></ion-icon>
                   </ion-chip>
+                  <ion-chip @click="popovers.reaction_tags=1">
+                    <ion-label color="light">Реакции</ion-label>
+                    <ion-icon :icon="chatboxOutline" color="light"></ion-icon>
+                  </ion-chip>
                   <ion-chip>
                     <ion-label @click="itemDelete()" color="light">Удалить</ion-label>
                     <ion-icon :icon="trashOutline" color="light"></ion-icon>
@@ -257,6 +261,25 @@
         </form>
       </ion-modal>
 
+      <ion-modal :is-open="popovers.reaction_tags" :initial-breakpoint="0.5"  @didDismiss="itemGet();popovers.reaction_tags = null">
+        <form @change="saveForm">
+          <h6 class="ion-padding-horizontal">Поддерживаемые реакции</h6>
+          <ion-list addOutlinelines="full">
+            <ion-item>
+              <ion-select v-model="postItem.reaction_tags" @ionChange="itemUpdate({post_id:postItem.post_id, reaction_tags:postItem.reaction_tags})" label="Тип реакций" labelPlacement="stacked" name="reaction_tags">
+                  <ion-select-option value="">
+                      Не выбрано
+                  </ion-select-option>
+                  <ion-select-option value="challenge">
+                      Розыгрыш
+                  </ion-select-option>
+              </ion-select>
+            </ion-item>
+          </ion-list>
+          <ion-button color="light" expand="block" @click="popovers.reaction_tags = false">Закрыть</ion-button>
+        </form>
+      </ion-modal>
+
       <ion-modal :is-open="popovers.image" :initial-breakpoint="0.5"  @didDismiss="itemGet();popovers.image = false">
         <div class="ion-padding">
           <ion-segment mode="ios" v-model="postItem.post_type" style="height: 70px;" @ionChange="itemImageDelete()">
@@ -286,6 +309,8 @@ import {
   IonModal,
   IonInput,
   IonTextarea,
+  IonSelect,
+  IonSelectOption,
   IonIcon,
   IonItem,
   IonList,
@@ -315,6 +340,7 @@ import {
   phonePortraitOutline,
   phoneLandscapeOutline,
   linkOutline,
+  chatboxOutline
 }                     from 'ionicons/icons'
 import ImageTileComp  from '@/components/ImageTileComp.vue'
 import jQuery         from "jquery";
@@ -332,6 +358,8 @@ export default  {
     IonTextarea,
     IonIcon,
     IonItem,
+    IonSelect,
+    IonSelectOption,
     IonList,
     IonLabel,
     IonButton,
@@ -360,6 +388,7 @@ export default  {
       phonePortraitOutline,
       phoneLandscapeOutline,
       linkOutline,
+      chatboxOutline
     }
   },
   data(){
@@ -375,7 +404,8 @@ export default  {
         image: 0,
         holder: false,
         date: false,
-        link: false
+        link: false,
+        reaction_tags: false
       },
       is_deleted:0,
       is_disabled:0,

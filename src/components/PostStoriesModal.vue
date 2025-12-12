@@ -79,6 +79,32 @@ ion-modal{
   z-index: 100;
   -webkit-transform:translate3d(0,0,200px);
   transform: translate3d(0, 0, 200px);
+  text-align: center;
+  width: 100%;
+}
+.slide-content h2{
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-bottom: 5px;
+}
+.slide-content h2 > span{
+  background: black;
+  border-radius: 5px;
+  padding: 3px 7px;
+  margin: 0px -3px;
+}
+.slide-content p{
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: 0;
+  justify-content: center;
+}
+.slide-content p > span{
+  background: black;
+  border-radius: 5px;
+  padding: 3px 7px;
+  margin: -1px -3px;
 }
 .slide-container:before{
   content: "";
@@ -88,7 +114,6 @@ ion-modal{
   width: 100%;
   height: 50%;
   opacity: 0.7;
-  background: linear-gradient(to top, black, transparent);
 }
 .autoplay-progress {
   position: absolute;
@@ -171,12 +196,25 @@ ion-modal{
                           <div @mouseover="action = 'next'" @touchstart="action = 'next'" class="next-story"></div>
                       </div>
                       <div class="slide-content">
-                          <h2 style="margin: 0">{{story.post_title}}</h2>
-                          <p>{{story.post_content}}</p>
+                          <h2 v-if="story.post_title !== ''">
+                            <span v-for="title in story.descriptions?.title" :key="`storyTitle${title}`"> {{ title }}</span>
+                          </h2>
+                          <p v-if="story.post_content !== ''">
+                            <span v-for="content in story.descriptions?.content" :key="`storyContent${content}`"> {{ content }}</span>
+                          </p>
                           <ion-button v-if="story.post_route" 
                             @mouseover="action = 'link'; actionData = story.post_route" 
                             @touchstart="action = 'link'; actionData = story.post_route" 
                             >Подробнее<ion-icon :icon="chevronForwardOutline"></ion-icon></ion-button>
+                          <div v-if="story.reaction_tags" >
+                            <ion-button v-if="story.reacted_tags_splitted.includes('challenge')" color="success"><ion-icon :icon="checkmarkOutline" ></ion-icon> Вы участвуете</ion-button>
+                            <ion-button v-else
+                              @mouseover="action = ''; createReaction(story.post_id, 'challenge')"
+                              @touchstart="action = ''; createReaction(story.post_id, 'challenge')"
+                            >
+                              <ion-icon :icon="add"></ion-icon> Хочу участвовать
+                            </ion-button>
+                          </div>
                       </div>
                       <div>
                         <img :src="`${$heap.state.hostname}image/get.php/${story.image_hash}.1500.3000.webp`"/>
@@ -201,8 +239,9 @@ import {
   IonButtons
 }                               from "@ionic/vue";
 import {
-  closeOutline,
+  add,
   closeSharp,
+  checkmarkOutline,
   chevronForwardOutline,
   settingsSharp
   }                             from 'ionicons/icons';
@@ -227,7 +266,7 @@ export default{
       const closeModal = function(){
           modalController.dismiss();
       };
-      return {  closeModal, closeSharp, chevronForwardOutline, settingsSharp};
+      return {  closeModal, add, checkmarkOutline, closeSharp, chevronForwardOutline, settingsSharp};
   },
   data(){
     return {
@@ -334,7 +373,10 @@ export default{
       if(this.action == 'link') return this.go(this.actionData)
     },
     setProgress(){
+      const self = this
       this.groups[this.activeStoryGroupIndex].children.forEach((story, index, stories) => {
+        stories[index].descriptions = self.explodeDescriptions(stories[index])
+        stories[index].reacted_tags_splitted = stories[index].reacted_tags?.split(',') ?? []
         if(index < this.activeStoryIndex){
             stories[index].progressClass = ''
             stories[index].progress = 100
@@ -347,20 +389,26 @@ export default{
         }
       })
     },
+    explodeDescriptions(story){
+      return {
+        title: story.post_title?.split(' ') ?? [],
+        content: story.post_content?.split(' ') ?? []
+      }
+    },
     editStory(postId){
       this.$go(`/wall/post-user-edit-${postId}`)
     },
     markShown(id){
-        try{
-            let localShown = JSON.parse(localStorage.storiesShown)
-            localShown = localShown.slice(localShown.length - 100, localShown.length)
-            if(localShown.indexOf(id) === -1){
-              localShown.push(id)
-              localStorage.storiesShown = JSON.stringify(localShown)
-            }
-        }catch(err){
-            console.log('markShown stories error =(')
+      try{
+        let localShown = JSON.parse(localStorage.storiesShown)
+        localShown = localShown.slice(localShown.length - 100, localShown.length)
+        if(localShown.indexOf(id) === -1){
+          localShown.push(id)
+          localStorage.storiesShown = JSON.stringify(localShown)
         }
+      }catch(err){
+        console.log('markShown stories error =(')
+      }
     },
     resetStories(){
       this.setActiveIndex(0) 
@@ -370,6 +418,18 @@ export default{
     },
     onChange(){
       this.$emit('onChange', true)
+    },
+    async createReaction(targetId, targetTag){
+      const request={
+        tagQuery: `post:${targetId}:user:${targetTag}`,
+        is_like: true,
+        is_dislike: false,
+        comment: ''
+      }
+      try{
+        await this.$post("Reaction/itemSave", request)
+        this.groups[this.activeStoryGroupIndex].children[this.activeStoryIndex].reacted_tags_splitted.push(targetTag)
+      }catch(err){/** */}
     },
   },
   watch: {
