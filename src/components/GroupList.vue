@@ -1,5 +1,6 @@
 <style scoped>
 .product-categories {
+    min-height: 120px !important;
     padding: 10px 16px 0;
     background: white;
     transform: translateY(0px);

@@ -635,7 +635,9 @@ export default{
       }
     },
     onScroll(event) {
-      this.checkSticky()
+      setTimeout(() => {
+        this.checkSticky()
+      },100)
       this.checkActiveCategory(event)
     },
     checkSticky(){

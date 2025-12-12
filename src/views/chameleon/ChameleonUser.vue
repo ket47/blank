@@ -8,21 +8,20 @@ ion-icon{
     <ion-header class="ion-no-border">
       <ion-toolbar>
         <ion-buttons slot="start">
-          <ion-button @click="goback()"><ion-icon :src="chevronBackOutline"/>Назад</ion-button>
+          <ion-button @click="goback()"><ion-icon :src="chevronBackOutline"/></ion-button>
         </ion-buttons>
-        <ion-title><b>User</b></ion-title>
+        <ion-title><b>Аккаунт</b></ion-title>
       </ion-toolbar>  
     </ion-header>
     <ion-content class="main-container">
       <div class="user-dashboard-header">
         <ion-list>
-          <ion-item v-if="isSignedIn" lines="full" class="avatar-row" @click="$go('/user/user-edit')" button>
+          <ion-item v-if="isSignedIn" lines="full" class="avatar-row">
             <ion-avatar slot="start">
               <ion-img v-if="user.user_avatar_name" :src="$heap.state.hostname +'img/avatar/' +user.user_avatar_name +'.png'"/>
               <ion-icon v-else :icon="personCircleOutline" color="primary" size="large"></ion-icon>
             </ion-avatar>
             <ion-label>{{ user.user_name }}</ion-label>
-            <ion-icon :icon="settingsOutline" color="primary" slot="end"></ion-icon>
           </ion-item>
           <ion-item v-if="isSignedIn" @click="signOut" lines="full" button detail>
               <ion-icon :icon="exitOutline" slot="start" color="primary"></ion-icon>
@@ -30,249 +29,66 @@ ion-icon{
           </ion-item>
           <ion-item v-else lines="full" button detail @click="$go('/modal/user-authorize')">
               <ion-icon :icon="logInOutline" slot="start" color="primary"></ion-icon>
-              <ion-label>Вход в профиль</ion-label>
+              <ion-label>Вход в аккаунт</ion-label>
+          </ion-item>
+          <ion-item  v-if="isSignedIn" lines="full" button @click="deletePromptShow = true" >
+              <ion-icon :icon="trashOutline" slot="start" color="danger"></ion-icon>
+              <ion-label>Удалить аккаунт</ion-label>
           </ion-item>
         </ion-list>
       </div>
-      <msg-subscription-comp/>
       <ion-list>
-        <ion-item-group v-if="isSignedIn">
-          <ion-item-divider>
-            <ion-label>Пользователь</ion-label>
-          </ion-item-divider>
-          <div>
-            <ion-item @click="$go('/user/reactions')" lines="full" button detail>
-                <ion-icon :icon="thumbsUpSharp" slot="start" color="primary"></ion-icon>
-                <ion-label>Мои отзывы</ion-label>
-            </ion-item>
-            <ion-item lines="full" button detail @click="$go('/modal/user-addresses')">
-                <ion-icon :icon="locationOutline" slot="start" color="primary"></ion-icon>
-                <ion-label>Мои адреса</ion-label>
-            </ion-item>
-            <ion-item lines="full" button detail @click="$go('/user/user-promo')">
-                <ion-icon :icon="giftOutline" slot="start" color="primary"></ion-icon>
-                <ion-label>Мои скидки</ion-label>
-            </ion-item>
-            <ion-item lines="full" button detail @click="$go('/user/user-invoice')">
-                <ion-icon :icon="receiptOutline" slot="start" color="primary"></ion-icon>
-                <ion-label>Мои чеки</ion-label>
-            </ion-item>
-            <!-- <ion-item @click="$go('/user/user-cards')" lines="full" button detail>
-                <ion-icon :icon="cardOutline" slot="start" color="primary"></ion-icon>
-                <ion-label>Мои способы оплаты</ion-label>
-            </ion-item> -->
-          </div>
-
-          <ion-item-group v-if="isAdmin">
-            <ion-item-divider>
-              <ion-label>Администратор</ion-label>
-            </ion-item-divider>
-            <ion-item @click="$go('/admin/list-moderation')" lines="full" button detail>
-                <ion-icon :icon="ribbonOutline" slot="start" color="primary"></ion-icon>
-                <ion-label>Списки</ion-label>
-            </ion-item>
-            <ion-item @click="$go('/admin/text-list')" lines="full" button detail>
-                <ion-icon :icon="documentTextOutline" slot="start" color="primary"></ion-icon>
-                <ion-label>Редактирование страниц</ion-label>
-            </ion-item>
-            <ion-item @click="$go('/admin/tariff-list')" lines="full" button detail>
-                <ion-icon :icon="briefcaseOutline" slot="start" color="primary"></ion-icon>
-                <ion-label>Тарифы</ion-label>
-            </ion-item>
-            <ion-item @click="$go('/admin/mailing-list')" lines="full" button detail>
-                <ion-icon :icon="chatboxEllipsesOutline" slot="start" color="primary"></ion-icon>
-                <ion-label>Рассылка</ion-label>
-            </ion-item>
-            <ion-item @click="$go('/admin/accounting')" lines="full" button detail>
-                <ion-icon :icon="pieChartOutline" slot="start" color="primary"></ion-icon>
-                <ion-label>Бухгалтерия</ion-label>
-            </ion-item>
-            <ion-item @click="$go('/admin/analytics')" lines="full" button detail>
-                <ion-icon :icon="trendingUpOutline" slot="start" color="primary"></ion-icon>
-                <ion-label>Аналитика</ion-label>
-            </ion-item>
-            <ion-item @click="$go('/admin/user-metric')" lines="full" button detail>
-                <ion-icon :icon="footstepsOutline" slot="start" color="primary"></ion-icon>
-                <ion-label>Активность пользователей</ion-label>
-            </ion-item>
-            <ion-item @click="$go('/admin/promo-codes')" lines="full" button detail>
-                <ion-icon :icon="magnetOutline" slot="start" color="primary"></ion-icon>
-                <ion-label>Промокоды</ion-label>
-            </ion-item>
-            <ion-item @click="$go('/admin/chat-rooms')" lines="full" button detail>
-                <ion-icon :icon="chatbubblesOutline" slot="start" color="primary"></ion-icon>
-                <ion-label>Чат</ion-label>
-            </ion-item>
-          </ion-item-group>
-        </ion-item-group>
-
-        <ion-item-group v-if="isSignedIn">
-          <ion-item-divider>
-            <ion-label>Курьер</ion-label>
-          </ion-item-divider>
-
-          <div v-if="courierStatus=='ready'">
-            <ion-item style="--background:var(--ion-color-success-tint)" lines="none">
-              <ion-text>
-                <ion-label>Смена активна</ion-label>
-                <ion-note>Вы можете брать задания на доставку <a href="https://t.me/tezkelbot" target="_new">@tezkelbot</a></ion-note>
-              </ion-text>
-            </ion-item>
-            <!--
-            <ion-item style="--background:var(--ion-color-success-tint)" button lines="full" @click="courierStatusSet('idle')">
-              <ion-icon src="./assets/icon/delivery-man.svg" slot="start"></ion-icon>
-              <ion-button slot="end">Завершить смену</ion-button>
-            </ion-item>-->
-          </div>
-
-          <div v-else-if="courierStatus=='idle'">
-            <ion-item style="--background:var(--ion-color-warning-tint)" lines="none">
-              <ion-text>
-                <ion-label>Смена закрыта</ion-label>
-                <ion-note>Воспользуйтесь telegram ботом <a href="https://t.me/tezkelbot" target="_new">@tezkelbot</a>, чтобы начать смену</ion-note>
-              </ion-text>
-            </ion-item>
-            <!--
-            <ion-item style="--background:var(--ion-color-warning-tint)" button lines="full" @click="courierStatusSet('ready')">
-              <ion-icon :icon="rocketOutline" slot="start"></ion-icon>
-              <ion-button slot="end">Начать смену</ion-button>
-            </ion-item>-->
-          </div>
-
-          <div v-else-if="courierStatus=='busy'">
-            <ion-item style="--background:var(--ion-color-warning-tint)" lines="none">
-              <ion-text>
-                <ion-label>Выполняется задание</ion-label>
-                <ion-note>В процессе доставки заказа <a href="https://t.me/tezkelbot" target="_new">@tezkelbot</a></ion-note>
-              </ion-text>
-            </ion-item>
-            <ion-item style="--background:var(--ion-color-warning-tint)" button lines="full">
-              <ion-icon :icon="rocketOutline" slot="start"></ion-icon>
-            </ion-item>
-          </div>
-
-          <div  v-if="$heap.state.settings?.other?.chameleonMode!='on'">
-
-            <div v-if="courierStatus=='notcourier'">
-              <ion-item lines="none">
-                <ion-text>
-                  <ion-label>Пока вы не курьер</ion-label>
-                  <ion-note>Подайте заявку, чтобы стать курьером</ion-note>
-                </ion-text>
-              </ion-item>
-              <ion-item button lines="full" @click="$go('/user/courier-dashboard')" >
-                <ion-icon :icon="rocketOutline" slot="start"></ion-icon>
-                <ion-button slot="end" color="light">Стать курьером</ion-button>
-              </ion-item>
-            </div>
-            <div v-else>
-              <ion-item lines="full" button detail @click="$go('/user/courier-dashboard')">
-                  <ion-icon :icon="documentTextOutline" slot="start" color="primary"></ion-icon>
-                  <ion-label>Анкета курьера</ion-label>
-              </ion-item>
-              <ion-item lines="full" button detail @click="$go('/user/courier-statistics')">
-                  <ion-icon :icon="pieChartOutline" slot="start" color="primary"></ion-icon>
-                  <ion-label>Статистика</ion-label>
-              </ion-item>
-            </div>
-
-          </div>
-
-
-        </ion-item-group>
-
-        <ion-item-group v-if="isSignedIn">
-          <ion-item-divider>
-            <ion-label>Продавец</ion-label>
-          </ion-item-divider>
-          <div v-if="!storeList">
-            <ion-item>
-              <ion-icon :icon="storefrontOutline" slot="start"></ion-icon>
-              <ion-skeleton-text animated></ion-skeleton-text>
-            </ion-item>   
-          </div>
-          <div v-else-if="storeList.length>0">
-            <ion-item v-for="store in storeList" :key="store.store_id" detail button @click="$go(`/catalog/store-edit-${store.store_id}`)">
-              <ion-icon :icon="storefrontOutline" slot="start"></ion-icon>
-              {{store.store_name||store.store_name_new||'- - -'}}
-            </ion-item>
-          </div>
-          <div v-else>
-            <ion-item lines="none">
-              <ion-text>
-                <ion-label>Пока вы не продавец</ion-label>
-                <ion-note>Зарегистрируйте свой магазин или ресторан</ion-note>
-              </ion-text>
-            </ion-item>
-            <ion-item @click="$go(`/user/supplier-dashboard`)" lines="full" v-if="$heap.state.settings?.other?.chameleonMode!='on'">
-              <ion-icon :icon="storefrontOutline" slot="start"></ion-icon>
-              <ion-button slot="end" color="light">Стать продавцом</ion-button>
-            </ion-item>
-          </div>
-
-          <ion-item-divider>
-            <ion-label>Обратная связь</ion-label>
-          </ion-item-divider>
-          <ion-item lines="full" button detail @click="$go('/user/feedback')">
-            <ion-icon :icon="bookOutline" slot="start" color="primary"></ion-icon>
-            <ion-text>Ваши пожелания или замечания</ion-text>
-          </ion-item>
-        </ion-item-group>
-        <ion-item-group v-if="$heap.state.settings?.other?.chameleonMode=='on' || $heap.state.settings?.other?.chameleonMode==null">
+        <ion-item-group>
           <ion-item-divider @click="capgoInstallerReset()">
             <ion-label>Информация</ion-label>
           </ion-item-divider>
-          <ion-item lines="full" button detail @click="$go('/page/copyright')">
-              <ion-icon :icon="informationCircleOutline" slot="start" color="primary"></ion-icon>
-              <ion-text>Правообладателям</ion-text>
-          </ion-item>
-        </ion-item-group>
-        <!-- for all -->
-        <ion-item-group  v-else>
-          <ion-item-divider @click="capgoInstallerReset()">
-            <ion-label>Информация</ion-label>
-          </ion-item-divider>
-          <ion-item lines="full" button detail @click="$go('/page/about-us')">
-              <ion-icon :icon="informationCircleOutline" slot="start" color="primary"></ion-icon>
-              <ion-text>О нас</ion-text>
-          </ion-item>
-          <ion-item lines="full" button detail @click="$go('/page/contacts')">
-              <ion-icon :icon="informationCircleOutline" slot="start" color="primary"></ion-icon>
-              <ion-text>Контакты</ion-text>
-          </ion-item>
-          <ion-item lines="full" button detail @click="$go('/page/rules-customer')">
+          <ion-item lines="full" button detail target="_blank" href="https://docs.google.com/document/u/1/d/10P8czpmj6X_hmVvXASP1dap012HgoPmyxGg_T1DYcTM/mobilebasic#id.h.rx49wla2kcej">
               <ion-icon :icon="informationCircleOutline" slot="start" color="primary"></ion-icon>
               <ion-text>Правила пользования</ion-text>
           </ion-item>
-          <ion-item lines="full" button detail @click="$go('/page/privacy_policy')">
+          <ion-item lines="full" button detail target="_blank" href="https://docs.google.com/document/u/1/d/10P8czpmj6X_hmVvXASP1dap012HgoPmyxGg_T1DYcTM/mobilebasic#kix.jon2keqmkkvr">
               <ion-icon :icon="informationCircleOutline" slot="start" color="primary"></ion-icon>
               <ion-text>Политика конфиденциальности</ion-text>
           </ion-item>
-          <ion-item lines="full" button detail @click="$go('/page/rules-courier')">
-              <ion-icon :icon="informationCircleOutline" slot="start" color="primary"></ion-icon>
-              <ion-text>Правила пользования для курьера</ion-text>
-          </ion-item>
-          <ion-item lines="full" button detail @click="$go('/page/rules-supplier')">
-              <ion-icon :icon="informationCircleOutline" slot="start" color="primary"></ion-icon>
-              <ion-text>Правила пользования для продавца</ion-text>
-          </ion-item>
-          <ion-item lines="full" button detail @click="$go('/page/supplier-guide')">
-              <ion-icon :icon="informationCircleOutline" slot="start" color="primary"></ion-icon>
-              <ion-text>Презентация для продавцов</ion-text>
-          </ion-item>
-          <ion-item lines="full" button detail @click="$go('/page/copyright')">
-              <ion-icon :icon="informationCircleOutline" slot="start" color="primary"></ion-icon>
-              <ion-text>Правообладателям</ion-text>
-          </ion-item>
-          <ion-item lines="full" button detail href="https://t.me/tezkelbot" target="_new">
-              <ion-icon :icon="chatboxEllipsesOutline" slot="start" color="primary"></ion-icon>
-              <ion-label>Телеграм бот <a href="https://t.me/tezkelbot" target="_new">@telegrambot</a></ion-label>
-          </ion-item>
-          <ion-item lines="none">
-              <ion-label>Версия приложения: {{ $heap.state.applicationVersion }}</ion-label>
-          </ion-item>
         </ion-item-group>
       </ion-list>
+      <ion-modal
+        :isOpen="deletePromptShow"
+        :initial-breakpoint="0.8"
+        :breakpoints="[0, 0.4, 0.8]"
+      >
+        <ion-header>
+          <ion-toolbar color="danger">
+            <ion-title>Удаление учетной записи</ion-title>
+            <ion-icon
+              :icon="closeOutline"
+              @click="deletePromptShow = false"
+              slot="end"
+              size="large"
+            ></ion-icon>
+          </ion-toolbar>
+        </ion-header>
+        <ion-content class="ion-padding">
+          <ion-item lines="none" style="margin-bottom: 15px">
+            <div>
+              <p>Ваши персональные данные будут безвозвратно удалены.</p>
+              <p>
+                Повторная регистрация по этому номеру телефона будет невозможна!
+              </p>
+            </div>
+          </ion-item>
+          <ion-button @click="deleteAccount()" expand="block" color="danger"
+            >Удалить аккаунт</ion-button
+          >
+          <ion-button
+            @click="deletePromptShow = false"
+            expand="block"
+            color="light"
+            >Закрыть</ion-button
+          >
+        </ion-content>
+      </ion-modal>
+
     </ion-content>
   </ion-page>
 </template>
@@ -281,10 +97,50 @@ ion-icon{
 <script>
 import { 
   IonPage,
+  IonButtons,
   IonHeader,
   IonToolbar,
   IonTitle,
   IonContent,
+  IonIcon,
+  IonAvatar,
+  IonImg,
+  IonModal,
+  IonLabel,
+  IonItem,
+  IonList,
+  IonItemDivider,
+  IonItemGroup,
+  IonNote,
+  IonText,
+  IonButton,
+  IonSkeletonText
+} from "@ionic/vue";
+import {
+  logInOutline,
+  personCircleOutline,
+  exitOutline,
+  chevronForwardOutline,
+  informationCircleOutline,
+  chevronBackOutline,
+  trashOutline,
+  closeOutline
+} from "ionicons/icons";
+
+import User     from "@/scripts/User.js";
+import Topic    from '@/scripts/Topic.js';
+import heap     from "@/heap";
+import jQuery                   from 'jquery'
+
+export default {
+  components: {
+  IonPage,
+  IonButtons,
+  IonHeader,
+  IonToolbar,
+  IonTitle,
+  IonContent,
+  IonModal,
   IonIcon,
   IonAvatar,
   IonImg,
@@ -297,115 +153,23 @@ import {
   IonText,
   IonButton,
   IonSkeletonText
-} from "@ionic/vue";
-import {
-  settingsOutline,
-  logInOutline,
-  personCircleOutline,
-  exitOutline,
-
-  locationOutline,
-  heartOutline,
-  helpCircle,
-  callOutline,
-  mailOutline,
-  
-  cardOutline,
-  cartOutline,
-  notifications,
-  chevronForwardOutline,
-  documentTextOutline,
-  informationCircleOutline,
-  storefrontOutline,
-  chatboxEllipsesOutline,
-  giftOutline,
-  personAddOutline,
-  ribbonOutline,
-  receiptOutline,
-  rocketOutline,
-  briefcaseOutline,
-  bookOutline,
-  chatbubblesOutline,
-
-  pieChartOutline,
-  chevronBackOutline,
-  thumbsUpSharp,
-  footstepsOutline,
-  trendingUpOutline,
-  magnetOutline,
-} from "ionicons/icons";
-
-import User     from "@/scripts/User.js";
-import Topic    from '@/scripts/Topic.js';
-import heap     from "@/heap";
-import MsgSubscriptionComp  from '@/components/MsgSubscriptionComp.vue'
-
-export default {
-  components: {
-  IonPage,
-  IonHeader,
-  IonToolbar,
-  IonTitle,
-  IonContent,
-  IonIcon,
-  IonAvatar,
-  IonImg,
-  IonLabel,
-  IonItem,
-  IonList,
-  IonItemDivider,
-  IonItemGroup,
-  IonNote,
-  IonText,
-  IonButton,
-  IonSkeletonText,
-  MsgSubscriptionComp
   },
   setup() {
     return {
-        settingsOutline,
         logInOutline,
         personCircleOutline,
         exitOutline,
-
-        locationOutline,
-        heartOutline,
-        helpCircle,
-        callOutline,
-        mailOutline,
-        
-        cardOutline,
-        cartOutline,
-        notifications,
         chevronForwardOutline,
-        documentTextOutline,
         informationCircleOutline,
-        storefrontOutline,
-        chatboxEllipsesOutline,
-        giftOutline,
-        personAddOutline,
-        ribbonOutline,
-        receiptOutline,
-        rocketOutline,
-        briefcaseOutline,
-        bookOutline,
-        chatbubblesOutline,
-
-
         chevronBackOutline,
-        pieChartOutline,
-        thumbsUpSharp,
-        footstepsOutline,
-        trendingUpOutline,
-        magnetOutline,
+        trashOutline,
+        closeOutline
     };
   },
   data() {
     return {
       user: heap.state.user,
-      courierStatus:User.courier.status,
-      storeList:User.supplier.storeList,
-      version:this.toLocDateTime(document.lastModified)
+      deletePromptShow: false
     };
   },
   ionViewDidEnter(){
@@ -413,20 +177,11 @@ export default {
   },
   mounted(){
     const self=this;
-    Topic.on('courierStatusChange',(status)=>{
-      self.courierStatus=status;
-    });
     Topic.on('userGet',(data)=>{
       self.user=data;
-      if(data.storeList){
-        self.storeList=data.storeList
-      }
     });
   },
   computed: {
-    isAdmin(){
-      return User.isAdmin();
-    },
     isSignedIn() {
       return this.user?.user_id>0;
     },
@@ -436,25 +191,35 @@ export default {
       await User.signOut();
       location.reload()
     },
-    async courierStatusSet( new_status ){
-      try{
-        await User.courier.updateStatus(new_status);
-      }catch(err){
-        if( err.status==409 ){
-          this.$flash("Анкета удалена или не активна")
-        }
-      }
-    },
-    toLocDateTime( iso ){
-        const event = new Date(Date.parse(iso));
-        const options = { month: 'short', day: 'numeric',hour:'numeric', hc:'h24', minute:'numeric',year:'numeric' };//,timeZone:'Europe/Kyiv' not supported on safari
-        return event.toLocaleDateString('ru-RU', options);
-    },
     capgoInstallerReset(){
       localStorage.appUpdateSkipUntil=0
     },
+    async deleteAccount() {
+      try {
+        const requestData = {
+          user_id: this.$heap.state.user.user_id,
+          //user_pass:this.fields.user_pass_current,
+        };
+        await jQuery.post(
+          `${this.$heap.state.hostname}User/itemDelete`,
+          requestData
+        );
+        this.deletePromptShow = false;
+        await User.signOut();
+        await this.$go("/user");
+      } catch {
+        this.$flash("Не удалось удалить аккаунт. Проверьте пароль");
+      }
+    },
     goback(){
       history.back()
+    },
+  },
+  watch: {
+    $route(to, from) {
+      if (to.path != from.path) {
+        this.user = heap.state.user;
+      }
     },
   },
 };
