@@ -2,12 +2,12 @@
   <ion-page>
     <ion-header v-if="!hideTitle" :class="[pageClass]">
       <ion-toolbar>
-        <ion-buttons v-if="canGoBack && this.$heap.state.chameleonMode=='off'" slot="start">
+        <ion-buttons v-if="canGoBack" slot="start">
           <ion-button v-if="isIos" @click="goback()"><ion-icon :src="chevronBackOutline"/>Назад</ion-button>
           <ion-button v-else @click="goback()"><ion-icon :src="arrowBackOutline" size="large"/></ion-button>
         </ion-buttons>
         <ion-title v-if="pageTitle" size="small"><div style="line-height: 1.5;max-height:3em;text-overflow: ellipsis;overflow: hidden;font-weight: bold;">{{ pageTitle }}</div></ion-title>
-        <div v-if="pageLogo=='show' && this.$heap.state.chameleonMode=='off'">
+        <div v-if="pageLogo=='show'">
           <!-- <ion-icon v-if="" class="toolbar_svg_logo" style="color: var(--ion-color-primary)" :icon="simpleLogo"/> -->
           <ion-icon class="toolbar_svg_logo" style="color: var(--ion-color-primary)" :icon="standartLogo"/>
         </div>
