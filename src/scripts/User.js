@@ -227,7 +227,7 @@ const User = {
                 const debounce=10*60*1000//10 minute
                 const data=await Utils.post(`${heap.state.hostname}Courier/itemGet`,null,debounce)
 
-                User.courier.data=User.courier.ratingCalculate(data)
+                //User.courier.data=User.courier.ratingCalculate(data)
                 User.courier.parseStatus()
                 heap.state.courier=User.courier.data
                 //User.courier.batteryCheck()
@@ -237,12 +237,12 @@ const User = {
                 return null
             }
         },
-        ratingCalculate(data){
-            if(data.rating?.length>0){
-                data.ratingScore=Math.round((data.rating[0].rating*1+data.rating[1].rating*1)/2*100)/100
-            }
-            return data
-        },
+        // ratingCalculate(data){
+        //     if(data.rating?.length>0){
+        //         data.ratingScore=Math.round((data.rating[0].rating*1+data.rating[1].rating*1)/2*100)/100
+        //     }
+        //     return data
+        // },
         async batteryCheck(){
             try{
                 const info = await Device.getBatteryInfo()

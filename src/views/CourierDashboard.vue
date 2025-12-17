@@ -64,7 +64,7 @@ ion-text{
             <ion-icon :src="notificationsOutline" color="primary" slot="start"/>
             <ion-select v-model="courier.courier_parttime_notify"  interface="popover" label="Подработка" :interface-options="{
                 header:'Заказы вне смены',
-                message: 'Присылать уведомления о дополнительных заказах',
+                message: 'Присылать уведомления о свободных заказах',
               }">
               <ion-select-option value="ringtone">
                 🔔 Рингтон

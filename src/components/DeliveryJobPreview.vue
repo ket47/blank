@@ -45,24 +45,24 @@
             <h1 slot="end" style="color:var(--ion-color-primary);padding:3px;border-radius:7px">{{jobComp.courier_gain_total}}{{ $heap.state.currencySign }}</h1>
         </ion-item>
         <ion-item id="deljobprev_info" lines="none">
-            <ion-chip v-if="$heap.state.courier.ratingScore>0" color="medium"><ion-icon :icon="add" color="success"/><ion-label>рейтинг</ion-label></ion-chip>
-            <ion-chip v-if="job?.courier_promised_tip>0" color="medium"><ion-icon :icon="add" color="success"/><ion-label>чаевые</ion-label></ion-chip>
+            <ion-chip v-if="$heap.state.courier.rating_score>0" color="medium"><ion-icon :icon="add" color="success"/><ion-label>рейтинг</ion-label></ion-chip>
+            <ion-chip v-if="job?.delivery_promised_tip>0" color="medium"><ion-icon :icon="add" color="success"/><ion-label>чаевые</ion-label></ion-chip>
             <ion-chip color="medium"><ion-icon :icon="information"/><ion-label>подробнее</ion-label></ion-chip>
         </ion-item>
         <ion-popover trigger="deljobprev_info" trigger-action="click">
-            <ion-content class="ion-padding">
+            <ion-content>
                 <ion-list lines="none">
                     <ion-item>
                         <ion-label>Доставка</ion-label>
-                        {{ jobComp.courier_gain_base }}{{ $heap.state.currencySign }}
+                        {{ jobComp.delivery_gain_base }}{{ $heap.state.currencySign }}
                     </ion-item>
                     <ion-item>
-                        <ion-label>Рейтинг {{ $heap.state.courier.ratingScore*5 }}⭐</ion-label>
-                        +{{ jobComp.courier_rating_bonus }}{{ $heap.state.currencySign }} <span style="color:#ccc">/{{ jobComp.courier_rating_pool }}{{ $heap.state.currencySign }}</span>
+                        <ion-label>Рейтинг&nbsp;{{ Number($heap.state.courier.rating_score*5).toFixed(2) }}⭐</ion-label>
+                        +{{ jobComp.courier_rating_bonus }}{{ $heap.state.currencySign }} <span style="color:#ccc">/{{ jobComp.delivery_rating_pool }}{{ $heap.state.currencySign }}</span>
                     </ion-item>
-                    <ion-item v-if="job?.courier_promised_tip>0">
+                    <ion-item v-if="job?.delivery_promised_tip>0">
                         <ion-label>Обещанные чаевые</ion-label>
-                        +{{ jobComp.courier_promised_tip }}{{ $heap.state.currencySign }}
+                        +{{ jobComp.delivery_promised_tip }}{{ $heap.state.currencySign }}
                     </ion-item>
                 </ion-list>
             </ion-content>
@@ -172,8 +172,8 @@ export default({
         },
         jobComp(){
             const job=this.job
-            job.courier_rating_bonus=Math.round(job.courier_rating_pool*this.$heap.state.courier.ratingScore)
-            job.courier_gain_total=job.courier_gain_base*1+job.courier_rating_bonus+job.courier_promised_tip*1
+            job.courier_rating_bonus=Math.round(job.delivery_rating_pool*this.$heap.state.courier.rating_score)
+            job.courier_gain_total=job.delivery_gain_base*1+job.courier_rating_bonus+job.delivery_promised_tip*1
             return job
         },
         isAdmin(){

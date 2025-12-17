@@ -136,32 +136,32 @@ ion-tab-bar ion-label{
         <div @click="tabClicked('/catalog')" ref="catalogtab">
           <ion-icon class="active" :icon="home"/>
           <ion-icon class="passive" :icon="homeOutline"/>
-          <ion-label v-if="!isMobile">Главная</ion-label>
+          <ion-label>Главная</ion-label>
         </div>
 
         <div @click="tabClicked('/search')" ref="searchtab">
           <ion-icon class="active" :icon="search"/>
           <ion-icon class="passive" :icon="searchOutline"/>
-          <ion-label v-if="!isMobile">Поиск</ion-label>
+          <ion-label>Поиск</ion-label>
         </div>
 
         <div @click="tabClicked('/order')" ref="ordertab" style="position: relative;">
           <ion-icon class="active" :icon="cart"/>
           <ion-icon class="passive" :icon="cartOutline"/>
-          <ion-label v-if="!isMobile">Заказы</ion-label>
+          <ion-label>Заказы</ion-label>
           <div color="warning" class="badge" v-if="activeOrderCount>0">{{activeOrderCount}}</div>
         </div>
 
         <div @click="tabClicked('/promo')" ref="promotab">
           <ion-icon class="active" :icon="gift"/>
           <ion-icon class="passive" :icon="giftOutline"/>
-          <ion-label v-if="!isMobile">Скидки</ion-label>
+          <ion-label>Скидки</ion-label>
         </div>
 
         <div @click="tabClicked('/user')" ref="usertab">
           <ion-icon class="active" :icon="person"/>
           <ion-icon class="passive" :icon="personOutline"/>
-          <ion-label v-if="!isMobile">Профиль</ion-label>
+          <ion-label>Профиль</ion-label>
         </div>
       </ion-tab-bar>
     </ion-tabs>

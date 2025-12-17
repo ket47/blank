@@ -63,7 +63,7 @@
                             <sup>({{ job.customer_heart_count }})</sup>
                         </div>
                         {{job.job_name}}
-                        <ion-text v-if="job.courier_gain_base>0" color="success">
+                        <ion-text v-if="job.delivery_gain_base>0" color="success">
                             &nbsp;/&nbsp;{{ job.courier_gain_max }}{{ $heap.state.currencySign }}
                         </ion-text>
 
@@ -298,8 +298,8 @@ export default {
                 job.stage_label=stageDict[job.stage]||'-'
                 job.stage_color=['scheduled','awaited'].includes(job.stage)?'light':'primary'
                 job.is_courier_job=1
-                job.courier_gain_max=Math.round(job.courier_gain_base*1+job.courier_rating_pool*1+job.courier_promised_tip*1)
-                job.courier_rating_pool=Math.round(job.courier_rating_pool)
+                job.courier_gain_max=Math.round(job.delivery_gain_base*1+job.delivery_rating_pool*1+job.delivery_promised_tip*1)
+                job.delivery_rating_pool=Math.round(job.delivery_rating_pool)
                 if(job.finish_plan_scheduled>0){
                     const finish_plan_scheduled = new Date(job.finish_plan_scheduled*1000)
                     job.finish_plan_scheduled_date=finish_plan_scheduled.toLocaleTimeString(undefined, { hour:'numeric',minute:'numeric' })
