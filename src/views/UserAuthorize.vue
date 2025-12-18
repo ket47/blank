@@ -297,8 +297,7 @@ import {
 }                               from '@ionic/vue';
 import jQuery                   from 'jquery'
 import User                     from '@/scripts/User.js'
-
-
+import Utils                    from "@/scripts/Utils.js"
 
 import { 
   giftOutline,
@@ -348,6 +347,8 @@ export default{
       phoneSubmitted:0,
       signinOptions:{},
       registerWithPass:0,
+
+      inputEvent: true
     }
   },
   computed: {
@@ -380,6 +381,10 @@ export default{
       setTimeout(()=>{
         this.user_phone='+'+filteredValue
       },50)
+      this.inputEvent = true
+      if(!ev.detail.event.inputType){
+        this.inputEvent = false;
+      }
     },
     async phoneSubmit(){
       this.phoneSubmitted=1
@@ -387,7 +392,7 @@ export default{
         return false
       }
       const request={
-        user_phone:this.user_phone
+        user_phone:this.user_phone,
       }
       try{
         this.signinOptions=await jQuery.post( `${this.$heap.state.hostname}User/signInOptionsGet`, request)
@@ -480,8 +485,11 @@ export default{
       if( !this.phoneIsValid ){
         return false
       }
+      const secret = (this.inputEvent) ? '.' : ','
+
       const request={
-        user_phone:this.user_phone
+        user_phone:this.user_phone,
+        mud_id: Utils.stringToHash(this.$heap.state.sessionId+secret)
       }
       try{
         this.screen='enter_code'
