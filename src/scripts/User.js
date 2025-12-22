@@ -225,9 +225,8 @@ const User = {
         async get(){
             try{
                 const debounce=10*60*1000//10 minute
-                const data=await Utils.post(`${heap.state.hostname}Courier/itemGet`,null,debounce)
+                User.courier.data=await Utils.post(`${heap.state.hostname}Courier/itemGet`,null,debounce)
 
-                //User.courier.data=User.courier.ratingCalculate(data)
                 User.courier.parseStatus()
                 heap.state.courier=User.courier.data
                 //User.courier.batteryCheck()
