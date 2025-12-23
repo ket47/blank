@@ -422,8 +422,7 @@ export default{
     async createReaction(targetId, targetTag){
       const request={
         tagQuery: `post:${targetId}:user:${targetTag}`,
-        is_like: true,
-        is_dislike: false,
+        is_like: 1,
         comment: ''
       }
       try{
