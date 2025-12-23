@@ -85,10 +85,10 @@ ion-text{
             <ion-label>Информация о курьере</ion-label>
           </ion-item-divider>
           <ion-item lines="full">
-            <ion-input v-model="courier.courier_name" placeholder="Имя" label="Имя" label-placement="fixed"/>
+            <ion-input v-model="courier.courier_name" placeholder="" label="Имя" label-placement="stacked"/>
           </ion-item>
           <ion-item lines="full">
-            <ion-select v-model="courier.courier_vehicle"  interface="popover" label="Транспорт" label-placement="fixed" :interface-options="customPopoverOptions">
+            <ion-select v-model="courier.courier_vehicle"  interface="popover" label="Транспорт" label-placement="stacked" :interface-options="customPopoverOptions">
               <ion-select-option value="auto_private">
                 🚗 Автомобиль личный
               </ion-select-option>
@@ -104,21 +104,21 @@ ion-text{
             </ion-select>
           </ion-item>
           <ion-item lines="full">
-            <ion-textarea v-model="courier.courier_comment" placeholder="Цвет, номер авто" label="Комментарий" label-placement="fixed"></ion-textarea>
+            <ion-textarea v-model="courier.courier_comment" placeholder="" label="Комментарий" label-placement="stacked"></ion-textarea>
           </ion-item>
         </ion-list>
       </form>
-        <ion-item-divider>
-          <ion-label>Фотографии</ion-label>
-        </ion-item-divider>
-        <ion-list v-if="courier">
-        <image-tile-comp :images="courier.images" :image_holder_id="courier.courier_id" controller="Courier" ref="courierImgs" :title="'Аватар в приложении'"></image-tile-comp>
+      <ion-item-divider>
+        <ion-label>Фотографии</ion-label>
+      </ion-item-divider>
+      <ion-list v-if="courier">
+        <image-tile-comp :images="courier.images" image_holder="courier" :image_holder_id="courier.courier_id" controller="Courier" ref="courierImgs" :title="'Аватар в приложении'"></image-tile-comp>
         <ion-button @click="$refs.courierImgs.take_photo()" expand="block" color="light">
           <ion-icon :src="cameraOutline" slot="start"/> Добавить аватар
         </ion-button>
       </ion-list>
       <ion-list v-if="courier">
-        <image-tile-comp :images="courier.passport_images" :image_holder_id="courier.courier_id" controller="Courier" ref="courierPassImgs" :title="'Фото паспорта'"></image-tile-comp>
+        <image-tile-comp :images="courier.passport_images" image_holder="courier_passport" :image_holder_id="courier.courier_id" controller="Courier" ref="courierPassImgs" :title="'Фото паспорта'"></image-tile-comp>
         <ion-button @click="$refs.courierPassImgs.take_photo()" expand="block" color="light">
           <ion-icon :src="cameraOutline" slot="start"/> Загрузить фото
         </ion-button>
@@ -358,7 +358,7 @@ export default  {
           this.$flash("Не удалось загрузить анкету")
         }
       } else {
-        this.courier=await User.courier.get() || {}
+        this.courier=heap.state.courier || {}
       }
       this.itemParseFlags()
     },

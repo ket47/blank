@@ -230,11 +230,11 @@ const User = {
                 User.courier.parseStatus()
                 heap.state.courier=User.courier.data
                 //User.courier.batteryCheck()
-                return User.courier.data
             }catch(err){
                 User.courier.data=null;
                 return null
             }
+            return User.courier.data
         },
         // ratingCalculate(data){
         //     if(data.rating?.length>0){
