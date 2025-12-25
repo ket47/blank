@@ -84,7 +84,6 @@ import {
   addOutline,
   imageOutline,
   }                         from 'ionicons/icons';
-import jQuery               from 'jquery';
 
 
 import 'swiper/css/pagination';

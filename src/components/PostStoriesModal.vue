@@ -423,7 +423,6 @@ export default{
       const request={
         tagQuery: `post:${targetId}:user:${targetTag}`,
         is_like: 1,
-        comment: ''
       }
       try{
         await this.$post("Reaction/itemSave", request)

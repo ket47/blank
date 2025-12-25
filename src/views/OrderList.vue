@@ -350,6 +350,9 @@ export default {
         },
         async listLoad(listType,mode='reload'){
             if( listType=='jobs' ){
+                if( mode=='append' ){
+                    return
+                }
                 this.autoReload(listType);
                 this.listRouteLoad();
                 return;
