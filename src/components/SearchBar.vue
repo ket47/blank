@@ -102,7 +102,8 @@ export default {
                 return
             }
             const request={
-                query
+                query,
+                location_id:this.locMainGet()
             }
             try{
                 let response=await jQuery.post(`${this.$heap.state.hostname}Search/suggestionListGet`,request, 0)
@@ -148,6 +149,9 @@ export default {
             this.isActiveSearch = false
             this.$emit('onSearch', this.query)
             
+        },
+        locMainGet(){
+            return this.$heap.state.user.location_main?this.$heap.state.user.location_main.location_id:null
         }
     },
     watch:{

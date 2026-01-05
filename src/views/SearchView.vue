@@ -145,7 +145,11 @@
     
     <div v-if="activeView == 'search' && !isActiveSearch && !isLoading">
       <div v-if="found?.length>0">
-        <h2 class="ion-padding">{{ query }}:</h2>
+        <h2 class="ion-padding">{{ query }}<i v-if="searchMode=='farstores'"> (нет доставки)</i>:</h2>
+        <p v-if="searchMode=='farstores'" class="ion-padding" style="color:#666">
+          Найденные результаты не доступны для вашего адреса <i style="color:var(--ion-color-primary)">{{ $heap.state.user.location_main.location_address??'' }}</i>. 
+          Измените адрес доставки или поищите что то другое.
+        </p>
         <div class="search-list-grid">
           <div v-for="item in found" :key="item.href" :class="`search-item item-width-${item.width}`">
               <product-item-new v-if="item.type == 'product'" :productItem="item"></product-item-new> 
@@ -255,7 +259,8 @@ export default  {
       found:null,
       isLoading: false,
       categories: [],
-      activeView: 'category'
+      activeView: 'category',
+      searchMode: 'nearstores'
     }
   },
   created(){
@@ -307,6 +312,7 @@ export default  {
         response=await Utils.post(`${this.$heap.state.hostname}Search/listGet`,request)
         this.found=this.storeListCalculate(response)
         this.isLoading = false;
+        this.searchMode=response.mode
       }catch(err){
         this.found=null
         this.isLoading = false;
