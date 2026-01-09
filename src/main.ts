@@ -322,6 +322,20 @@ async function startApp(){
 
   Capgo.init(App,flash)
   Metrics.init()
-
+  initSSE()
 }
+
+
+const initSSE = () => {
+
+  const evtSource = new EventSource('http://tezkel.local/SSE', { withCredentials: true });
+
+  evtSource.addEventListener('achievement', (event) => {
+    if(event.data){
+      console.log(event.data)
+    } else {
+      console.log('no events')
+    }
+  });
+} 
 startApp();
