@@ -1,10 +1,57 @@
-<style scoped>
+<style >
+
     .entry-deleted{
         color:var(--ion-color-danger);
     }
+    .action-block{
+        padding: 4px 0 16px;
+    }
+    html:not(.plt-desktop) .action-block{
+        position: fixed;
+        bottom: 0px;
+        z-index: 2;
+        background: white;
+        box-shadow: 0px -3px 10px #ccc;
+        width: 100%;
+    }
+    .action-row > div{
+        display: flex;
+        flex-wrap: wrap;
+    }
+    html:not(.plt-desktop) .action-row > div{
+        flex-wrap: nowrap;
+    }
+    .action-row.action-buttons{
+        padding: 8px;
+    }
+    .action-row.action-buttons ion-button{
+        flex: 1;
+    }
+    html:not(.plt-desktop) .action-row.action-chips{
+        overflow: auto;
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+    html:not(.plt-desktop) .action-row.action-chips::-webkit-scrollbar { 
+        display: none; 
+    }
+    .action-row.action-chips > div{
+        gap: 5px;
+        width: fit-content;
+        padding: 8px;
+    }
+    html:not(.plt-desktop) .action-row.action-chips > div{
+        padding: 0px;
+    }
+    html:not(.plt-desktop) .action-row.action-chips ion-chip:first-child{
+        margin-left: 10px;
+    }
+    html:not(.plt-desktop) .action-row.action-chips ion-chip:last-child{
+        margin-right: 10px;
+    }
 </style>
 <template>
-    <div v-if="orderData">
+    <div v-if="orderData" class="order-data">
         <ion-item detail button @click="storeOpen()" lines="none">
             <ion-avatar v-if="orderData?.store?.image_hash" slot="start">
                 <ion-img :src="`${$heap.state.hostname}image/get.php/${orderData?.store?.image_hash}.80.80.webp`" style="border-radius:100px"/>
@@ -29,6 +76,9 @@
                     <ion-label>{{orderData.stage_current_name}}</ion-label>
                 </ion-chip>
             </ion-item>
+            
+            <order-delivery-search v-if="orderData.stage_current == 'customer_start' && ['admin', 'customer'].includes(orderData.user_role)" :orderData="orderData"/>
+
             <ion-item v-for="entry in orderData?.entries"  :key="entry.product_id" :class="entry.deleted_at?'entry-deleted':''" lines="full" style="padding-top:10px;">
                 <ion-thumbnail slot="start" v-if="entry.image_hash" @click="productOpen(entry.product_id)">
                     <ion-img :src="`${$heap.state.hostname}image/get.php/${entry.image_hash}.150.150.webp`" style="border-radius:10px" alt=""/>
@@ -196,23 +246,36 @@
             </ion-card-content>
         </ion-card>
 
-        <ion-grid>
-            <ion-row>
-                <ion-col  v-for="(stage_title, order_stage_code) in nextStageButtons" :key="order_stage_code" >
-                    <ion-button 
-                    v-if="stage_title[0]" 
-                    @click="stageCreate(orderData.order_id, order_stage_code, stage_title[1])" 
-                    expand="block" 
-                    :color="stage_title[1]??'primary'"
-                    :fill="stage_title[2]??'solid'"
-                    style="white-space: nowrap;"
+        <div class="action-block">
+            <div class="action-row action-buttons">
+                <div>
+                    <ion-button v-for="(stage_title, order_stage_code) in nextStages.buttons" :key="`button-stage-${order_stage_code}`"
+                        @click="stageCreate(orderData.order_id, order_stage_code, stage_title[1])" 
+                        expand="block" 
+                        :color="stage_title[1]??'primary'"
+                        :fill="stage_title[2]??'solid'"
+                        style="white-space: nowrap;"
                     >
                         <ion-icon slot="start" :src="stage_title.icon"></ion-icon>
                         {{ stage_title[0] }}
                     </ion-button>
-                </ion-col>
-            </ion-row>
-        </ion-grid>
+                </div>
+            </div>
+            <div class="action-row action-chips">
+                <div>
+                    <ion-chip v-for="(stage_title, order_stage_code) in nextStages.chips" :key="`chip-stage-${order_stage_code}`"
+                        @click="stageCreate(orderData.order_id, order_stage_code, stage_title[1])" 
+                        expand="block" 
+                        :color="stage_title[1]??'primary'"
+                        :fill="stage_title[2]??'solid'"
+                        style="white-space: nowrap;"
+                    >
+                        <ion-icon :icon="stage_title.icon"></ion-icon>
+                        <ion-label>{{ stage_title[0] }}</ion-label>
+                    </ion-chip>
+                </div>
+            </div>
+        </div>
     </div>
     <div v-else>
         <ion-item detail button lines="none">
@@ -287,6 +350,7 @@ import {
     flagOutline
 }                       from 'ionicons/icons';
 import CartAddButtons   from '@/components/CartAddButtons.vue';
+import OrderDeliverySearch   from '@/components/OrderDeliverySearch.vue';
 import jQuery           from "jquery";
 import Order            from "@/scripts/Order.js"
 import Utils        from '@/scripts/Utils.js'
@@ -316,6 +380,7 @@ export default({
     IonAccordionGroup,
     IonAccordion,
     IonTextarea,
+    OrderDeliverySearch,
     },
     setup() {
         return { 
@@ -373,24 +438,33 @@ export default({
             }
             return false
         },
-        nextStageButtons(){
-            let buttons={};
+        nextStages(){
+            let result={
+                buttons: {},
+                chips: {}
+            };
+            let button;
             for(let i in this.orderData.stage_next){
                 if(this.orderData.stage_next[i][0]){
-                    buttons[i]=this.orderData.stage_next[i];
-                    buttons[i].icon=checkmarkOutline
+                    button = this.orderData.stage_next[i];
+                    button.icon=checkmarkOutline
                     if(i.includes('admin') || i.includes('system')){
-                        buttons[i].icon=ribbonOutline
+                        button.icon=ribbonOutline
                     } else 
                     if(i.includes('delivery')){
-                        buttons[i].icon=rocketOutline
+                        button.icon=rocketOutline
                     } else 
                     if(i.includes('supplier')){
-                        buttons[i].icon=storefrontOutline
+                        button.icon=storefrontOutline
+                    }
+                    if(['primary', 'success'].includes(button[1])){
+                        result.buttons[i] = button
+                    } else {
+                        result.chips[i] = button
                     }
                 }
             } 
-            return buttons;
+            return result
         },
         arrivalTimeStatusCorrect(){
             let arrival_time=this.orderData?.time_plan?.start_plan + this.orderData?.time_plan?.finish_arrival_time;
@@ -416,7 +490,7 @@ export default({
                 return 'success'
             }
             return 'medium'
-        }
+        },
     },
     methods:{
         storeOpen(){
