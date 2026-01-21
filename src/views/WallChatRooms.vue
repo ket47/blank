@@ -43,6 +43,13 @@ export default {
         return {
         };
     },
+    mounted(){
+        const evtSource = new EventSource(`${this.$heap.state.hostname}Talk/noticeListGet`);
+        evtSource.addEventListener("chat", function(e) {
+            const data = JSON.parse(e.data);
+            console.log("Structured update received:", data);
+        });
+    },
 
     methods:{
         toLocDate( iso ){
@@ -52,7 +59,7 @@ export default {
             return event.toLocaleDateString(undefined, options);
         },
         itemOpen(room_id){
-            this.$go(`/admin/chat-room-${room_id}`)
+            //this.$go(`/admin/chat-room-${room_id}`)
         }
     }
 }
