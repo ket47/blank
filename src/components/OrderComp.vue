@@ -443,6 +443,7 @@ export default({
                 buttons: {},
                 chips: {}
             };
+            let buttons={}
             let button;
             for(let i in this.orderData.stage_next){
                 if(this.orderData.stage_next[i][0]){
@@ -457,13 +458,20 @@ export default({
                     if(i.includes('supplier')){
                         button.icon=storefrontOutline
                     }
-                    if(['primary', 'success'].includes(button[1])){
-                        result.buttons[i] = button
-                    } else {
-                        result.chips[i] = button
-                    }
+                    buttons[i] = button
                 }
             } 
+
+            let entries = Object.entries(buttons);
+
+            for(let [index, [key, value]] of entries.entries()){
+                if(index == 0){
+                    result.buttons[key] = value
+                } else {
+                    result.chips[key] = value
+                }
+            }
+
             return result
         },
         arrivalTimeStatusCorrect(){
