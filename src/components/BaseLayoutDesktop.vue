@@ -34,10 +34,13 @@ ion-tabs ion-icon{
     <ion-content :class="['desktop-main-container', pageClass]" :scrollEvents="contentOnScroll ? 'true' : 'false'" @ionScroll="contentOnScroll($event)">
       <div class="main-grid">
         <div></div>
-        <div style="background:white;max-width:1200px">
+        <div style="background:white;">
           <div class="page-content" style="">
-            <ion-toolbar>
-              <ion-title><h1 style="margin:30px" v-if="pageTitle">{{ pageTitle }}</h1></ion-title>
+            <ion-toolbar style="padding-right: 20px;">
+              <ion-buttons v-if="forceBackButton" slot="start">
+                <ion-button @click="goback()"><ion-icon :src="arrowBackOutline" size="large"/></ion-button>
+              </ion-buttons>
+              <ion-title><h4 style="margin:20px; text-align:center;" v-if="pageTitle">{{ pageTitle }}</h4></ion-title>
               <cart-header slot="end"></cart-header>
             </ion-toolbar>
             <slot/>
@@ -56,24 +59,36 @@ ion-tabs ion-icon{
 
 import {
   cartOutline,
+  arrowBackOutline
 }                     from "ionicons/icons";
 import {
   IonPage,
   IonContent,
   IonTitle,
+  IonIcon,
   IonToolbar,
+  IonButtons,
+  IonButton
 }                     from "@ionic/vue";
 import FooterDesktop  from "@/components/FooterDesktop";
 import CartHeader     from "@/components/CartHeader";
 import Order          from '@/scripts/Order.js'
 import StoriesStartupModalTrigger   from "@/components/PostStoriesStartupModalTrigger.vue"
 import CookiesModal   from "@/components/CookiesModal.vue"
+import { useRoute } from 'vue-router';
 
 export default {
   setup() {
+    const route = useRoute();
     return {
+      route,
       cartOutline,
-
+      arrowBackOutline
+    }
+  },
+  data() {
+    return {
+      forceBackButton: this.route.meta.forceBackButton
     }
   },
   computed:{
@@ -94,10 +109,21 @@ export default {
     IonContent,
     CartHeader,
     FooterDesktop,
+    IonIcon,
     IonTitle,
     IonToolbar,
+    IonButtons,
+    IonButton,
     StoriesStartupModalTrigger,
     CookiesModal
+  },
+  methods: {
+    goback(){
+      if(this.pageDefaultBackLink){
+        return this.$go(this.pageDefaultBackLink)
+      }
+      history.back()
+    },
   },
 };
 </script>

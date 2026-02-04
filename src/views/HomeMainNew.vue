@@ -76,6 +76,7 @@
       </ion-fab-button>
     </ion-fab>
     <stories-startup-modal-trigger/>
+    <user-reaction-suggest :isNeedToBeShown="reactionSuggestModal"/>
   </base-layout>
 </template>
 
@@ -87,6 +88,7 @@ import UserAddressWidget          from "@/components/UserAddressWidget";
 import ProductListHomeInfinite    from "@/components/ProductListHomeInfinite";
 import StoriesSlider              from "@/components/PostStoriesSlider";
 import StoriesStartupModalTrigger from "@/components/PostStoriesStartupModalTrigger.vue"
+import UserReactionSuggest        from "@/components/UserReactionSuggest.vue"
 
 
 import Utils                      from '@/scripts/Utils.js'
@@ -97,8 +99,9 @@ import {
   IonItem,
   IonFab,
   IonFabButton,
+  IonButtons,
+  IonButton,
   IonLabel,
-  isPlatform,
   IonInfiniteScroll, 
   IonInfiniteScrollContent,
 }                   from "@ionic/vue";
@@ -108,8 +111,7 @@ import {
   searchOutline,
   chevronForwardOutline,
   chevronUpOutline
- }                  from 'ionicons/icons'
-
+}                   from 'ionicons/icons'
 
 export default {
   setup() {
@@ -122,6 +124,8 @@ export default {
   },
   components: {
     IonIcon,
+    IonButtons,
+    IonButton,
     HomeSlider,
     IonFab,
     IonFabButton,
@@ -134,7 +138,8 @@ export default {
     IonInfiniteScroll, 
     IonInfiniteScrollContent,
     StoriesSlider,
-    StoriesStartupModalTrigger
+    StoriesStartupModalTrigger,
+    UserReactionSuggest
   },
   data(){
     return {
@@ -144,7 +149,8 @@ export default {
       hiddenCount:null,
       storeSliderLoadQueue: 100,
       mounted_at:0,
-      isAdmin: false
+      isAdmin: false,
+      reactionSuggestModal: false
     }
   },
   computed: {
@@ -179,7 +185,6 @@ export default {
       ev.target.complete();
     },
     async outFormSend(){
-      //this.listNearReload()
       this.out.phone??=this.$heap.state.user?.user_phone
       this.out.address??=this.showndelivery_address
       if( !this.$heap.state.user?.user_id || this.$heap.state.user?.user_id<0 ){
@@ -204,19 +209,24 @@ export default {
       InfiniteScrollEvent.target.complete();
     },
     onScroll(event) {
-      if(!this.$refs.scrollToTopButton ){
+      this.detectScrollElement('scrollToTopButton', event);
+    },
+    detectScrollElement(refName, event){
+      if(!this.$refs[refName]){
         return
       }
-      const offsetTop=this.$refs.scrollToTopButton.$el?.offsetTop;
+      const element = this.$refs[refName].$el ?? this.$refs[refName]
+      const offsetTop=element.offsetTop;
       if (event.detail.scrollTop > 200 ) {
-        this.$refs.scrollToTopButton.$el.classList?.remove("hidden-block");
+        element.classList?.remove("hidden-block");
       } else {
-        this.$refs.scrollToTopButton.$el.classList?.add("hidden-block");
+        element.classList?.add("hidden-block");
       }
+      if (event.detail.scrollTop > 400 && !this.reactionSuggestModal) this.reactionSuggestModal = true;
     },
     scrollToTop() {
       this.$refs.topMarker.scrollIntoView();
-    }
+    },
   }
 };
 </script>

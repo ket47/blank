@@ -163,7 +163,52 @@ ion-accordion-group .accordion-expanding .store-description{
 .group-fixed-block.hidden-block {
   display: none;
 }
+.perks-container{
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin: 10px;
+}
+.ion-chip{
+  display: flex;
+  align-items: center;
+  border-radius: 20px;
+  padding: 0 6px;
+}
+.ion-chip > ion-icon:first-child{
+  padding: 7px;
+  font-size: 1.3em;
+  margin-left: -6px;
+  border-radius: 20px;
+  box-shadow: 0px 0px 0px 3px white;
+}
+.ion-chip ion-label{
+  padding: 5px 7px;
+}
+.ion-chip > div{
+  padding: 10px;
+  background: #ffffff26;
+  font-size: 13px;
+  height: 100%;
+  font-weight: bold;
+  margin-right: -6px;
+  border-radius: 20px;
+}
 
+.ion-chip.outline-chip{
+  padding-right: 3px;
+}
+.ion-chip.outline-chip ion-icon{
+  background: inherit;
+}
+
+.ion-chip.outline-chip ion-label{
+  background-color: white;
+  border-top-right-radius: 20px;
+  border-bottom-right-radius: 20px;
+  margin-left: -3px;
+  padding: 7px 10px;
+}
 ion-chip .active-chip {
   background-color: var(--ion-color-secondary);
   color: white;
@@ -172,6 +217,12 @@ ion-chip .active-chip {
 @media only screen and (max-width: 1000px) {
   .desktop-main-container .group-fixed-block{
     top:0px;
+    }
+  .perks-container{
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 5px;
+    margin: 10px;
   }
 }
 
@@ -263,36 +314,41 @@ ion-chip .active-chip {
         </div>
         <reaction-comment  @react="itemGet()" :reactionSummary="storeItem?.reactionSummary" :targetType="'store'" :targetId="storeId"/>
 
+        <div class="horizontalScroller">
+        <div class="perks-container ">
+          <div class="ion-chip" v-if="storePerks.has_delivery" style="background: var(--ion-gradient-light-blue); color: white;">
+            <ion-icon :icon="cube"></ion-icon>
+            <ion-label>Есть доставка</ion-label>
+            <div v-if="storeItem?.deliveryTime?.timeMin">от {{ storeItem.deliveryTime.timeMin }}мин</div>
+          </div>
+          <div class="ion-chip" v-if="storePerks.free_delivery" style="background: var(--ion-gradient-red-vibrant); color: white;">
+            <ion-icon :icon="flash"></ion-icon>
+            <ion-label>Бесплатная доставка</ion-label>
+            <div>от {{ storePerks.free_delivery }}₽</div>
+          </div>
+          <div class="ion-chip" v-if="storePerks.has_pickup" style="background: var(--ion-gradient-purple); color: white;">
+            <ion-icon :icon="handLeft"></ion-icon>
+            <ion-label>Есть самовывоз</ion-label>
+          </div>
+          <div class="ion-chip" v-if="storePerks.has_loyalty" style="background: var(--ion-gradient-green); color: white;">
+            <ion-icon :icon="diamond" color="white"></ion-icon>
+            <ion-label>Есть бонусы</ion-label>
+          </div>
 
-        <div class="horizontalScroller" style="display:flex">
-          <div class="delivery-variant" v-if="storeItem.delivery_cost > 0">
-            <div>
-                <ion-text>Доставит {{$heap.getters.settings.app_title}}</ion-text><br/>
-                <ion-text v-if="storeItem?.deliveryTime?.timeMin">{{storeItem.deliveryTime.timeMin}}-{{storeItem.deliveryTime.timeMax}}мин</ion-text>
-            </div>
-            <div>
-              <ion-text v-if="storeItem.delivery_cost > 0">{{storeItem.delivery_cost}}₽</ion-text>
-              <ion-text v-else>0₽</ion-text>
-            </div>
+          <div class="ion-chip outline-chip" v-if="storePerks.has_promo" style="background: var(--ion-gradient-lime); color: white;">
+            <ion-icon :icon="pricetag"></ion-icon>
+            <ion-label style="color: #56ab2f;">Есть скидки</ion-label>
           </div>
-          <div class="delivery-variant" v-if="storeItem.store_delivery_allow==1" @click="$go(`/modal/store-dmethods-${storeId}`)">
-            <div>
-              <ion-text>
-                Доставит {{storeItem.store_name}}
-                <b style="font-size:10px">Условия доставки </b>
-              </ion-text>
-            </div>
-            <div style="padding-left: 15px;"><ion-icon :icon="openOutline"></ion-icon></div>
+          <div class="ion-chip outline-chip" v-if="storePerks.is_top" style="background: var(--ion-gradient-orange); color: white;">
+            <ion-icon :icon="trophy"></ion-icon>
+            <ion-label style="color: #f12711;">Хит продаж</ion-label>
           </div>
-          <div class="delivery-variant" v-if="storeItem.store_pickup_allow==1">
-            <div>
-              <ion-text>Самовывоз</ion-text><br/>
-            </div>
-            <div>
-              <ion-text>0₽</ion-text>
-            </div>
+          <div class="ion-chip outline-chip" v-if="storePerks.has_new" style="background: var(--ion-gradient-blue); color: white;">
+            <ion-icon :icon="star"></ion-icon>
+            <ion-label style="color: #021b79;">Новинка</ion-label>
           </div>
         </div>
+      </div>
     </div>
 
     <div v-if="storeItem.store_id">
@@ -390,6 +446,13 @@ import {
   addOutline,
   arrowRedoOutline,
   openOutline,
+  cube,
+  handLeft,
+  flash,
+  diamond,
+  star,
+  trophy,
+  pricetag
 }                         from "ionicons/icons";
 import ImageSliderComp    from "@/components/ImageSliderComp";
 import GroupList          from "@/components/GroupList.vue";
@@ -440,6 +503,13 @@ export default{
       addOutline,
       arrowRedoOutline,
       openOutline,
+      cube,
+      handLeft,
+      flash,
+      diamond,
+      star,
+      trophy,
+      pricetag
     };
   },
   data() {
@@ -515,6 +585,13 @@ export default{
     },
     productListIsEmpty(){
       return this.productList?.length>0?0:1
+    },
+    storePerks(){
+      return {
+        has_pickup: this.storeItem?.store_pickup_allow==1,
+        has_delivery: this.storeItem?.delivery_cost > 0,
+        free_delivery: this.storeItem?.delivery_free_treshold ?? 0
+      }
     }
   },
   methods: {

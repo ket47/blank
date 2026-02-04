@@ -4,8 +4,7 @@
     }
 </style>
 <template>
-    <base-layout :pageTitle="`Заказ #${order_id} ${order?.deleted_at?'(Удален)':''}` " pageDefaultBackLink="/order/order-list" class="order-view">
-
+    <base-layout :pageTitle="`Заказ #${order_id} ${order?.deleted_at?'(Удален)':''}` " pageDefaultBackLink="/order/order-list"  class="order-view">
             <div v-if="order=='notfound'" style="display:flex;align-items:center;justify-content:center;height:100%">
                 <div style="width:max-content;text-align:center">
                     <ion-icon :icon="sparklesOutline" size="large"></ion-icon>
@@ -13,7 +12,6 @@
                     <a href="/order/order-list">список заказов</a>
                 </div>
             </div>
-
             <order-comp :orderData="order" @stageCreate="onStageCreate" @orderRefresh="itemGet"/>
             <order-tracking-comp :orderData="order"/>
             <order-reaction-comp :orderData="order"/>
