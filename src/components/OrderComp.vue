@@ -8,7 +8,7 @@
     }
     html:not(.plt-desktop) .action-block:not(.relative-position){
         position: fixed;
-        bottom: 0px;
+        bottom: var(--ion-safe-area-bottom);
         z-index: 2;
         background: white;
         box-shadow: 0px -3px 10px #ccc;
