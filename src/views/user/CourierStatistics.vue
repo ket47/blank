@@ -1,5 +1,5 @@
 <template>
-    <base-layout pageTitle="Статистика курьера" pageDefaultBackLink="/user">
+    <base-layout :pageTitle="`Статистика курьера ${courier?.courier_name}`" pageDefaultBackLink="/user">
         <ion-segment swipe-gesture="true" v-model="activeTab" @ionChange="activeTabChanged($event.target.value)">
             <ion-segment-button value="statistics" >
                 Рейтинг
@@ -94,6 +94,7 @@ export default {
     },
     data(){
         return {
+            other_courier_id:this.$route?.query?.courier_id,
             activeTab:'statistics',
             courier:null,
             statistics:null,
@@ -101,7 +102,15 @@ export default {
     },
     methods:{
         async itemGet(){
-            this.courier=await User.courier.get()
+            if(this.other_courier_id>0){
+                try{
+                this.courier=await this.$post( this.$heap.state.hostname + "Courier/itemGet",{courier_id:this.other_courier_id})
+                } catch( err ){
+                this.$flash("Не удалось загрузить анкету")
+                }
+            } else {
+                this.courier=await User.courier.get()
+            }
         },
         async itemStatisticsGet(){
             if( !this.courier ){

@@ -23,6 +23,12 @@
                     <ion-label>Скачать баланс продавцов</ion-label>
                 </ion-item>
             </ion-list>
+            <ion-list>
+                <ion-item button @click="reportCourierBalanceExport()">
+                    <ion-icon slot="start" :src="downloadOutline"/>
+                    <ion-label>Скачать баланс Курьеров</ion-label>
+                </ion-item>
+            </ion-list>
         </div>
         <div v-if="activeTab=='ledger'">
             <ion-list>
@@ -126,6 +132,21 @@ export default {
                 }
                 const response= await jquery.post(`${this.$heap.state.hostname}Statistics/statSupplierBalanceReport`,request)
                 const reportUrl=`${this.$heap.state.hostname}Statistics/download/${response}/supplierBalance.xlsx`
+                const anchor = document.createElement('a')
+                anchor.href =reportUrl
+                anchor.download='download'
+                anchor.click()
+            } catch (err) {
+                return false;
+            }
+        },
+        async reportCourierBalanceExport(){
+            try {
+                const request={
+                    output:'xlsx'
+                }
+                const response= await jquery.post(`${this.$heap.state.hostname}Statistics/statCourierBalanceReport`,request)
+                const reportUrl=`${this.$heap.state.hostname}Statistics/download/${response}/CourierBalance.xlsx`
                 const anchor = document.createElement('a')
                 anchor.href =reportUrl
                 anchor.download='download'

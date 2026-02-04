@@ -285,11 +285,11 @@ const routes = [
       },
       {
         path: '/admin/chat-rooms',
-        component: () => import('@/views/WallChatRooms.vue')
+        component: () => import('@/views/ChatRooms.vue')
       },
       {
         path: '/admin/chat-room-:id',
-        component: () => import('@/views/WallChatRoom.vue')
+        component: () => import('@/views/ChatRoom.vue')
       },
   ]
   },

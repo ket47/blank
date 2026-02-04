@@ -96,6 +96,33 @@
                         </ion-item>
                     </div>
                 </ion-list>
+                <ion-list v-if="moderationType=='couriers'">
+                    <!--COURIERS component-->
+                    <div v-for="item in listComputed" :key="item.item_id">
+                        <ion-item button detail @click="itemEdit(item)" lines="none">
+                            <ion-thumbnail slot="start" :class="item.class" v-if="item.image_hash">
+                                <ion-img :src="`${$heap.state.hostname}image/get.php/${item.image_hash}.150.150.webp`"/>
+                            </ion-thumbnail>
+                            <ion-text>{{item.item_name}}</ion-text>
+                            
+
+
+
+                        </ion-item>
+                        <ion-item>
+                            <ion-chip color="primary">
+                                <ion-icon :src="callOutline"></ion-icon>
+                                <ion-label><a :href="`tel:${item.user_phone}`">{{item.user_phone}}</a></ion-label>
+                            </ion-chip>
+                            <div slot="end">
+                                <ion-text v-if="item.courier_parttime_notify=='ringtone'">🔔 Рингтон</ion-text>
+                                <ion-text v-else-if="item.courier_parttime_notify=='push'">💬 Сообщение</ion-text>
+                                <ion-text v-else-if="item.courier_parttime_notify=='silent'">🔇 Без звука</ion-text>
+                                <ion-text v-else>🚫 Отключено</ion-text>
+                            </div>
+                        </ion-item>
+                    </div>
+                </ion-list>
                 <ion-list v-else-if="moderationType=='posts'">
                     <!--POSTS component-->
                     <ion-item button detail @click="itemEdit({post_id:0})">

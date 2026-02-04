@@ -57,7 +57,7 @@
           <ion-button expand="block" color="light" @click="installPromptDissmiss()">Закрыть</ion-button>
         </ion-content>
       </ion-modal>
-      <div style="height:30px"><!--spacer for bottom main tabs--></div>
+      <div style="height:30px" v-if="!hideBottomSpacer"><!--spacer for bottom main tabs--></div>
       <ion-fab v-if="isInteractingWithServer" vertical="bottom" slot="fixed">
         <tezkel-loader/>
       </ion-fab>
@@ -114,7 +114,8 @@ export default defineComponent({
     "pageClass",
     "cartComponent",
     "contentOnScroll",
-    "headerColor"
+    "headerColor",
+    "hideBottomSpacer"
   ],
   components: {
     IonPage,
