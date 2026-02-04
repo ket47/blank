@@ -1,12 +1,12 @@
 <style >
-
+    
     .entry-deleted{
         color:var(--ion-color-danger);
     }
     .action-block{
         padding: 4px 0 16px;
     }
-    html:not(.plt-desktop) .action-block{
+    html:not(.plt-desktop) .action-block:not(.relative-position){
         position: fixed;
         bottom: 0px;
         z-index: 2;
@@ -247,7 +247,7 @@
             </ion-card-content>
         </ion-card>
 
-        <div class="action-block">
+        <div :class="`action-block ${(atCart) ? 'relative-position' : ''}`">
             <order-free-delivery v-if="atCart" :orderData="orderData" :orderTotal="orderTotal"/>
             <div class="action-row action-buttons">
                 <div>

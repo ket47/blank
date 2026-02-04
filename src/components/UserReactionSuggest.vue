@@ -8,7 +8,7 @@
 }
 </style>
 <template>
-  <ion-modal :isOpen="isOpen" :initial-breakpoint="0.35" :breakpoints="[0, 0.35, 0.45]" :backdrop-dismiss="false" :backdrop-breakpoint="0.5">
+  <ion-modal :isOpen="isOpen" ref="modal" :initial-breakpoint="0.35" :breakpoints="[0, 0.25, 0.5, 0.75]" :backdrop-dismiss="false" :backdrop-breakpoint="0.5">
     <ion-content v-if="productItem.product_id" >
       <ion-item lines="none">
         <div v-if="!reactionCompleted">
@@ -29,10 +29,10 @@
             <ion-label>
               <h3><b>{{ productItem.product_name }}</b></h3>
               <ion-chip color="medium">
-                <ion-avatar>
+                <ion-avatar v-if="productItem.store.avatar.length > 0">
                   <img :src="`${$heap.state.hostname}image/get.php/${productItem.store.avatar[0]?.image_hash}.50.50.webp`"/>
                 </ion-avatar>
-                <ion-label>{{ productItem.store.store_name }}</ion-label>
+                <ion-label class="max-two-lines">{{ productItem.store.store_name }}</ion-label>
               </ion-chip>
             
             </ion-label>
@@ -48,8 +48,8 @@
                   auto-grow="true"
                   v-model="reaction.comment"
                   placeholder="отзыв о товаре"
-                  label=""
                   style="background:var(--ion-color-primary-tint);border-radius:10px;margin-bottom:3px;"
+                  @click="$refs.modal.$el.setCurrentBreakpoint(0.75)"
               ></ion-textarea>
               <ion-button style="margin-left: 5px;" color="primary" size="default" :disabled="reaction.comment == ''" @click="itemReactionCreate('comment', reaction.comment);" >
                 <ion-icon :icon="send" ></ion-icon>

@@ -28,7 +28,7 @@ ion-item-divider.ios{
 }
 .max-two-lines{
     overflow: hidden;
-    display: -webkit-box;
+    display: -webkit-box !important;
     -webkit-line-clamp: 2;
             line-clamp: 2; 
     -webkit-box-orient: vertical;
