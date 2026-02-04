@@ -19,7 +19,9 @@
     padding: 0;
   }
   .desktop-main-container {
-    --background: url('../../public/img/bg3.png');
+    background-image: url('../../public/img/bg3.png') !important;
+    --background: linear-gradient(0deg, #0034ff14, #00ffcf14);
+    background-size: 25%;
   }
 
 

@@ -77,6 +77,7 @@
                 </ion-chip>
             </ion-item>
             
+
             <order-delivery-search v-if="orderData.stage_current == 'customer_start' && ['admin', 'customer'].includes(orderData.user_role)" :orderData="orderData"/>
 
             <ion-item v-for="entry in orderData?.entries"  :key="entry.product_id" :class="entry.deleted_at?'entry-deleted':''" lines="full" style="padding-top:10px;">
@@ -247,6 +248,7 @@
         </ion-card>
 
         <div class="action-block">
+            <order-free-delivery v-if="atCart" :orderData="orderData" :orderTotal="orderTotal"/>
             <div class="action-row action-buttons">
                 <div>
                     <ion-button v-for="(stage_title, order_stage_code) in nextStages.buttons" :key="`button-stage-${order_stage_code}`"
@@ -331,6 +333,7 @@ import {
     IonAccordion,
     IonTextarea,
     alertController,
+    IonProgressBar
 }                       from '@ionic/vue';
 import { 
     addCircle,
@@ -351,6 +354,7 @@ import {
 }                       from 'ionicons/icons';
 import CartAddButtons   from '@/components/CartAddButtons.vue';
 import OrderDeliverySearch   from '@/components/OrderDeliverySearch.vue';
+import OrderFreeDelivery   from '@/components/OrderFreeDelivery.vue';
 import jQuery           from "jquery";
 import Order            from "@/scripts/Order.js"
 import Utils        from '@/scripts/Utils.js'
@@ -381,6 +385,8 @@ export default({
     IonAccordion,
     IonTextarea,
     OrderDeliverySearch,
+    OrderFreeDelivery,
+    IonProgressBar
     },
     setup() {
         return { 
@@ -499,6 +505,7 @@ export default({
             }
             return 'medium'
         },
+        
     },
     methods:{
         storeOpen(){

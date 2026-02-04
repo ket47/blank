@@ -194,10 +194,6 @@ const routes = [
         path: '/order/order-list',
         component: () => import('@/views/OrderList.vue')
       },
-      {
-        path: '/order/order-:id',
-        component: OrderView
-      },
 
 
       {
@@ -341,6 +337,11 @@ const routes = [
   {
     path: '/chameleon-user',
     component: () => import('@/views/chameleon/ChameleonUser.vue')
+  },
+  {
+    path: '/order/order-:id',
+    component: OrderView,
+    meta: { forceBackButton: true }
   },
   {
     path: '/:catchAll(.*)',

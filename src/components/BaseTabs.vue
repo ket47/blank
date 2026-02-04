@@ -21,84 +21,93 @@ ion-tab-bar.main-tab-bar>div{
   }
 }
 @media only screen and (min-width: 1000px) {
-    .main-tab-bar-adaptive .tabbar_svg_logo{
-      display: block;
-      margin-bottom: 30px;
-    }
-    .main-grid{
-      display:grid;
-      grid-template-columns:minmax(250px,15%) 70% 15%;
-      width:100%;
-      min-height: 100vh;
-    }
-    ion-tab-bar.main-tab-bar-adaptive  {
-      position: fixed;
-      width: 15%;
-      min-width: 250px;
-      height: 300px;
-
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-start;
-      text-align: left;
-      box-shadow: none;
-    }
-    ion-tab-bar.main-tab-bar-adaptive>div{
-      width:200px;
-      margin:2px;
-      padding:10px;
-      color:var(--ion-color-dark);
-      cursor: pointer;
-      border: 1px solid #ccc;
-      border-radius: 10px;
-      
-      background-color: #ffffff;
-      background-color: rgba(255,255,255,.7);
-    }
-    ion-tab-bar.main-tab-bar-adaptive ion-label{
-      display:inline-block;
-      font-size:1em;
-      margin-left:10px;
-      color: var(--ion-color-dark);
-    }
-    ion-tab-bar.main-tab-bar-adaptive>div ion-icon{
-      font-size:1.2em;
-      color: var(--ion-color-dark);
-    }
-    .tabbar_svg_logo ion-icon{
-      width: 100%;
-      height: 60px;
-      display: block;
-    }
-
-    ion-tab-bar.main-tab-bar-adaptive .tab-selected{
-      border: 1px solid var(--ion-color-primary);
-      background-color: var(--ion-color-primary-tint);
-      color:var(--ion-color-primary);
-    }
+  .router-content .ion-page{
+    padding-top: 75px;
+  }
+  .main-tab-bar-adaptive .tabbar_svg_logo{
+    display: block;
+    width: 150px;
+    position: fixed;
+    left: 15vw;
+    background: none;
+  }
+  .main-tab-bar-adaptive .tabbar_svg_logo ion-icon{
+    display: block !important;
+  }
+  .main-grid{
+    display: grid;
+    grid-template-columns: 15% 70% 15%;
+    width: 100%;
+    min-height: 100vh;
+  }
+  .main-grid > div:nth-child(2){
+    box-shadow: 0px 0px 20px -15px black;
+    margin-top: 20px;
+    margin-bottom: 20px;
+  }
+  ion-tab-bar.main-tab-bar-adaptive  {
+    position: fixed;
+    width: 100%;
+    display: flex;
+    justify-content: end;
+    text-align: left;
+    box-shadow: 0 0px 10px rgba(0, 0, 0, 0.4);
+    padding: 0.7em 0;
+    font-size: 14px;
+  }
+  ion-tab-bar.main-tab-bar-adaptive > div{
+    width: auto;
+    margin: 2px;
+    padding: 10px;
+    cursor: pointer;
+    background-color: rgba(255,255,255,.7);
+  }
+  ion-tab-bar.main-tab-bar-adaptive > div:last-child{
+    margin-right: 15vw;
+  }
+  ion-tab-bar.main-tab-bar-adaptive ion-label{
+    display: inline-block;
+    font-size: 1em;
+    margin-left: 10px;
+    color: var(--ion-color-dark);
+  }
+  ion-tab-bar.main-tab-bar-adaptive>div ion-icon{
+    font-size: 1.2em;
+    color: var(--ion-color-dark);
+    display: none !important;
+  }
+  .tabbar_svg_logo ion-icon{
+    width: 100%;
+    height: 60px;
+    display: block;
+  }
+  ion-tab-bar.main-tab-bar-adaptive .tab-selected ion-label{
+    color: var(--ion-color-primary) !important;
+    font-weight: bold;
+  }
+  .badge{
+    right: 0 !important;
+    position: relative !important;
+    display: inline-block;
+    margin-left: 5px;
+    padding: 3px 6px;
+  }
 }
 
-
-
-
-
-
-
-
 ion-tabs ion-icon{
-  font-size:1.5em;
+  font-size: 1.5em;
 }
 ion-tab-bar ion-label{
   display: block;
-  font-size:0.6em;
+  font-size: 0.6em;
 }
 .tab-selected ion-label{
   color: var(--ion-color-primary);
 }
 .tab-selected .active{
-  display:inline-block;
+  display: inline-block;
 
-  color:#000;
+  color: #000;
 }
 .tab-selected .passive{
   display:none;
@@ -127,9 +136,9 @@ ion-tab-bar ion-label{
 <template>
   <ion-page>
     <ion-tabs style="position:relative">
-      <ion-router-outlet ref="routerOutlet"></ion-router-outlet>
+      <ion-router-outlet ref="routerOutlet" class="router-content"></ion-router-outlet>
       <ion-tab-bar class="main-tab-bar" slot="bottom">
-        <div class="tabbar_svg_logo">
+        <div class="tabbar_svg_logo" @click="tabClicked('/catalog')">
           <ion-icon class=" ion-color ion-color-primary" :icon="mainLogo"/>
         </div>
 

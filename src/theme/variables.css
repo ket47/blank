@@ -92,6 +92,48 @@ http://ionicframework.com/docs/theming/ */
 }
 
 
+
+/** Gradients **/
+:root {
+  /* Глубокий изумрудный */
+  --ion-gradient-green: linear-gradient(-135deg, #088638 0%, #44e788 100%);
+
+  /* Насыщенный лазурный */
+  --ion-gradient-light-blue: linear-gradient(-135deg, #0072ff 0%, #00c6ff 100%);
+
+  /* Энергичный алый */
+  --ion-gradient-red: linear-gradient(-135deg, #9b0606 0%, #a7221d 100%); /* Глубокий винный */
+  --ion-gradient-red-vibrant: linear-gradient(-135deg, #ee0979 0%, #ff6a00 100%);
+
+  /* Сочный апельсин */
+  --ion-gradient-orange: linear-gradient(-135deg, #f12711 0%, #f5af19 100%);
+
+  /* Насыщенный индиго/фиолетовый */
+  --ion-gradient-purple: linear-gradient(-135deg, #7028e4 0%, #d64086 100%); /* Плотный переход */
+  --ion-gradient-violet: linear-gradient(-135deg, #41295a 0%, #2f0743 100%); /* Очень темный */
+
+  /* Плотный бирюзовый */
+  --ion-gradient-teal: linear-gradient(-135deg, #004e92 0%, #000428 100%); /* Темный океан */
+  --ion-gradient-cyan: linear-gradient(-135deg, #00b4db 0%, #0083b0 100%);
+
+  /* Темно-синий (Night Blue) */
+  --ion-gradient-blue: linear-gradient(-135deg, #021b79 0%, #0575e6 100%);
+
+  /* Желтый: от золотого к янтарному (чтобы белый текст не сливался) */
+  --ion-gradient-yellow: linear-gradient(-135deg, #e97b14 0%, #e4af00 100%);
+
+  /* Розовый: насыщенная фуксия с уходом в глубокий ягодный */
+  --ion-gradient-pink: linear-gradient(-135deg, #ec008c 0%, #fc6767 100%);
+
+  /* Светло-зеленый: свежая трава с достаточной глубиной */
+  --ion-gradient-light-green: linear-gradient(-135deg, #52c234 0%, #061700 100%); /* Глубокий вариант */
+  --ion-gradient-green-soft: linear-gradient(-135deg, #9be15d 0%, #00e3ae 100%);
+
+  /* Салатовый: неоновый, но плотный */
+  --ion-gradient-lime: linear-gradient(-135deg, #a8e063 0%, #56ab2f 100%);
+}
+
+
 /*=========================*/
 /*=========DESKTOP=========*/
 /*=========================*/

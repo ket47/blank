@@ -496,8 +496,8 @@ export default {
         }
       ],
       sortBy: {    
-        title: 'Быстрые',
-        code: 'deliveryTime'
+        title: 'Близкие',
+        code: 'distance'
       },
       customProductGroups: [
         {
