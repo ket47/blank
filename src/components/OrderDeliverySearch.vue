@@ -105,20 +105,23 @@ export default {
     },
     computed: {
         deliverySearchUntill() {
-            const diff = this.orderData.delivery_search_until - this.now;
+            let diff = this.orderData.delivery_search_until - this.now;
             if (diff <= 0) return '00:00';
-
+            const hours = Math.floor(diff / 3600);
+            diff=diff-hours*3600
             const minutes = Math.floor(diff / 60);
             const seconds = diff % 60;
             const m = String(minutes).padStart(2, '0');
             const s = String(seconds).padStart(2, '0');
-
+            if( hours>0 ){
+                return `${hours}ч ${m}:${s}`;
+            }
             return `${m}:${s}`;
         }
     },
     data(){
         return {
-            currentPromisedTip: 0,
+            currentPromisedTip: this.orderData.delivery_promised_tip??0,
             promisedTipModal: false,
             now: Math.floor(Date.now() / 1000),
             timerInterval: null
@@ -128,6 +131,13 @@ export default {
         addTip(quantity) {
             this.currentPromisedTip += quantity
             this.promisedTipModal = false
+            const request={
+                order_id:this.orderData.order_id,
+                promised_tip:this.currentPromisedTip
+            }
+            try{
+                this.$post(`${this.$heap.state.hostname}Order/itemDeliverySpeedup`,request)
+            }catch{/** */}
         }
     },
     mounted() {
