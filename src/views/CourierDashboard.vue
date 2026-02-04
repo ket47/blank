@@ -45,7 +45,21 @@ ion-text{
         Анкета активна. Вы можете получать заказы.
         </ion-card-content>
       </ion-card>
-      
+      <ion-card lines="none">
+        <ion-card-content>
+          <ul>
+            <li>Пользователь: {{ courier.user_name }}</li>
+            <li>Телефон: <a :href="`tel:+${courier.user_phone}`">+{{ courier.user_phone }}</a></li>
+            <li>Статус: {{ courier?.member_of_groups?.group_names }}</li>
+            <li>Рейтинг: {{ Math.round(courier.rating_score*5*100)/100 }}⭐</li>
+            <ion-chip @click="$go(`/user/courier-statistics?courier_id=${other_courier_id}`)">
+              <ion-icon :icon="pieChartOutline"></ion-icon>
+              <ion-label>Перейти к статистике курьера</ion-label>
+            </ion-chip>
+          </ul>
+        </ion-card-content>
+      </ion-card>
+
       <form @ionChange="updateCourier()">
         <ion-list>
           <ion-item>
@@ -85,7 +99,7 @@ ion-text{
             <ion-label>Информация о курьере</ion-label>
           </ion-item-divider>
           <ion-item lines="full">
-            <ion-input v-model="courier.courier_name" placeholder="" label="Имя" label-placement="stacked"/>
+            <ion-input v-model="courier.courier_name" placeholder="" label="Имя для клиентов" label-placement="stacked"/>
           </ion-item>
           <ion-item lines="full">
             <ion-select v-model="courier.courier_vehicle"  interface="popover" label="Транспорт" label-placement="stacked" :interface-options="customPopoverOptions">
@@ -106,21 +120,40 @@ ion-text{
           <ion-item lines="full">
             <ion-textarea v-model="courier.courier_comment" placeholder="" label="Комментарий" label-placement="stacked"></ion-textarea>
           </ion-item>
+
+          <ion-item-divider>
+            <ion-label>Реквизиты для выплат</ion-label>
+          </ion-item-divider>
+          <ion-item lines="full">
+            <ion-input v-model="courier.courier_full_name" placeholder="" label="ФИО самозанятого" label-placement="stacked"/>
+          </ion-item>
+          <ion-item lines="full">
+            <ion-input v-model="courier.courier_tax_num" placeholder="" label="ИНН самозанятого" label-placement="stacked"/>
+          </ion-item>
+          <ion-item lines="full">
+            <ion-input v-model="courier.courier_bank_account" placeholder="" label="Счет" label-placement="stacked"/>
+          </ion-item>
+          <ion-item lines="full">
+            <ion-input v-model="courier.courier_bank_id" placeholder="" label="Бик банка" label-placement="stacked"/>
+          </ion-item>
+          <ion-item lines="full">
+            <ion-textarea v-model="courier.courier_bank_assignment" placeholder="" label="Назначение платежа" label-placement="stacked"></ion-textarea>
+          </ion-item>
         </ion-list>
       </form>
       <ion-item-divider>
         <ion-label>Фотографии</ion-label>
       </ion-item-divider>
       <ion-list v-if="courier">
-        <image-tile-comp :images="courier.images" image_holder="courier" :image_holder_id="courier.courier_id" controller="Courier" ref="courierImgs" :title="'Аватар в приложении'"></image-tile-comp>
+        <image-tile-comp :images="courier.images" image_holder="courier" :image_holder_id="courier.courier_id" controller="Courier" ref="courierImgs" :title="'Фото лица для клиентов'"></image-tile-comp>
         <ion-button @click="$refs.courierImgs.take_photo()" expand="block" color="light">
-          <ion-icon :src="cameraOutline" slot="start"/> Добавить аватар
+          <ion-icon :src="cameraOutline" slot="start"/> Добавить своё фото
         </ion-button>
       </ion-list>
       <ion-list v-if="courier">
-        <image-tile-comp :images="courier.passport_images" image_holder="courier_passport" :image_holder_id="courier.courier_id" controller="Courier" ref="courierPassImgs" :title="'Фото паспорта'"></image-tile-comp>
+        <image-tile-comp :images="courier.passport_images" image_holder="courier_passport" :image_holder_id="courier.courier_id" controller="Courier" ref="courierPassImgs" :title="'Фото паспорта для выплат'"></image-tile-comp>
         <ion-button @click="$refs.courierPassImgs.take_photo()" expand="block" color="light">
-          <ion-icon :src="cameraOutline" slot="start"/> Загрузить фото
+          <ion-icon :src="cameraOutline" slot="start"/> Загрузить фото паспорта
         </ion-button>
       </ion-list>
 
@@ -251,14 +284,15 @@ import {
   IonIcon,
   IonSelect,
   IonSelectOption,
-
+  IonChip,
 }                    from "@ionic/vue";
 import {
   cameraOutline,
   trashOutline,
   documentTextOutline,
   ribbonOutline,
-  notificationsOutline
+  notificationsOutline,
+  pieChartOutline
 }                     from 'ionicons/icons'
 
 import jQuery           from 'jquery';
@@ -289,15 +323,17 @@ export default  {
   IonIcon,
   IonSelect,
   IonSelectOption,
+  IonChip,
 
   },
   setup(){
     return {
-  cameraOutline,
-  trashOutline,
-  documentTextOutline,
-  ribbonOutline,
-    notificationsOutline
+      cameraOutline,
+      trashOutline,
+      documentTextOutline,
+      ribbonOutline,
+      notificationsOutline,
+      pieChartOutline,
     }
   },
   data(){
@@ -428,13 +464,28 @@ export default  {
           courier_vehicle:this.courier.courier_vehicle,
           courier_comment:this.courier.courier_comment,
           courier_parttime_notify:this.courier.courier_parttime_notify,
+
+          courier_full_name:this.courier.courier_full_name,
+          courier_tax_num:this.courier.courier_tax_num,
+          courier_bank_account:this.courier.courier_bank_account,
+          courier_bank_id:this.courier.courier_bank_id,
+          courier_bank_assignment:this.courier.courier_bank_assignment,
         }
-        return await this.$post(heap.state.hostname + "Courier/itemUpdate",JSON.stringify(request));
+        const result=await this.$post(heap.state.hostname + "Courier/itemUpdate",JSON.stringify(request));
+        this.$flash("💾 Сохранено");
+        return result
       } catch(err){
         const message=JSON.parse(err.responseJSON?.messages?.error);
         if(message.courier_tax_num){
-          this.$flash("Неверный формат ИНН");
+          this.$flash("⛔ Неверный формат ИНН (10 или 12 цифр)");
         }
+        if(message.courier_bank_account){
+          this.$flash("⛔ Неверный формат номер счета (20 цифр)");
+        }
+        if(message.courier_bank_id){
+          this.$flash("⛔ Неверный формат БИК (9 цифр)");
+        }
+        this.itemGet()
       }
       
     },

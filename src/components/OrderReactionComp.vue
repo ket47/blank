@@ -13,6 +13,13 @@
         border-radius: 10px;
         animation: blinkColor 1.5s ease infinite alternate;
     }
+    ion-item.reaction-block-flame::part(native) {
+        margin: 10px 0px ;
+        background: #e96100;
+        color: #fff;
+        border-radius: 10px;
+        animation: blinkColorFlame 1.5s ease infinite alternate;
+    }
     .img-group-container{
         display: flex; 
         justify-content: space-evenly; 
@@ -63,7 +70,8 @@
     }
     
   
-    ion-item.reaction-block-customer:after{
+    ion-item.reaction-block-customer:after,
+    ion-item.reaction-block-flame:after{
         content: "";
         position: absolute;
         background: linear-gradient(45deg, transparent 8%, white 8%, white 9%, transparent 9%, transparent 11%, white 11%, white 14%, transparent 14%);
@@ -99,23 +107,44 @@
             background: rgb(38, 0, 255);
         }
     }
+    @keyframes blinkColorFlame {
+        0%{
+            background: hsl(11, 83%, 51%);
+        }
+        100%{
+            background: rgb(237, 123, 16);
+        }
+    }
 </style>
 <template>
 <div v-if="isLoaded">
     <div v-if="has_delivery_found && !has_delivery_finish">
         <div style="padding: 8px;" v-if="is_customer || is_admin">
-            <ion-item color="light" lines="none" style="border-radius: 10px;" detail-icon="">
+            <ion-item  v-if="orderData.delivery_promised_tip??null" color="light" lines="none" style="border-radius: 10px;" detail-icon="" class="reaction-block-flame">
+                <ion-icon :icon="flashSharp" slot="start" style="font-size:40px;color:white"></ion-icon>
+                <ion-label>
+                    <h3><b>Не забудьте!</b></h3>
+                    <p>Вы обещали доплатить курьеру {{ orderData.delivery_promised_tip }}₽</p>
+                </ion-label>
+            </ion-item>
+            <ion-item  v-else color="light" lines="none" style="border-radius: 10px;" detail-icon="">
                 <ion-label>
                     <h3><b>Чаевые курьеру</b></h3>
-                    <p>При такой сумме заказа обычно курьеру оставляют <b>{{ courier_tips }}₽</b></p>
+                    <p>При такой сумме заказа курьеру обычно оставляют <b>{{ courier_tips }}₽</b></p>
                 </ion-label>
             </ion-item>
         </div>
-        <div style="padding: 8px;" v-if="is_courier || is_admin">
-            <ion-item color="light" lines="none" style="border-radius: 10px;" detail-icon="">
+        <div style="padding: 8px;" v-if="is_courier">
+            <ion-item v-if="orderData.delivery_promised_tip??null" color="light" lines="none" style="border-radius: 10px;" detail-icon="" class="reaction-block-flame">
+                <ion-icon :icon="flashSharp" slot="start" style="font-size:40px;color:white"></ion-icon>
                 <ion-label>
-                    <h3>Скажите клиенту</h3>
-                    <p>Оцените нашу работу в приложении и получите бонус.</p>
+                    <p>Клиент обещал доплатить за доставку {{ orderData.delivery_promised_tip }}₽</p>
+                    <p><b>Скажите клиенту:</b> Оцените нашу работу в приложении и получите бонус.</p>
+                </ion-label>
+            </ion-item>
+            <ion-item v-else color="light" lines="none" style="border-radius: 10px;" detail-icon="">
+                <ion-label>
+                    <p><b>Скажите клиенту:</b> Оцените нашу работу в приложении и получите бонус.</p>
                 </ion-label>
             </ion-item>
         </div>
@@ -232,7 +261,7 @@ import {
     IonTextarea
 }                   from '@ionic/vue';
 import {
-    arrowForwardOutline,
+    arrowForwardOutline,flashSharp
 }                   from 'ionicons/icons';
 
 import User         from '@/scripts/User.js';
@@ -258,7 +287,7 @@ export default({
     },
     setup() {
         return { 
-            arrowForwardOutline,
+            arrowForwardOutline,flashSharp
         }
     },
     data(){
