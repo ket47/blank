@@ -53,7 +53,7 @@
                 <label><b class="max-two-lines">{{ story_group.holder_name }}</b></label>
             </div>
         </div>
-        <stories-modal :story-groups="storyGroups" :start-index="modalStartIndex" :is-open="modalIsOpen" @on-close="closeModal" :slide-duration="10000" @on-change="listGet()" :is-editable="isEditable"/>
+        <stories-modal :story-groups="storyGroups" :start-index="modalStartIndex" :is-open="modalIsOpen" @on-close="closeModal" :slide-duration="5000" @on-change="listGet()" :is-editable="isEditable"/>
     </div>
   </div>
   <div v-else class="ion-padding-horizontal ion-padding-bottom">

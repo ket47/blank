@@ -180,7 +180,7 @@ export default defineComponent({
     }
     setTimeout(()=>{
       this.installPromptInit()
-    },10000)
+    },60000)
     sessionStorage.installPrompted=1
   },
   methods:{

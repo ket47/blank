@@ -31,10 +31,6 @@ module.exports = {
     msTileColor: "#ffffff",
     appleMobileWebAppCapable: true,
     appleMobileWebAppStatusBarStyle: 'white',
-    workboxOptions: {
-      //skipWaiting: true,
-      //clientsClaim: true
-    },
     manifestOptions: {
       name: "Tezkel",
       short_name: "Tezkel",

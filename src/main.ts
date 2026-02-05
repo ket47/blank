@@ -302,7 +302,7 @@ async function startApp(){
     await User.sessionIdUse(heap.state.sessionId);
   }
 
-
+  app.mount('#app');
   /**
    * opens deeplinking urls in this app
    */
@@ -313,8 +313,6 @@ async function startApp(){
     }
   })
   await User.autoSignIn();
-
-  app.mount('#app');
 
   Push.setFlashHandler(flash)
   Push.setAlertHandler(alert)
