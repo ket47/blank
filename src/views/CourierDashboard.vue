@@ -52,7 +52,7 @@ ion-text{
             <li>Телефон: <a :href="`tel:+${courier.user_phone}`">+{{ courier.user_phone }}</a></li>
             <li>Статус: {{ courier?.member_of_groups?.group_names }}</li>
             <li>Рейтинг: {{ Math.round(courier.rating_score*5*100)/100 }}⭐</li>
-            <ion-chip @click="$go(`/user/courier-statistics?courier_id=${other_courier_id}`)">
+            <ion-chip @click="$go(`/user/courier-statistics?courier_id=${other_courier_id??this.courier.courier_id}`)">
               <ion-icon :icon="pieChartOutline"></ion-icon>
               <ion-label>Перейти к статистике курьера</ion-label>
             </ion-chip>

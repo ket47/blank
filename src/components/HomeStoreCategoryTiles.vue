@@ -147,7 +147,7 @@
 <template>
   <div class="store-category-container">
       <swiper :slides-per-view="'auto'" class="store-category-swiper">
-        <swiper-slide v-for="(group, i) in this.storeGroupsGrouped" :key="i">
+        <swiper-slide v-for="group in this.storeGroupsGrouped" :key="group.group_id">
             
             <div class="store-category-grid">
               <div :class="`store-category-item ${(activeGroup == store_group.group_id) ? 'active-item' : ''}`" v-for="(store_group, k) in group" @click="selectGroup(store_group.group_id)" :key="k">
@@ -196,13 +196,13 @@ export default {
       activeGroup: 0,
       storeGroupsGrouped: [],
       isMobile: /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(window.navigator.userAgent),
-      imgConfig: {
-        6: '/img/categories/tezkel_category_burger.png',
-        5: '/img/categories/tezkel_category_flowers.png',
-        1: '/img/categories/tezkel_category_products.png',
-        3: '/img/categories/tezkel_category_restaurant.png',
-        4: '/img/categories/tezkel_category_halal.png'
-      }
+      // imgConfig: {
+      //   6: '/img/categories/tezkel_category_burger.png',
+      //   5: '/img/categories/tezkel_category_flowers.png',
+      //   1: '/img/categories/tezkel_category_products.png',
+      //   3: '/img/categories/tezkel_category_restaurant.png',
+      //   4: '/img/categories/tezkel_category_halal.png'
+      // }
     };
   },
   methods: {

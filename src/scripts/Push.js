@@ -41,7 +41,7 @@ class Push{
       this.flash(body)
     } else
     if(body){
-      this.alert(body,title)
+      //this.alert(body,title)
     }
   }
 
