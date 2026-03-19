@@ -74,13 +74,13 @@
                     </ion-item>
                     <ion-item lines="full">
                         <div style="display:grid;grid-template-columns:45px auto 20px;width:100%;margin-bottom:3px">
-                            <div style="padding:3px;color:#ccc">{{job.start_plan_date}}</div>
+                            <div style="padding:3px;color:#ccc"></div><!--{{job.start_plan_date}}-->
                             <div style="padding:3px;color:#333"><small>{{job.start_address}}</small></div>
                             <div><ion-icon :icon="square" :style="`color:${job.start_color}`"/></div>
                             <div v-if="job.finish_plan_scheduled_date" style="padding:3px;color:#fff;background-color:var(--ion-color-primary);border-radius:3px">
                                 {{job.finish_plan_scheduled_date}}
                             </div>
-                            <div v-else style="padding:3px;color:#ccc">{{job.finish_plan_date}}</div>
+                            <div v-else style="padding:3px;color:#ccc"></div><!--{{job.finish_plan_date}}-->
                             <div style="padding:3px;color:#333"><small>{{job.finish_address}}</small></div>
                             <div><ion-icon :icon="square" :style="`color:${job.finish_color}`"/></div>
                         </div>

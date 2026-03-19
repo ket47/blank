@@ -41,6 +41,7 @@ import Order                from '@/scripts/Order.js'
 import Metrics              from '@/scripts/Metrics.js'
 import Push                 from '@/scripts/Push.js'
 import Capgo                from '@/scripts/Capgo.js'
+//import SSE                from '@/scripts/SSE.js'
 
 import './registerServiceWorker';
 import { 
@@ -302,7 +303,7 @@ async function startApp(){
     await User.sessionIdUse(heap.state.sessionId);
   }
 
-
+  app.mount('#app');
   /**
    * opens deeplinking urls in this app
    */
@@ -314,13 +315,12 @@ async function startApp(){
   })
   await User.autoSignIn();
 
-  app.mount('#app');
-
   Push.setFlashHandler(flash)
   Push.setAlertHandler(alert)
   Push.setGoHandler(go)
 
   Capgo.init(App,flash)
   Metrics.init()
+  //SSE.init()
 }
 startApp();

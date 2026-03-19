@@ -28,6 +28,7 @@
       <div v-for="cart in cartList" :key="cart.order_id" class="order-segment">
         <order-comp :orderData="cart" @stageCreate="onStageCreate"></order-comp>
       </div>
+      <div style="height:var(--ion-safe-area-bottom)"></div>
     </div>
     <div
       v-else

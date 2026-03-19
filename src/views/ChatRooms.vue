@@ -26,6 +26,8 @@ import {
     IonList,
     IonNote,
     IonSkeletonText,
+    IonAvatar,
+    IonBadge,
 }                           from '@ionic/vue';
 import {
     sparklesOutline,
@@ -40,6 +42,8 @@ export default {
     IonList,
     IonNote,
     IonSkeletonText,
+    IonAvatar,
+    IonBadge,
     },
     setup() {
       return { sparklesOutline,simpleLogo };
@@ -52,8 +56,8 @@ export default {
     mounted(){
         this.listGet()
 
-        clearInterval(localStorage.chatautoreload)
-        localStorage.chatautoreload=setInterval(()=>this.listGet(),1000)
+        //clearInterval(localStorage.chatautoreload)
+        //localStorage.chatautoreload=setInterval(()=>this.listGet(),1000)
     },
     computed:{
         rooms_computed(){

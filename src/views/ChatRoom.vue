@@ -180,6 +180,7 @@ export default {
       messages: null,
       newMessage: "",
       sendIcon: send,
+      room:{notice_holder_name:'teeest'},
 
 
       notice_holder_id:this.$route.params.id,
@@ -192,6 +193,15 @@ export default {
     this.chatListGet()
     // clearInterval(localStorage.chatautoreload)
     // localStorage.chatautoreload=setInterval(()=>this.chatListGet(),10000)
+
+
+    this.$heap.sse.addEventListener("chat_message", function(e) {
+        const data = JSON.parse(e.data);
+        if( data.notice_holder_id != this.notice_holder_id){
+          console.log('skip for',data.notice_holder_id)
+          return
+        }
+    })
   },
 
   computed:{
@@ -274,6 +284,9 @@ export default {
       } catch {
         /** */
       }
+    },
+    async chatListDispatch(){
+      //
     },
     async chatListGet() {
       try {

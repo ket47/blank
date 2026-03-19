@@ -13,7 +13,8 @@
     <div v-if="delivery_free" class="free-delivery-block">
         <ion-row>
             <ion-col>
-                <h6 v-if="delivery_free.delivery_cost > 0" style="margin-bottom: 2px;">Стоимость доставки: <b>{{ delivery_free.delivery_cost }}{{$heap.state.currencySign}}</b></h6>
+                <h6 v-if="waitingResponseFromServer" style="margin-bottom: 2px;">Рассчитываем...</h6>
+                <h6 v-else-if="delivery_free.delivery_cost > 0" style="margin-bottom: 2px;">Стоимость доставки: <b>{{ delivery_free.delivery_cost }}{{$heap.state.currencySign}}</b></h6>
                 <h6 v-else style="margin-bottom: 2px;"><ion-icon :icon="checkmark" color="success" style="font-size: 22px; vertical-align: text-bottom;"></ion-icon> Бесплатная доставка!</h6>
             
                 <ion-label v-if="delivery_free.sum_left > 0" style="color: var(--ion-color-medium)">До бесплатной доставки осталось: <b>{{ delivery_free.sum_left }}{{$heap.state.currencySign}}</b></ion-label>
@@ -54,7 +55,9 @@ export default({
     data() {
         return {
             deliveryCost: null,
-            deliveryFreeTreshold: null
+            deliveryFreeTreshold: null,
+            reloadClock:null,
+            waitingResponseFromServer:1
         }
     },
     computed:{
@@ -80,6 +83,7 @@ export default({
             }
             try{
                 const result=await jQuery.post( `${this.$heap.state.hostname}Store/itemDeliveryCalculationGet`, request );
+                this.waitingResponseFromServer=0
                 this.deliveryFreeTreshold = result.delivery_free_treshold
                 this.deliveryCost = result.customer_cost_total
             }catch{
@@ -93,7 +97,9 @@ export default({
     },
     watch:{
         'orderTotal'(){
-            this.load()
+            this.waitingResponseFromServer=1
+            clearTimeout(this.reloadClock)
+            this.reloadClock=setTimeout(()=>{this.load()},700)
         }
     }
 })

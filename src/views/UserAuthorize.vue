@@ -176,12 +176,12 @@
             ></ion-input>
           </ion-item>
           <p v-if="user_pass && user_pass!=user_pass_confirm" class="ion-padding">
-            Пароли должны совпадать
+            ⚠️ Пароли должны совпадать
           </p>
 
         </ion-list>
         <div class="vspace"></div>
-        <ion-button @click="userformOpen()" expand="block" v-if="user_pass">Продолжить</ion-button>
+        <ion-button @click="userformOpen()" expand="block" v-if="user_pass" :disabled="user_pass!=user_pass_confirm">Продолжить</ion-button>
 
         <ion-button @click="userformOpen()" expand="block" v-if="!user_pass">Пропустить</ion-button>
         <p style="color:var(--ion-color-medium);font-size:0.9em;text-align:center" v-if="!user_pass">
@@ -278,6 +278,7 @@
       <div></div>
     </div>
     </form>
+    <div style="height:var(--ion-safe-area-bottom)"></div>
   </base-layout>
 </template>
 
@@ -689,7 +690,7 @@ export default{
           case "user_pass_short":
             this.$flash("Пароль слишком короткий");
             break;
-          case "user_pass_notmatches":
+          case "user_pass_confirm_notmatches":
             this.$flash("Пароль не совпадает с подтверждением");
             break;
           default:
