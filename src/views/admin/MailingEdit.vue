@@ -414,8 +414,8 @@ export default {
             try{
                 await jQuery.post(`${this.$heap.state.hostname}Admin/Mailing/itemUpdate`,JSON.stringify(request))
                 this.$flash("💾 сохранено")
-                this.itemGet()
             }catch{
+                this.itemGet()
                 this.$flash("Ошибка сохранения")
             }
         },

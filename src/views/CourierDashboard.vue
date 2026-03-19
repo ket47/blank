@@ -162,6 +162,15 @@ ion-text{
           <ion-icon :src="documentTextOutline" slot="start"></ion-icon>
           <router-link to="/page/rules-courier">Правила пользования для курьера</router-link>
         </ion-item>
+        
+        <ion-item style="--background:var(--ion-color-warning-tint)" lines="none">
+          <ion-text>
+            <ion-label>Смена закрыта</ion-label>
+            <ion-note>Воспользуйтесь telegram ботом <a href="https://t.me/tezkelbot" target="_new">@tezkelbot</a> или <a @click="openVKBot()">ботом в VK</a>, чтобы начать смену</ion-note>
+            <br>
+            <ion-note v-if="vk_code">Чтобы авторизоваться в ВК введите код: <b>{{ vk_code }}</b></ion-note>
+          </ion-text>
+        </ion-item>
       </ion-list>
     </div>
     <div v-else style="background: linear-gradient(to top, #009dcd, #79c8e2);">
@@ -285,6 +294,7 @@ import {
   IonSelect,
   IonSelectOption,
   IonChip,
+  IonNote
 }                    from "@ionic/vue";
 import {
   cameraOutline,
@@ -324,6 +334,7 @@ export default  {
   IonSelect,
   IonSelectOption,
   IonChip,
+  IonNote
 
   },
   setup(){
@@ -346,7 +357,8 @@ export default  {
       is_disabled:0,
       customPopoverOptions :{
         message: 'Тип транспорта определяет радиус доставки',
-      }
+      },
+      vk_code: null
     }
   },
   ionViewDidEnter(){
@@ -390,12 +402,14 @@ export default  {
       if(this.other_courier_id>0){
         try{
           this.courier=await this.$post( heap.state.hostname + "Courier/itemGet",{courier_id:this.other_courier_id})
+          
         } catch( err ){
           this.$flash("Не удалось загрузить анкету")
         }
       } else {
         this.courier=heap.state.courier || {}
       }
+      await this.getVKToken()
       this.itemParseFlags()
     },
     itemParseFlags(){
@@ -489,6 +503,19 @@ export default  {
       }
       
     },
+    
+    async getVKToken () { 
+      const response = await jQuery.post(`${this.$heap.state.hostname}Api/VK/getAuthToken`);
+      this.vk_code = response.token;
+    },
+    openVKBot () { 
+      let link = `https://vk.com/im/convo/-60895788`;
+      const isMobile= /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(window.navigator.userAgent);
+      if(isMobile){
+         link = `https://m.vk.com/write-60895788`;
+      }
+      window.open(link, '_system');
+    }
   },
 }
 </script>

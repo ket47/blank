@@ -120,7 +120,9 @@ ion-icon{
           <ion-item style="--background:var(--ion-color-warning-tint)" lines="none">
             <ion-text>
               <ion-label>Смена закрыта</ion-label>
-              <ion-note>Воспользуйтесь telegram ботом <a href="https://t.me/tezkelbot" target="_new">@tezkelbot</a>, чтобы начать смену</ion-note>
+              <ion-note>Воспользуйтесь telegram ботом <a href="https://t.me/tezkelbot" target="_new">@tezkelbot</a> или <a @click="openVKBot()">ботом в VK</a>, чтобы начать смену</ion-note>
+              <br>
+              <ion-note v-if="vk_code">Чтобы авторизоваться в ВК введите код: <b>{{ vk_code }}</b></ion-note>
             </ion-text>
           </ion-item>
           <!--
@@ -321,6 +323,7 @@ import {
 
 import User     from "@/scripts/User.js";
 import Topic    from '@/scripts/Topic.js';
+import jQuery from "jquery";
 import heap     from "@/heap";
 import MsgSubscriptionComp  from '@/components/MsgSubscriptionComp.vue'
 
@@ -383,7 +386,8 @@ export default {
       user: heap.state.user,
       courierStatus:User.courier.status,
       storeList:User.supplier.storeList,
-      version:this.toLocDateTime(document.lastModified)
+      version:this.toLocDateTime(document.lastModified),
+      vk_token: null
     };
   },
   ionViewDidEnter(){
@@ -399,6 +403,7 @@ export default {
       if(data.storeList){
         self.storeList=data.storeList
       }
+      this.getVKToken()
     });
   },
   computed: {
@@ -430,6 +435,18 @@ export default {
     },
     capgoInstallerReset(){
       localStorage.appUpdateSkipUntil=0
+    },
+    async getVKToken () { 
+      const response = await jQuery.post(`${this.$heap.state.hostname}Api/VK/getAuthToken`);
+      this.vk_code = response.token;
+    },
+    openVKBot () { 
+      let link = `https://vk.com/im/convo/-60895788`;
+      const isMobile= /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(window.navigator.userAgent);
+      if(isMobile){
+         link = `https://m.vk.com/write-60895788`;
+      }
+      window.open(link, '_system');
     }
   },
   watch: {
