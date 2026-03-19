@@ -31,7 +31,7 @@
                 <h6 v-if="finish_plan_scheduled_date_full">Привезти к {{finish_plan_scheduled_date_full}} (⏰ Запланирован)</h6>
                 <h6 v-else style="color:#666">Привезти</h6><!-- <span style="color:#ccc">{{job.finish_plan_date}}</span>-->
 
-                <ion-icon v-if="job.customer_heart_count>0" :icon="heartSharp" color="danger"></ion-icon>{{job.customer_heart_count}}&nbsp;
+                <span v-if="job.customer_heart_count>0"><ion-icon :icon="heartSharp" color="danger"></ion-icon>({{job.customer_heart_count}})</span>&nbsp;
                 <a :href="`https://yandex.ru/maps/?pt=${job.finish_longitude},${job.finish_latitude}&z=19&l=map,trf`" target="_new">
                     {{job.finish_address}}
                 </a>

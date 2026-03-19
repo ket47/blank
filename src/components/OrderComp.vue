@@ -6,7 +6,7 @@
     .action-block{
         padding: 4px 0 16px;
     }
-    html:not(.plt-desktop) .action-block:not(.relative-position){
+    html:not(.plt-desktop,.plt-ios) .action-block:not(.relative-position){
         position: fixed;
         bottom: var(--ion-safe-area-bottom);
         z-index: 2;
