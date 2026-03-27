@@ -37,7 +37,7 @@ ion-tabs ion-icon{
         <div style="background:white;">
           <div class="page-content" style="">
             <ion-toolbar style="padding-right: 20px;">
-              <ion-buttons v-if="forceBackButton" slot="start">
+              <ion-buttons v-if="canGoBack" slot="start">
                 <ion-button @click="goback()"><ion-icon :src="arrowBackOutline" size="large"/></ion-button>
               </ion-buttons>
               <ion-title><h4 style="margin:20px; text-align:center;" v-if="pageTitle">{{ pageTitle }}</h4></ion-title>
@@ -78,6 +78,28 @@ import CookiesModal   from "@/components/CookiesModal.vue"
 import { useRoute } from 'vue-router';
 
 export default {
+  props: [
+    "pageTitle",
+    "pageDefaultBackLink",
+    "errorMessage",
+    "pageClass",
+    "cartComponent",
+    "contentOnScroll",
+    "hideBackLink"
+  ],
+  components: {
+    IonPage,
+    IonContent,
+    CartHeader,
+    FooterDesktop,
+    IonIcon,
+    IonTitle,
+    IonToolbar,
+    IonButtons,
+    IonButton,
+    StoriesStartupModalTrigger,
+    CookiesModal
+  },
   setup() {
     const route = useRoute();
     return {
@@ -95,27 +117,18 @@ export default {
     cartListTotal(){
       return Order.cart.listTotalGet()
     },
-  },
-  props: [
-    "pageTitle",
-    "pageDefaultBackLink",
-    "errorMessage",
-    "pageClass",
-    "cartComponent",
-    "contentOnScroll",
-  ],
-  components: {
-    IonPage,
-    IonContent,
-    CartHeader,
-    FooterDesktop,
-    IonIcon,
-    IonTitle,
-    IonToolbar,
-    IonButtons,
-    IonButton,
-    StoriesStartupModalTrigger,
-    CookiesModal
+    canGoBack(){
+      if(this.hideBackLink){
+        return 0
+      }
+      if(this.pageDefaultBackLink){
+        return 1
+      }
+      if(this.forceBackButton){
+        return 1
+      }
+      return history.state.back?1:0
+    },
   },
   methods: {
     goback(){

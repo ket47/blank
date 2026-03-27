@@ -138,8 +138,6 @@
 
             <div v-if="order_sum_total>0">
             <ion-item-divider>Итог</ion-item-divider>
-
-
             <div v-if="tariffRule.bonus">
                 <ion-item>
                     <ion-icon :icon="giftOutline" color="medium" slot="start"></ion-icon>
@@ -582,7 +580,13 @@ export default({
                     this.tariffRuleSet(this.tariffRuleList[0]||{})
                 //}
                 this.is_checkout_data_loaded=1
-                this.bonusMode='gain'
+                if( !this.promo ){
+                    /**
+                     * If user selected promo discount than don't use bonus
+                     */
+                    this.bonusMode='gain'
+                }
+                
                 // if( this.order_sum_delivery==0 ){//????
                 //     this.order_sum_delivery=this.order.order_sum_delivery
                 // }
@@ -986,6 +990,7 @@ export default({
             this.promoLink(selectedPromo.data)
             if( selectedPromo?.data?.promo_id ){
                 this.promo=selectedPromo.data
+                this.bonusMode='promo'
             } else {
                 this.promo=null
             }
