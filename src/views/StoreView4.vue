@@ -351,6 +351,8 @@ ion-chip .active-chip {
       </div>
     </div>
 
+
+    <div ref="topMarker"></div>
     <div v-if="storeItem.store_id">
       <!-- load after store is done-->
       <home-slider :holderId="storeItem.store_id" :is-editable="storeItem.is_writable"/>
@@ -358,13 +360,21 @@ ion-chip .active-chip {
     </div>
 
 
-    <ion-searchbar class="search-container" v-model="searchQuery" placeholder="Поиск у этого продавца"/>
+    <ion-searchbar class="search-container" v-model="searchQuery" :placeholder="`Поиск в ${storeItem.store_name}`" @ion-input="this.productListGet('fullreset')" debounce="300"/>
+
+
+
+    <h3 v-if="searchQuery" style="padding: 10px; margin: 0px;">Результаты поиска <span  style="color: var(--ion-color-primary);">"{{ searchQuery }}"</span></h3>
+
+
 
     <div v-if="storeGroupsFiltered">
-      <h4 style="margin: 8px 16px;"><b>Категории</b></h4>
-      <group-list :groupList="storeGroupsFiltered" :activeIndex="productCategoryActive" :storeId="storeItem.store_id" :onClick="(evt) => selectProductCategory(evt)"></group-list>
+      <h4 style="margin: 8px 16px;color:#333"><b>Категории</b></h4>
+      <group-list :groupList="storeGroups" :activeIndex="productCategoryActive" :storeId="storeItem.store_id" :onClick="(evt) => selectProductCategory(evt)"></group-list>
+
       <div v-for="(parent_group_item, index) in storeGroupsFiltered" :key="parent_group_item.group_id" :id="`group-${index}-${storeItem.store_id}`">
-        <h5 style="padding: 0 10px; margin: 0px">{{ parent_group_item.group_name }} </h5>
+        <div style="height:40px"><!--gap for submenu--></div>
+        <h5 style="padding: 10px; margin: 0px;color:#333">{{ parent_group_item.group_name }} </h5>
         <ion-grid class="product-list">
           <ion-row
             v-for="group_item in parent_group_item.children"
@@ -387,10 +397,10 @@ ion-chip .active-chip {
         </ion-grid>
       </div>
     </div>
-    <ion-label v-else-if="searchQuery" style="padding:15px">
+    <ion-label v-else-if="searchQuery" class="ion-padding">
       К сожалению, в <b>{{storeItem.store_name}}</b> по запросу <b>"{{searchQuery}}"</b> ничего не найдено. <ion-chip @click="this.searchQuery=null">Сбросить фильтр</ion-chip>
     </ion-label>
-    <div v-else-if="!productList">
+    <!-- <div v-else-if="productListIsEmpty">
       <h4 style="margin: 8px 16px;"><b><ion-skeleton-text style="height:30px;width:150px"></ion-skeleton-text></b></h4>
       <div>
         <div v-for="i in [1,2,3,4]" :key="i" style="display:inline-block;margin:10px">
@@ -412,11 +422,23 @@ ion-chip .active-chip {
           </ion-col>
         </ion-row>
       </ion-grid>
-    </div>
+    </div> -->
     <ion-label v-else-if="productListIsEmpty" style="padding:15px">
       К сожалению, в <b>{{storeItem.store_name}}</b> пока нет доступных товаров.
-    </ion-label>    
+    </ion-label>
     </div>
+    <ion-infinite-scroll @ionInfinite="listLoadMore($event)" threshold="50%">
+        <ion-infinite-scroll-content loading-spinner="bubbles"></ion-infinite-scroll-content>
+    </ion-infinite-scroll>
+
+
+
+
+    <ion-fab horizontal="end" vertical="bottom" slot="fixed" class="hidden-block" ref="scrollToTopButton" @click="scrollToTop()" style="position: fixed">
+      <ion-fab-button color="light" fill="outline">
+        <ion-icon :icon="chevronUpOutline"></ion-icon>
+      </ion-fab-button>
+    </ion-fab>
   </base-layout>
 </template>
 
@@ -437,6 +459,10 @@ import {
   IonList,
   IonItem,
   IonSkeletonText,
+  IonInfiniteScroll, 
+  IonInfiniteScrollContent,
+  IonFab,
+  IonFabButton,
 }                         from "@ionic/vue";
 import { 
   search,
@@ -452,7 +478,8 @@ import {
   diamond,
   star,
   trophy,
-  pricetag
+  pricetag,
+  chevronUpOutline
 }                         from "ionicons/icons";
 import ImageSliderComp    from "@/components/ImageSliderComp";
 import GroupList          from "@/components/GroupList.vue";
@@ -491,8 +518,13 @@ export default{
     ReactionThumbs,
     ReactionComment,
     ReactionShare,
+    IonInfiniteScroll, 
+    IonInfiniteScrollContent,
     StoriesSlider,
-    HomeSlider
+    HomeSlider,
+    
+    IonFab,
+    IonFabButton,
   },
   setup() {
     return {
@@ -509,26 +541,29 @@ export default{
       diamond,
       star,
       trophy,
-      pricetag
+      pricetag,
+      chevronUpOutline
     };
   },
   data() {
     return {
       storeId: this.$route.params.id,
       query:this.$route.query,
-      searchQuery: null,
-      storeItem: [],
-      productList:null,
-      storeGroups: null,
       can_reload_at:0,
       stickyMenuState: false,
       stickyMenuAnimating: false,
-      productCategoryActive: -1
+      productCategoryActive: -1,
+
+      searchQuery: null,
+      storeItem: [],
+      productList:[],
+      storeGroups: null,
+      storeGroupCurrentIndex:0,//index pioning on current loading group
     };
   },
   computed:{
     storeGroupsFiltered(){
-      if(!this.storeProductsFiltered || !this.storeGroups){
+      if(!this.storeGroups || !this.storeProductsFiltered ){
         return null
       }
       const notEmptyGroupIds=Object.keys(this.storeProductsFiltered)
@@ -556,22 +591,11 @@ export default{
     },
     storeProductsFiltered() {
       if(!this.productList){
-        return null
+        return {}
       }
       let category_order=1
       let storeProductsFiltered = {}
       for (let product of this.productList) {
-        if( this.searchQuery ){
-          try{
-            const regexp=new RegExp(this.searchQuery.replace(/^[\w\d\s]/,'').replace(/\s/g,'.*'),'im')
-            if(    !product.product_name?.match( regexp )
-                && !product.product_code?.match( regexp )
-                && !product.product_description?.match( regexp )
-              ){// 
-              continue
-            }
-          } catch{/** */}
-        }
         const group_id=product.group_id??0
         if (this.storeGroups){
           if (!storeProductsFiltered[group_id]) {
@@ -600,18 +624,23 @@ export default{
         const request={
           store_id: this.storeId,
           distance_include:1,
+          grouptree_include:1,
         }
         let secondRenderTimeout=0
         let store=await Utils.prePost(`${this.$heap.state.hostname}Store/itemGet`,request )
         if(store){
           this.storeItem = this.itemPrepare(store);
+          this.groupTreePrepare(store.group_tree)
           secondRenderTimeout=300
         }
+
         store=await Utils.post(`${this.$heap.state.hostname}Store/itemGet`,request )
         setTimeout(()=>{
           this.storeItem = this.itemPrepare(store);
+          this.groupTreePrepare(store.group_tree)
         },secondRenderTimeout)
         this.$heap.commit('setCurrentStore',this.storeItem);
+
       } catch(err){
         const exception_code=err?.responseJSON?.messages?.error;
         switch(exception_code){
@@ -657,27 +686,55 @@ export default{
         this.$flash("Не удалось создать товар")
       }
     },
-    async productListGet() {
+    async listLoadMore(ev){
+      await this.productListGet()
+      ev.target.complete();
+    },
+    productListCurrentGroupsGet(){
+      if( !this.storeGroups || !this.storeGroups[this.storeGroupCurrentIndex] ){
+        return null
+      }
+      const currentGroupList=[]
+      for(let i in this.storeGroups[this.storeGroupCurrentIndex].children){
+        currentGroupList.push(this.storeGroups[this.storeGroupCurrentIndex].children[i].group_id)
+      }
+      return currentGroupList.join(',')
+    },
+    async productListGet( mode ) {
+      let loadedProductList=this.productList
+      if( mode=='fullreset' ){
+        this.productList=loadedProductList=[]
+        this.storeGroupCurrentIndex=0
+      }
+
+      const current_group_id_list=this.productListCurrentGroupsGet()
+      if( !current_group_id_list ){
+        return
+      }
       const request={
         store_id:this.storeId,
         is_active:1,
         limit:500,
-        grouptree_include:1
+        group_id:current_group_id_list,
+        name_query:this.searchQuery,
+        name_query_fields:'product_code,product_name,product_description'
       }
       try{
         let secondRenderTimeout=0
         let response=await Utils.prePost(`${this.$heap.state.hostname}Product/listGet`, request)
         if(response){
-          this.productList=response.product_list
-          this.groupTreePrepare(response.group_tree)
-          secondRenderTimeout=300
+          this.productList=loadedProductList.concat(response.product_list)
+          secondRenderTimeout=100
         }
-
         response=await Utils.post(`${this.$heap.state.hostname}Product/listGet`, request)
-        setTimeout(()=>{//
-          this.productList=response.product_list
-          this.groupTreePrepare(response.group_tree)
-        },secondRenderTimeout)
+        this.storeGroupCurrentIndex++
+
+        if(response.product_list?.length>0){
+          await new Promise(r => setTimeout(r, secondRenderTimeout));
+          this.productList=loadedProductList.concat(response.product_list)
+        } else {//loaded category has no items so load next
+          await this.productListGet()
+        }
       }catch(err){/** */}
     },
     async groupTreePrepare(storeGroupsUnordered) {
@@ -744,31 +801,42 @@ export default{
       if(!event) return false;
       let scrollPosition = event.detail.currentY + window.innerHeight / 2;
       sections.forEach((section, index) => {
-        const top = section.offsetTop;
-        const bottom = top + section.offsetHeight;
-        if (scrollPosition >= top && scrollPosition < bottom) {
-          this.productCategoryActive = index
+        if(section){//????
+          const top = section.offsetTop;
+          const bottom = top + section.offsetHeight;
+          if (scrollPosition >= top && scrollPosition < bottom) {
+            this.productCategoryActive = index
+          }
         }
       });
     },
-    selectProductCategory(index) {
-      document.querySelector(`#group-${index}-${this.storeItem.store_id}`).scrollIntoView()
-    }
+    async selectProductCategory( index ) {
+      /**
+       * In order to scroll to category we should load all intermediate categories first
+       */
+      while(this.storeGroupCurrentIndex<=index){
+        await this.productListGet()
+      }
+      document.querySelector(`#group-${index}-${this.storeItem.store_id}`)?.scrollIntoView()
+    },
+        scrollToTop() {
+      this.$refs.topMarker.scrollIntoView();
+    },
   },
   async mounted(){
     this.query = this.$route.query
-    this.itemGet()
-    this.productListGet()
+    await this.itemGet()
+    await this.productListGet()
     this.checkActiveCategory()
   },
   async ionViewDidEnter() {
     this.query = this.$route.query;
-    this.itemGet()
-    this.productListGet()
+    await this.itemGet()
+    await this.productListGet()
   },
   // watch: {
-  //   $route(currentRoute) {
-  //     this.storeId = currentRoute.params.id;
+  //   searchQuery() {
+  //     this.productListGet('fullreset')
   //   },
   // },
 }

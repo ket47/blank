@@ -56,7 +56,7 @@
       
       <ion-button v-if="!currentQuantity" @click="addToOrder(+productData.product_quantity_min)" color="primary" expand="block" size="small">
         <ion-icon :icon="add" slot="start"></ion-icon>
-        <span v-if="buttonLayout=='horizontal'"> купить</span>
+        <span v-if="buttonLayout=='horizontal'"> в корзину</span>
       </ion-button>
         <ion-button v-if="currentQuantity>0" @click="addToOrder(+productData.product_quantity_min)" color="light" size="small">
           <ion-icon :icon="add" color="primary"></ion-icon>

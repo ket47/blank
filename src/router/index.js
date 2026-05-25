@@ -6,7 +6,7 @@ import BaseTabs       from '@/components/BaseTabs.vue'
 import HomeMainNew    from '@/views/HomeMainNew.vue'
 import SearchView     from '@/views/SearchView.vue'
 import UserDashboard  from '@/views/UserDashboard.vue'
-import StoreView      from '@/views/StoreView.vue'
+import StoreView      from '@/views/StoreView4.vue'//upgrade to infinite loading
 import ProductView    from '@/views/ProductView.vue'
 import OrderCheckout  from '@/views/OrderCheckout.vue'
 import OrderView      from '@/views/OrderView.vue'
