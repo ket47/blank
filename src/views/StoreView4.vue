@@ -397,10 +397,9 @@ ion-chip .active-chip {
         </ion-grid>
       </div>
     </div>
-    <ion-label v-else-if="searchQuery" class="ion-padding">
-      К сожалению, в <b>{{storeItem.store_name}}</b> по запросу <b>"{{searchQuery}}"</b> ничего не найдено. <ion-chip @click="this.searchQuery=null">Сбросить фильтр</ion-chip>
-    </ion-label>
-    <!-- <div v-else-if="productListIsEmpty">
+
+
+    <div v-else-if="productsAreLoading">
       <h4 style="margin: 8px 16px;"><b><ion-skeleton-text style="height:30px;width:150px"></ion-skeleton-text></b></h4>
       <div>
         <div v-for="i in [1,2,3,4]" :key="i" style="display:inline-block;margin:10px">
@@ -417,12 +416,16 @@ ion-chip .active-chip {
           </ion-col>
           <ion-col  size="12">
             <div v-for="i in [1,2,3,4]" :key="i" style="display:inline-block;margin:10px">
-              <ion-skeleton-text style="height:120px;width:120px" animated></ion-skeleton-text>
+              <ion-skeleton-text style="height:200px;width:140px" animated></ion-skeleton-text>
             </div>
           </ion-col>
         </ion-row>
       </ion-grid>
-    </div> -->
+    </div>
+
+    <ion-label v-else-if="searchQuery" class="ion-padding">
+      К сожалению, в <b>{{storeItem.store_name}}</b> по запросу <b>"{{searchQuery}}"</b> ничего не найдено. <ion-chip @click="this.searchQuery=null;this.productListGet('fullreset')">Сбросить фильтр</ion-chip>
+    </ion-label>
     <ion-label v-else-if="productListIsEmpty" style="padding:15px">
       К сожалению, в <b>{{storeItem.store_name}}</b> пока нет доступных товаров.
     </ion-label>
@@ -430,9 +433,6 @@ ion-chip .active-chip {
     <ion-infinite-scroll @ionInfinite="listLoadMore($event)" threshold="50%">
         <ion-infinite-scroll-content loading-spinner="bubbles"></ion-infinite-scroll-content>
     </ion-infinite-scroll>
-
-
-
 
     <ion-fab horizontal="end" vertical="bottom" slot="fixed" class="hidden-block" ref="scrollToTopButton" @click="scrollToTop()" style="position: fixed">
       <ion-fab-button color="light" fill="outline">
@@ -549,13 +549,13 @@ export default{
     return {
       storeId: this.$route.params.id,
       query:this.$route.query,
-      can_reload_at:0,
       stickyMenuState: false,
       stickyMenuAnimating: false,
       productCategoryActive: -1,
 
       searchQuery: null,
       storeItem: [],
+      productsAreLoading:0,
       productList:[],
       storeGroups: null,
       storeGroupCurrentIndex:0,//index pioning on current loading group
@@ -703,12 +703,14 @@ export default{
     async productListGet( mode ) {
       let loadedProductList=this.productList
       if( mode=='fullreset' ){
+        this.productsAreLoading=1
         this.productList=loadedProductList=[]
         this.storeGroupCurrentIndex=0
       }
 
       const current_group_id_list=this.productListCurrentGroupsGet()
       if( !current_group_id_list ){
+        this.productsAreLoading=0
         return
       }
       const request={
@@ -723,6 +725,7 @@ export default{
         let secondRenderTimeout=0
         let response=await Utils.prePost(`${this.$heap.state.hostname}Product/listGet`, request)
         if(response){
+          this.productsAreLoading=0
           this.productList=loadedProductList.concat(response.product_list)
           secondRenderTimeout=100
         }
@@ -731,6 +734,7 @@ export default{
 
         if(response.product_list?.length>0){
           await new Promise(r => setTimeout(r, secondRenderTimeout));
+          this.productsAreLoading=0
           this.productList=loadedProductList.concat(response.product_list)
         } else {//loaded category has no items so load next
           await this.productListGet()
