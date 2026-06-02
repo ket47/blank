@@ -1,736 +1,512 @@
 <template>
   <ion-page>
-    <ion-content :class="'supplier-guide-page'">
-      <div class="header-image-container main-block">
-        <div class="main-block-content">
-          <div class="text" style="color: white">
-            <h2>Настройте витрину и расширяйте свой бизнес</h2>
-            <h4>Воспользуйтесь специальным предложением по доставке от нас и набирайте обороты!</h4>
-            <router-link to="/user/supplier-dashboard">
-              <ion-button color="secondary"><span class="button-text">Присоединиться</span></ion-button>
-            </router-link>
-          </div>
-        </div>
-      </div>
-
-
-      <div class="main-block-content" style="padding:10px;box-shadow:0px 5px 5px #eee">
-        <h2 style="text-align:center">Видео презентация</h2>
-        <div style="position:relative;">
-          <a href="https://www.youtube.com/watch?v=lC9llgvyefM" target="_new">
-          <h4 style="position:absolute;color:white;left:10px">Короткое видео о нашем сервисе</h4>
-          <img src="/img/supplier_guide/videoThumbnail.jpg" style="border-radius:10px;width:100%;"/>
-          </a>
-        </div>
-      </div>
-      <div class="winnings-container main-block">
-        <div class="main-block-content">
-          <h2>Что Вы получите, работая именно с Нами?</h2>
-          <div class="winnings-grid">
-            <div class="winning-item">
-              <div class="winning-item-img">
-                <img src="/img/supplier_guide/supp_benef1.png" width="400"/>
-              </div>
-              <div class="winning-item-descr">
-                <h2>Увеличение торговых оборотов</h2>
-                <h4>Вы получаете не просто ряд дополнительных возможностей, но также эффективный канал для реализации Вашей продукции.</h4>
-              </div>
-            </div>
-            <div class="winning-item">
-              <div class="winning-item-img">
-                <img src="/img/supplier_guide/supp_benef2.png" width="400"/>
-              </div>
-              <div class="winning-item-descr">
-                <h2>Перманентная реклама</h2>
-                <h4>Ваш магазин постоянно виден тысячам покупателей, значительная часть которых может стать Вашими клиентами. Кроме того, мы постоянно проводим маркетинговые кампании для поддержки наших клиентов и привлечения новых покупателей.</h4>
-              </div>
-            </div>
-            <div class="winning-item">
-              <div class="winning-item-img">
-                <img src="/img/supplier_guide/supp_benef3.png" width="400"/>
-              </div>
-              <div class="winning-item-descr">
-                <h2>Упрощение рабочих процессов</h2>
-                <h4>Наша компания избавляет Вас от необходимости организации эффективной доставки. Весь нужный функционал по доставке мы вложили в наше приложение.</h4>
-              </div>
-            </div>
-            <div class="winning-item">
-              <div class="winning-item-img">
-                <img src="/img/supplier_guide/supp_benef4.png" width="400"/>
-              </div>
-              <div class="winning-item-descr">
-                <h2>Поддержка высокого уровня репутации</h2>
-                <h4>Мы предоставляем высокий уровень обслуживания так, что репутация Вашего предприятия выйдет на новый уровень.</h4>
-              </div>
-            </div>
-            <div class="winning-item">
-              <div class="winning-item-img">
-                <img src="/img/supplier_guide/supp_benef5.png" width="400"/>
-              </div>
-              <div class="winning-item-descr">
-                <h2>Онлайн-доступность с любого устройства</h2>
-                <h4>Наша площадка даёт возможность Вашему бизнесу быть простым и доступным для пользователей любых устройств. Будь-то наше мобильное приложение для iPhone, iPad, Android, или же формат веб-сайта для пользователей ПК.</h4>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-
-
+    <ion-content :fullscreen="true" class="ion-padding premium-light">
       
+      <div class="ion-text-center hero-box">
+        <h1 class="main-title">Переход к технологической <br><span class="gradient-text">экосистеме</span></h1>
+        <p class="hero-desc">
+          Уважаемые партнеры! Наша платформа полностью переходит на модель предоставления технологических и IT-услуг. 
+          Мы приостанавливаем работу курьерской службы и кардинально снижаем комиссии на онлайн-размещение.
+        </p>
+      </div>
 
+      <section class="section-container">
+        <div class="section-lead-premium">
+          <div class="section-number-glowing">01</div>
+          <div class="section-title-stack">
+            <ion-text color="primary" class="text-uppercase tracking-widest font-bold sub-split">Тарифные планы</ion-text>
+            <h2 class="section-title-rewritten">Обновленные условия платформы</h2>
+          </div>
+        </div>
 
-      <div class="benefits-container main-block">
-        <div class="main-block-content">
-          <h2>Сделайте всего 3 шага и присоединяйтесь к нам!</h2>
-          <div class="benefits-list">
-            <div class="benefit-item">
-              <div class="benefit-img">
-                <img src="/img/supplier_guide/tezkel_supplier_progress1.png"/>
+        <ion-grid class="ion-no-padding ion-margin-top">
+          <ion-row>
+            <ion-col size="12" size-md="6">
+              <ion-card class="tariff-card">
+                <ion-card-header>
+                  <ion-card-subtitle class="text-uppercase tracking-wider">Вариант 1</ion-card-subtitle>
+                  <ion-card-title class="font-bold text-dark">Маркетплейс</ion-card-title>
+                </ion-card-header>
+                <ion-card-content class="tariff-content">
+                  <p class="text-muted">Абсолютно бесплатное размещение вашей организации и меню/каталога на платформе Tezkel. Вы получаете заказы и обрабатываете их самостоятельно.</p>
+                  <div class="price-value">0%</div>
+                </ion-card-content>
+              </ion-card>
+            </ion-col>
+
+            <ion-col size="12" size-md="6">
+              <ion-card class="tariff-card featured">
+                <ion-card-header>
+                  <ion-card-subtitle class="gradient-text text-uppercase tracking-wider font-bold">Выгодный выбор</ion-card-subtitle>
+                  <ion-card-title class="font-bold text-dark">Маркетплейс + Оплата</ion-card-title>
+                </ion-card-header>
+                <ion-card-content class="tariff-content">
+                  <p class="text-muted">Размещение на платформе с подключенным приемом клиентских онлайн-платежей. Комиссия covers только эквайринг и проведение чеков через кассу.</p>
+                  <div class="price-value gradient-text">7%</div>
+                </ion-card-content>
+              </ion-card>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </section>
+
+      <section class="section-container">
+        <ion-card class="promo-card">
+          <div class="glass-glow"></div>
+          <ion-card-header>
+            <ion-chip class="promo-chip font-bold">Главная премьера</ion-chip>
+            <h2 class="white-text font-bold promo-title ion-no-margin ion-margin-top">Ваш собственный сайт (базовый)</h2>
+          </ion-card-header>
+          <ion-card-content class="white-text">
+            <p class="promo-desc">Больше никакой конкуренции на общей витрине! Полноценный персональный сайт на отдельном независимом домене, спроектированный под ваши нужды и полностью принадлежащий вашему бренду.</p>
+            
+            <div class="price-row ion-margin-top">
+              <div class="price-block">
+                <span class="old-price">50 000 руб.</span>
+                <span class="new-price">25 000 руб.</span>
               </div>
-              <div class="heading">
-                <h2>1</h2>
-                <h4>Создайте магазин и примите оферту</h4>
+              <div class="ion-text-center">
+                <ion-badge color="danger" class="sale-badge">Скидка 50% для партнеров</ion-badge>
+                <div class="sale-text"><b>Действует до 01.08.2026</b></div>
               </div>
-              <p>Мы соблюдаем все необходимые законные требования сотрудничества.</p>
+              
             </div>
-            <div class="benefit-item">
-              <div class="benefit-img">
-                <img src="/img/supplier_guide/tezkel_supplier_progress2.png"/>
-              </div>
-              <div class="heading">
-                <h2>2</h2>
-                <h4>Заполните каталог Вашими товарами</h4>
-              </div>
-              <p>Добавьте и оформите товары, которые Вы собираетесь продавать.</p>
+          </ion-card-content>
+        </ion-card>
+
+        <ion-grid class="ion-no-padding ion-margin-top">
+          <ion-row>
+            <ion-col size="12" size-md="3" v-for="(feat, i) in features" :key="i">
+              <ion-card class="feature-card">
+                <ion-card-content>
+                  <div class="icon-circle" :class="'color-' + (i + 1)">
+                    <ion-icon :icon="feat.icon"></ion-icon>
+                  </div>
+                  <h3 class="font-bold text-dark ion-margin-top ion-margin-bottom-sm">{{ feat.title }}</h3>
+                  <p class="text-muted ion-no-margin">{{ feat.desc }}</p>
+                </ion-card-content>
+              </ion-card>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </section>
+
+      <section class="section-container">        
+        <div class="section-lead-premium">
+          <div class="section-number-glowing">02</div>
+          <div class="section-title-stack">
+            <ion-text color="primary" class="text-uppercase tracking-widest font-bold sub-split">Функционал</ion-text>
+            <h2 class="section-title-rewritten">Возможности и масштабирование</h2>
+          </div>
+        </div>
+        
+        <ion-list lines="none" class="addon-list ion-no-padding ion-margin-top">
+          <ion-item v-for="(addon, i) in addons" :key="i" class="addon-item">
+            <div slot="start" class="addon-icon-box">
+              <ion-icon :icon="addon.icon" color="primary"></ion-icon>
             </div>
-            <div class="benefit-item">
-              <div class="benefit-img">
-                <img src="/img/supplier_guide/tezkel_supplier_progress3.png"/>
-              </div>
-              <div class="heading">
-                <h2>3</h2>
-                <h4>Дождитесь проверки и подтверждения</h4>
-              </div>
-              <p>Администраторы в самые короткие сроки проверят и подтвердят Ваши данные.</p>
+            <ion-label class="ion-text-wrap">
+              <h3 class="font-bold text-dark ion-no-margin">{{ addon.title }}</h3>
+              <p class="text-muted ion-no-margin ion-margin-top-xs">{{ addon.desc }}</p>
+            </ion-label>
+          </ion-item>
+        </ion-list>
+      </section>
+
+      <section class="section-container">
+        <div class="section-lead-premium">
+          <div class="section-number-glowing">03</div>
+          <div class="section-title-stack">
+            <ion-text color="primary" class="text-uppercase tracking-widest font-bold sub-split">Реализация</ion-text>
+            <h2 class="section-title-rewritten">Порядок запуска решения</h2>
+          </div>
+        </div>
+        
+        <div class="steps-grid ion-margin-top">
+          <div class="step-card" v-for="(step, i) in steps" :key="i">
+            <div class="step-index">{{ i + 1 }}</div>
+            <div class="step-body">
+              <h3 class="font-bold text-dark ion-no-margin">{{ step.title }}</h3>
+              <p class="text-muted ion-no-margin ion-margin-top-xs">{{ step.desc }}</p>
             </div>
           </div>
         </div>
-      </div>
+      </section>
 
+      <footer class="ion-text-center footer-box">
+        <h2 class="font-bold text-dark footer-heading">Давайте строить технологичное будущее вместе!</h2>
+        <p class="text-muted ion-margin-bottom">Чтобы запустить процесс разработки, свяжитесь со своим персональным менеджером.</p>
+        
+        <ion-button expand="block" href="mailto:admin@tezkel.com" class="cta-button ion-margin-top">
+          <ion-icon slot="start" :icon="mailOutline"></ion-icon>
+          admin@tezkel.com
+        </ion-button>
+        <p class="text-muted regards-text">С уважением, <span class="font-bold text-dark">команда Tezkel</span></p>
+      </footer>
 
-      <div class="tarif-container main-block">
-        <div class="main-block-content">
-          <h2>Есть несколько способов работы с нами.</h2>
-          <h4>Выбирайте самый удобный!</h4>
-          <div class="tarif-list">
-            <div class="tarif-item">
-              <div class="tarif-left">
-                <h4>Тариф "Старт"</h4>
-                <p>Вы можете воспользоваться бесплатной версией нашего сервиса.</p>
-                <ul class="tarif-conditions">
-                  <li><b class="icon green-icon">✔</b>Размещение на <a href="#qst_1">платформе</a>.</li>
-                  <li><b class="icon green-icon">✔</b><a href="#qst_5">Система</a> управления заказами (до 30 заказов в месяц).</li>
-                  <li><b class="icon green-icon">✔</b>Функция "Электронное меню" (доступно для кафе и ресторанов).</li>
-                  <li><b class="icon red-icon">✖</b>Синхронизация с <a href="#qst_10">системами торгового учёта</a>.</li>
-                  <li><b class="icon red-icon">✖</b>Маркетинговая поддержка для проведения рекламных акций.</li>
-                  <li><b class="icon red-icon">✖</b>Приём <a href="#qst_6">онлайн-оплат</a>.</li>
-                  <li><b class="icon red-icon">✖</b>Ускоренные <a href="#qst_9">взаиморасчёты</a>.</li>
-                  <li><b class="icon red-icon">✖</b>Услуги <a href="#qst_11">доставки</a> с помощью наших курьеров.</li>
-                </ul>
-              </div>
-              <div class="tarif-right">
-                <h3>Бесплатно</h3>
-              </div>
-            </div>
-            <div class="tarif-item">
-              <div class="tarif-left">
-                <h4>Тариф "Маркетплейс"</h4>
-                <p>В случае, когда Вам не нужны ни услуги доставки, ни приём электронных платежей, Вы всё ещё имеете возможность увеличить охват воспользовавшись нашим сервисом.</p>
-                <ul class="tarif-conditions">
-                  <li><b class="icon green-icon">✔</b>Размещение на <a href="#qst_1">платформе</a>.</li>
-                  <li><b class="icon green-icon">✔</b><a href="#qst_5">Система</a> управления заказами.</li>
-                  <li><b class="icon green-icon">✔</b>Функция "Электронное меню" (доступно для кафе и ресторанов).</li>
-                  <li><b class="icon green-icon">✔</b>Синхронизация с <a href="#qst_10">системами торгового учёта</a>.</li>
-                  <li><b class="icon green-icon">✔</b>Маркетинговая поддержка для проведения рекламных акций.</li>
-                  <li><b class="icon red-icon">✖</b>Приём <a href="#qst_6">онлайн-оплат</a>.</li>
-                  <li><b class="icon red-icon">✖</b>Ускоренные <a href="#qst_9">взаиморасчёты</a>.</li>
-                  <li><b class="icon red-icon">✖</b>Услуги <a href="#qst_11">доставки</a> с помощью наших курьеров.</li>
-                </ul>
-              </div>
-              <div class="tarif-right">
-                <h1>7%</h1>
-                <h6>Ставка</h6>
-              </div>
-            </div>
-            <div class="tarif-item">
-              <div class="tarif-left">
-                <h4>Тариф "Маркетплейс + Оплата"</h4>
-                <p>Если Вам не нужны услуги доставки, но Вы по-прежнему хотите расширить свою аудиторию, то у нас есть для Вас решение.</p>
-                <ul class="tarif-conditions">
-                  <li><b class="icon green-icon">✔</b>Размещение на <a href="#qst_1">платформе</a>.</li>
-                  <li><b class="icon green-icon">✔</b><a href="#qst_5">Система</a> управления заказами.</li>
-                  <li><b class="icon green-icon">✔</b>Функция "Электронное меню" (доступно для кафе и ресторанов).</li>
-                  <li><b class="icon green-icon">✔</b>Синхронизация с <a href="#qst_10">системами торгового учёта</a>.</li>
-                  <li><b class="icon green-icon">✔</b>Маркетинговая поддержка для проведения рекламных акций.</li>
-                  <li><b class="icon green-icon">✔</b>Приём <a href="#qst_6">онлайн-оплат</a>.</li>
-                  <li><b class="icon green-icon">✔</b>Ускоренные <a href="#qst_9">взаиморасчёты</a>.</li>
-                  <li><b class="icon red-icon">✖</b>Услуги <a href="#qst_11">доставки</a> с помощью наших курьеров.</li>
-                </ul>
-              </div>
-              <div class="tarif-right">
-                <h1>10%</h1>
-                <h6>Ставка</h6>
-              </div>
-            </div>
-            <div class="tarif-item">
-              <div class="tarif-left">
-                <h4>Тариф "Свобода"</h4>
-                <p>Почувствуйте вкус свободы с нашим максимальным тарифом</p>
-                <ul class="tarif-conditions">
-                  <li><b class="icon green-icon">✔</b>Размещение на <a href="#qst_1">платформе</a>.</li>
-                  <li><b class="icon green-icon">✔</b><a href="#qst_5">Система</a> управления заказами.</li>
-                  <li><b class="icon green-icon">✔</b>Функция "Электронное меню" (доступно для кафе и ресторанов).</li>
-                  <li><b class="icon green-icon">✔</b>Синхронизация с <a href="#qst_10">системами торгового учёта</a>.</li>
-                  <li><b class="icon green-icon">✔</b>Маркетинговая поддержка для проведения рекламных акций.</li>
-                  <li><b class="icon green-icon">✔</b>Приём <a href="#qst_6">онлайн-оплат</a>.</li>
-                  <li><b class="icon green-icon">✔</b>Ускоренные <a href="#qst_9">взаиморасчёты</a>.</li>
-                  <li><b class="icon green-icon">✔</b>Услуги <a href="#qst_11">доставки</a> с помощью наших курьеров.</li>
-                </ul>
-              </div>
-              <div class="tarif-right">
-                <h1>25%</h1>
-                <h6>Ставка</h6>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="questions-block main-block">
-        <div class="main-block-content">
-          <h2>Частые вопросы</h2>
-          <h4>Мы собрали самые часто задаваемые вопросы в одном месте и дали лаконичные ответы на них</h4>
-          <ion-accordion-group  expand="inset">
-            <ion-accordion value="qst_1">
-              <ion-item slot="header" color="light">
-                <ion-label><a name="qst_1">Что такое "платформа"?</a></ion-label>
-              </ion-item>
-              <div class="ion-padding" slot="content">Платформа - это онлайн-ресурс, одним из главных преимуществ которого является постоянное сканирование и индексирование популярными поисковыми системами, такими как Google, Yandex, Bing и прочее.</div>
-            </ion-accordion>
-            <ion-accordion value="qst_2">
-              <ion-item slot="header" color="light">
-                <ion-label><a name="qst_2">Платформа - это сайт?</a></ion-label>
-              </ion-item>
-              <div class="ion-padding" slot="content">Да и не только. Наша платформа примечательна тем, что она представляет собой и сайт, и приложение одновременно. Это означает, что одну и ту же версию площадки Вы можете одинаково удобно использовать на любом устройстве.</div>
-            </ion-accordion>
-            <ion-accordion value="qst_3">
-              <ion-item slot="header" color="light">
-                <ion-label><a name="qst_3">Зачем мне платформа для работы?</a></ion-label>
-              </ion-item>
-              <div class="ion-padding" slot="content">Главная задача нашей платформы заключается в максимальной автоматизации Вашего рабочего процесса.</div>
-            </ion-accordion>
-            <ion-accordion value="qst_4">
-              <ion-item slot="header" color="light">
-                <ion-label><a name="qst_4">В чём заключается автоматизация, предоставляемая платформой?</a></ion-label>
-              </ion-item>
-              <div class="ion-padding" slot="content">Автоматизация представляет собой автоматически настроенную работу с получением заказов от клиентов, работу с эквайрингом, исключительный контроль над заказом.</div>
-            </ion-accordion>
-            <ion-accordion value="qst_5">
-              <ion-item slot="header" color="light">
-                <ion-label><a name="qst_5">Как я могу контролировать свои заказы?</a></ion-label>
-              </ion-item>
-              <div class="ion-padding" slot="content">Наша платформа предоставляет возможность отслеживания каждого этапа заказа: с момента пользовательской корзины и до момента приёма заказа покупателем. Этапы, требующие Вашего участия, такие как поступление, сборка и т.п. сопровождаются уведомлениями в приложении и Telegram-боте, оповещениями по электронной почте и даже смс-сообщениями. Кроме того, Вы можете прикреплять фотографии, которые помогут покупателю убедиться в качестве Вашего заказа, что, в свою очередь, вызывает доверие у Ваших клиентов.</div>
-            </ion-accordion>
-            <ion-accordion value="qst_6">
-              <ion-item slot="header" color="light">
-                <ion-label><a name="qst_6">В чём суть онлайн-оплаты?</a></ion-label>
-              </ion-item>
-              <div class="ion-padding" slot="content">Функция онлайн-оплаты заключается в подключении услуг эквайринга. Это обусловливает безопасность денежных переводов, так как весь процесс состоит из трёх этапов: предварительная блокировка средств на счёте покупателя, возврат части средств (в случае необходимости) и непосредственно подтверждающий перевод средств.</div>
-            </ion-accordion>
-            <ion-accordion value="qst_7">
-              <ion-item slot="header" color="light">
-                <ion-label><a name="qst_7">Что такое эквайринг и как с ним работать?</a></ion-label>
-              </ion-item>
-              <div class="ion-padding" slot="content">Эквайринг — это технология безналичного приема платежей с использованием банковских карт. Она позволяет принимать и контролировать безналичные платежи. Работа с ним  заранее автоматизирована и настроена на нашей платформе, что означает, что такие аспекты, как собственно прием средств, корректировка сдачи и предоставление чека покупателю не требует Вашего вмешательства.</div>
-            </ion-accordion>
-            <ion-accordion value="qst_8">
-              <ion-item slot="header" color="light">
-                <ion-label><a name="qst_8">Как работать с чеками?</a></ion-label>
-              </ion-item>
-              <div class="ion-padding" slot="content">Для осуществления работы с чеками мы, будучи посредником в передаче оплаты от покупателя продавцу, со своей стороны выписываем агентский чек (чек посредника) покупателю. То есть Вам больше не нужно формировать чек, что, в свою очередь, избавляет Вас от необходимости сталкиваться со всеми затратами на создание чеков. Вместо этого достаточно только выписать расходный документ в Вашей учётной системе, а чек мы выпишем сами.</div>
-            </ion-accordion>
-            <ion-accordion value="qst_9">
-              <ion-item slot="header" color="light">
-                <ion-label><a name="qst_9">Каков порядок взаиморасчётов?</a></ion-label>
-              </ion-item>
-              <div class="ion-padding" slot="content">Мы выполняем регулярные взаиморасчёты с Вами ориентировочно около двух раз в неделю. Такая частота позволяет избегать ошибок и нестыковок в отчётах и актах.</div>
-            </ion-accordion>
-            <ion-accordion value="qst_10">
-              <ion-item slot="header" color="light">
-                <ion-label><a name="qst_10">Что такое синхронизация?</a></ion-label>
-              </ion-item>
-              <div class="ion-padding" slot="content">Мы предоставляем возможность синхронизации Вашей витрины на нашей платформе с системами торгового учёта, что позволяет Вам автоматизировать обновления цен и остатков товаров.</div>
-            </ion-accordion>
-            <ion-accordion value="qst_11" >
-              <ion-item slot="header"  color="light">
-                <ion-label><a name="qst_11">Могу ли я подключить доставку?</a></ion-label>
-              </ion-item>
-              <div class="ion-padding" slot="content">В случае, если Вас заинтересовала опция, включающая доставку силами наших курьеров, то мы рекомендуем Вам уточнить возможность подключения данной опции конкретно для Вас в зависимости от Вашего города.</div>
-            </ion-accordion>
-            <ion-accordion value="qst_12">
-              <ion-item slot="header" color="light">
-                <ion-label><a name="qst_12">Какова Ваша роль в рабочем процессе?</a></ion-label>
-              </ion-item>
-              <div class="ion-padding" slot="content">Помимо того, что мы предоставляем инструмент, позволяющий Вам получить новых покупаетелей, мы также принимаем участие в рабочем процессе и упрощаем его для Вас. После того, как наш курьер начинает доставку, котроль и рабочая нагрузка по активному заказу полностью переходит к нам. Таким образом Вам необходимо только подготовить заказ к доставке.</div>
-            </ion-accordion>
-            <ion-accordion value="qst_13">
-              <ion-item slot="header" color="light">
-                <ion-label><a name="qst_13">Есть ли возможность отследить заказ?</a></ion-label>
-              </ion-item>
-              <div class="ion-padding" slot="content">На нашей платформе есть функция активного отслеживания местоположения курьеров, что означает, что текущий географический статус заказа может быть отслежен в реальном времени с точностью до 10 метров.</div>
-            </ion-accordion>
-          </ion-accordion-group>
-        </div>
-      </div>
-
-      <div class="sign-up-suggest main-block">
-        <div class="main-block-content">
-          <h2>Решили ускорить рост Вашего бизнеса?</h2>
-          <h4>Подайте заявку, а мы займёмся оформлением</h4>
-          <div class="actions">
-            <router-link to="/user/supplier-dashboard">
-              <ion-button button-secondary color="secondary"><span class="button-text">Подать заявку</span></ion-button>
-            </router-link>
-          </div>
-        </div>
-      </div>
-    <footer-desktop/>
     </ion-content>
   </ion-page>
 </template>
-<script>
 
-import FooterDesktop  from "@/components/FooterDesktop";
-import mainLogo       from "@/assets/icons/tezkel_logo.svg";
-import {
-  IonPage, 
-  IonContent, 
-  IonButton,
-  IonAccordion, 
-  IonAccordionGroup, 
-  IonItem, 
-  IonLabel
-} from "@ionic/vue"
+<script setup>
+import { 
+  IonPage, IonContent, IonGrid, IonRow, IonCol, IonCard, 
+  IonCardHeader, IonCardSubtitle, IonCardTitle, IonCardContent,
+  IonChip, IonBadge, IonList, IonItem, IonLabel, IonIcon, IonButton, IonText 
+} from '@ionic/vue';
+import { 
+  globeOutline, optionsOutline, cardOutline, rocketOutline, cartOutline, imageOutline,
+  colorPaletteOutline, syncOutline, logoAppleAppstore, mailOutline, timeOutline, shieldOutline
+} from 'ionicons/icons';
 
-export default {
-  props: [
-    "pageDefaultBackLink"
-  ],
-  setup() {
-    return {
-      mainLogo
-    }
-  },
-  components:{
-  IonPage, 
-  IonContent, 
-  IonButton,
-  FooterDesktop,
-  IonAccordion,
-  IonAccordionGroup,
-  IonItem,
-  IonLabel,
-  }
-}
+const features = [
+  { icon: globeOutline, title: 'Собственный домен и SEO', desc: 'Полная независимость. Сайт отлично оптимизирован под Яндекс и Google, чтобы клиенты находили вас напрямую.' },
+  { icon: optionsOutline, title: 'Полный контроль', desc: 'Никаких задержек и модераций. Мгновенно редактируйте меню, меняйте цены и включайте стоп-листы в привычной админ-панели Tezkel.' },
+  { icon: cardOutline, title: 'Готовый эквайринг и касса', desc: 'Безопасный прием онлайн-платежей на вашем сайте от Tezkel со встроенной отправкой чеков покупателям.' },
+  { icon: shieldOutline, title: 'Авторизация и безопасность', desc: 'Встроенная система авторизации по номеру телефона, использующая защищенный TEZKEL ID.' }
+];
+
+const addons = [
+  { icon: rocketOutline, title: 'Инструменты для роста продаж', desc: 'Настраивайте персональные промокоды, запускайте гибкие бонусные программы для постоянных клиентов и собирайте честные отзывы для улучшения сервиса.' },
+  { icon: colorPaletteOutline, title: 'Дизайн и визуальные акценты', desc: 'По согласованию мы адаптируем визуальный стиль под ваш бренд, создадим продающие баннеры для акций и добавим яркие стикеры на ключевые товары (например, «Хит», «Новинка», «Скидка»).' },
+  { icon: syncOutline, title: 'Полная синхронизация с iiko и 1С', desc: 'Сайт без проблем может синхронизироваться с вашими системами учета. Остатки, цены и модификаторы обновляются автоматически, а заказы с сайта мгновенно прилетают прямо на вашу кухонную или торговую кассу.' },
+  { icon: logoAppleAppstore, title: 'Готовность к выходу в Сторы', desc: 'Архитектура сайта полностью адаптирована для быстрой сборки в полноценные мобильные приложения. При желании вы сможете легко запуститься в Google Play, App Store и RuStore.' },
+  { icon: cartOutline, title: 'Онлайн кассы и эквайринг', desc: 'Подключаем ваш персональный эквайринг и онлайн кассу, где вы сможете контроллировать работу с финансами вашего сайта от А до Я.' },
+  { icon: imageOutline, title: 'Работа с контентом', desc: 'Мы предлагаем услуги по наполнению вашего сайта: создание и редактирование товарных карточек, размещение баннеров и прочих рекламных материалов, а также многое другое.' }
+];
+
+const steps = [
+  { title: 'Согласование', desc: 'Утверждаем с вами доменное имя, визуальный стиль и объем необходимых услуг.' },
+  { title: 'Настройка', desc: 'Наши специалисты регистрируют домен, настраивают SEO и готовят проект к релизу.' },
+  { title: 'Запуск', desc: 'Вы получаете полностью готовый, рабочий инструмент и доступы к панели управления.' }
+];
 </script>
 
 <style scoped>
-ion-accordion div{
-  text-align: left;
+/* ПРЕМИАЛЬНЫЙ СВЕТЛЫЙ UI (Используем нативные стили Ionic как базу) */
+.premium-light {
+  --background: #f8fafc;
 }
 
-.supplier-guide-page ion-button.ion-color-secondary{
-  --ion-color-contrast: white !important;
-  font-weight: 900;
-}
-.supplier-guide-page .button-text{
-  text-shadow: 0px 1px 2px #533704;
-}
-.supplier-guide-page h2,
-.supplier-guide-page h3,
-.supplier-guide-page h4{
-  font-weight: bold;
-  color: var(--ion-color-primary);
-}
-.supplier-guide-page p{
-  font-size: 14px;
-  line-height: 25px;
+/* Общие хелперы */
+.font-bold { font-weight: 700; }
+.text-dark { color: #0f172a; }
+.text-muted { color: #64748b; font-size: 0.95rem; line-height: 1.5; }
+.white-text { color: #ffffff !important; }
+.tracking-wider { letter-spacing: 1px; }
+.ion-margin-bottom-sm { margin-bottom: 8px; }
+.ion-margin-top-xs { margin-top: 4px; }
+
+/* Градиентный текст */
+.gradient-text {
+  background: linear-gradient(135deg, #009dcd 0%, #066b8a 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
-
-.supplier-guide-page .main-block{
-  padding: 2em 0;
+/* HERO ИНТРО */
+.hero-box {
+  max-width: 760px;
+  margin: 40px auto 20px;
+  padding: 0 16px;
 }
-.supplier-guide-page .main-block .main-block-content{
-  max-width: 1200px;
-  margin: 0 auto;
+.hero-chip {
+  --background: #eff6ff;
+  --color: #009dcd;
+  font-weight: 600;
+  padding: 8px 16px;
+  margin-bottom: 16px;
 }
-
-.supplier-guide-page ion-toolbar{
-  position: absolute;
-  --ion-toolbar-background: transparent;
+.main-title {
+  font-size: 2.6rem;
+  font-weight: 800;
+  color: #0f172a;
+  letter-spacing: -0.8px;
+  line-height: 1.15;
+  margin-bottom: 16px;
 }
-.supplier-guide-page ion-back-button{
-  display: initial;
-}
-
-.header-image-container{
-  padding: 2em 4em;
-  display: grid;
-  min-height: 550px;
-  align-items: center;
-  text-align: left;
-  background-image: url("/public/img/supplier_guide/tezkel_supplier_flyer_header1.jpg");
-  background-size: cover;
-  background-position: left center;
-}
-
-.header-image-container {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  padding: 1em;
-}
-.header-image-container .main-block-content{
-  max-width: 500px !important;
-}
-.header-image-container h2,
-.header-image-container h4{
-  color: white;
+.hero-desc {
+  font-size: 1.1rem;
+  color: #475569;
+  line-height: 1.6;
 }
 
-.intro-container{
-  /*background-image: url("/public/img/about_us/tezkel_anasayfa1.jpg");
-  background-position-y: bottom;
-  background-position-x: right;
-  min-height: 600px;*/
-  display: grid;
-  background-color: #f2f2f2;
-}
-.intro-container .main-block-content{
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  align-items: center;
-  padding: 1em;
-}
-.intro-container .main-block-content .image-col{
-
-}
-.intro-container .main-block-content .image-col img{
-  margin-bottom: -6em;
-  margin-top: -6em;
-}
-.intro-container .intro-list{
-
-}
-.intro-container .intro-list .intro-item{
-  display: grid;
-  align-items: center;
-  grid-template-columns: 30% 40% 30%;
-}
-.intro-container .intro-list .intro-item p{
-  padding: 1em;
-  font-weight: bold;
-  position: relative;
-}
-.intro-container .intro-list .intro-item:not(:last-child) p::after{
-  content: "";
-  position: absolute;
-  height: 3em;
-  top: 90%;
-  left: 50%;
-  border-left: 6px dotted gray;
-  
+/* СЕКЦИИ */
+.section-container {
+  max-width: 1000px;
+  margin: 60px auto;
+  padding: 0 16px;
 }
 
-
-.winnings-container{
-  padding-top: 1em !important;
-  text-align: center;
-}
-.winnings-grid{
-  align-items: baseline;
-  padding: 1em;
-  text-align: center;
-  justify-content: center;
-  grid-gap: 15px;
-}
-.winnings-grid .winning-item{
-  padding: 1em 2em;
-  text-align: left;
-  border-radius: 15px;
-  display: grid;
-  grid-template-columns: 50% 50%;
-  align-items: center;
-  height: 100%;
-  margin-top: -2em;
-}
-.winnings-grid .winning-item .winning-item-img{
-  margin: 0 2em;
-}
-.winnings-grid .winning-item:nth-child(odd) .winning-item-img{
-  text-align: right;
-}
-.winnings-grid .winning-item:nth-child(odd) .winning-item-descr{
-  text-align: left;
-}
-.winnings-grid .winning-item:nth-child(even) .winning-item-img{
-  text-align: left;
-}
-.winnings-grid .winning-item:nth-child(even) .winning-item-descr{
-  text-align: right;
-  grid-column: 1;
-  grid-row: 1;
-}
-.winnings-grid .winning-item h2{
-  color: black;
-}
-.winnings-grid .winning-item h4{
-  color: gray;
-}
-
-.sign-up-suggest{
-  background: linear-gradient(to left, #303c88, #327ab4);
-  text-align: center;
-  min-height: 250px;
-  display: grid;
-  align-items: center;
-}
-.sign-up-suggest .main-block-content{
-  color: white;
-}
-.sign-up-suggest .main-block-content h2,
-.sign-up-suggest .main-block-content h4{
-  color: white;
-}
-.sign-up-suggest .main-block-content a{
-  color: white;
-}
-.benefits-container{
-  background: linear-gradient(to left, #303c88, #327ab4);
-}
-.benefits-container .main-block-content > h2{
-  color: white;
-  text-align: center;
-}
-.benefits-list{
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  padding: 1em;
-}
-.benefits-list .benefit-item{
-  padding: 2em;
-}
-.benefit-item .benefit-img{
-  width: 70%;
-  margin: 0 auto;
-}
-.benefits-list .benefit-item .heading{
+.section-lead-premium {
   display: flex;
   align-items: center;
+  gap: 18px;
+  margin-bottom: 24px;
+  position: relative;
 }
-.benefits-list .benefit-item .heading h2{
-  font-size: 50px;
-  margin-right: 20px;
-  color: #fed304;
+
+.section-number-glowing {
+  font-size: 2.4rem;
+  font-weight: 900;
+  background: linear-gradient(135deg, #009dcd 0%, #066b8a 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  padding: 10px 14px;
+  border-radius: 16px;
+  line-height: 1;
 }
-.benefits-list .benefit-item .heading h4{
-  color: white;
+
+.section-title-stack {
+  display: flex;
+  flex-direction: column;
 }
-.benefits-list .benefit-item p{
-  color: white;
-  line-height: 20px;
-  text-align: left;
+
+.sub-split {
+  font-size: 0.75rem;
+  letter-spacing: 1.5px;
+  margin-bottom: 2px;
+}
+
+.section-title-rewritten {
+  font-size: 1.8rem;
+  font-weight: 850;
+  color: #0f172a;
+  margin: 0;
+  letter-spacing: -0.5px;
 }
 
 
-.tarif-container{
+/* ТАРИФЫ (IonCard + кастомные тени и ховеры) */
+.tariff-card {
+  --background: #ffffff;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 4px 20px rgba(15, 23, 42, 0.015);
+  border-radius: 20px;
+  margin: 12px;
+  height: calc(100% - 24px);
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.25s ease;
+}
+.tariff-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 30px rgba(148, 163, 184, 0.12);
+}
+.tariff-card.featured {
+  border: 1px solid #cbd5e1;
+  position: relative;
+}
+.tariff-card.featured::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; height: 4px;
+  background: linear-gradient(90deg, #009dcd, #066b8a);
+}
+.tariff-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  flex-grow: 1;
+}
+.price-value {
+  font-size: 3.2rem;
+  font-weight: 900;
+  color: #0f172a;
+  line-height: 1;
+  margin-top: 20px;
+}
 
+/* ПРОМО-КАРТА САЙТА */
+.promo-card {
+  --background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+  border-radius: 24px;
+  padding: 30px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 20px 40px rgba(15, 23, 42, 0.15);
 }
-.tarif-container .main-block-content > h2,
-.tarif-container .main-block-content > h4{
-  text-align: center;
+.glass-glow {
+  position: absolute;
+  bottom: -60px; right: -60px; width: 200px; height: 200px;
+  background: radial-gradient(circle, rgba(56, 128, 255, 0.2) 0%, transparent 75%);
+  pointer-events: none;
 }
-.tarif-container .tarif-list{
-  padding: 1em;
+.promo-chip {
+  --background: rgba(255, 255, 255, 0.08);
+  --color: #93c5fd;
+  margin: 0;
+  width: max-content;
 }
-.tarif-container .tarif-item{
-  padding: 1em 2em;
-  text-align: left;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
-  border-radius: 15px;
-  height: 100%;
-  display: grid;
-  grid-template-columns: 70% 30%;
+.promo-title { font-size: 2rem; letter-spacing: -0.5px; }
+.promo-desc { color: #cbd5e1; font-size: 1.05rem; line-height: 1.6; max-width: 800px; margin: 0 0 30px; }
+
+.price-row {
+  display: flex;
   align-items: center;
-  margin: 15px 0;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+  border-top: 1px solid #334155;
+  padding-top: 24px;
 }
-.tarif-container .tarif-item .tarif-left ul{
-  list-style: none;
-  padding: 0;
+.price-block { display: flex; flex-direction: column; }
+.old-price { text-decoration: line-through; color: #64748b; font-size: 1.1rem; }
+.new-price { font-size: 2.4rem; font-weight: 900; color: white; line-height: 1; }
+.sale-badge {
+  padding: 8px 16px;
+  font-weight: 700;
+  font-size: 0.9rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.25);
 }
-.tarif-container .tarif-item .tarif-left ul li{
-  color: #606060;
-  font-size: 14px;
-}
-.tarif-container .tarif-item .tarif-right{
-  text-align: center;
-}
-.tarif-container .tarif-right > h1,
-.tarif-container .tarif-right > h6{
-  font-weight: bold;
-  color: var(--ion-color-primary);
-}
-.tarif-container .tarif-right > h6{
-  margin-top: 0;
-}
-.tarif-container .icon{
-  margin: 0 10px;
-}
-.tarif-container .icon.green-icon{
-  color: var(--ion-color-success,#2dd36f);
-}
-.tarif-container .icon.red-icon{
-  color: var(--ion-color-danger,#eb445a);
+.sale-text{
+  color: #eb445a;
 }
 
-.questions-block .main-block-content > h2,
-.questions-block .main-block-content > h4{
-  text-align: center;
+/* ФИЧИ САЙТА */
+.feature-card {
+  --background: #ffffff;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.01);
+  border-radius: 20px;
+  margin: 12px;
+  height: calc(100% - 24px);
 }
-.questions-block .main-block-content > h4{
-  margin-bottom: 2em;
+.icon-circle {
+  width: 48px; height: 48px;
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px;
+  margin-bottom: 10px;
+}
+.icon-circle.color-1 { background: #eff6ff; color: #009dcd; }
+.icon-circle.color-2 { background: #f5f3ff; color: #8b5cf6; }
+.icon-circle.color-3 { background: #ecfdf5; color: #10b981; }
+.icon-circle.color-4 { background: #fdecf5; color: #b910b0; }
+
+/* ДОПОЛНЕНИЯ (IonList) */
+.addon-list { background: transparent; }
+.addon-item {
+  --background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  margin-bottom: 12px;
+  --padding-start: 16px;
+  --padding-top: 16px;
+  --padding-bottom: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.01);
+}
+.addon-icon-box {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  width: 42px; height: 42px;
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px;
 }
 
-.questions-block ion-accordion.accordion-collapsing ion-item[slot='header'],
-.questions-block ion-accordion.accordion-collapsed ion-item[slot='header'] {
-  --background: var(--ion-color-light);
-  --color: var(--ion-color-light-contrast);
+/* ШАГИ ЗАПУСКА */
+.steps-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+}
+.step-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  padding: 24px;
+  border-radius: 16px;
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+}
+.step-index {
+  background: linear-gradient(135deg, #009dcd 0%, #066b8a 100%);
+  color: white;
+  min-width: 32px; height: 32px;
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 800;
+  box-shadow: 0 4px 10px rgba(56, 128, 255, 0.2);
 }
 
-.questions-block ion-accordion.accordion-expanding ion-item[slot='header'],
-.questions-block ion-accordion.accordion-expanded ion-item[slot='header'] {
-  --background: var(--ion-color-primary);
-  --color: var(--ion-color-primary-contrast);
+/* ФУТЕР */
+.footer-box {
+  max-width: 650px;
+  margin: 50px auto 40px;
+  padding: 16px;
+  background: linear-gradient(to top, #f8fafc, #fff);
+  border-radius: 16px 16px 0 0;
+  box-shadow: 0 -10px 5px rgba(15, 23, 42, 0.01);
+  border-top: 1px solid #e2e8f0;
+  box-sizing: content-box;
 }
-.questions-block ion-accordion div[slot="content"]{
-  font-size: 14px;
+.footer-heading { font-size: 2rem; letter-spacing: -0.5px; margin-bottom: 12px; }
+.cta-button {
+  max-width: 280px;
+  margin: 24px auto 0;
+  --border-radius: 12px;
+  --box-shadow: 0 8px 24px rgba(56, 128, 255, 0.2);
+  font-weight: 700;
+  font-size: 1rem;
+}
+.regards-text { margin-top: 40px; }
+/* Выразительный варнинг (Уведомление о дате) */
+.warning-notification-box {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: #fffbeb; /* Мягкий, благородный янтарно-песочный оттенок */
+  border: 1px solid #fef3c7;
+  padding: 16px 20px;
+  border-radius: 16px;
+  margin: 0 16px 16px;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(245, 158, 11, 0.02);
+}
+
+.warning-glow-layer {
+  position: absolute;
+  top: 0; left: 0; width: 4px; height: 100%;
+  background: linear-gradient(180deg, #f59e0b 0%, #d97706 100%);
+}
+
+.warning-icon {
+  font-size: 22px;
+  color: #d97706;
+  flex-shrink: 0;
+}
+
+.warning-text-content {
+  font-size: 0.98rem;
+  color: #78350f;
+  font-weight: 500;
   line-height: 1.4;
 }
 
-  /*=========================*/
-  /*==========FOOTER=========*/
-  /*=========================*/
-  ion-footer.desktop-footer{
-    color: white;
-    background: var(--footer-background, #3880ff);
-    padding: 1em 2em;
-    min-height: 15vh;
-  }
-  ion-footer.desktop-footer .desktop-footer-container{
-    max-width: calc(var(--breakpoints-width)/1);
-    margin: 0 auto;
-  }
-  ion-footer  a{
-    color: white;
-    text-decoration: none;
-    margin-left: 20px;
-  }
-  ion-footer ion-title{
-    padding: 0px;
-    font-size: 15px;
-  }
-  ion-footer.desktop-footer .social-media-block{
-    justify-content: center;
-    display: flex;
-  }
-  ion-footer.desktop-footer .social-media-block ion-img{
-    width: 200px;
-  }
-  ion-footer.desktop-footer .desktop-footer-top{
-    align-items: center;
-    display: flex;
-    justify-content: space-between;
-    padding: 1em 0;
-  }
-  ion-footer.desktop-footer .desktop-footer-top ion-img{
-    width: inherit;
-    display: inline-block;
-  }
-  ion-footer.desktop-footer .desktop-footer-bottom{
-    align-items: center;
-    display: flex;
-    justify-content: space-between;
-    padding: 1em 0;
-    border-top: 1px solid gray;
-    font-size: 12px;
-  }
-
-
-  /*=========================*/
-  /*==========FOOTER=========*/
-  /*=========================*/
-
-
-@media screen and (max-width: 740px) {
-  .supplier-guide-page .guide-list{
-    grid-template-columns: 1fr !important;
-  }
-
-  .tarif-container .tarif-item{
-    grid-template-columns: 1fr !important;
-}
-  .intro-container .main-block-content .image-col img{
-    margin-bottom: 0em !important;
-  }
-  .supplier-guide-page .main-block{
-    padding: 1em;
-    grid-template-columns: 1fr;
-    background-position-x: right;
-    min-height: 400px;
-    text-align: center;
-  }
-  .supplier-guide-page .header-image-container h2,
-  .supplier-guide-page .header-image-container h4{
-    color: white;
-    text-shadow: 1px 1px 5px black;
-  }
-  .supplier-guide-page .main-block .toolbar_svg_logo{
-    left: 0;
-    width: 100%;
-  }
-  .intro-container .main-block-content,
-  .winnings-grid,
-  .benefits-list
-  {
-    grid-template-columns: 1fr;
-    padding: 0;
-
-  }
-  
-  ion-footer.desktop-footer{
-    display: none;
-  }
-  .winnings-grid .winning-item{
-    display: block;
-    text-align: center;
-  }
-  .winnings-grid .winning-item-img,
-  .winnings-grid .winning-item-descr{
-    text-align: center !important;
-  }
-
+.date-accent-badge {
+  background: #fef3c7;
+  color: #b45309;
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-weight: 700;
+  border: 1px solid #fde68a;
+  display: inline-block;
+  margin-left: 2px;
 }
 
+/* Адаптивность под мобилки */
+@media (max-width: 768px) {
+  .main-title { font-size: 1.9rem; }
+  .price-value { font-size: 2.6rem; }
+  .promo-card { padding: 20px; }
+  .promo-title { font-size: 1.6rem; }
+  .new-price { font-size: 2rem; }
+  .footer-heading { font-size: 1.6rem; }
+  .section-title-rewritten{ font-size: 1.4rem; }
+  .section-number-glowing { font-size: 1.8rem; }
+  .section-container { margin: 40px auto; padding: 0; }
+}
 </style>
