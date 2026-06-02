@@ -18,14 +18,6 @@
             <h2 class="section-title-rewritten">Обновленные условия платформы</h2>
           </div>
         </div>
-        <div class="warning-notification-box">
-          <div class="warning-glow-layer"></div>
-          <ion-icon :icon="timeOutline" class="warning-icon"></ion-icon>
-          <div class="warning-text-content">
-            Важная информация: новые тарифные условия вступают в силу с 
-            <span class="date-accent-badge">15 июня 2026 года</span>
-          </div>
-        </div>
 
         <ion-grid class="ion-no-padding ion-margin-top">
           <ion-row>
