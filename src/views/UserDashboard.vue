@@ -253,6 +253,10 @@ ion-icon{
             <ion-icon :icon="informationCircleOutline" slot="start" color="primary"></ion-icon>
             <ion-text>Презентация для продавцов</ion-text>
         </ion-item>
+        <ion-item lines="full" button detail @click="$go('/page/it-guide')">
+            <ion-icon :icon="informationCircleOutline" slot="start" color="primary"></ion-icon>
+            <ion-text>Презентация IT-услуг</ion-text>
+        </ion-item>
         <ion-item lines="full" button detail @click="$go('/page/copyright')">
             <ion-icon :icon="informationCircleOutline" slot="start" color="primary"></ion-icon>
             <ion-text>Правообладателям</ion-text>

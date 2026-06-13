@@ -218,6 +218,10 @@ const routes = [
         component: () => import('@/views/SupplierGuide.vue')
       },
       {
+        path: '/page/it-guide',
+        component: () => import('@/views/ITGuide.vue')
+      },
+      {
         path: '/page/:id',
         component: () => import('@/views/TextPageView.vue')
       },
